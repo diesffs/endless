@@ -14,7 +14,8 @@ export function getCharacterCost(character) {
 
 // Helper function to calculate DPS with multiplier
 function getCharacterDPS(character) {
-  const multiplier = 1 + Math.floor(character.level / 10) * 0.1; // 1.1x multiplier every 10 levels
+  // Calculate multiplier every 10 levels
+  const multiplier = Math.pow(1.1, Math.floor(character.level / 10));
   return character.baseDps * character.level * multiplier;
 }
 
