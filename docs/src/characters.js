@@ -12,6 +12,12 @@ export function getCharacterCost(character) {
   );
 }
 
+// Helper function to calculate DPS with multiplier
+function getCharacterDPS(character) {
+  const multiplier = 1 + Math.floor(character.level / 10) * 0.1; // 1.1x multiplier every 10 levels
+  return character.baseDps * character.level * multiplier;
+}
+
 export function levelUpCharacter(character) {
   const cost = getCharacterCost(character);
   if (state.gold >= cost) {
@@ -27,7 +33,7 @@ export function calculateTotalDPS() {
   state.dps =
     1 +
     state.characters.reduce((total, char) => {
-      return total + char.baseDps * char.level;
+      return total + getCharacterDPS(char); // Use the updated DPS calculation
     }, 0);
 }
 
@@ -49,7 +55,7 @@ export function updateCharacterUI() {
   state.characters.forEach((character) => {
     const cost = getCharacterCost(character);
     const canAfford = state.gold >= cost;
-    const dps = character.baseDps * character.level;
+    const dps = getCharacterDPS(character); // Use the new DPS function
 
     let characterElem = document.getElementById(`character-${character.id}`);
 
@@ -69,7 +75,7 @@ export function updateCharacterUI() {
       ).textContent = `Level: ${character.level}`;
       characterElem.querySelector(
         ".character-dps"
-      ).textContent = `DPS: ${dps.toFixed(1)}`;
+      ).textContent = `DPS: ${dps.toFixed(1)}`; // Updated DPS display
       characterElem.querySelector(
         ".character-cost"
       ).textContent = `Cost: ${Math.floor(cost)} gold`;
