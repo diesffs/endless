@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css">
+    <title>Idle Monster Slayer</title>
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <div class="stats">
+                <div class="gold">Gold: <span id="gold">10</span></div>
+                <div class="income">Income: <span id="income">0</span> gold/s</div>
+                <div class="dps">DPS: <span id="total-dps">1</span></div>
+            </div>
+        </header>
+        <main>
+            <section class="characters">
+                <h2>Heroes</h2>
+                <div id="character-list"></div>
+            </section>
+            <section class="monster-area">
+                <div class="zone-info">Zone <span id="current-zone">1</span></div>
+                <div class="monster">
+                    <div class="monster-container">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=1" alt="Monster" id="monster-image" />
+                    </div>
+                    <div class="health-bar">
+                        <div id="health-fill"></div>
+                    </div>
+                    <div class="monster-stats">
+                        <span id="current-health">10</span>/<span id="max-health">10</span> HP
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script type="module" src="./main.js"></script>
+
+</body>
+
+</html>
