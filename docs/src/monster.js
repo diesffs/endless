@@ -1,16 +1,37 @@
 import { state, saveStateToLocalStorage } from "./state.js";
 
+const PRELOADED_IMAGES_COUNT = 99; // Number of images to preload
+const monsterTypes = [
+  "adventurer",
+  "avataaars",
+  "bottts",
+  "micah",
+  "miniavs",
+  "personas",
+];
+const preloadedImages = []; // Array to store preloaded Image elements
+
+// Preload Image elements at the start
+function preloadMonsterImages() {
+  for (let i = 0; i < PRELOADED_IMAGES_COUNT; i++) {
+    const randomType =
+      monsterTypes[Math.floor(Math.random() * monsterTypes.length)];
+    const imageUrl = `https://api.dicebear.com/7.x/${randomType}/svg?seed=${randomType}-${i}`;
+
+    const img = new Image();
+    img.src = imageUrl; // Set the src to start loading
+    preloadedImages.push(img); // Store the Image element
+  }
+}
+
+// Call this function to preload images on page load
+preloadMonsterImages();
+
+// Function to create a monster, cycling through the preloaded images
 export function createMonster(zone) {
-  const monsterTypes = [
-    "adventurer",
-    "avataaars",
-    "bottts",
-    "micah",
-    "miniavs",
-    "personas",
-  ];
-  const randomType =
-    monsterTypes[Math.floor(Math.random() * monsterTypes.length)];
+  // Cycle through the preloaded images array
+  const avatarIndex = state.monstersKilled % PRELOADED_IMAGES_COUNT;
+  const preloadedImage = preloadedImages[avatarIndex];
 
   // Base HP increase starts from 1, but overall starting HP is set to 10
   const baseIncrease = 1 + Math.floor(zone / 100);
@@ -20,7 +41,7 @@ export function createMonster(zone) {
     health: Math.ceil(baseHealth),
     maxHealth: Math.ceil(baseHealth),
     zone: zone,
-    avatar: `${randomType}-${zone}-${state.monstersKilled}`,
+    avatarElement: preloadedImage, // Store the preloaded Image element
   };
 }
 
@@ -34,7 +55,7 @@ export function damageMonster(damage) {
     state.zone++;
     state.currentMonster = createMonster(state.zone);
     updateMonsterUI();
-    saveStateToLocalStorage(); // Save the state here
+    saveStateToLocalStorage();
   }
 }
 
@@ -50,9 +71,8 @@ export function updateMonsterUI() {
   document.getElementById("max-health").textContent = Math.ceil(
     state.currentMonster.maxHealth
   );
-  document.getElementById(
-    "monster-image"
-  ).src = `https://api.dicebear.com/7.x/${
-    state.currentMonster.avatar.split("-")[0]
-  }/svg?seed=${state.currentMonster.avatar}`;
+
+  // Directly use the preloaded Image element for this monster
+  const monsterImageElement = document.getElementById("monster-image");
+  monsterImageElement.src = state.currentMonster.avatarElement.src;
 }

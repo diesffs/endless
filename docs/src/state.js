@@ -5,6 +5,7 @@ import { calculateTotalDPS } from "./characters.js";
 export const state = {
   gold: 10,
   dps: 1,
+  income: 1,
   currentMonster: null,
 
   characters: [

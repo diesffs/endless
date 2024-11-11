@@ -9,7 +9,16 @@ function gameLoop() {
   }
 
   damageMonster(state.dps / 10);
-  state.gold += state.zone / 10;
+  function calculateBaseGain(zone) {
+    return (
+      zone / 10 +
+      Math.floor(zone / 100) * 5 +
+      Math.floor(zone / 1000) * 0.123456789 * zone
+    );
+  }
+
+  state.gold += calculateBaseGain(state.zone);
+  state.income = calculateBaseGain(state.zone) * 10; // Adjust as needed if income logic differs
 
   updateUI();
   saveStateToLocalStorage(); // Save state each loop iteration
