@@ -1,50 +1,52 @@
 import { state, saveStateToLocalStorage } from "./state.js";
 
-const PRELOADED_IMAGES_COUNT = 99; // Number of images to preload
-const monsterTypes = [
-  "adventurer",
-  "avataaars",
-  "bottts",
-  "micah",
-  "miniavs",
-  "personas",
-];
-const preloadedImages = []; // Array to store preloaded Image elements
+const preloadedImages = [];
+const totalImages = 50; // Define the exact number of images to preload
+let imageIndex = 0; // To cycle through preloaded images
 
-// Preload Image elements at the start
-function preloadMonsterImages() {
-  for (let i = 0; i < PRELOADED_IMAGES_COUNT; i++) {
+// Function to preload images into memory
+function preloadImages() {
+  const monsterTypes = [
+    "adventurer",
+    "avataaars",
+    "bottts",
+    "micah",
+    "miniavs",
+    "personas",
+  ];
+  for (let i = 0; i < totalImages; i++) {
     const randomType =
       monsterTypes[Math.floor(Math.random() * monsterTypes.length)];
     const imageUrl = `https://api.dicebear.com/7.x/${randomType}/svg?seed=${randomType}-${i}`;
 
+    // Create a new Image object to cache in memory
     const img = new Image();
-    img.src = imageUrl; // Set the src to start loading
-    preloadedImages.push(img); // Store the Image element
+    img.src = imageUrl;
+    preloadedImages.push(img); // Store the Image object, not just the URL
   }
 }
 
-// Call this function to preload images on page load
-preloadMonsterImages();
+// Call this once at the start of the game to preload images
+preloadImages();
 
-// Function to create a monster, cycling through the preloaded images
+// Function to create a new monster using a preloaded image
 export function createMonster(zone) {
-  // Cycle through the preloaded images array
-  const avatarIndex = state.monstersKilled % PRELOADED_IMAGES_COUNT;
-  const preloadedImage = preloadedImages[avatarIndex];
-
-  // Base HP increase starts from 1, but overall starting HP is set to 10
   const baseIncrease = 1 + Math.floor(zone / 100);
   const baseHealth = 10 + zone * baseIncrease * Math.pow(1.0000001, zone);
+
+  // Use a preloaded image from the array
+  const avatarImage = preloadedImages[imageIndex];
+  imageIndex = (imageIndex + 1) % totalImages; // Cycle through preloaded images
 
   return {
     health: Math.ceil(baseHealth),
     maxHealth: Math.ceil(baseHealth),
     zone: zone,
-    avatarElement: preloadedImage, // Store the preloaded Image element
+    avatarImage: avatarImage, // Store the Image object directly
   };
 }
 
+// Function to apply damage to the current monster
 export function damageMonster(damage) {
   if (!state.currentMonster) return;
 
@@ -55,10 +57,11 @@ export function damageMonster(damage) {
     state.zone++;
     state.currentMonster = createMonster(state.zone);
     updateMonsterUI();
-    saveStateToLocalStorage();
+    saveStateToLocalStorage(); // Save the state here
   }
 }
 
+// Function to update the monster UI
 export function updateMonsterUI() {
   if (!state.currentMonster) return;
 
@@ -72,7 +75,13 @@ export function updateMonsterUI() {
     state.currentMonster.maxHealth
   );
 
-  // Directly use the preloaded Image element for this monster
+  // Set the monster image directly from the preloaded Image object
   const monsterImageElement = document.getElementById("monster-image");
-  monsterImageElement.src = state.currentMonster.avatarElement.src;
+  monsterImageElement.src = state.currentMonster.avatarImage.src;
+}
+
+// Initial setup: create the first monster when the game starts
+if (!state.currentMonster) {
+  state.currentMonster = createMonster(state.zone);
+  updateMonsterUI();
 }
