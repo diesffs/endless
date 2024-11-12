@@ -32,7 +32,7 @@ preloadImages();
 // Function to create a new monster using a preloaded image
 export function createMonster(zone) {
   const baseIncrease = 1 + Math.floor(zone / 100);
-  const baseHealth = 10 + zone * baseIncrease * Math.pow(1.0000001, zone);
+  const baseHealth = 10 + zone * baseIncrease * Math.pow(1.00001, zone);
 
   // Use a preloaded image from the array
   const avatarImage = preloadedImages[imageIndex];
