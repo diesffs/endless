@@ -88,12 +88,12 @@ export function updateCharacterUI() {
       characterElem.querySelector(
         ".character-level"
       ).textContent = `Level: ${character.level}`;
-      characterElem.querySelector(
-        ".character-dps"
-      ).textContent = `DPS: ${dps.toFixed(1)}`;
+      characterElem.querySelector(".character-dps").textContent = `DPS: ${dps
+        .toFixed(0)
+        .toLocaleString()}`;
       characterElem.querySelector(
         ".character-cost"
-      ).textContent = `Cost: ${Math.floor(cost)} gold`;
+      ).textContent = `Cost: ${Math.floor(cost).toLocaleString()} gold`;
 
       // Ensure the button triggers level up for this character
       const levelUpButton = characterElem.querySelector("button");
@@ -113,7 +113,7 @@ export function updateCharacterUI() {
         <div class="character-info">
           <h3>${character.id} - ${character.name}</h3>
           <p class="character-level">Level: ${character.level}</p>
-          <p class="character-dps">DPS: ${dps.toFixed(1)}</p>
+          <p class="character-dps">DPS: ${dps.toFixed(0)}</p>
           <p class="character-cost">Cost: ${Math.floor(cost)} gold</p>
           <button ${canAfford ? "" : "disabled"}>Level Up</button>
         </div>

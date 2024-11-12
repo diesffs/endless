@@ -61,7 +61,7 @@ main {
     overflow-y: auto;
     box-sizing: border-box;
     flex: 1; /* Flexible size within .left-panel */
-    min-height: 0; /* Allows it to shrink with .monster-area */
+    min-height: 0px; /* Allows it to shrink with .monster-area */
 }
 
 .character {
@@ -281,7 +281,7 @@ button:disabled {
     border-radius: 8px;
     width: 100%;
     max-width: 800px;
-    max-height: 70vh; /* Ensures it doesn’t exceed 70% of viewport height */
+    max-height: 600px;
     margin: 0 auto;
     overflow-y: auto; /* Adds scrollbar when content overflows */
     transition: max-height 0.3s ease; /* Smooth shrinking effect */
@@ -303,7 +303,7 @@ button:disabled {
     display: flex;
     justify-content: space-around;
     gap: 10px;
-    width: 100%;
+    width: 105%;
     max-width: 800px;
     margin: 0 auto;
     padding: 0.5rem 0;
@@ -330,11 +330,11 @@ button:disabled {
     background-color: #357abd;
 }
 
-.characters, .monster-area {
+.characters {
     background-color: var(--card-background);
     padding: 1.5rem;
     border-radius: 8px;
-    height: calc(100vh - 170px); /* Adjusted to make both areas align perfectly */
+    height: calc(100vh - 220px);
     overflow-y: auto;
     width: 100%;
     box-sizing: border-box;
@@ -358,4 +358,14 @@ button:disabled {
     flex-direction: column;
     width: 100%;
     flex: 1; /* Allows this section to shrink responsively */
+}
+
+.monster-area {
+    background-color: var(--card-background);
+    padding: 1.5rem;
+    border-radius: 8px;
+    height: 703px;
+    overflow-y: auto;
+    width: 100%;
+    box-sizing: border-box;
 }
