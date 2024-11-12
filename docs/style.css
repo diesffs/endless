@@ -334,7 +334,7 @@ button:disabled {
     background-color: var(--card-background);
     padding: 1.5rem;
     border-radius: 8px;
-    height: calc(100vh - 220px); /* Adjusted to make both areas align perfectly */
+    height: calc(100vh - 170px); /* Adjusted to make both areas align perfectly */
     overflow-y: auto;
     width: 100%;
     box-sizing: border-box;
