@@ -45,7 +45,7 @@ header {
 main {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    gap: 3rem; /* Increase the gap to 3rem for more space */
     padding: 2rem;
     flex: 1;
     max-width: 1400px;
@@ -58,11 +58,10 @@ main {
     background-color: var(--card-background);
     padding: 1.5rem;
     border-radius: 8px;
-    height: calc(100vh - 200px);
     overflow-y: auto;
-    overflow-x: hidden;
-    position: relative;
-    width: 100%;
+    box-sizing: border-box;
+    flex: 1; /* Flexible size within .left-panel */
+    min-height: 0; /* Allows it to shrink with .monster-area */
 }
 
 .character {
@@ -70,7 +69,6 @@ main {
     margin: 0.5rem 0;
     padding: 1rem;
     border-radius: 4px;
-    width: calc(100% - 2rem);
     box-sizing: border-box;
     border: 1px solid transparent;
     display: grid;
@@ -121,17 +119,17 @@ main {
 
 .monster-area {
     background-color: var(--card-background);
-    padding: 2rem;
+    padding: 1.5rem;
     border-radius: 8px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    width: 100%;
+    flex: 1; /* Flexible size to match .characters */
+    min-height: 0; /* Allows it to shrink responsively */
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    height: calc(100vh - 200px);
-    width: 100%;
-    box-sizing: border-box;
-    position: sticky;
-    top: 100px;
+    align-items: center;
 }
 
 .zone-info {
@@ -234,34 +232,130 @@ button:disabled {
 .main-container {
     display: flex;
     justify-content: space-between;
+    align-items: stretch; /* Aligns both sections to the same height */
     gap: 2rem;
     padding: 2rem;
     max-width: 1400px;
     margin: 0 auto;
-    flex: 1;
+    width: 100%;
     box-sizing: border-box;
+    height: calc(100vh - 120px); /* Adjust based on header height */
 }
 
-.characters,
-.monster-area {
+.characters, .monster-area {
     background-color: var(--card-background);
     padding: 1.5rem;
     border-radius: 8px;
-    min-height: calc(100vh - 200px);
-    overflow: auto;
-    width: 100%;
+    overflow-y: auto;
     box-sizing: border-box;
+    flex: 1; /* Allows both sections to grow and shrink equally */
+    min-height: 0; /* Allows sections to shrink without a minimum constraint */
 }
 
 /* Responsive Design for smaller screens */
 @media (max-width: 768px) {
     .main-container {
         flex-direction: column;
+        height: auto; /* Adjusts for stacking on smaller screens */
         padding: 1rem;
     }
-    .characters,
-    .monster-area {
-        min-height: auto;
-        width: 100%;
+    .characters, .monster-area {
+        width: 100%; /* Makes each section full width */
+        flex: none; /* Disables flexible growth/shrink on small screens */
     }
+}
+
+/* Panels */
+.panels {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.panel {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-color: var(--card-background);
+    color: var(--text-color);
+    border-radius: 8px;
+    width: 100%;
+    max-width: 800px;
+    max-height: 70vh; /* Ensures it doesn’t exceed 70% of viewport height */
+    margin: 0 auto;
+    overflow-y: auto; /* Adds scrollbar when content overflows */
+    transition: max-height 0.3s ease; /* Smooth shrinking effect */
+}
+
+.panel.hidden {
+    display: none;
+}
+
+.panel.visible {
+    display: block;
+}
+
+.panel h2 {
+    color: var(--gold-color);
+}
+
+.panel-buttons {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0.5rem 0;
+    flex-wrap: nowrap;
+}
+
+.panel-buttons button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+    flex: 1 1 auto; /* Allows buttons to shrink */
+    min-width: 12px; /* Optional minimum width for readability */
+    max-width: 150px; /* Optional max width for consistency */
+    height: 40px;
+    box-sizing: border-box;
+}
+
+.panel-buttons button:hover {
+    background-color: #357abd;
+}
+
+.characters, .monster-area {
+    background-color: var(--card-background);
+    padding: 1.5rem;
+    border-radius: 8px;
+    height: calc(100vh - 220px); /* Adjusted to make both areas align perfectly */
+    overflow-y: auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.main-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+    height: calc(100vh - 100px); /* Adjust based on header height */
+}
+
+.left-panel {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex: 1; /* Allows this section to shrink responsively */
 }

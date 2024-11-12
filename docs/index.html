@@ -11,6 +11,7 @@
 
 <body>
     <div id="app">
+        <!-- Header Section -->
         <header>
             <div class="stats">
                 <div class="gold">Gold: <span id="gold">10</span></div>
@@ -18,11 +19,45 @@
                 <div class="dps">DPS: <span id="total-dps">1</span></div>
             </div>
         </header>
+
         <main>
-            <section class="characters">
-                <h2>Heroes</h2>
-                <div id="character-list"></div>
+            <!-- Left Column for Panel Buttons and Panels -->
+            <section class="left-column">
+                <!-- Panel Buttons -->
+                <section class="panel-buttons">
+                    <button onclick="openPanel('heroesPanel')">Heroes</button>
+                    <button onclick="openPanel('panel2')">Panel 2</button>
+                    <button onclick="openPanel('panel3')">Panel 3</button>
+                    <button onclick="openPanel('panel4')">Panel 4</button>
+                    <button onclick="openPanel('panel5')">Panel 5</button>
+                </section>
+
+                <!-- Panels -->
+                <section class="panels">
+                    <div id="heroesPanel" class="panel visible">
+                        <h2>Heroes</h2>
+                        <div id="character-list"></div>
+                    </div>
+                    <div id="panel2" class="panel hidden">
+                        <h2>Panel 2</h2>
+                        <p>Content for Panel 2</p>
+                    </div>
+                    <div id="panel3" class="panel hidden">
+                        <h2>Panel 3</h2>
+                        <p>Content for Panel 3</p>
+                    </div>
+                    <div id="panel4" class="panel hidden">
+                        <h2>Panel 4</h2>
+                        <p>Content for Panel 4</p>
+                    </div>
+                    <div id="panel5" class="panel hidden">
+                        <h2>Panel 5</h2>
+                        <p>Content for Panel 5</p>
+                    </div>
+                </section>
             </section>
+
+            <!-- Right Column for Monster Area -->
             <section class="monster-area">
                 <div class="zone-info">Zone <span id="current-zone">1</span></div>
                 <div class="monster">
@@ -39,9 +74,8 @@
             </section>
         </main>
     </div>
+
     <script type="module" src="./main.js"></script>
-
-
 </body>
 
 </html>
