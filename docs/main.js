@@ -13,7 +13,7 @@ function gameLoop() {
     return (
       zone / 10 +
       Math.floor(zone / 100) * 5 +
-      Math.floor(zone / 1000) * 0.123456789 * zone
+      Math.floor(zone / 1000) * 0.0123456789 * zone
     );
   }
 
