@@ -55,3 +55,8 @@ function init() {
 }
 
 init();
+
+// Set a timer to reload the page every hour (3,600,000 milliseconds)
+setTimeout(() => {
+  location.reload();
+}, 3600000); // 1 hour in milliseconds
