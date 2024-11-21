@@ -38,17 +38,10 @@ class Game {
 
   gameLoop() {
     if (!this.gameStarted) return;
-    if (
-      typeof this.stats.stats.currentHealth !== "number" ||
-      isNaN(this.stats.stats.currentHealth) ||
-      typeof this.stats.stats.maxHealth !== "number" ||
-      isNaN(this.stats.stats.maxHealth)
-    ) {
-      this.resetAllHealth();
-    }
+
     const currentTime = Date.now();
-    playerAttack(this, currentTime);
-    enemyAttack(this, currentTime);
+    playerAttack(this, currentTime); // Dynamically respects attack speed
+    enemyAttack(this, currentTime); // Adjust enemy attack timing similarly if needed
   }
 }
 

@@ -1,5 +1,5 @@
 import Stats from "./stats.js";
-import { updatePlayerStatsUI } from "./ui.js";
+import { updateStatsAndAttributesUI } from "./ui.js";
 
 export default class Hero {
   constructor() {
@@ -7,6 +7,6 @@ export default class Hero {
   }
 
   displayStats() {
-    updatePlayerStatsUI(this.stats);
+    updateStatsAndAttributesUI(this.stats);
   }
 }

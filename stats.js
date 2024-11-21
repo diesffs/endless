@@ -9,9 +9,10 @@ export default class Stats {
     this.exp = 0;
     this.expToNextLevel = 100;
     this.primaryStats = { strength: 1, agility: 1, vitality: 1 };
+    this.statPoints = 110;
     this.stats = {
       damage: 10,
-      attackSpeed: 1.0,
+      attackSpeed: 5.0,
       critChance: 5,
       critDamage: 1.5,
       health: 100,
@@ -44,8 +45,23 @@ export default class Stats {
   levelUp() {
     this.exp -= this.expToNextLevel;
     this.level++;
+    this.statPoints += 3; // Add stat points on level-up
     this.expToNextLevel = Math.floor(this.expToNextLevel * 1.2);
-    this.calculateStatsFromLevel();
+
+    // Recalculate stats based on level
+    this.stats.damage += Math.round(this.level * 0.5);
+    this.stats.maxHealth += Math.round(this.level * 5);
+    this.stats.currentHealth = this.stats.maxHealth; // Sync current health
+  }
+
+  allocateStat(stat) {
+    if (this.statPoints > 0 && this.primaryStats[stat] !== undefined) {
+      this.primaryStats[stat]++;
+      this.statPoints--;
+      this.recalculateFromAttributes();
+      return true;
+    }
+    return false;
   }
 
   calculateStatsFromLevel() {
@@ -55,33 +71,40 @@ export default class Stats {
     this.stats.currentHealth = Math.round(this.stats.maxHealth);
   }
 
+  recalculateFromAttributes() {
+    this.stats.damage += this.primaryStats.strength * 2;
+    this.stats.attackSpeed += this.primaryStats.agility * 0.05;
+    this.stats.maxHealth += this.primaryStats.vitality * 10;
+    this.stats.currentHealth = this.stats.maxHealth;
+  }
+
   buyUpgrade(stat) {
     if (this.upgradeCosts[stat] && this.gold >= this.upgradeCosts[stat]) {
       this.gold -= this.upgradeCosts[stat];
+
       switch (stat) {
         case "damage":
-          this.stats.damage += 1;
+          this.stats.damage += 1; // Increment damage
           break;
         case "attackSpeed":
-          this.stats.attackSpeed += 0.01;
+          this.stats.attackSpeed += 0.05; // Increment attack speed
           break;
         case "health":
-          this.stats.health += 5;
-          this.stats.maxHealth = this.stats.health;
-          this.stats.currentHealth = this.stats.maxHealth;
-          updatePlayerHealth(this.stats);
+          this.stats.maxHealth += 5; // Increment max health
+          this.stats.currentHealth = this.stats.maxHealth; // Sync current health
           break;
         case "armor":
-          this.stats.armor += 1;
+          this.stats.armor += 1; // Increment armor
           break;
         case "critChance":
-          if (this.stats.critChance < 100) this.stats.critChance += 0.1;
+          if (this.stats.critChance < 100) this.stats.critChance += 0.1; // Increment crit chance
           break;
         case "critDamage":
-          this.stats.critDamage += 0.01;
+          this.stats.critDamage += 0.05; // Increment crit damage
           break;
       }
-      this.upgradeCosts[stat] = Math.floor(this.upgradeCosts[stat] * 1.15);
+
+      this.upgradeCosts[stat] = Math.floor(this.upgradeCosts[stat] * 1.15); // Increase cost
       return true;
     }
     return false;

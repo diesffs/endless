@@ -1,4 +1,4 @@
-import { updateResources, updatePlayerStatsUI } from "./ui.js";
+import { updateResources, updatePlayerHealth } from "./ui.js";
 
 export default class Shop {
   constructor(hero) {
@@ -27,10 +27,10 @@ export default class Shop {
 
   buyUpgrade(stat) {
     if (this.hero.stats.buyUpgrade(stat)) {
-      this.updateShopUI(stat);
-      this.hero.displayStats();
-      updateResources(this.hero.stats);
-      updatePlayerStatsUI(this.hero.stats);
+      this.updateShopUI(stat); // Refresh the shop UI
+      this.hero.displayStats(); // Refresh player stats
+      updateResources(this.hero.stats); // Refresh resources like gold
+      updatePlayerHealth(this.hero.stats.stats); // Refresh health bar
     } else {
       alert("Not enough gold!");
     }

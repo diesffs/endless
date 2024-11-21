@@ -6,14 +6,15 @@ import {
 import Enemy from "./enemy.js";
 
 export function playerAttack(game, currentTime) {
-  if (currentTime - game.lastPlayerAttack >= game.playerAttackSpeed) {
+  const timeBetweenAttacks = 1000 / game.stats.stats.attackSpeed; // Convert attacks/sec to ms
+  if (currentTime - game.lastPlayerAttack >= timeBetweenAttacks) {
     if (game.currentEnemy.currentHealth > 0) {
       game.currentEnemy.currentHealth -= game.stats.stats.damage;
       createDamageNumber(game.stats.stats.damage, false);
       updateEnemyHealth(game.currentEnemy);
       if (game.currentEnemy.currentHealth <= 0) defeatEnemy(game);
     }
-    game.lastPlayerAttack = currentTime;
+    game.lastPlayerAttack = currentTime; // Record the last attack time
     if (game.hero && game.hero.displayStats) game.hero.displayStats();
   }
 }
