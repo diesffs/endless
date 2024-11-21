@@ -14,7 +14,7 @@ export default class Stats {
       damage: 10,
       attackSpeed: 1.0,
       critChance: 50,
-      critDamage: 1.5,
+      critDamage: 2,
       health: 100,
       currentHealth: 100,
       maxHealth: 100,
