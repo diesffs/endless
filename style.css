@@ -235,3 +235,9 @@ body {
     background-color: #4B5563; /* Gray for disabled state */
     cursor: not-allowed; /* Not-allowed cursor for disabled */
 }
+
+.damage-number.critical {
+    color: #ff5722; /* Bright red-orange for critical hits */
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(255, 87, 34, 0.8); /* Glow effect */
+}

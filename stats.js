@@ -12,9 +12,9 @@ export default class Stats {
     this.statPoints = 110;
     this.stats = {
       damage: 10,
-      attackSpeed: 5.0,
-      critChance: 5,
-      critDamage: 1.5,
+      attackSpeed: 1.0,
+      critChance: 50,
+      critDamage: 11.5,
       health: 100,
       currentHealth: 100,
       maxHealth: 100,

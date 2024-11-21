@@ -9,12 +9,23 @@ export function playerAttack(game, currentTime) {
   const timeBetweenAttacks = 1000 / game.stats.stats.attackSpeed; // Convert attacks/sec to ms
   if (currentTime - game.lastPlayerAttack >= timeBetweenAttacks) {
     if (game.currentEnemy.currentHealth > 0) {
-      game.currentEnemy.currentHealth -= game.stats.stats.damage;
-      createDamageNumber(game.stats.stats.damage, false);
+      // Calculate critical hit
+      const isCritical = Math.random() * 100 < game.stats.stats.critChance; // Compare random number to critChance
+      const damage = isCritical
+        ? game.stats.stats.damage * game.stats.stats.critDamage // Critical hit: apply multiplier
+        : game.stats.stats.damage; // Normal damage
+
+      // Apply damage to the enemy
+      game.currentEnemy.currentHealth -= damage;
+
+      // Display the damage with a critical marker if applicable
+      createDamageNumber(damage, false, isCritical);
       updateEnemyHealth(game.currentEnemy);
+
+      // Check if the enemy is defeated
       if (game.currentEnemy.currentHealth <= 0) defeatEnemy(game);
     }
-    game.lastPlayerAttack = currentTime; // Record the last attack time
+    game.lastPlayerAttack = currentTime; // Record attack time
     if (game.hero && game.hero.displayStats) game.hero.displayStats();
   }
 }
@@ -52,12 +63,14 @@ function defeatEnemy(game) {
   updateEnemyHealth(game.currentEnemy);
 }
 
-function createDamageNumber(damage, isPlayer) {
+function createDamageNumber(damage, isPlayer, isCritical = false) {
   const target = isPlayer ? ".character-avatar" : ".enemy-avatar";
   const avatar = document.querySelector(target);
   const damageEl = document.createElement("div");
-  damageEl.className = "damage-number";
-  damageEl.textContent = `-${Math.floor(damage)}`;
+  damageEl.className = isCritical ? "damage-number critical" : "damage-number"; // Add "critical" class for critical hits
+  damageEl.textContent = isCritical
+    ? `CRIT! -${Math.floor(damage)}`
+    : `-${Math.floor(damage)}`;
   const randomX = Math.random() * 40 - 20;
   const randomY = Math.random() * 40 - 20;
   damageEl.style.setProperty("--x", `${randomX}px`);
