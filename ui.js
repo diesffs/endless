@@ -147,21 +147,20 @@ export function updateStatsAndAttributesUI(stats) {
   if (!attributesContainer) {
     attributesContainer = document.createElement("div");
     attributesContainer.className = "attributes-container";
-    attributesContainer.innerHTML = `
-          <h3>Attributes</h3>
-          <div>
-              <strong>Strength:</strong> <span id="strength-value">${stats.primaryStats.strength}</span>
-              <button class="allocate-btn" data-stat="strength">+</button>
-          </div>
-          <div>
-              <strong>Agility:</strong> <span id="agility-value">${stats.primaryStats.agility}</span>
-              <button class="allocate-btn" data-stat="agility">+</button>
-          </div>
-          <div>
-              <strong>Vitality:</strong> <span id="vitality-value">${stats.primaryStats.vitality}</span>
-              <button class="allocate-btn" data-stat="vitality">+</button>
-          </div>
-      `;
+    const attributes = ['strength', 'agility', 'vitality'];
+    let attributesHtml = '<h3>Attributes</h3>';
+    
+    for (const attr of attributes) {
+        attributesHtml += `
+            <div>
+                <strong>${attr.charAt(0).toUpperCase() + attr.slice(1)}:</strong> 
+                <span id="${attr}-value">${stats.primaryStats[attr]}</span>
+                <button class="allocate-btn" data-stat="${attr}">+</button>
+            </div>
+        `;
+    }
+    
+    attributesContainer.innerHTML = attributesHtml;
     statsGrid.appendChild(attributesContainer);
 
     // Attach event listeners for allocation buttons (only once)
