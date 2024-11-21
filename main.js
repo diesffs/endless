@@ -7,6 +7,8 @@ const hero = new Hero();
 const game = new Game(hero);
 const shop = new Shop(hero);
 
+window.log = console.log;
+
 hero.displayStats();
 game.resetAllHealth();
 updateResources(hero.stats);
