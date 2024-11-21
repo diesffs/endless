@@ -110,11 +110,9 @@ export function updateStatsAndAttributesUI(stats) {
           <div><strong>Crit Damage:</strong> <span id="crit-damage-value">${stats.stats.critDamage
             .toFixed(2)
             .replace(".", ",")}x</span></div>
-          <div><strong>Health:</strong> <span id="health-value">${
-            stats.stats.currentHealth
-          }</span> / <span id="max-health-value">${
-      stats.stats.maxHealth
-    }</span></div>
+          <div><strong>Health:</strong> <span id="max-health-value">${
+            stats.stats.maxHealth
+          }</span></div>
           <div><strong>Armor:</strong> <span id="armor-value">${
             stats.stats.armor || 0
           }</span> (<span id="armor-reduction-value">${stats
@@ -140,8 +138,6 @@ export function updateStatsAndAttributesUI(stats) {
       stats.stats.critChance.toFixed(1).replace(".", ",") + "%";
     document.getElementById("crit-damage-value").textContent =
       stats.stats.critDamage.toFixed(2).replace(".", ",") + "x";
-    document.getElementById("health-value").textContent =
-      stats.stats.currentHealth;
     document.getElementById("max-health-value").textContent =
       stats.stats.maxHealth;
     document.getElementById("armor-value").textContent = stats.stats.armor || 0;
