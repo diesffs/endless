@@ -16,6 +16,7 @@ class Game {
     this.hero = hero;
     this.stats = this.hero.stats;
     this.currentEnemy = new Enemy(this.stats.level);
+    this.lastPlayerAttack = 0;
     this.zone = 1;
 
     initializeUI(this);
