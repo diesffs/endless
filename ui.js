@@ -84,6 +84,9 @@ export function updateStatsAndAttributesUI(stats) {
     statsContainer.className = "stats-container";
     statsContainer.innerHTML = `
           <h3>Stats</h3>
+          <div><strong>Gold:</strong> <span id="gold-value">${
+            stats.gold || 0
+          }</span></div>
           <div><strong>Level:</strong> <span id="level-value">${
             stats.level || 1
           }</span></div>
@@ -92,8 +95,8 @@ export function updateStatsAndAttributesUI(stats) {
           }</span> / <span id="exp-to-next-level-value">${
       stats.expToNextLevel || 100
     }</span></div>
-          <div><strong>Gold:</strong> <span id="gold-value">${
-            stats.gold || 0
+          <div><strong>Stat Points:</strong> <span id="stat-points-value">${
+            stats.statPoints || 0
           }</span></div>
           <div><strong>Damage:</strong> <span id="damage-value">${stats.stats.damage.toFixed(
             0
@@ -122,11 +125,13 @@ export function updateStatsAndAttributesUI(stats) {
     statsGrid.appendChild(statsContainer);
   } else {
     // Update dynamic stats values
+    document.getElementById("gold-value").textContent = stats.gold || 0;
     document.getElementById("level-value").textContent = stats.level || 1;
     document.getElementById("exp-value").textContent = stats.exp || 0;
     document.getElementById("exp-to-next-level-value").textContent =
       stats.expToNextLevel || 100;
-    document.getElementById("gold-value").textContent = stats.gold || 0;
+    document.getElementById("stat-points-value").textContent =
+      stats.statPoints || 0;
     document.getElementById("damage-value").textContent =
       stats.stats.damage.toFixed(0);
     document.getElementById("attack-speed-value").textContent =
@@ -147,20 +152,21 @@ export function updateStatsAndAttributesUI(stats) {
   if (!attributesContainer) {
     attributesContainer = document.createElement("div");
     attributesContainer.className = "attributes-container";
-    const attributes = ['strength', 'agility', 'vitality'];
-    let attributesHtml = '<h3>Attributes</h3>';
-    
-    for (const attr of attributes) {
-        attributesHtml += `
-            <div>
-                <strong>${attr.charAt(0).toUpperCase() + attr.slice(1)}:</strong> 
-                <span id="${attr}-value">${stats.primaryStats[attr]}</span>
-                <button class="allocate-btn" data-stat="${attr}">+</button>
-            </div>
-        `;
-    }
-    
-    attributesContainer.innerHTML = attributesHtml;
+    attributesContainer.innerHTML = `
+          <h3>Attributes</h3>
+          <div>
+              <strong>Strength:</strong> <span id="strength-value">${stats.primaryStats.strength}</span>
+              <button class="allocate-btn" data-stat="strength">+</button>
+          </div>
+          <div>
+              <strong>Agility:</strong> <span id="agility-value">${stats.primaryStats.agility}</span>
+              <button class="allocate-btn" data-stat="agility">+</button>
+          </div>
+          <div>
+              <strong>Vitality:</strong> <span id="vitality-value">${stats.primaryStats.vitality}</span>
+              <button class="allocate-btn" data-stat="vitality">+</button>
+          </div>
+      `;
     statsGrid.appendChild(attributesContainer);
 
     // Attach event listeners for allocation buttons (only once)
