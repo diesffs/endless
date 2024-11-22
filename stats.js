@@ -1,4 +1,10 @@
-import { updatePlayerHealth } from "./ui.js";
+import { game } from "./main.js";
+import { saveGame } from "./storage.js";
+
+export const BASE_DAMAGE = 10;
+export const BASE_HEALTH = 100;
+export const BASE_ARMOR = 0;
+export const BASE_ATTACK_SPEED = 1.0;
 
 export default class Stats {
   constructor(level = 1, gold = 10000) {
@@ -12,6 +18,7 @@ export default class Stats {
     this.statPoints = 110;
     this.stats = {
       damage: 10,
+      bonusDamage: 0,
       attackSpeed: 1.0,
       critChance: 50,
       critDamage: 2,
@@ -28,89 +35,84 @@ export default class Stats {
       critChance: 300,
       critDamage: 400,
     };
+    this.upgradeLevels = {
+      damage: 0,
+      attackSpeed: 0,
+      health: 0,
+      armor: 0,
+      critChance: 0,
+      critDamage: 0
+    };
     this.calculateStatsFromLevel();
   }
 
-  gainSoul(amount) {
+  gainSoul (amount) {
     this.souls += amount;
   }
 
-  gainExp(amount) {
+  gainExp (amount) {
     this.exp += amount;
     while (this.exp >= this.expToNextLevel) {
       this.levelUp();
     }
   }
-
-  levelUp() {
+  levelUp () {
     this.exp -= this.expToNextLevel;
     this.level++;
-    this.statPoints += 3; // Add stat points on level-up
+    this.statPoints += 3;
     this.expToNextLevel = Math.floor(this.expToNextLevel * 1.2);
-
-    // Recalculate stats based on level
     this.stats.damage += Math.round(this.level * 0.5);
     this.stats.maxHealth += Math.round(this.level * 5);
-    this.stats.currentHealth = this.stats.maxHealth; // Sync current health
+    this.stats.currentHealth = this.stats.maxHealth;
+
+    // Save after level up
+    saveGame(game);
   }
 
-  allocateStat(stat) {
+  allocateStat (stat) {
     if (this.statPoints > 0 && this.primaryStats[stat] !== undefined) {
       this.primaryStats[stat]++;
       this.statPoints--;
       this.recalculateFromAttributes();
+      if (stat === "vitality" && !game.gameStarted) {
+        this.stats.currentHealth = this.stats.maxHealth;
+      }
+
+      // Save after stat allocation
+      saveGame(game);
       return true;
     }
     return false;
   }
-
-  calculateStatsFromLevel() {
+  calculateStatsFromLevel () {
     this.stats.damage += Math.round(this.level * 0.01);
     this.stats.health = Math.round(this.stats.health + this.level * 0.01);
     this.stats.maxHealth = Math.round(this.stats.health);
     this.stats.currentHealth = Math.round(this.stats.maxHealth);
   }
 
-  recalculateFromAttributes() {
-    this.stats.damage += this.primaryStats.strength * 2;
-    this.stats.attackSpeed += this.primaryStats.agility * 0.05;
-    this.stats.maxHealth += this.primaryStats.vitality * 10;
-    this.stats.currentHealth = this.stats.maxHealth;
+  recalculateFromAttributes () {
+    this.stats.damage = BASE_DAMAGE - 2 + this.primaryStats.strength * 2 + this.upgradeLevels.damage * 1;
+    this.stats.attackSpeed = BASE_ATTACK_SPEED - 0.05 + this.primaryStats.agility * 0.05 + this.upgradeLevels.attackSpeed * .05;
+    this.stats.maxHealth = BASE_HEALTH - 10 + this.primaryStats.vitality * 10 + this.upgradeLevels.health * 1;
+    this.stats.armor = BASE_ARMOR + this.upgradeLevels.armor * 1;
+    this.stats.critChance = 50 + this.upgradeLevels.critChance * 1;
+    this.stats.critDamage = 2 + this.upgradeLevels.critDamage * 1;
   }
 
-  buyUpgrade(stat) {
+  buyUpgrade (stat) {
     if (this.upgradeCosts[stat] && this.gold >= this.upgradeCosts[stat]) {
       this.gold -= this.upgradeCosts[stat];
-
-      switch (stat) {
-        case "damage":
-          this.stats.damage += 1; // Increment damage
-          break;
-        case "attackSpeed":
-          this.stats.attackSpeed += 0.05; // Increment attack speed
-          break;
-        case "health":
-          this.stats.maxHealth += 5; // Increment max health
-          this.stats.currentHealth = this.stats.maxHealth; // Sync current health
-          break;
-        case "armor":
-          this.stats.armor += 1; // Increment armor
-          break;
-        case "critChance":
-          if (this.stats.critChance < 100) this.stats.critChance += 0.1; // Increment crit chance
-          break;
-        case "critDamage":
-          this.stats.critDamage += 0.05; // Increment crit damage
-          break;
-      }
-
+      this.upgradeLevels[stat]++;
       this.upgradeCosts[stat] = Math.floor(this.upgradeCosts[stat] * 1.15); // Increase cost
+
+      this.recalculateFromAttributes();
       return true;
     }
     return false;
   }
 
-  calculateArmorReduction() {
+  calculateArmorReduction () {
     const armor = this.stats.armor;
     return (armor / (100 + armor)) * 100;
   }

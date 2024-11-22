@@ -2,11 +2,14 @@ import Stats from "./stats.js";
 import { updateStatsAndAttributesUI } from "./ui.js";
 
 export default class Hero {
-  constructor() {
-    this.stats = new Stats();
+  constructor(savedStats = null) {
+    this.stats = savedStats ? new Stats(savedStats.level, savedStats.gold) : new Stats();
+    if (savedStats) {
+      Object.assign(this.stats, savedStats);
+    }
   }
 
-  displayStats() {
+  displayStats () {
     updateStatsAndAttributesUI(this.stats);
   }
 }

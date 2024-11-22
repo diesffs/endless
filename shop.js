@@ -6,26 +6,47 @@ export default class Shop {
     this.initializeShopUI();
   }
 
-  initializeShopUI() {
+  initializeShopUI () {
     const shopGrid = document.querySelector(".shop-grid");
     if (!shopGrid) return;
 
-    const { upgradeCosts } = this.hero.stats;
+    const { upgradeCosts, upgradeLevels } = this.hero.stats;
     shopGrid.innerHTML = `
-      <button data-stat="damage">Upgrade Damage (${upgradeCosts.damage} Gold)</button>
-      <button data-stat="attackSpeed">Upgrade Attack Speed (${upgradeCosts.attackSpeed} Gold)</button>
-      <button data-stat="health">Upgrade Health (${upgradeCosts.health} Gold)</button>
-      <button data-stat="armor">Upgrade Armor (${upgradeCosts.armor} Gold)</button>
-      <button data-stat="critChance">Upgrade Crit Chance (${upgradeCosts.critChance} Gold)</button>
-      <button data-stat="critDamage">Upgrade Crit Damage (${upgradeCosts.critDamage} Gold)</button>
+      <button data-stat="damage">
+        <span class="upgrade-name">Damage (Lvl ${upgradeLevels.damage})</span>
+        <span class="upgrade-cost">${upgradeCosts.damage} Gold</span>
+      </button>
+      <button data-stat="attackSpeed">
+        <span class="upgrade-name">Attack Speed (Lvl ${upgradeLevels.attackSpeed})</span>
+        <span class="upgrade-cost">${upgradeCosts.attackSpeed} Gold</span>
+      </button>
+      <button data-stat="health">
+        <span class="upgrade-name">Health (Lvl ${upgradeLevels.health})</span>
+        <span class="upgrade-cost">${upgradeCosts.health} Gold</span>
+      </button>
+      <button data-stat="armor">
+        <span class="upgrade-name">Armor (Lvl ${upgradeLevels.armor})</span>
+        <span class="upgrade-cost">${upgradeCosts.armor} Gold</span>
+      </button>
+      <button data-stat="critChance">
+        <span class="upgrade-name">Crit Chance (Lvl ${upgradeLevels.critChance})</span>
+        <span class="upgrade-cost">${upgradeCosts.critChance} Gold</span>
+      </button>
+      <button data-stat="critDamage">
+        <span class="upgrade-name">Crit Damage (Lvl ${upgradeLevels.critDamage})</span>
+        <span class="upgrade-cost">${upgradeCosts.critDamage} Gold</span>
+      </button>
     `;
     shopGrid.addEventListener("click", (event) => {
-      const stat = event.target.dataset.stat;
-      if (stat) this.buyUpgrade(stat);
+      const button = event.target.closest('button[data-stat]');
+      if (button) {
+        const stat = button.dataset.stat;
+        this.buyUpgrade(stat);
+      }
     });
   }
 
-  buyUpgrade(stat) {
+  buyUpgrade (stat) {
     if (this.hero.stats.buyUpgrade(stat)) {
       this.updateShopUI(stat); // Refresh the shop UI
       this.hero.displayStats(); // Refresh player stats
@@ -36,16 +57,17 @@ export default class Shop {
     }
   }
 
-  updateShopUI(stat) {
+  updateShopUI (stat) {
     const button = document.querySelector(`button[data-stat="${stat}"]`);
     if (button) {
-      button.textContent = `Upgrade ${this.capitalize(stat)} (${
-        this.hero.stats.upgradeCosts[stat]
-      } Gold)`;
+      button.innerHTML = `
+            <span class="upgrade-name">${this.capitalize(stat)} (Lvl ${this.hero.stats.upgradeLevels[stat]})</span>
+            <span class="upgrade-cost">${this.hero.stats.upgradeCosts[stat]} Gold</span>
+        `;
     }
   }
 
-  capitalize(stat) {
+  capitalize (stat) {
     return stat.charAt(0).toUpperCase() + stat.slice(1);
   }
 }
