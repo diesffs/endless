@@ -84,41 +84,16 @@ export function updateStatsAndAttributesUI(stats) {
     statsContainer.className = "stats-container";
     statsContainer.innerHTML = `
           <h3>Stats</h3>
-          <div><strong>Gold:</strong> <span id="gold-value">${
-            stats.gold || 0
-          }</span></div>
-          <div><strong>Level:</strong> <span id="level-value">${
-            stats.level || 1
-          }</span></div>
-          <div><strong>EXP:</strong> <span id="exp-value">${
-            stats.exp || 0
-          }</span> / <span id="exp-to-next-level-value">${
-      stats.expToNextLevel || 100
-    }</span></div>
-          <div><strong>Stat Points:</strong> <span id="stat-points-value">${
-            stats.statPoints || 0
-          }</span></div>
-          <div><strong>Damage:</strong> <span id="damage-value">${stats.stats.damage.toFixed(
-            0
-          )}</span></div>
-          <div><strong>Attack Speed:</strong> <span id="attack-speed-value">${stats.stats.attackSpeed
-            .toFixed(2)
-            .replace(".", ",")}</span> attacks/sec</div>
-          <div><strong>Crit Chance:</strong> <span id="crit-chance-value">${stats.stats.critChance
-            .toFixed(1)
-            .replace(".", ",")}%</span></div>
-          <div><strong>Crit Damage:</strong> <span id="crit-damage-value">${stats.stats.critDamage
-            .toFixed(2)
-            .replace(".", ",")}x</span></div>
-          <div><strong>Health:</strong> <span id="max-health-value">${
-            stats.stats.maxHealth
-          }</span></div>
-          <div><strong>Armor:</strong> <span id="armor-value">${
-            stats.stats.armor || 0
-          }</span> (<span id="armor-reduction-value">${stats
-      .calculateArmorReduction()
-      .toFixed(2)
-      .replace(".", ",")}%</span> reduction)</div>
+          <div><strong>Level:</strong> <span id="level-value">${stats.level || 1}</span></div>
+          <div><strong>EXP:</strong> <span id="exp-value">${stats.exp || 0}</span> / <span id="exp-to-next-level-value">${stats.expToNextLevel || 100}</span></div>
+          <div><strong>Damage:</strong> <span id="damage-value">${stats.stats.damage.toFixed(0)}</span></div>
+          <div><strong>Attack Speed:</strong> <span id="attack-speed-value">${stats.stats.attackSpeed.toFixed(2).replace(".", ",")}</span> attacks/sec</div>
+          <div><strong>Crit Chance:</strong> <span id="crit-chance-value">${stats.stats.critChance.toFixed(1).replace(".", ",")}%</span></div>
+          <div><strong>Crit Damage:</strong> <span id="crit-damage-value">${stats.stats.critDamage.toFixed(2).replace(".", ",")}x</span></div>
+          <div><strong>Health:</strong> <span id="max-health-value">${stats.stats.maxHealth}</span></div>
+          <div><strong>Armor:</strong> <span id="armor-value">${stats.stats.armor || 0}</span> 
+          (<span id="armor-reduction-value">${stats.calculateArmorReduction().toFixed(2).replace(".", ",")}%</span> reduction)
+          </div>
       `;
     statsGrid.appendChild(statsContainer);
   } else {
@@ -149,7 +124,7 @@ export function updateStatsAndAttributesUI(stats) {
     attributesContainer = document.createElement("div");
     attributesContainer.className = "attributes-container";
     attributesContainer.innerHTML = `
-          <h3>Attributes</h3>
+          <h3 id="attributes">Attributes (+${stats.statPoints})</h3>
           <div>
               <strong>Strength:</strong> <span id="strength-value">${stats.primaryStats.strength}</span>
               <button class="allocate-btn" data-stat="strength">+</button>
@@ -171,14 +146,14 @@ export function updateStatsAndAttributesUI(stats) {
         const stat = btn.dataset.stat;
         if (stats.allocateStat(stat)) {
           // Update only the specific stat value
-          document.getElementById(`${stat}-value`).textContent =
-            stats.primaryStats[stat];
+          document.getElementById(`${stat}-value`).textContent = stats.primaryStats[stat];
           updateStatsAndAttributesUI(stats); // Refresh all stats
           updatePlayerHealth(stats.stats); // Update health bar dynamically
         }
       });
     });
   } else {
+    document.getElementById(`attributes`).textContent = `Attributes (+${stats.statPoints})`;
     // Update dynamic attribute values
     document.getElementById("strength-value").textContent =
       stats.primaryStats.strength;
