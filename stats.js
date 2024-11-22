@@ -139,4 +139,3 @@ export default class Stats {
     return (armor / (100 + armor)) * 100;
   }
 }
-  
