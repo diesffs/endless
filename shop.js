@@ -1,12 +1,14 @@
 import { updateResources, updatePlayerHealth } from "./ui.js";
+import { saveGame } from "./storage.js";
 
 export default class Shop {
-  constructor(hero) {
+  constructor(hero, game) {
     this.hero = hero;
+    this.game = game; // Store the game object for saving
     this.initializeShopUI();
   }
 
-  initializeShopUI () {
+  initializeShopUI() {
     const shopGrid = document.querySelector(".shop-grid");
     if (!shopGrid) return;
 
@@ -38,7 +40,7 @@ export default class Shop {
       </button>
     `;
     shopGrid.addEventListener("click", (event) => {
-      const button = event.target.closest('button[data-stat]');
+      const button = event.target.closest("button[data-stat]");
       if (button) {
         const stat = button.dataset.stat;
         this.buyUpgrade(stat);
@@ -46,28 +48,40 @@ export default class Shop {
     });
   }
 
-  buyUpgrade (stat) {
+  buyUpgrade(stat) {
     if (this.hero.stats.buyUpgrade(stat)) {
       this.updateShopUI(stat); // Refresh the shop UI
       this.hero.displayStats(); // Refresh player stats
       updateResources(this.hero.stats); // Refresh resources like gold
-      updatePlayerHealth(this.hero.stats.stats); // Refresh health bar
+
+      // Update health if the health stat is upgraded
+      if (stat === "health") {
+        this.hero.stats.stats.currentHealth = this.hero.stats.stats.maxHealth; // Reset current health to new max
+        updatePlayerHealth(this.hero.stats.stats); // Update health bar
+      }
+
+      // Save the game state immediately after a successful upgrade
+      saveGame(this.game);
     } else {
       alert("Not enough gold!");
     }
   }
 
-  updateShopUI (stat) {
+  updateShopUI(stat) {
     const button = document.querySelector(`button[data-stat="${stat}"]`);
     if (button) {
       button.innerHTML = `
-            <span class="upgrade-name">${this.capitalize(stat)} (Lvl ${this.hero.stats.upgradeLevels[stat]})</span>
-            <span class="upgrade-cost">${this.hero.stats.upgradeCosts[stat]} Gold</span>
+            <span class="upgrade-name">${this.capitalize(stat)} (Lvl ${
+        this.hero.stats.upgradeLevels[stat]
+      })</span>
+            <span class="upgrade-cost">${
+              this.hero.stats.upgradeCosts[stat]
+            } Gold</span>
         `;
     }
   }
 
-  capitalize (stat) {
+  capitalize(stat) {
     return stat.charAt(0).toUpperCase() + stat.slice(1);
   }
 }
