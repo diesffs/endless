@@ -6,14 +6,12 @@ export const BASE_HEALTH = 100;
 export const BASE_ARMOR = 0;
 export const BASE_ATTACK_SPEED = 1.0;
 
-
 export const DAMAGE_ON_UPGRADE = 1;
 export const ATTACK_SPEED_ON_UPGRADE = 0.05;
 export const HEALTH_ON_UPGRADE = 10;
-export const ARMOR_ON_UPGRADE = 100;
+export const ARMOR_ON_UPGRADE = 1;
 export const CRIT_CHANCE_ON_UPGRADE = 10;
 export const CRIT_DAMAGE_ON_UPGRADE = 10;
-
 
 export default class Stats {
   constructor(level = 1, gold = 10000000, savedData = null) {
@@ -127,8 +125,10 @@ export default class Stats {
       this.primaryStats.vitality * 10 +
       this.upgradeLevels.health * HEALTH_ON_UPGRADE;
     this.stats.armor = BASE_ARMOR + this.upgradeLevels.armor * ARMOR_ON_UPGRADE;
-    this.stats.critChance = 50 + this.upgradeLevels.critChance * CRIT_CHANCE_ON_UPGRADE;
-    this.stats.critDamage = 2 + this.upgradeLevels.critDamage * CRIT_DAMAGE_ON_UPGRADE;
+    this.stats.critChance =
+      50 + this.upgradeLevels.critChance * CRIT_CHANCE_ON_UPGRADE;
+    this.stats.critDamage =
+      2 + this.upgradeLevels.critDamage * CRIT_DAMAGE_ON_UPGRADE;
   }
 
   buyUpgrade(stat) {
