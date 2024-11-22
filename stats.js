@@ -7,7 +7,7 @@ export const BASE_ARMOR = 0;
 export const BASE_ATTACK_SPEED = 1.0;
 
 export default class Stats {
-  constructor(level = 1, gold = 100000, savedData = null) {
+  constructor(level = 1, gold = 10000000, savedData = null) {
     this.level = level;
     this.gold = gold;
     this.souls = 0;
@@ -139,3 +139,4 @@ export default class Stats {
     return (armor / (100 + armor)) * 100;
   }
 }
+  

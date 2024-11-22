@@ -32,11 +32,25 @@ export function playerAttack(game, currentTime) {
 
 export function enemyAttack(game, currentTime) {
   if (game.currentEnemy.canAttack(currentTime)) {
-    game.stats.stats.currentHealth -= game.currentEnemy.damage;
+    // Calculate armor reduction
+    const armor = game.stats.stats.armor;
+    const damageReduction = armor / (100 + armor); // Example formula
+    const effectiveDamage = game.currentEnemy.damage * (1 - damageReduction);
+
+    // Apply reduced damage to player's health
+    game.stats.stats.currentHealth -= effectiveDamage;
     if (game.stats.stats.currentHealth < 0) game.stats.stats.currentHealth = 0;
-    createDamageNumber(game.currentEnemy.damage, true);
+
+    // Show the damage number (rounded down for clarity)
+    createDamageNumber(Math.floor(effectiveDamage), true);
+
+    // Update player health UI
     updatePlayerHealth(game.stats.stats);
+
+    // Record the enemy's last attack time
     game.currentEnemy.lastAttack = currentTime;
+
+    // Handle player death if health drops to 0
     if (game.stats.stats.currentHealth <= 0) playerDeath(game);
   }
 }
