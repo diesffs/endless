@@ -98,13 +98,10 @@ export function updateStatsAndAttributesUI(stats) {
     statsGrid.appendChild(statsContainer);
   } else {
     // Update dynamic stats values
-    document.getElementById("gold-value").textContent = stats.gold || 0;
     document.getElementById("level-value").textContent = stats.level || 1;
     document.getElementById("exp-value").textContent = stats.exp || 0;
     document.getElementById("exp-to-next-level-value").textContent =
       stats.expToNextLevel || 100;
-    document.getElementById("stat-points-value").textContent =
-      stats.statPoints || 0;
     document.getElementById("damage-value").textContent =
       stats.stats.damage.toFixed(0);
     document.getElementById("attack-speed-value").textContent =
