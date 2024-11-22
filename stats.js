@@ -16,7 +16,7 @@ export const CRIT_DAMAGE_ON_UPGRADE = 10;
 
 
 export default class Stats {
-  constructor(level = 1, gold = 100000, savedData = null) {
+  constructor(level = 1, gold = 10000000, savedData = null) {
     this.level = level;
     this.gold = gold;
     this.souls = 0;
