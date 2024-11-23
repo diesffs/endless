@@ -86,10 +86,12 @@ export function updateStatsAndAttributesUI(stats) {
           <h3>Stats</h3>
           <div><strong>Level:</strong> <span id="level-value">${stats.level || 1}</span></div>
           <div><strong>EXP:</strong> <span id="exp-value">${stats.exp || 0}</span> / <span id="exp-to-next-level-value">${stats.expToNextLevel || 100}</span></div>
+          <hr></hr>
           <div><strong>Damage:</strong> <span id="damage-value">${stats.stats.damage.toFixed(0)}</span></div>
           <div><strong>Attack Speed:</strong> <span id="attack-speed-value">${stats.stats.attackSpeed.toFixed(2).replace(".", ",")}</span> attacks/sec</div>
           <div><strong>Crit Chance:</strong> <span id="crit-chance-value">${stats.stats.critChance.toFixed(1).replace(".", ",")}%</span></div>
           <div><strong>Crit Damage:</strong> <span id="crit-damage-value">${stats.stats.critDamage.toFixed(2).replace(".", ",")}x</span></div>
+          <hr></hr>
           <div><strong>Health:</strong> <span id="max-health-value">${stats.stats.maxHealth}</span></div>
           <div><strong>Armor:</strong> <span id="armor-value">${stats.stats.armor || 0}</span> 
           (<span id="armor-reduction-value">${stats.calculateArmorReduction().toFixed(2).replace(".", ",")}%</span> reduction)
