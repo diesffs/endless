@@ -31,6 +31,7 @@ body {
     grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
     margin-bottom: 1rem;
+    user-select: none;
 }
 
 .resource {
@@ -402,4 +403,63 @@ body {
 .upgrade-btn.disabled {
     background: #6b7280;
     cursor: not-allowed;
+}
+.upgrade-bonus {
+    display: block;
+    color: #4CAF50;
+    margin: 2px 0;
+}
+
+.toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    z-index: 1000;
+  }
+  
+  .toast.show {
+    opacity: 1;
+  }
+  
+  .toast.error {
+    background-color: #DC2626;
+  }
+  
+  .toast.success {
+    background-color: #059669;
+  }
+
+  .display-box {
+    background: #1f2937; /* Dark panel background */
+    color: #ffffff; /* Text color */
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    width: 150px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: none;
+}
+
+.display-box h3 {
+    margin: 0;
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.display-box .bonus,
+.display-box .value {
+    color: #10b981; /* Green text for bonus and values */
+    font-size: 1.2rem;
+    font-weight: bold;
 }

@@ -69,7 +69,7 @@ function toggleGame(game) {
     game.zone = 1; // Reset zone to 1
     updateZoneUI(game.zone);
     game.currentEnemy = new Enemy(game.zone);
-    
+
     game.stats.stats.currentHealth = game.stats.stats.maxHealth; // Reset player health
     game.currentEnemy.resetHealth(); // Reset enemy health
     updatePlayerHealth(game.stats.stats);
@@ -93,7 +93,6 @@ export function updateStatsAndAttributesUI(stats) {
     statsContainer = document.createElement("div");
     statsContainer.className = "stats-container";
     statsContainer.innerHTML = `
-          <h3>Stats</h3>
           <div><strong>Level:</strong> <span id="level-value">${
             stats.level || 1
           }</span></div>

@@ -25,7 +25,7 @@ export const BASE_UPGRADE_COSTS = {
 };
 
 export default class Stats {
-  constructor(level = 1, gold = 10000000, savedData = null) {
+  constructor(level = 1, gold = 0, savedData = null) {
     this.level = level;
     this.gold = gold;
     this.souls = 0;
@@ -33,7 +33,7 @@ export default class Stats {
     this.exp = 0;
     this.expToNextLevel = 100;
     this.primaryStats = { strength: 0, agility: 0, vitality: 0 };
-    this.statPoints = 110;
+    this.statPoints = 0;
 
     // Default stats
     this.stats = {

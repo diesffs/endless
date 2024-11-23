@@ -1,6 +1,7 @@
 import { updateResources, updatePlayerHealth } from "./ui.js";
 import { saveGame } from "./storage.js";
 import { ARMOR_ON_UPGRADE, ATTACK_SPEED_ON_UPGRADE, CRIT_CHANCE_ON_UPGRADE, CRIT_DAMAGE_ON_UPGRADE, DAMAGE_ON_UPGRADE, HEALTH_ON_UPGRADE } from "./stats.js";
+import { showToast } from "./toast.js";
 
 export default class Shop {
   constructor(hero, game) {
@@ -55,24 +56,23 @@ export default class Shop {
     });
   }
 
-  buyUpgrade (stat) {
-    if (this.hero.stats.buyUpgrade(stat)) {
-      this.updateShopUI(stat); // Refresh the shop UI
-      this.hero.displayStats(); // Refresh player stats
-      updateResources(this.hero.stats); // Refresh resources like gold
+buyUpgrade(stat) {
+  if (this.hero.stats.buyUpgrade(stat)) {
+    this.updateShopUI(stat);
+    this.hero.displayStats();
+    updateResources(this.hero.stats);
 
-      // Update health if the health stat is upgraded
-      if (stat === "health") {
-        this.hero.stats.stats.currentHealth = this.hero.stats.stats.maxHealth; // Reset current health to new max
-        updatePlayerHealth(this.hero.stats.stats); // Update health bar
-      }
-
-      // Save the game state immediately after a successful upgrade
-      saveGame(this.game);
-    } else {
-      alert("Not enough gold!");
+    if (stat === "health") {
+      this.hero.stats.stats.currentHealth = this.hero.stats.stats.maxHealth;
+      updatePlayerHealth(this.hero.stats.stats);
     }
+
+    // showToast(`Successfully upgraded ${this.capitalize(stat)}!`, 'success');
+    saveGame(this.game);
+  } else {
+    showToast('Not enough gold!', 'error');
   }
+}
 
   updateShopUI (stat) {
     const button = document.querySelector(`button[data-stat="${stat}"]`);
