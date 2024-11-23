@@ -10,7 +10,7 @@ import { saveGame } from "./storage.js";
 import Inventory from "./inventory.js";
 
 class Game {
-  constructor(hero) {
+  constructor(hero, prestige = null, savedData) {
     if (!hero)
       throw new Error("Hero object is required for Game initialization.");
     this.gameStarted = false;
@@ -20,6 +20,9 @@ class Game {
     this.lastPlayerAttack = 0;
     this.zone = 1;
     this.inventory = new Inventory(this);
+    this.stats.highestZone = savedData?.highestZone || 1;
+
+    this.prestige = prestige;
 
     initializeUI(this);
     this.resetAllHealth();
@@ -27,10 +30,18 @@ class Game {
 
   incrementZone () {
     this.zone += 1;
-    // Update highest zone if current zone is higher
+
     if (this.zone > this.stats.highestZone) {
       this.stats.highestZone = this.zone;
     }
+
+    console.log(
+      "Zone Incremented: Current Zone =",
+      this.zone,
+      "Highest Zone =",
+      this.stats.highestZone
+    );
+
     updateZoneUI(this.zone);
   }
 
@@ -49,7 +60,12 @@ class Game {
     playerAttack(this, currentTime);
     enemyAttack(this, currentTime);
 
-    // Auto-save every 30 seconds
+    // Only update Prestige UI after zone progression
+    if (this.zoneChanged) {
+      this.zoneChanged = false; // Reset flag
+      this.prestige.initializePrestigeUI(); // Update Prestige UI
+    }
+
     if (currentTime % 30000 < 16) {
       saveGame(this);
     }

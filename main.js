@@ -15,25 +15,24 @@ export let prestige;
 // Initialize game with saved data or new game
 const savedData = loadGame();
 
-if (savedData) {
-  hero = new Hero(savedData.hero.stats); // Pass saved stats to Hero constructor
-  game = new Game(hero);
-} else {
-  hero = new Hero();
-  game = new Game(hero);
-}
+// Initialize hero and game with saved data or create new instances
+const hero = savedData ? new Hero(savedData?.hero?.stats) : new Hero();
+const game = new Game(hero, null, savedData); // Game initialized without Prestige first
 
-// Initialize shop after game is loaded/created
-shop = new Shop(hero, game);
+// Initialize Prestige and assign it to the game
+const prestige = new Prestige(game); // Pass the fully initialized game instance
+game.prestige = prestige;
 
-prestige = new Prestige(game);
+// Initialize Shop
+const shop = new Shop(hero, game); // Shop depends on hero and game
+
+// Initialize the Prestige UI and update resources
 prestige.initializePrestigeUI();
-
-// Rest of your main.js code
 hero.displayStats();
 game.resetAllHealth();
-updateResources(hero.stats);
+updateResources(hero.stats, game); // Update UI with initialized resources
 
+// Game loop
 let isRunning = false;
 setInterval(() => {
   if (!isRunning) {
@@ -42,3 +41,7 @@ setInterval(() => {
     isRunning = false;
   }
 }, 100);
+
+console.log("Initialized game:", game);
+
+export { game }; // Export the game instance

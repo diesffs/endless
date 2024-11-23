@@ -8,7 +8,8 @@ import Enemy from "./enemy.js";
 import { calculateItemLevel, getRandomItemType, rollForDrop } from "./loot-table.js";
 import { RARITY } from "./item.js";
 
-export function playerAttack (game, currentTime) {
+export function playerAttack(game, currentTime) {
+  if (!game || !game.currentEnemy) return;
   const timeBetweenAttacks = 1000 / game.stats.stats.attackSpeed; // Convert attacks/sec to ms
   if (currentTime - game.lastPlayerAttack >= timeBetweenAttacks) {
     if (game.currentEnemy.currentHealth > 0) {
@@ -33,7 +34,8 @@ export function playerAttack (game, currentTime) {
   }
 }
 
-export function enemyAttack (game, currentTime) {
+export function enemyAttack(game, currentTime) {
+  if (!game || !game.stats || !game.currentEnemy) return;
   if (game.currentEnemy.canAttack(currentTime)) {
     // Calculate armor reduction
     const armor = game.stats.stats.armor;
@@ -58,7 +60,12 @@ export function enemyAttack (game, currentTime) {
   }
 }
 
-function playerDeath (game) {
+function playerDeath(game) {
+  if (!game) {
+    console.error("Game is not properly initialized in playerDeath.");
+    return;
+  }
+
   game.gameStarted = false;
 
   // Reset button state
@@ -75,20 +82,33 @@ function playerDeath (game) {
   game.resetAllHealth();
 
   // Update resources for UI consistency
-  updateResources(game.stats);
+  updateResources(game.stats, game);
 }
 
-function defeatEnemy (game) {
+function defeatEnemy(game) {
+  if (!game) {
+    console.error("Game is undefined in defeatEnemy");
+    return;
+  }
+
   const expGained = 20 + game.zone * 5;
-  const soulsGained = 1;
-  game.stats.gold += 10 + game.zone * 5;
-  game.stats.souls += soulsGained;
+  const goldGained = 10 + game.zone * 5;
+
+  // Gain gold and experience
+  game.stats.gold += goldGained;
   game.stats.gainExp(expGained);
+
+  // Update "Prestige for" progress (but NOT total souls)
+  const newPrestigeSouls = Math.floor(game.zone / 50); // 1 soul per 50 zones
+  game.stats.prestigeProgress = newPrestigeSouls;
+
+  // Increment zone and spawn a new enemy
   game.incrementZone();
   game.hero.displayStats();
   game.currentEnemy = new Enemy(game.zone);
   game.currentEnemy.lastAttack = Date.now();
-  updateResources(game.stats);
+  // Update the UI
+  updateResources(game.stats, game);
   updateEnemyHealth(game.currentEnemy);
 
   // Roll for item drop

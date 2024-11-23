@@ -39,6 +39,9 @@ export default class Stats {
     this.highestZone = 1;
     this.primaryStats = { strength: 0, agility: 0, vitality: 0 };
     this.statPoints = 0;
+    this.souls = savedData?.souls || 0; // Total souls (persists across resets)
+    this.prestigeProgress = 0; // Prestige progress (resets on each run)
+    this.highestZone = savedData?.highestZone || 1; // Initialize to saved value or default to 1
 
     this.equipmentBonuses = {
       damage: 0,
