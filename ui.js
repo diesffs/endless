@@ -59,16 +59,22 @@ export function updateEnemyHealth(enemy) {
 function toggleGame(game) {
   const startBtn = document.getElementById("start-btn");
   game.gameStarted = !game.gameStarted;
+
   if (game.gameStarted) {
+    // When the game starts, reset health and update resources
     game.resetAllHealth();
     updateResources(game.stats);
     game.currentEnemy = new Enemy(game.zone);
   } else {
-    game.stats.stats.currentHealth = game.stats.stats.maxHealth;
-    game.currentEnemy.resetHealth();
+    // When the game stops, reset health, zone, and update UI
+    game.zone = 1; // Reset zone to 1
+    updateZoneUI(game.zone);
+    game.stats.stats.currentHealth = game.stats.stats.maxHealth; // Reset player health
+    game.currentEnemy.resetHealth(); // Reset enemy health
     updatePlayerHealth(game.stats.stats);
     updateEnemyHealth(game.currentEnemy);
   }
+
   startBtn.textContent = game.gameStarted ? "Stop" : "Start";
   startBtn.style.backgroundColor = game.gameStarted ? "#DC2626" : "#059669";
 }
@@ -87,17 +93,38 @@ export function updateStatsAndAttributesUI(stats) {
     statsContainer.className = "stats-container";
     statsContainer.innerHTML = `
           <h3>Stats</h3>
-          <div><strong>Level:</strong> <span id="level-value">${stats.level || 1}</span></div>
-          <div><strong>EXP:</strong> <span id="exp-value">${stats.exp || 0}</span> / <span id="exp-to-next-level-value">${stats.expToNextLevel || 100}</span></div>
+          <div><strong>Level:</strong> <span id="level-value">${
+            stats.level || 1
+          }</span></div>
+          <div><strong>EXP:</strong> <span id="exp-value">${
+            stats.exp || 0
+          }</span> / <span id="exp-to-next-level-value">${
+      stats.expToNextLevel || 100
+    }</span></div>
           <hr></hr>
-          <div><strong>Damage:</strong> <span id="damage-value">${stats.stats.damage.toFixed(0)}</span></div>
-          <div><strong>Attack Speed:</strong> <span id="attack-speed-value">${stats.stats.attackSpeed.toFixed(2).replace(".", ",")}</span> attacks/sec</div>
-          <div><strong>Crit Chance:</strong> <span id="crit-chance-value">${stats.stats.critChance.toFixed(1).replace(".", ",")}%</span></div>
-          <div><strong>Crit Damage:</strong> <span id="crit-damage-value">${stats.stats.critDamage.toFixed(2).replace(".", ",")}x</span></div>
+          <div><strong>Damage:</strong> <span id="damage-value">${stats.stats.damage.toFixed(
+            0
+          )}</span></div>
+          <div><strong>Attack Speed:</strong> <span id="attack-speed-value">${stats.stats.attackSpeed
+            .toFixed(2)
+            .replace(".", ",")}</span> attacks/sec</div>
+          <div><strong>Crit Chance:</strong> <span id="crit-chance-value">${stats.stats.critChance
+            .toFixed(1)
+            .replace(".", ",")}%</span></div>
+          <div><strong>Crit Damage:</strong> <span id="crit-damage-value">${stats.stats.critDamage
+            .toFixed(2)
+            .replace(".", ",")}x</span></div>
           <hr></hr>
-          <div><strong>Health:</strong> <span id="max-health-value">${stats.stats.maxHealth}</span></div>
-          <div><strong>Armor:</strong> <span id="armor-value">${stats.stats.armor || 0}</span> 
-          (<span id="armor-reduction-value">${stats.calculateArmorReduction().toFixed(2).replace(".", ",")}%</span> reduction)
+          <div><strong>Health:</strong> <span id="max-health-value">${
+            stats.stats.maxHealth
+          }</span></div>
+          <div><strong>Armor:</strong> <span id="armor-value">${
+            stats.stats.armor || 0
+          }</span> 
+          (<span id="armor-reduction-value">${stats
+            .calculateArmorReduction()
+            .toFixed(2)
+            .replace(".", ",")}%</span> reduction)
           </div>
       `;
     statsGrid.appendChild(statsContainer);
@@ -148,14 +175,17 @@ export function updateStatsAndAttributesUI(stats) {
         const stat = btn.dataset.stat;
         if (stats.allocateStat(stat)) {
           // Update only the specific stat value
-          document.getElementById(`${stat}-value`).textContent = stats.primaryStats[stat];
+          document.getElementById(`${stat}-value`).textContent =
+            stats.primaryStats[stat];
           updateStatsAndAttributesUI(stats); // Refresh all stats
           updatePlayerHealth(stats.stats); // Update health bar dynamically
         }
       });
     });
   } else {
-    document.getElementById(`attributes`).textContent = `Attributes (+${stats.statPoints})`;
+    document.getElementById(
+      `attributes`
+    ).textContent = `Attributes (+${stats.statPoints})`;
     // Update dynamic attribute values
     document.getElementById("strength-value").textContent =
       stats.primaryStats.strength;
