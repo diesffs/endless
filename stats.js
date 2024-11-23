@@ -15,6 +15,9 @@ export const ARMOR_ON_UPGRADE = 1;
 export const CRIT_CHANCE_ON_UPGRADE = 0.1;
 export const CRIT_DAMAGE_ON_UPGRADE = 0.01;
 
+export const DAMAGE_ON_LEVEL_UP = 1;
+export const HEALTH_ON_LEVEL_UP = 10;
+
 export const BASE_UPGRADE_COSTS = {
   damage: 100,
   attackSpeed: 200,
@@ -42,7 +45,6 @@ export default class Stats {
       attackSpeed: 1.0,
       critChance: 5,
       critDamage: 1.5,
-      health: 100,
       currentHealth: 100,
       maxHealth: 100,
       armor: 0,
@@ -70,8 +72,6 @@ export default class Stats {
     if (savedData) {
       Object.assign(this, savedData);
     }
-
-    this.calculateStatsFromLevel();
   }
 
   gainSoul(amount) {
@@ -89,10 +89,8 @@ export default class Stats {
     this.level++;
     this.statPoints += 3;
     this.expToNextLevel = Math.floor(this.expToNextLevel * 1.2);
-    this.stats.damage += Math.round(this.level * 0.5);
-    this.stats.maxHealth += Math.round(this.level * 5);
     this.stats.currentHealth = this.stats.maxHealth;
-
+    this.recalculateFromAttributes();
     // Save after level up
     saveGame(game);
   }
@@ -112,18 +110,13 @@ export default class Stats {
     }
     return false;
   }
-  calculateStatsFromLevel() {
-    this.stats.damage += Math.round(this.level * 0.01);
-    this.stats.health = Math.round(this.stats.health + this.level * 0.01);
-    this.stats.maxHealth = Math.round(this.stats.health);
-    this.stats.currentHealth = Math.round(this.stats.maxHealth);
-  }
 
   recalculateFromAttributes() {
     this.stats.damage =
       BASE_DAMAGE +
       this.primaryStats.strength * 2 +
-      this.upgradeLevels.damage * DAMAGE_ON_UPGRADE;
+      this.upgradeLevels.damage * DAMAGE_ON_UPGRADE + 
+      DAMAGE_ON_LEVEL_UP * this.level - DAMAGE_ON_LEVEL_UP;
 
     this.stats.attackSpeed =
       BASE_ATTACK_SPEED +
@@ -133,7 +126,8 @@ export default class Stats {
     this.stats.maxHealth =
       BASE_HEALTH +
       this.primaryStats.vitality * 10 +
-      this.upgradeLevels.health * HEALTH_ON_UPGRADE;
+      this.upgradeLevels.health * HEALTH_ON_UPGRADE + 
+      HEALTH_ON_LEVEL_UP * this.level - HEALTH_ON_LEVEL_UP;
 
     this.stats.armor = BASE_ARMOR + this.upgradeLevels.armor * ARMOR_ON_UPGRADE;
 

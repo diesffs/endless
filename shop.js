@@ -3,10 +3,19 @@ import { saveGame } from "./storage.js";
 import { ARMOR_ON_UPGRADE, ATTACK_SPEED_ON_UPGRADE, CRIT_CHANCE_ON_UPGRADE, CRIT_DAMAGE_ON_UPGRADE, DAMAGE_ON_UPGRADE, HEALTH_ON_UPGRADE } from "./stats.js";
 import { showToast } from "./toast.js";
 
+const UPGRADE_CONFIG = {
+  damage: { label: 'Damage', bonus: DAMAGE_ON_UPGRADE },
+  attackSpeed: { label: 'Attack Speed', bonus: ATTACK_SPEED_ON_UPGRADE, fixed: 2 },
+  health: { label: 'Health', bonus: HEALTH_ON_UPGRADE },
+  armor: { label: 'Armor', bonus: ARMOR_ON_UPGRADE },
+  critChance: { label: 'Crit Chance', bonus: CRIT_CHANCE_ON_UPGRADE, fixed: 2, suffix: '%' },
+  critDamage: { label: 'Crit Damage', bonus: CRIT_DAMAGE_ON_UPGRADE, fixed: 2, suffix: '%' }
+};
+
 export default class Shop {
   constructor(hero, game) {
     this.hero = hero;
-    this.game = game; // Store the game object for saving
+    this.game = game;
     this.initializeShopUI();
   }
 
@@ -14,50 +23,30 @@ export default class Shop {
     const shopGrid = document.querySelector(".shop-grid");
     if (!shopGrid) return;
 
-    const { upgradeCosts, upgradeLevels } = this.hero.stats;
-    shopGrid.innerHTML = `
-      <button data-stat="damage">
-        <span class="upgrade-name">Damage (Lvl ${upgradeLevels.damage})</span>
-        <span class="upgrade-bonus">${this.getBonusText('damage', upgradeLevels.damage)}</span>
-        <span class="upgrade-cost">${upgradeCosts.damage} Gold</span>
-      </button>
-      <button data-stat="attackSpeed">
-        <span class="upgrade-name">Attack Speed (Lvl ${upgradeLevels.attackSpeed})</span>
-        <span class="upgrade-bonus">${this.getBonusText('attackSpeed', upgradeLevels.attackSpeed)}</span>
-        <span class="upgrade-cost">${upgradeCosts.attackSpeed} Gold</span>
-      </button>
-      <button data-stat="health">
-        <span class="upgrade-name">Health (Lvl ${upgradeLevels.health})</span>
-        <span class="upgrade-bonus">${this.getBonusText('health', upgradeLevels.health)}</span>
-        <span class="upgrade-cost">${upgradeCosts.health} Gold</span>
-      </button>
-      <button data-stat="armor">
-        <span class="upgrade-name">Armor (Lvl ${upgradeLevels.armor})</span>
-        <span class="upgrade-bonus">${this.getBonusText('armor', upgradeLevels.armor)}</span>
-        <span class="upgrade-cost">${upgradeCosts.armor} Gold</span>
-      </button>
-      <button data-stat="critChance">
-        <span class="upgrade-name">Crit Chance (Lvl ${upgradeLevels.critChance})</span>
-        <span class="upgrade-bonus">${this.getBonusText('critChance', upgradeLevels.critChance)}</span>
-        <span class="upgrade-cost">${upgradeCosts.critChance} Gold</span>
-      </button>
-      <button data-stat="critDamage">
-        <span class="upgrade-name">Crit Damage (Lvl ${upgradeLevels.critDamage})</span>
-        <span class="upgrade-bonus">${this.getBonusText('critDamage', upgradeLevels.critDamage)}</span>
-        <span class="upgrade-cost">${upgradeCosts.critDamage} Gold</span>
-      </button>
-    `;
-    shopGrid.addEventListener("click", (event) => {
-      const button = event.target.closest("button[data-stat]");
-      if (button) {
-        const stat = button.dataset.stat;
-        this.buyUpgrade(stat);
-      }
+    shopGrid.innerHTML = Object.entries(UPGRADE_CONFIG).map(([stat, config]) => this.createUpgradeButton(stat)).join('');
+    shopGrid.addEventListener("click", (e) => {
+      const button = e.target.closest("button[data-stat]");
+      if (button) this.buyUpgrade(button.dataset.stat);
     });
   }
 
-buyUpgrade(stat) {
-  if (this.hero.stats.buyUpgrade(stat)) {
+  createUpgradeButton (stat) {
+    const { upgradeCosts, upgradeLevels } = this.hero.stats;
+    return `
+      <button data-stat="${stat}">
+        <span class="upgrade-name">${UPGRADE_CONFIG[stat].label} (Lvl ${upgradeLevels[stat]})</span>
+        <span class="upgrade-bonus">${this.getBonusText(stat, upgradeLevels[stat])}</span>
+        <span class="upgrade-cost">${upgradeCosts[stat]} Gold</span>
+      </button>
+    `;
+  }
+
+  buyUpgrade (stat) {
+    if (!this.hero.stats.buyUpgrade(stat)) {
+      showToast('Not enough gold!', 'error');
+      return;
+    }
+
     this.updateShopUI(stat);
     this.hero.displayStats();
     updateResources(this.hero.stats);
@@ -67,45 +56,18 @@ buyUpgrade(stat) {
       updatePlayerHealth(this.hero.stats.stats);
     }
 
-    // showToast(`Successfully upgraded ${this.capitalize(stat)}!`, 'success');
     saveGame(this.game);
-  } else {
-    showToast('Not enough gold!', 'error');
   }
-}
 
   updateShopUI (stat) {
     const button = document.querySelector(`button[data-stat="${stat}"]`);
-    if (button) {
-      button.innerHTML = `
-            <span class="upgrade-name">${this.capitalize(stat)} (Lvl ${this.hero.stats.upgradeLevels[stat]})</span>
-            <span class="upgrade-bonus">${this.getBonusText(stat, this.hero.stats.upgradeLevels[stat])}</span>
-            <span class="upgrade-cost">${this.hero.stats.upgradeCosts[stat]} Gold</span>
-        `;
-    }
+    if (button) button.innerHTML = this.createUpgradeButton(stat).match(/<button[^>]*>(.*?)<\/button>/s)[1];
   }
-
-  capitalize (stat) {
-    return stat.charAt(0).toUpperCase() + stat.slice(1);
-  }
-
 
   getBonusText (stat, level) {
-    switch (stat) {
-      case 'damage':
-        return `+${DAMAGE_ON_UPGRADE * level} Damage`;
-      case 'attackSpeed':
-        return `+${(ATTACK_SPEED_ON_UPGRADE * level).toFixed(2)} Attack Speed`;
-      case 'health':
-        return `+${HEALTH_ON_UPGRADE * level} Health`;
-      case 'armor':
-        return `+${ARMOR_ON_UPGRADE * level} Armor`;
-      case 'critChance':
-        return `+${(CRIT_CHANCE_ON_UPGRADE * level).toFixed(2)}% Crit Chance`;
-      case 'critDamage':
-        return `+${(CRIT_DAMAGE_ON_UPGRADE * level).toFixed(2)}% Crit Damage`;
-      default:
-        return '';
-    }
+    const config = UPGRADE_CONFIG[stat];
+    const value = config.bonus * level;
+    const formattedValue = config.fixed ? value.toFixed(config.fixed) : value;
+    return `+${formattedValue}${config.suffix || ''} ${config.label}`;
   }
 }
