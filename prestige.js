@@ -12,12 +12,12 @@ export default class Prestige {
   }
 
   // Calculate the number of souls earned based on zones cleared
-  calculateSouls() {
+  calculateSouls () {
     return Math.floor(this.game.zone / 50); // 1 soul per 50 zones
   }
 
   // Perform the prestige action
-  performPrestige() {
+  performPrestige () {
     const earnedSouls = this.calculateSouls();
     this.game.stats.souls += earnedSouls; // Add earned souls to the player's total
     this.resetGame(); // Reset the game
@@ -25,7 +25,7 @@ export default class Prestige {
   }
 
   // Reset the game to its initial state
-  resetGame() {
+  resetGame () {
     this.game.zone = 1;
     updateZoneUI(this.game.zone);
 
@@ -72,7 +72,7 @@ export default class Prestige {
   }
 
   // Initialize the prestige UI
-  initializePrestigeUI() {
+  initializePrestigeUI () {
     const prestigeTab = document.querySelector("#prestige");
     if (!prestigeTab || !this.game.stats) return;
 
@@ -85,10 +85,6 @@ export default class Prestige {
           <div class="damage-display">
             <h3>damage</h3>
             <div class="bonus">+${damageBonus}%</div>
-          </div>
-          <div class="souls-display">
-            <h3>Souls:</h3>
-            <div class="value">${this.game.stats.souls}</div>
           </div>
           <button id="prestige-btn" class="earned-souls-display">
             <h3>Prestige for:</h3>
@@ -128,12 +124,56 @@ export default class Prestige {
           </div>
         </div>
       </div>
+      
+      <div id="prestige-modal" class="modal">
+        <div class="modal-content">
+          <h2>Confirm Prestige</h2>
+          <p>Are you sure you want to prestige?</p>
+          <div class="souls-preview">
+            <span>You will earn:</span>
+            <div class="souls-amount">+<span id="modal-souls-amount">0</span> Souls</div>
+          </div>
+          <div class="warning">
+            You will lose all progress except souls and their upgrades!
+          </div>
+          <div class="modal-buttons">
+            <button id="cancel-prestige" class="modal-btn cancel">Cancel</button>
+            <button id="confirm-prestige" class="modal-btn confirm">Prestige</button>
+          </div>
+        </div>
+      </div>
     `;
 
     // Add event listener for the Prestige button
+    // Replace the prestige button event listener with:
     document.getElementById("prestige-btn").addEventListener("click", () => {
-      this.performPrestige();
-      this.initializePrestigeUI(); // Refresh UI after resetting
+      const modal = document.getElementById("prestige-modal");
+      const earnedSouls = this.calculateSouls();
+
+      // Update souls amount in modal
+      document.getElementById("modal-souls-amount").textContent = earnedSouls;
+
+      // Show modal
+      modal.style.display = "block";
+
+      // Handle confirm
+      document.getElementById("confirm-prestige").onclick = () => {
+        modal.style.display = "none";
+        this.performPrestige();
+        this.initializePrestigeUI();
+      };
+
+      // Handle cancel
+      document.getElementById("cancel-prestige").onclick = () => {
+        modal.style.display = "none";
+      };
+
+      // Close modal when clicking outside
+      modal.onclick = (e) => {
+        if (e.target === modal) {
+          modal.style.display = "none";
+        }
+      };
     });
   }
 }
