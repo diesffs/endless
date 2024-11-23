@@ -111,7 +111,7 @@ export default class Prestige {
       // Update the modal display
       const modalDisplay = document.querySelector(".prestige-modal-display");
       if (modalDisplay) {
-        modalDisplay.textContent = `+${earnedSouls} Souls`;
+        modalDisplay.textContent = `${earnedSouls} Souls`;
       }
 
       // Update the "Prestige for" display in the main UI
@@ -119,13 +119,13 @@ export default class Prestige {
         ".earned-souls-display .bonus"
       );
       if (prestigeDisplay) {
-        prestigeDisplay.textContent = `+${earnedSouls}`;
+        prestigeDisplay.textContent = `${earnedSouls}`;
       }
 
       // Also update the modal-specific earned souls value
       const modalSoulsAmount = document.getElementById("modal-souls-amount");
       if (modalSoulsAmount) {
-        modalSoulsAmount.textContent = `+${earnedSouls}`;
+        modalSoulsAmount.textContent = `${earnedSouls}`;
       }
 
       // Ensure the Prestige tab is set up correctly
@@ -190,7 +190,7 @@ export default class Prestige {
       const earnedSouls = this.calculateSouls(); // Recalculate to sync with UI
       const modalSoulsAmount = document.getElementById("modal-souls-amount");
       if (modalSoulsAmount) {
-        modalSoulsAmount.textContent = `+${earnedSouls}`;
+        modalSoulsAmount.textContent = `${earnedSouls}`;
       }
       modal.style.display = "block"; // Show the modal
     };
