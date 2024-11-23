@@ -83,7 +83,7 @@ function defeatEnemy(game) {
   game.stats.gainExp(expGained);
   game.incrementZone();
   game.hero.displayStats();
-  game.currentEnemy = new Enemy(game.stats.level);
+  game.currentEnemy = new Enemy(game.zone);
   updateResources(game.stats);
   updateEnemyHealth(game.currentEnemy);
 }
