@@ -310,3 +310,9 @@ body {
     text-align: center;
     color: var(--accent);
 }
+
+.upgrade-bonus {
+    display: block;
+    color: #4CAF50;
+    margin: 2px 0;
+}

@@ -98,6 +98,7 @@ export function updateStatsAndAttributesUI(stats) {
           }</span> / <span id="exp-to-next-level-value">${
       stats.expToNextLevel || 100
     }</span></div>
+          <hr></hr>
           <div><strong>Damage:</strong> <span id="damage-value">${stats.stats.damage.toFixed(
             0
           )}</span></div>
@@ -110,6 +111,7 @@ export function updateStatsAndAttributesUI(stats) {
           <div><strong>Crit Damage:</strong> <span id="crit-damage-value">${stats.stats.critDamage
             .toFixed(2)
             .replace(".", ",")}x</span></div>
+          <hr></hr>
           <div><strong>Health:</strong> <span id="max-health-value">${
             stats.stats.maxHealth
           }</span></div>
