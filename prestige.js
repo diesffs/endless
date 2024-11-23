@@ -21,26 +21,30 @@ export default class Prestige {
       console.error("Invalid game object passed to Prestige:", game);
       throw new Error("Game or zone is not properly initialized.");
     }
-    this.game = game;
+
+    this.game = game; // Assign the game object
+    this.hero = game.hero; // Use the hero object from the game
   }
 
-  // Calculate the number of souls earned based on zones cleared
   calculateSouls() {
-    if (!this.game || typeof this.game.zone !== "number") {
-      console.warn("Game or zone is not properly initialized.");
-      return 0; // Default to 0 if game or zone is unavailable
+    if (!this.game || typeof this.game.stats.highestZone !== "number") {
+      console.warn("Game or highestZone is not properly initialized.");
+      return 0;
     }
-    console.log(this.game.highestZone);
-    return Math.floor(this.game.highestZone / 1); // 1 soul per 50 zones
+
+    return Math.floor(this.game.stats.highestZone / 5); // Adjust formula as needed
   }
 
   performPrestige() {
-    const earnedSouls = this.calculateSouls(); // Souls earned in this run
-    this.game.stats.souls += earnedSouls; // Add to total souls
-    this.game.stats.prestigeProgress = 0; // Reset prestige progress
+    const earnedSouls = this.calculateSouls();
+    this.game.stats.souls += earnedSouls;
+    this.game.stats.highestZone = 1;
+    this.game.stats.prestigeProgress = 0;
 
-    this.resetGame(); // Reset the game state
-    saveGame(this.game); // Save the new state
+    this.resetGame();
+    saveGame(this.game);
+
+    this.initializePrestigeUI(); // Ensure UI reflects reset state
   }
 
   resetGame() {
@@ -53,6 +57,7 @@ export default class Prestige {
     }
 
     this.game.zone = 1;
+    this.game.stats.highestZone = 1;
     this.game.stats.prestigeProgress = 0;
     updateZoneUI(this.game.zone);
 
@@ -98,6 +103,19 @@ export default class Prestige {
 
   // Initialize the prestige UI
   async initializePrestigeUI() {
+    const earnedSouls = this.calculateSouls();
+    const modalDisplay = document.querySelector(".prestige-modal-display");
+    if (modalDisplay) {
+      modalDisplay.textContent = `+${earnedSouls} Souls`;
+    }
+
+    // Update the "Prestige for" display in the main UI
+    const prestigeDisplay = document.querySelector(
+      ".earned-souls-display .bonus"
+    );
+    if (prestigeDisplay) {
+      prestigeDisplay.textContent = `+${earnedSouls}`;
+    }
     const prestigeTab = document.querySelector("#prestige");
     if (!prestigeTab || !this.game.stats) return;
 
@@ -108,7 +126,6 @@ export default class Prestige {
       prestigeTab.appendChild(earnedSoulsDisplay);
     }
 
-    const earnedSouls = this.calculateSouls();
     const damageBonus = Math.floor(this.game.stats.souls * 0.1);
 
     // Fetch HTML template

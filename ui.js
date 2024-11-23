@@ -37,17 +37,26 @@ export function updateResources(stats, game) {
     return;
   }
 
-  // Update other UI elements
-  document.getElementById("gold").textContent = stats.gold || 0;
-  document.getElementById("crystals").textContent = stats.crystals || 0;
+  // Update ghost icon (total souls)
   document.getElementById("souls").textContent = stats.souls || 0;
-  document.getElementById("level").textContent = stats.level || 1;
 
-  // Update highest zone
+  // Update "Prestige for" value
+  const bonusElement = document.querySelector(".earned-souls-display .bonus");
+  if (bonusElement) {
+    bonusElement.textContent = `+${Math.floor(stats.highestZone / 1) || 0}`;
+  } else {
+    console.warn("Bonus element not found in the DOM.");
+  }
+
+  // Update highest zone if displayed
   const highestZoneElement = document.getElementById("highest-zone");
   if (highestZoneElement) {
     highestZoneElement.textContent = `Highest Zone: ${stats.highestZone || 1}`;
   }
+
+  // Update other stats
+  document.getElementById("gold").textContent = stats.gold || 0;
+  document.getElementById("level").textContent = stats.level || 1;
 }
 
 export function updatePlayerHealth(stats) {

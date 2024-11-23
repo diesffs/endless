@@ -9,7 +9,7 @@ import { playerAttack, enemyAttack } from "./combat.js";
 import { saveGame } from "./storage.js";
 
 class Game {
-  constructor(hero) {
+  constructor(hero, prestige = null, savedData) {
     if (!hero)
       throw new Error("Hero object is required for Game initialization.");
     this.gameStarted = false;
@@ -18,6 +18,9 @@ class Game {
     this.currentEnemy = new Enemy(this.stats.level);
     this.lastPlayerAttack = 0;
     this.zone = 1;
+    this.stats.highestZone = savedData?.highestZone || 1;
+
+    this.prestige = prestige;
 
     initializeUI(this);
     this.resetAllHealth();
@@ -26,12 +29,15 @@ class Game {
   incrementZone() {
     this.zone += 1;
 
-    // Update highest zone if the current zone exceeds it
     if (this.zone > this.stats.highestZone) {
       this.stats.highestZone = this.zone;
     }
 
-    updateZoneUI(this.zone); // Update the UI to reflect the new zone
+    updateZoneUI(this.zone);
+
+    if (this.prestige) {
+      this.prestige.initializePrestigeUI();
+    }
   }
 
   resetAllHealth() {
@@ -41,15 +47,13 @@ class Game {
     updateEnemyHealth(this.currentEnemy);
   }
 
-  // Add auto-save functionality to gameLoop
   gameLoop() {
     if (!this.gameStarted) return;
 
     const currentTime = Date.now();
-    playerAttack(this, currentTime); // Pass the current game instance
+    playerAttack(this, currentTime);
     enemyAttack(this, currentTime);
 
-    // Auto-save every 30 seconds
     if (currentTime % 30000 < 16) {
       saveGame(this);
     }
