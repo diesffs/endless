@@ -1,3 +1,5 @@
+import Enemy from "./enemy.js";
+
 export function initializeUI(game) {
   game.activeTab = "inventory";
   document.querySelectorAll(".tab-btn").forEach((btn) => {
@@ -62,6 +64,7 @@ function toggleGame(game) {
     // When the game starts, reset health and update resources
     game.resetAllHealth();
     updateResources(game.stats);
+    game.currentEnemy = new Enemy(game.zone);
   } else {
     // When the game stops, reset health, zone, and update UI
     game.zone = 1; // Reset zone to 1
