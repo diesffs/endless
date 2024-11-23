@@ -24,7 +24,6 @@ export const BASE_UPGRADE_COSTS = {
   critDamage: 400,
 };
 
-
 export default class Stats {
   constructor(level = 1, gold = 10000000, savedData = null) {
     this.level = level;
@@ -125,7 +124,7 @@ export default class Stats {
       BASE_DAMAGE +
       this.primaryStats.strength * 2 +
       this.upgradeLevels.damage * DAMAGE_ON_UPGRADE;
-      
+
     this.stats.attackSpeed =
       BASE_ATTACK_SPEED +
       this.primaryStats.agility * 0.05 +
@@ -139,7 +138,7 @@ export default class Stats {
     this.stats.armor = BASE_ARMOR + this.upgradeLevels.armor * ARMOR_ON_UPGRADE;
 
     this.stats.critChance =
-    BASE_CRIT_CHANCE + this.upgradeLevels.critChance * CRIT_CHANCE_ON_UPGRADE;
+      BASE_CRIT_CHANCE + this.upgradeLevels.critChance * CRIT_CHANCE_ON_UPGRADE;
 
     this.stats.critDamage =
       BASE_CRIT_DAMAGE + this.upgradeLevels.critDamage * CRIT_DAMAGE_ON_UPGRADE;
@@ -149,7 +148,9 @@ export default class Stats {
     if (this.upgradeCosts[stat] && this.gold >= this.upgradeCosts[stat]) {
       this.gold -= this.upgradeCosts[stat];
       this.upgradeLevels[stat]++;
-      this.upgradeCosts[stat] = BASE_UPGRADE_COSTS[stat] + BASE_UPGRADE_COSTS[stat] * this.upgradeLevels[stat] // Increase cost
+      this.upgradeCosts[stat] =
+        BASE_UPGRADE_COSTS[stat] +
+        BASE_UPGRADE_COSTS[stat] * this.upgradeLevels[stat]; // Increase cost
 
       this.recalculateFromAttributes();
       return true;
