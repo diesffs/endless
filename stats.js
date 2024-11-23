@@ -36,6 +36,7 @@ export default class Stats {
     this.crystals = 0;
     this.exp = 0;
     this.expToNextLevel = 20;
+    this.highestZone = 1;
     this.primaryStats = { strength: 0, agility: 0, vitality: 0 };
     this.statPoints = 0;
 

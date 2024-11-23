@@ -61,6 +61,7 @@ function toggleGame(game) {
   game.gameStarted = !game.gameStarted;
 
   if (game.gameStarted) {
+    game.currentEnemy.lastAttack = Date.now();
     // When the game starts, reset health and update resources
     game.resetAllHealth();
     updateResources(game.stats);
@@ -101,6 +102,7 @@ export function updateStatsAndAttributesUI(stats) {
           }</span> / <span id="exp-to-next-level-value">${
       stats.expToNextLevel || 100
     }</span></div>
+          <div><strong>Highest Zone:</strong> <span id="highest-zone-value">${stats.highestZone}</span></div>
           <hr style="margin: 5px 1px"></hr>
           <div><strong>Damage:</strong> <span id="damage-value">${stats.stats.damage.toFixed(
             0
@@ -134,6 +136,7 @@ export function updateStatsAndAttributesUI(stats) {
     document.getElementById("exp-value").textContent = stats.exp || 0;
     document.getElementById("exp-to-next-level-value").textContent =
       stats.expToNextLevel || 100;
+    document.getElementById("highest-zone-value").textContent = stats.highestZone;
     document.getElementById("damage-value").textContent =
       stats.stats.damage.toFixed(0);
     document.getElementById("attack-speed-value").textContent =
@@ -195,7 +198,6 @@ export function updateStatsAndAttributesUI(stats) {
       stats.primaryStats.vitality;
   }
 }
-
 export function updateZoneUI(zone) {
   const zoneDisplay = document.getElementById("zone-display");
   if (zoneDisplay) {

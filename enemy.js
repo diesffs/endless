@@ -5,7 +5,7 @@ class Enemy {
     this.name = `Enemy Lvl ${level}`;
     this.damage = 5 + level * 2;
     this.attackSpeed = 1500;
-    this.lastAttack = 0;
+    this.lastAttack = Date.now() + this.attackSpeed;
   }
 
   canAttack(currentTime) {

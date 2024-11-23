@@ -85,10 +85,10 @@ function defeatEnemy(game) {
   game.incrementZone();
   game.hero.displayStats();
   game.currentEnemy = new Enemy(game.zone);
+  game.currentEnemy.lastAttack = Date.now();
   updateResources(game.stats);
   updateEnemyHealth(game.currentEnemy);
 }
-
 function createDamageNumber(damage, isPlayer, isCritical = false) {
   const target = isPlayer ? ".character-avatar" : ".enemy-avatar";
   const avatar = document.querySelector(target);
