@@ -38,6 +38,9 @@ export default class Stats {
     this.expToNextLevel = 20;
     this.primaryStats = { strength: 0, agility: 0, vitality: 0 };
     this.statPoints = 0;
+    this.souls = savedData?.souls || 0; // Total souls (persists across resets)
+    this.prestigeProgress = 0; // Prestige progress (resets on each run)
+    this.highestZone = savedData?.highestZone || 1; // Initialize with saved value or default to 1
 
     // Default stats
     this.stats = {
@@ -115,8 +118,9 @@ export default class Stats {
     this.stats.damage =
       BASE_DAMAGE +
       this.primaryStats.strength * 2 +
-      this.upgradeLevels.damage * DAMAGE_ON_UPGRADE + 
-      DAMAGE_ON_LEVEL_UP * this.level - DAMAGE_ON_LEVEL_UP;
+      this.upgradeLevels.damage * DAMAGE_ON_UPGRADE +
+      DAMAGE_ON_LEVEL_UP * this.level -
+      DAMAGE_ON_LEVEL_UP;
 
     this.stats.attackSpeed =
       BASE_ATTACK_SPEED +
@@ -126,8 +130,9 @@ export default class Stats {
     this.stats.maxHealth =
       BASE_HEALTH +
       this.primaryStats.vitality * 10 +
-      this.upgradeLevels.health * HEALTH_ON_UPGRADE + 
-      HEALTH_ON_LEVEL_UP * this.level - HEALTH_ON_LEVEL_UP;
+      this.upgradeLevels.health * HEALTH_ON_UPGRADE +
+      HEALTH_ON_LEVEL_UP * this.level -
+      HEALTH_ON_LEVEL_UP;
 
     this.stats.armor = BASE_ARMOR + this.upgradeLevels.armor * ARMOR_ON_UPGRADE;
 

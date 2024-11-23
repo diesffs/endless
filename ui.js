@@ -1,4 +1,6 @@
 import Enemy from "./enemy.js";
+import Prestige from "./prestige.js";
+import { game } from "./main.js";
 
 export function initializeUI(game) {
   game.activeTab = "inventory";
@@ -29,11 +31,23 @@ export function switchTab(game, tabName) {
   game.activeTab = tabName;
 }
 
-export function updateResources(stats) {
-  document.getElementById("gold").textContent = stats.gold;
-  document.getElementById("crystals").textContent = stats.crystals;
-  document.getElementById("souls").textContent = stats.souls;
-  document.getElementById("level").textContent = stats.level;
+export function updateResources(stats, game) {
+  if (!game || typeof game.zone !== "number") {
+    console.error("Game is not initialized properly:", game);
+    return;
+  }
+
+  // Update other UI elements
+  document.getElementById("gold").textContent = stats.gold || 0;
+  document.getElementById("crystals").textContent = stats.crystals || 0;
+  document.getElementById("souls").textContent = stats.souls || 0;
+  document.getElementById("level").textContent = stats.level || 1;
+
+  // Update highest zone
+  const highestZoneElement = document.getElementById("highest-zone");
+  if (highestZoneElement) {
+    highestZoneElement.textContent = `Highest Zone: ${stats.highestZone || 1}`;
+  }
 }
 
 export function updatePlayerHealth(stats) {
@@ -56,17 +70,15 @@ export function updateEnemyHealth(enemy) {
   )}/${Math.floor(enemy.maxHealth)}`;
 }
 
-function toggleGame(game) {
+export function toggleGame(game) {
   const startBtn = document.getElementById("start-btn");
   game.gameStarted = !game.gameStarted;
 
   if (game.gameStarted) {
-    // When the game starts, reset health and update resources
     game.resetAllHealth();
-    updateResources(game.stats);
+    updateResources(game.stats, game); // Pass game here
   } else {
-    // When the game stops, reset health, zone, and update UI
-    game.zone = 1; // Reset zone to 1
+    game.zone = 1; // Reset zone
     updateZoneUI(game.zone);
     game.currentEnemy = new Enemy(game.zone);
 

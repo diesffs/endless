@@ -16,23 +16,24 @@ let prestige;
 const savedData = loadGame();
 
 if (savedData) {
-  hero = new Hero(savedData.hero.stats); // Pass saved stats to Hero constructor
-  game = new Game(hero);
+  hero = new Hero(savedData.hero.stats);
+  game = new Game(hero); // Initialize game with saved hero
 } else {
   hero = new Hero();
-  game = new Game(hero);
+  game = new Game(hero); // Initialize game with new hero
 }
 
-// Initialize shop after game is loaded/created
-shop = new Shop(hero, game);
-
-prestige = new Prestige(game);
+shop = new Shop(hero, game); // Initialize shop with game and hero
+prestige = new Prestige(game); // Pass the fully initialized game instance
 prestige.initializePrestigeUI();
 
 // Rest of your main.js code
 hero.displayStats();
 game.resetAllHealth();
-updateResources(hero.stats);
+prestige.initializePrestigeUI().then(() => {
+  // Call updateResources only after the Prestige UI is initialized
+  updateResources(hero.stats, game);
+});
 
 let isRunning = false;
 setInterval(() => {
@@ -42,3 +43,5 @@ setInterval(() => {
     isRunning = false;
   }
 }, 100);
+
+console.log("Initialized game:", game);

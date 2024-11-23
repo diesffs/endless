@@ -13,6 +13,9 @@ export const saveGame = (game) => {
         stats: game.stats.stats,
         upgradeCosts: game.stats.upgradeCosts,
         upgradeLevels: game.stats.upgradeLevels,
+        souls: game.stats.souls, // Save total souls
+        prestigeProgress: game.stats.prestigeProgress,
+        highestZone: game.stats.highestZone, // Save the highest zone
       },
     },
     zone: game.zone,
@@ -31,6 +34,9 @@ export const loadGame = () => {
       const stats = parsedData.hero.stats;
       stats.upgradeLevels = stats.upgradeLevels || {}; // Ensure default if missing
       stats.upgradeCosts = stats.upgradeCosts || {}; // Ensure default if missing
+      stats.souls = stats.souls || 0; // Default to 0 if undefined
+      stats.prestigeProgress = stats.prestigeProgress || 0;
+      stats.highestZone = stats.highestZone || 1;
     }
 
     return parsedData;

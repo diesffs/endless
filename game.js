@@ -25,7 +25,13 @@ class Game {
 
   incrementZone() {
     this.zone += 1;
-    updateZoneUI(this.zone);
+
+    // Update highest zone if the current zone exceeds it
+    if (this.zone > this.stats.highestZone) {
+      this.stats.highestZone = this.zone;
+    }
+
+    updateZoneUI(this.zone); // Update the UI to reflect the new zone
   }
 
   resetAllHealth() {
@@ -40,7 +46,7 @@ class Game {
     if (!this.gameStarted) return;
 
     const currentTime = Date.now();
-    playerAttack(this, currentTime);
+    playerAttack(this, currentTime); // Pass the current game instance
     enemyAttack(this, currentTime);
 
     // Auto-save every 30 seconds
