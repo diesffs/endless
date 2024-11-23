@@ -3,12 +3,14 @@ import Game from "./game.js";
 import Shop from "./shop.js";
 import { updateResources } from "./ui.js";
 import { loadGame } from "./storage.js";
+import Prestige from "./prestige.js";
 
 window.log = console.log;
 
 let hero;
 export let game;
 let shop;
+let prestige;
 
 // Initialize game with saved data or new game
 const savedData = loadGame();
@@ -23,6 +25,9 @@ if (savedData) {
 
 // Initialize shop after game is loaded/created
 shop = new Shop(hero, game);
+
+prestige = new Prestige(game);
+prestige.initializePrestigeUI();
 
 // Rest of your main.js code
 hero.displayStats();

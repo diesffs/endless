@@ -49,7 +49,8 @@ body {
     gap: 1rem;
 }
 
-.game-panel, .character-panel {
+.game-panel,
+.character-panel {
     background-color: var(--bg-panel);
     padding: 1rem;
     border-radius: 0.5rem;
@@ -90,7 +91,8 @@ body {
     display: block;
 }
 
-.character-avatar, .enemy-avatar {
+.character-avatar,
+.enemy-avatar {
     width: 8rem;
     height: 8rem;
     background-color: var(--bg-element);
@@ -103,7 +105,8 @@ body {
     position: relative;
 }
 
-.health-bar, .enemy-health-bar {
+.health-bar,
+.enemy-health-bar {
     width: 100%;
     height: 1rem;
     background-color: var(--bg-element);
@@ -112,7 +115,8 @@ body {
     overflow: hidden;
 }
 
-#health-fill, #enemy-health-fill {
+#health-fill,
+#enemy-health-fill {
     height: 100%;
     background-color: var(--health);
     transition: width 0.3s;
@@ -163,6 +167,12 @@ body {
     transform: translate(var(--x), var(--y));
 }
 
+.damage-number.critical {
+    color: #ff5722;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(255, 87, 34, 0.8);
+}
+
 @keyframes damage-popup {
     0% {
         opacity: 1;
@@ -185,61 +195,56 @@ body {
     font-size: 16px;
     font-weight: bold;
     color: #ffffff;
-    background-color: #4b5563; /* Dark gray background */
+    background-color: #4b5563;
     padding: 5px 10px;
     border-radius: 8px;
-    margin-left: 10px; /* Add space from the Start button */
+    margin-left: 10px;
     text-align: center;
     vertical-align: middle;
 }
 
+.stats-container,
+.attributes-container {
+    padding: 10px;
+    border: 1px solid #fff;
+    border-radius: 5px;
+}
+
 .stats-container {
     margin-bottom: 1em;
-    padding: 10px;
-    border: 1px solid #fff; /* Adjust based on theme */
-    border-radius: 5px;
+}
+
+.stats-container h3,
+.attributes-container h3 {
+    margin-bottom: 10px;
+    font-size: 1.2em;
+    color: #fff;
 }
 
 .attributes-container {
-    padding: 10px;
-    border: 1px solid #fff; /* Adjust based on theme */
-    border-radius: 5px;
-    background-color: #222; /* Adjust based on theme */
+    background-color: #222;
 }
 
-.stats-container h3, .attributes-container h3 {
-    margin-bottom: 10px;
-    font-size: 1.2em;
-    color: #fff; /* Adjust based on theme */
-}
-
-/* Style for attribute buttons */
 .attributes-container .allocate-btn {
     padding: 5px 10px;
     font-size: 14px;
-    background-color: #059669; /* Green color */
-    color: #fff; /* White text */
+    background-color: #059669;
+    color: #fff;
     border: none;
-    border-radius: 5px; /* Rounded corners */
+    border-radius: 5px;
     cursor: pointer;
-    margin-left: 5px; /* Spacing between text and button */
-    transition: all 0.3s ease; /* Smooth hover effect */
+    margin-left: 5px;
+    transition: all 0.3s ease;
 }
 
 .attributes-container .allocate-btn:hover {
-    background-color: #047857; /* Darker green on hover */
-    transform: scale(1.1); /* Slightly enlarge on hover */
+    background-color: #047857;
+    transform: scale(1.1);
 }
 
 .attributes-container .allocate-btn:disabled {
-    background-color: #4B5563; /* Gray for disabled state */
-    cursor: not-allowed; /* Not-allowed cursor for disabled */
-}
-
-.damage-number.critical {
-    color: #ff5722; /* Bright red-orange for critical hits */
-    font-weight: bold;
-    text-shadow: 0 0 10px rgba(255, 87, 34, 0.8); /* Glow effect */
+    background-color: #4B5563;
+    cursor: not-allowed;
 }
 
 .shop-grid {
@@ -292,27 +297,109 @@ body {
 
 .shop-grid .upgrade-cost {
     font-size: 0.9rem;
-    color: #FCD34D;  /* Gold color */
+    color: #FCD34D;
 }
 
-/* Add a container for the shop section */
-.shop-container {
-    background-color: var(--bg-panel);
-    border-radius: 0.5rem;
-    padding: 1rem;
-    margin-top: 1rem;
+.prestige-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
 }
 
-.shop-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
+.prestige-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 700px;
+    margin-bottom: 20px;
+}
+
+.damage-display,
+.souls-display,
+.earned-souls-display {
+    background: #1f2937;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 8px;
     text-align: center;
-    color: var(--accent);
+    width: 150px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
 }
 
-.upgrade-bonus {
-    display: block;
-    color: #4CAF50;
-    margin: 2px 0;
+.damage-display:hover,
+.souls-display:hover,
+.earned-souls-display:hover {
+    background: #374151;
+}
+
+.damage-display h3,
+.souls-display h3,
+.earned-souls-display h3 {
+    margin: 0;
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.bonus,
+.value {
+    color: #10b981;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.prestige-upgrades {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    width: 100%;
+    max-width: 700px;
+}
+
+.upgrade-card {
+    background: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.upgrade-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.upgrade-card .bonus {
+    color: #10b981;
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.upgrade-btn {
+    background: #059669;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.upgrade-btn:hover {
+    background: #047857;
+}
+
+.upgrade-btn.disabled {
+    background: #6b7280;
+    cursor: not-allowed;
 }
