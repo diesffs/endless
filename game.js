@@ -6,11 +6,12 @@ import {
   updateZoneUI,
 } from "./ui.js";
 import { playerAttack, enemyAttack } from "./combat.js";
-import { saveGame } from './storage.js';
+import { saveGame } from "./storage.js";
 
 class Game {
   constructor(hero) {
-    if (!hero) throw new Error("Hero object is required for Game initialization.");
+    if (!hero)
+      throw new Error("Hero object is required for Game initialization.");
     this.gameStarted = false;
     this.hero = hero;
     this.stats = this.hero.stats;
@@ -22,12 +23,12 @@ class Game {
     this.resetAllHealth();
   }
 
-  incrementZone () {
+  incrementZone() {
     this.zone += 1;
     updateZoneUI(this.zone);
   }
 
-  resetAllHealth () {
+  resetAllHealth() {
     this.stats.stats.currentHealth = this.stats.stats.maxHealth;
     updatePlayerHealth(this.stats.stats);
     this.currentEnemy.resetHealth();
@@ -35,7 +36,7 @@ class Game {
   }
 
   // Add auto-save functionality to gameLoop
-  gameLoop () {
+  gameLoop() {
     if (!this.gameStarted) return;
 
     const currentTime = Date.now();
