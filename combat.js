@@ -5,8 +5,10 @@ import {
   updateZoneUI,
 } from "./ui.js";
 import Enemy from "./enemy.js";
+import { calculateItemLevel, getRandomItemType, rollForDrop } from "./loot-table.js";
+import { RARITY } from "./item.js";
 
-export function playerAttack(game, currentTime) {
+export function playerAttack (game, currentTime) {
   const timeBetweenAttacks = 1000 / game.stats.stats.attackSpeed; // Convert attacks/sec to ms
   if (currentTime - game.lastPlayerAttack >= timeBetweenAttacks) {
     if (game.currentEnemy.currentHealth > 0) {
@@ -31,7 +33,7 @@ export function playerAttack(game, currentTime) {
   }
 }
 
-export function enemyAttack(game, currentTime) {
+export function enemyAttack (game, currentTime) {
   if (game.currentEnemy.canAttack(currentTime)) {
     // Calculate armor reduction
     const armor = game.stats.stats.armor;
@@ -56,7 +58,7 @@ export function enemyAttack(game, currentTime) {
   }
 }
 
-function playerDeath(game) {
+function playerDeath (game) {
   game.gameStarted = false;
 
   // Reset button state
@@ -76,7 +78,7 @@ function playerDeath(game) {
   updateResources(game.stats);
 }
 
-function defeatEnemy(game) {
+function defeatEnemy (game) {
   const expGained = 20 + game.zone * 5;
   const soulsGained = 1;
   game.stats.gold += 10 + game.zone * 5;
@@ -88,8 +90,30 @@ function defeatEnemy(game) {
   game.currentEnemy.lastAttack = Date.now();
   updateResources(game.stats);
   updateEnemyHealth(game.currentEnemy);
+
+  // Roll for item drop
+  if (rollForDrop(game.zone)) {
+    const itemLevel = calculateItemLevel(game.zone);
+    const itemType = getRandomItemType();
+    const newItem = game.inventory.createItem(itemType, itemLevel);
+    game.inventory.addItemToInventory(newItem);
+
+    // Show loot notification
+    showLootNotification(newItem);
+  }
 }
-function createDamageNumber(damage, isPlayer, isCritical = false) {
+
+function showLootNotification (item) {
+  const notification = document.createElement('div');
+  notification.className = 'loot-notification';
+  notification.style.color = RARITY[item.rarity].color;
+  notification.textContent = `Found: ${item.getDisplayName()}`;
+  document.body.appendChild(notification);
+
+  setTimeout(() => notification.remove(), 3000);
+}
+
+function createDamageNumber (damage, isPlayer, isCritical = false) {
   const target = isPlayer ? ".character-avatar" : ".enemy-avatar";
   const avatar = document.querySelector(target);
   const damageEl = document.createElement("div");

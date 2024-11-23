@@ -7,6 +7,7 @@ import {
 } from "./ui.js";
 import { playerAttack, enemyAttack } from "./combat.js";
 import { saveGame } from "./storage.js";
+import Inventory from "./inventory.js";
 
 class Game {
   constructor(hero) {
@@ -18,6 +19,7 @@ class Game {
     this.currentEnemy = new Enemy(this.stats.level);
     this.lastPlayerAttack = 0;
     this.zone = 1;
+    this.inventory = new Inventory(this);
 
     initializeUI(this);
     this.resetAllHealth();

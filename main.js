@@ -7,10 +7,10 @@ import Prestige from "./prestige.js";
 
 window.log = console.log;
 
-let hero;
+export let hero;
 export let game;
-let shop;
-let prestige;
+export let shop;
+export let prestige;
 
 // Initialize game with saved data or new game
 const savedData = loadGame();
