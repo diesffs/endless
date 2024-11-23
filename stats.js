@@ -17,6 +17,7 @@ export const CRIT_DAMAGE_ON_UPGRADE = 0.01;
 
 export const DAMAGE_ON_LEVEL_UP = 1;
 export const HEALTH_ON_LEVEL_UP = 10;
+export const STATS_ON_LEVEL_UP = 3;
 
 export const BASE_UPGRADE_COSTS = {
   damage: 100,
@@ -34,19 +35,18 @@ export default class Stats {
     this.souls = 0;
     this.crystals = 0;
     this.exp = 0;
-    this.expToNextLevel = 100;
+    this.expToNextLevel = 20;
     this.primaryStats = { strength: 0, agility: 0, vitality: 0 };
     this.statPoints = 0;
 
     // Default stats
     this.stats = {
-      damage: 10,
-      bonusDamage: 0,
-      attackSpeed: 1.0,
-      critChance: 5,
-      critDamage: 1.5,
-      currentHealth: 100,
-      maxHealth: 100,
+      damage: BASE_DAMAGE,
+      attackSpeed: BASE_ATTACK_SPEED,
+      critChance: BASE_CRIT_CHANCE,
+      critDamage: BASE_CRIT_DAMAGE,
+      currentHealth: BASE_HEALTH,
+      maxHealth: BASE_HEALTH,
       armor: 0,
     };
 
@@ -87,8 +87,8 @@ export default class Stats {
   levelUp() {
     this.exp -= this.expToNextLevel;
     this.level++;
-    this.statPoints += 3;
-    this.expToNextLevel = Math.floor(this.expToNextLevel * 1.2);
+    this.statPoints += STATS_ON_LEVEL_UP;
+    this.expToNextLevel += this.level * 20 - 20;
     this.stats.currentHealth = this.stats.maxHealth;
     this.recalculateFromAttributes();
     // Save after level up

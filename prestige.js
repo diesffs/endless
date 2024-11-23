@@ -5,6 +5,7 @@ import {
   updateEnemyHealth,
 } from "./ui.js";
 import { clearSave, saveGame } from "./storage.js";
+import { BASE_ARMOR, BASE_ATTACK_SPEED, BASE_CRIT_CHANCE, BASE_CRIT_DAMAGE, BASE_DAMAGE, BASE_HEALTH, BASE_UPGRADE_COSTS } from "./stats.js";
 
 export default class Prestige {
   constructor(game) {
@@ -31,28 +32,26 @@ export default class Prestige {
 
     this.game.stats.level = 1;
     this.game.stats.exp = 0;
-    this.game.stats.expToNextLevel = 100;
+    this.game.stats.expToNextLevel = 20;
     this.game.stats.gold = 0;
-    this.game.stats.primaryStats = { strength: 1, agility: 1, vitality: 1 };
+    this.game.stats.primaryStats = { strength: 0, agility: 0, vitality: 0 };
     this.game.stats.statPoints = 0;
     this.game.stats.stats = {
-      damage: 10,
-      bonusDamage: 0,
-      attackSpeed: 1.0,
-      critChance: 50,
-      critDamage: 2,
-      health: 100,
-      currentHealth: 100,
-      maxHealth: 100,
-      armor: 0,
+      damage: BASE_DAMAGE,
+      attackSpeed: BASE_ATTACK_SPEED,
+      critChance: BASE_CRIT_CHANCE,
+      critDamage: BASE_CRIT_DAMAGE,
+      currentHealth: BASE_HEALTH,
+      maxHealth: BASE_HEALTH,
+      armor: BASE_ARMOR,
     };
     this.game.stats.upgradeCosts = {
-      damage: 100,
-      attackSpeed: 200,
-      health: 150,
-      armor: 250,
-      critChance: 300,
-      critDamage: 400,
+      damage: BASE_UPGRADE_COSTS.damage,
+      attackSpeed: BASE_UPGRADE_COSTS.attackSpeed,
+      health: BASE_UPGRADE_COSTS.health,
+      armor: BASE_UPGRADE_COSTS.armor,
+      critChance: BASE_UPGRADE_COSTS.critChance,
+      critDamage: BASE_UPGRADE_COSTS.critDamage,
     };
     this.game.stats.upgradeLevels = {
       damage: 0,

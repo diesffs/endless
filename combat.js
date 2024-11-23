@@ -77,9 +77,9 @@ function playerDeath(game) {
 }
 
 function defeatEnemy(game) {
-  const expGained = 20 + game.stats.level * 5;
+  const expGained = 20 + game.zone * 5;
   const soulsGained = 1;
-  game.stats.gold += 10 + game.stats.level * 5;
+  game.stats.gold += 10 + game.zone * 5;
   game.stats.souls += soulsGained;
   game.stats.gainExp(expGained);
   game.incrementZone();
