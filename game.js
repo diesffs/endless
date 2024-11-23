@@ -33,11 +33,14 @@ class Game {
       this.stats.highestZone = this.zone;
     }
 
-    updateZoneUI(this.zone);
+    console.log(
+      "Zone Incremented: Current Zone =",
+      this.zone,
+      "Highest Zone =",
+      this.stats.highestZone
+    );
 
-    if (this.prestige) {
-      this.prestige.initializePrestigeUI();
-    }
+    updateZoneUI(this.zone);
   }
 
   resetAllHealth() {
@@ -53,6 +56,12 @@ class Game {
     const currentTime = Date.now();
     playerAttack(this, currentTime);
     enemyAttack(this, currentTime);
+
+    // Only update Prestige UI after zone progression
+    if (this.zoneChanged) {
+      this.zoneChanged = false; // Reset flag
+      this.prestige.initializePrestigeUI(); // Update Prestige UI
+    }
 
     if (currentTime % 30000 < 16) {
       saveGame(this);
