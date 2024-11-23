@@ -1,6 +1,4 @@
 import Enemy from "./enemy.js";
-import Prestige from "./prestige.js";
-import { game } from "./main.js";
 
 export function initializeUI(game) {
   game.activeTab = "inventory";

@@ -7,24 +7,19 @@ import Prestige from "./prestige.js";
 
 window.log = console.log;
 
-export let hero;
-export let game;
-export let shop;
-export let prestige;
-
 // Initialize game with saved data or new game
 const savedData = loadGame();
 
 // Initialize hero and game with saved data or create new instances
-const hero = savedData ? new Hero(savedData?.hero?.stats) : new Hero();
-const game = new Game(hero, null, savedData); // Game initialized without Prestige first
+export const hero = savedData ? new Hero(savedData?.hero?.stats) : new Hero();
+export const game = new Game(hero, null, savedData); // Game initialized without Prestige first
 
 // Initialize Prestige and assign it to the game
-const prestige = new Prestige(game); // Pass the fully initialized game instance
+export const prestige = new Prestige(game); // Pass the fully initialized game instance
 game.prestige = prestige;
 
 // Initialize Shop
-const shop = new Shop(hero, game); // Shop depends on hero and game
+export const shop = new Shop(hero, game); // Shop depends on hero and game
 
 // Initialize the Prestige UI and update resources
 prestige.initializePrestigeUI();
@@ -44,4 +39,3 @@ setInterval(() => {
 
 console.log("Initialized game:", game);
 
-export { game }; // Export the game instance

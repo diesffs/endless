@@ -49,7 +49,7 @@ export default class Shop {
 
     this.updateShopUI(stat);
     this.hero.displayStats();
-    updateResources(this.hero.stats);
+    updateResources(this.hero.stats, this.game);
 
     if (stat === "health") {
       this.hero.stats.stats.currentHealth = this.hero.stats.stats.maxHealth;
