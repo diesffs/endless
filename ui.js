@@ -64,11 +64,12 @@ function toggleGame(game) {
     // When the game starts, reset health and update resources
     game.resetAllHealth();
     updateResources(game.stats);
-    game.currentEnemy = new Enemy(game.zone);
   } else {
     // When the game stops, reset health, zone, and update UI
     game.zone = 1; // Reset zone to 1
     updateZoneUI(game.zone);
+    game.currentEnemy = new Enemy(game.zone);
+    
     game.stats.stats.currentHealth = game.stats.stats.maxHealth; // Reset player health
     game.currentEnemy.resetHealth(); // Reset enemy health
     updatePlayerHealth(game.stats.stats);
