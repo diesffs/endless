@@ -2,6 +2,7 @@ import {
   updatePlayerHealth,
   updateEnemyHealth,
   updateResources,
+  updateZoneUI,
 } from "./ui.js";
 import Enemy from "./enemy.js";
 
@@ -57,11 +58,21 @@ export function enemyAttack(game, currentTime) {
 
 function playerDeath(game) {
   game.gameStarted = false;
+
+  // Reset button state
   const startBtn = document.getElementById("start-btn");
   startBtn.textContent = "Start";
   startBtn.style.backgroundColor = "#059669";
-  updateResources(game.stats);
+
+  // Reset the zone and update the UI
+  game.zone = 1;
+  updateZoneUI(game.zone);
+
+  // Reset player and enemy health
   game.resetAllHealth();
+
+  // Update resources for UI consistency
+  updateResources(game.stats);
 }
 
 function defeatEnemy(game) {
