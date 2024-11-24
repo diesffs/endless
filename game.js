@@ -1,13 +1,21 @@
 import Enemy from "./enemy.js";
+import Hero from "./hero.js";
 import {
   initializeUI,
   updatePlayerHealth,
   updateEnemyHealth,
   updateZoneUI,
 } from "./ui.js";
-import { playerAttack, enemyAttack } from "./combat.js";
+import {
+  playerAttack,
+  enemyAttack,
+  startBattle,
+  stopBattle,
+} from "./combat.js";
 import { saveGame } from "./storage.js";
 import Inventory from "./inventory.js";
+
+let gameInstance = null;
 
 class Game {
   constructor(hero, prestige = null, savedData) {
@@ -26,9 +34,28 @@ class Game {
 
     initializeUI(this);
     this.resetAllHealth();
+    this.lastPlayerAttack = Date.now();
   }
 
-  incrementZone () {
+  toggleBattle() {
+    if (this.gameStarted) {
+      stopBattle(this);
+    } else {
+      this.resetAllHealth();
+      this.lastPlayerAttack = Date.now(); // Reset timer explicitly
+      startBattle(this);
+    }
+  }
+
+  update(currentTime) {
+    if (!this.gameStarted) return;
+
+    // Handle combat
+    playerAttack(this, currentTime);
+    enemyAttack(this, currentTime);
+  }
+
+  incrementZone() {
     this.zone += 1;
 
     if (this.zone > this.stats.highestZone) {
@@ -45,15 +72,22 @@ class Game {
     updateZoneUI(this.zone);
   }
 
-  resetAllHealth () {
+  resetAllHealth() {
     this.stats.stats.currentHealth = this.stats.stats.maxHealth;
     updatePlayerHealth(this.stats.stats);
     this.currentEnemy.resetHealth();
     updateEnemyHealth(this.currentEnemy);
+
+    // Reset combat timers
+    const currentTime = Date.now();
+    this.lastPlayerAttack = currentTime;
+    if (this.currentEnemy) {
+      this.currentEnemy.lastAttack = currentTime;
+    }
   }
 
   // Add auto-save functionality to gameLoop
-  gameLoop () {
+  gameLoop() {
     if (!this.gameStarted) return;
 
     const currentTime = Date.now();
