@@ -25,7 +25,7 @@ export function enemyAttack(game, currentTime) {
   if (!game || !game.stats || !game.currentEnemy) return;
 
   // Initialize lastAttack if it doesn't exist
-  if (!game.currentEnemy.lastAttack === undefined) {
+  if (game.currentEnemy.lastAttack === undefined) {
     game.currentEnemy.lastAttack = currentTime;
     return; // Skip first attack frame
   }

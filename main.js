@@ -38,4 +38,3 @@ setInterval(() => {
 }, 100);
 
 console.log("Initialized game:", game);
-

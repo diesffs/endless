@@ -34,7 +34,7 @@ class Game {
 
     initializeUI(this);
     this.resetAllHealth();
-    this.lastPlayerAttack = Date.now();
+    this.lastPlayerAttack = Date.now(); // Initialize in constructor
   }
 
   toggleBattle() {
