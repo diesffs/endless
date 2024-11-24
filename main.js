@@ -11,8 +11,8 @@ window.log = console.log;
 const savedData = loadGame();
 
 // Initialize hero and game with saved data or create new instances
+export const game = new Game(null, savedData); // Game initialized without Prestige first
 export const hero = savedData ? new Hero(savedData?.hero?.stats) : new Hero();
-export const game = new Game(hero, null, savedData); // Game initialized without Prestige first
 
 // Initialize Prestige and assign it to the game
 export const prestige = new Prestige(game); // Pass the fully initialized game instance
@@ -24,7 +24,6 @@ export const shop = new Shop(hero, game); // Shop depends on hero and game
 // Initialize the Prestige UI and update resources
 prestige.initializePrestigeUI();
 hero.displayStats();
-game.resetAllHealth();
 updateResources(hero.stats, game); // Update UI with initialized resources
 
 // Game loop

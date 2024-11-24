@@ -1,5 +1,3 @@
-import Enemy from "./enemy.js";
-import Hero from "./hero.js";
 import {
   initializeUI,
   updatePlayerHealth,
@@ -14,30 +12,23 @@ import {
 } from "./combat.js";
 import { saveGame } from "./storage.js";
 import Inventory from "./inventory.js";
-
-let gameInstance = null;
+import { hero } from "./main.js";
 
 class Game {
-  constructor(hero, prestige = null, savedData) {
-    if (!hero)
-      throw new Error("Hero object is required for Game initialization.");
+  constructor(prestige = null, savedData) {
     this.gameStarted = false;
-    this.hero = hero;
-    this.stats = this.hero.stats;
-    this.currentEnemy = new Enemy(this.stats.level);
+    this.currentEnemy = null;
     this.lastPlayerAttack = 0;
     this.zone = 1;
     this.inventory = new Inventory(this, savedData?.inventory);
-    this.stats.highestZone = savedData?.highestZone || 1;
 
     this.prestige = prestige;
 
     initializeUI(this);
-    this.resetAllHealth();
     this.lastPlayerAttack = Date.now();
   }
 
-  toggleBattle() {
+  toggleBattle () {
     if (this.gameStarted) {
       stopBattle(this);
     } else {
@@ -47,7 +38,7 @@ class Game {
     }
   }
 
-  update(currentTime) {
+  update (currentTime) {
     if (!this.gameStarted) return;
 
     // Handle combat
@@ -55,19 +46,19 @@ class Game {
     enemyAttack(this, currentTime);
   }
 
-  incrementZone() {
+  incrementZone () {
     this.zone += 1;
 
-    if (this.zone > this.stats.highestZone) {
-      this.stats.highestZone = this.zone;
+    if (this.zone > hero.highestZone) {
+      hero.highestZone = this.zone;
     }
 
     updateZoneUI(this.zone);
   }
 
-  resetAllHealth() {
-    this.stats.stats.currentHealth = this.stats.stats.maxHealth;
-    updatePlayerHealth(this.stats.stats);
+  resetAllHealth () {
+    hero.stats.currentHealth = hero.stats.maxHealth;
+    updatePlayerHealth(hero.stats);
     this.currentEnemy.resetHealth();
     updateEnemyHealth(this.currentEnemy);
 
@@ -80,7 +71,7 @@ class Game {
   }
 
   // Add auto-save functionality to gameLoop
-  gameLoop() {
+  gameLoop () {
     if (!this.gameStarted) return;
 
     const currentTime = Date.now();

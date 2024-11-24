@@ -11,18 +11,19 @@ import {
   rollForDrop,
 } from "./loot-table.js";
 import { RARITY } from "./item.js";
+import { hero } from "./main.js";
 
 const BASE_ATTACK_SPEED = 1; // 1 attack per second
 const MIN_ATTACK_DELAY = 1000; // Minimum 1 second between attacks
 
 // Helper function to check if enough time has passed for an attack
-function canAttack(lastAttackTime, attackSpeed, currentTime) {
+function canAttack (lastAttackTime, attackSpeed, currentTime) {
   const timeBetweenAttacks = 1000 / attackSpeed; // Convert attacks/sec to ms
   return currentTime - lastAttackTime >= timeBetweenAttacks;
 }
 
-export function enemyAttack(game, currentTime) {
-  if (!game || !game.stats || !game.currentEnemy) return;
+export function enemyAttack (game, currentTime) {
+  if (!game || !hero || !game.currentEnemy) return;
 
   // Initialize lastAttack if it doesn't exist
   if (!game.currentEnemy.lastAttack === undefined) {
@@ -42,24 +43,24 @@ export function enemyAttack(game, currentTime) {
       currentTime
     )
   ) {
-    const armor = game.stats.stats.armor;
+    const armor = hero.stats.armor;
     const damageReduction = armor / (100 + armor);
     const effectiveDamage = game.currentEnemy.damage * (1 - damageReduction);
 
-    game.stats.stats.currentHealth -= effectiveDamage;
-    if (game.stats.stats.currentHealth <= 0) {
-      game.stats.stats.currentHealth = 0;
+    hero.stats.currentHealth -= effectiveDamage;
+    if (hero.stats.currentHealth <= 0) {
+      hero.stats.currentHealth = 0;
       playerDeath(game);
       return;
     }
 
     createDamageNumber(Math.floor(effectiveDamage), true);
-    updatePlayerHealth(game.stats.stats);
+    updatePlayerHealth(hero.stats);
     game.currentEnemy.lastAttack = currentTime;
   }
 }
 
-export function playerAttack(game, currentTime) {
+export function playerAttack (game, currentTime) {
   if (!game || !game.currentEnemy) return;
 
   // Initialize lastAttack if it doesn't exist
@@ -74,13 +75,13 @@ export function playerAttack(game, currentTime) {
   }
 
   if (
-    canAttack(game.lastPlayerAttack, game.stats.stats.attackSpeed, currentTime)
+    canAttack(game.lastPlayerAttack, hero.stats.attackSpeed, currentTime)
   ) {
     if (game.currentEnemy.currentHealth > 0) {
-      const isCritical = Math.random() * 100 < game.stats.stats.critChance;
+      const isCritical = Math.random() * 100 < hero.stats.critChance;
       const damage = isCritical
-        ? game.stats.stats.damage * game.stats.stats.critDamage
-        : game.stats.stats.damage;
+        ? hero.stats.damage * hero.stats.critDamage
+        : hero.stats.damage;
 
       game.currentEnemy.currentHealth -= damage;
       createDamageNumber(Math.floor(damage), false, isCritical);
@@ -96,7 +97,7 @@ export function playerAttack(game, currentTime) {
 }
 
 // Remove any duplicate definitions and keep this single version
-export function playerDeath(game) {
+export function playerDeath (game) {
   if (!game) {
     console.error("Game is not properly initialized in playerDeath.");
     return;
@@ -121,16 +122,16 @@ export function playerDeath(game) {
   game.resetAllHealth();
 
   // Update UI elements
-  updatePlayerHealth(game.stats.stats);
+  updatePlayerHealth(hero.stats);
   if (game.currentEnemy) {
     updateEnemyHealth(game.currentEnemy);
   }
 
   // Update resources for UI consistency
-  updateResources(game.stats, game);
+  updateResources(hero, game);
 }
 
-function defeatEnemy(game) {
+function defeatEnemy (game) {
   if (!game) {
     console.error("Game is undefined in defeatEnemy");
     return;
@@ -140,12 +141,12 @@ function defeatEnemy(game) {
   const goldGained = 10 + game.zone * 5;
 
   // Gain gold and experience
-  game.stats.gold += goldGained;
-  game.stats.gainExp(expGained);
+  hero.gold += goldGained;
+  hero.gainExp(expGained);
 
   // Update "Prestige for" progress (but NOT total souls)
   const newPrestigeSouls = Math.floor(game.zone / 50); // 1 soul per 50 zones
-  game.stats.prestigeProgress = newPrestigeSouls;
+  hero.prestigeProgress = newPrestigeSouls;
 
   // Increment zone and spawn a new enemy
   game.incrementZone();
@@ -154,7 +155,7 @@ function defeatEnemy(game) {
   resetCombatTimers(game, Date.now());
   game.currentEnemy.lastAttack = Date.now();
   // Update the UI
-  updateResources(game.stats, game);
+  updateResources(hero, game);
   updateEnemyHealth(game.currentEnemy);
 
   // Roll for item drop
@@ -169,7 +170,7 @@ function defeatEnemy(game) {
   }
 }
 
-export function resetCombatTimers(game, currentTime) {
+export function resetCombatTimers (game, currentTime) {
   if (!game) return;
   const timestamp = currentTime || Date.now();
   game.lastPlayerAttack = timestamp;
@@ -178,7 +179,7 @@ export function resetCombatTimers(game, currentTime) {
   }
 }
 
-export function stopBattle(game) {
+export function stopBattle (game) {
   if (!game) return;
   game.gameStarted = false;
   // Clear the combat timers
@@ -188,7 +189,7 @@ export function stopBattle(game) {
   }
 }
 
-export function startBattle(game) {
+export function startBattle (game) {
   if (!game) return;
   const currentTime = Date.now();
   game.gameStarted = true;
@@ -199,7 +200,7 @@ export function startBattle(game) {
   }
 }
 
-function showLootNotification(item) {
+function showLootNotification (item) {
   const notification = document.createElement("div");
   notification.className = "loot-notification";
   notification.style.color = RARITY[item.rarity].color;
@@ -209,7 +210,7 @@ function showLootNotification(item) {
   setTimeout(() => notification.remove(), 3000);
 }
 
-function createDamageNumber(damage, isPlayer, isCritical = false) {
+function createDamageNumber (damage, isPlayer, isCritical = false) {
   const target = isPlayer ? ".character-avatar" : ".enemy-avatar";
   const avatar = document.querySelector(target);
   const damageEl = document.createElement("div");

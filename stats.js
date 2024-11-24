@@ -123,30 +123,6 @@ export default class Stats {
     return false;
   }
 
-  recalculateStats () {
-    // Base stats
-    this.stats = {
-      damage: BASE_DAMAGE + (this.primaryStats.strength * 2),
-      attackSpeed: BASE_ATTACK_SPEED + (this.primaryStats.agility * 0.01),
-      critChance: BASE_CRIT_CHANCE,
-      critDamage: BASE_CRIT_DAMAGE,
-      maxHealth: BASE_HEALTH + (this.primaryStats.vitality * 10),
-      armor: BASE_ARMOR
-    };
-
-    // Add equipment bonuses
-    Object.entries(this.equipmentBonuses).forEach(([stat, bonus]) => {
-      if (this.stats[stat] !== undefined) {
-        this.stats[stat] += bonus;
-      }
-    });
-
-    // Ensure current health doesn't exceed max health
-    if (this.stats.currentHealth > this.stats.maxHealth) {
-      this.stats.currentHealth = this.stats.maxHealth;
-    }
-  }
-
   recalculateFromAttributes () {
     this.stats.damage =
       BASE_DAMAGE +
@@ -172,6 +148,16 @@ export default class Stats {
 
     this.stats.critDamage =
       BASE_CRIT_DAMAGE + this.upgradeLevels.critDamage * CRIT_DAMAGE_ON_UPGRADE;
+
+    // Recalculate equipment bonuses
+    game.inventory.updateCharacterStats();
+    log(this.equipmentBonuses)
+    // Add equipment bonuses
+    Object.entries(this.equipmentBonuses).forEach(([stat, bonus]) => {
+      if (this.stats[stat] !== undefined) {
+        this.stats[stat] += bonus;
+      }
+    });
   }
 
   buyUpgrade (stat) {

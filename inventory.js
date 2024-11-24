@@ -1,5 +1,6 @@
 import { EQUIPMENT_SLOTS, SLOT_REQUIREMENTS } from './equipment-slots.js';
 import Item, { ITEM_TYPES, RARITY } from './item.js';
+import { hero } from './main.js';
 import { saveGame } from './storage.js';
 
 export default class Inventory {
@@ -72,7 +73,6 @@ export default class Inventory {
         this.removeExistingListeners();
 
         // Setup new listeners
-        log('Setting up drag and drop');
         this.setupGridCells();
         this.setupEquipmentSlots();
         this.setupItemDragAndTooltip();
@@ -266,10 +266,8 @@ export default class Inventory {
                 }
             });
 
-        log('Updating equipment slots...', this.equippedItems);
         Object.entries(this.equippedItems).forEach(([slot, item]) => {
             const slotElement = document.querySelector(`[data-slot="${slot}"]`);
-            log('Slot element:', slotElement);
             if (slotElement) {
                 // Find existing inventory-item if any
                 const existingItem = slotElement.querySelector('.inventory-item');
@@ -295,7 +293,6 @@ export default class Inventory {
     }
 
     removeExistingListeners () {
-        log('Removing existing listeners...');
         // Remove grid cell listeners
         const cells = document.querySelectorAll('.grid-cell');
         cells.forEach(cell => {
@@ -323,14 +320,12 @@ export default class Inventory {
         items.forEach(item => {
             // Add dragstart event listener
             item.addEventListener('dragstart', (e) => {
-                console.log('Drag started');
                 e.target.classList.add('dragging');
                 e.dataTransfer.setData('text/plain', item.dataset.itemId);
                 this.cleanupTooltips(); // Also clean tooltips on drag start
             });
 
             item.addEventListener('dragend', (e) => {
-                console.log('Drag ended');
                 e.target.classList.remove('dragging');
                 document.querySelectorAll('.equipment-slot').forEach(slot => {
                     slot.classList.remove('valid-target', 'invalid-target');
@@ -400,33 +395,23 @@ export default class Inventory {
 
         // Equip the new item
         this.equippedItems[slot] = item;
-        this.updateCharacterStats();
+        hero.stats.recalculateFromAttributes();
         saveGame(this.game); // Add save
     }
 
     updateCharacterStats () {
-        // Will be implemented in Stats Integration step
-    }
-
-    updateCharacterStats () {
         // Reset equipment bonuses
-        Object.keys(this.game.stats.equipmentBonuses).forEach(stat => {
-            this.game.stats.equipmentBonuses[stat] = 0;
+        Object.keys(hero.stats.equipmentBonuses).forEach(stat => {
+            hero.stats.equipmentBonuses[stat] = 0;
         });
 
         // Calculate bonuses from all equipped items
         Object.values(this.equippedItems).forEach(item => {
             Object.entries(item.stats).forEach(([stat, value]) => {
-                if (this.game.stats.equipmentBonuses[stat] !== undefined) {
-                    this.game.stats.equipmentBonuses[stat] += value;
+                if (hero.stats.equipmentBonuses[stat] !== undefined) {
+                    hero.stats.equipmentBonuses[stat] += value;
                 }
             });
         });
-
-        // Recalculate all stats
-        this.game.stats.recalculateStats();
-
-        // Update UI
-        this.game.hero.displayStats();
     }
 }
