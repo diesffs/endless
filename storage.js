@@ -4,7 +4,6 @@ export const saveGame = (game) => {
       stats: {
         level: game.stats.level,
         gold: game.stats.gold,
-        souls: game.stats.souls,
         crystals: game.stats.crystals,
         exp: game.stats.exp,
         expToNextLevel: game.stats.expToNextLevel,
@@ -19,6 +18,10 @@ export const saveGame = (game) => {
       },
     },
     zone: game.zone,
+    inventory: {
+      equippedItems: game.inventory.equippedItems,
+      inventoryItems: game.inventory.inventoryItems
+    }
   };
 
   localStorage.setItem("gameProgress", JSON.stringify(saveData));

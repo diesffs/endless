@@ -19,7 +19,7 @@ class Game {
     this.currentEnemy = new Enemy(this.stats.level);
     this.lastPlayerAttack = 0;
     this.zone = 1;
-    this.inventory = new Inventory(this);
+    this.inventory = new Inventory(this, savedData?.inventory);
     this.stats.highestZone = savedData?.highestZone || 1;
 
     this.prestige = prestige;
@@ -34,13 +34,6 @@ class Game {
     if (this.zone > this.stats.highestZone) {
       this.stats.highestZone = this.zone;
     }
-
-    console.log(
-      "Zone Incremented: Current Zone =",
-      this.zone,
-      "Highest Zone =",
-      this.stats.highestZone
-    );
 
     updateZoneUI(this.zone);
   }
