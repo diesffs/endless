@@ -57,6 +57,22 @@ export default class Inventory {
         });
     }
 
+    removeGridListeners () {
+        const cells = document.querySelectorAll('.grid-cell');
+        cells.forEach(cell => {
+            cell.removeEventListener('dragover', this.boundHandleDragOver);
+            cell.removeEventListener('drop', this.boundHandleDrop);
+        });
+    }
+
+    removeEquipmentListeners () {
+        const slots = document.querySelectorAll('.equipment-slot');
+        slots.forEach(slot => {
+            slot.removeEventListener('dragover', this.boundHandleDragOver);
+            slot.removeEventListener('drop', this.boundHandleDrop);
+        });
+    }
+
     setupEquipmentSlots () {
         const slots = document.querySelectorAll('.equipment-slot');
         slots.forEach(slot => {
