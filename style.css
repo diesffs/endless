@@ -831,3 +831,31 @@ body {
 .inventory-grid {
   scroll-behavior: smooth;
 }
+.enemy-section {
+  border: 1px solid;
+}
+
+.enemy-section.gray {
+  color: #808080;
+  border-color: #808080;
+}
+
+.enemy-section.blue {
+  color: #4169e1;
+  border-color: #4169e1;
+}
+
+.enemy-section.purple {
+  color: #e50fe5;
+  border-color: #e50fe5;
+}
+
+.enemy-section.orange {
+  color: #ffa500;
+  border-color: #ffa500;
+}
+
+.enemy-section.red {
+  color: #ff0000;
+  border-color: #ff0000;
+}

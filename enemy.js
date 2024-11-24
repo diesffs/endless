@@ -8,9 +8,18 @@ class Enemy {
     this.damage = this.calculateDamage(level, this.rarity);
     this.attackSpeed = this.calculateAttackSpeed(this.rarity);
     this.lastAttack = Date.now() + this.attackSpeed;
+
+    // Get enemy section element
+    const enemySection = document.querySelector(".enemy-section");
+
+    // Remove any existing rarity classes
+    enemySection.classList.remove("gray", "blue", "purple", "orange", "red");
+
+    // Add the new color class
+    enemySection.classList.add(this.color);
   }
 
-  generateRarity() {
+  generateRarity () {
     const random = Math.random() * 100;
     if (random < 60) return "normal";
     if (random < 80) return "rare";
@@ -19,7 +28,7 @@ class Enemy {
     return "mythic";
   }
 
-  getRarityColor(rarity) {
+  getRarityColor (rarity) {
     const colors = {
       normal: "gray",
       rare: "blue",
@@ -30,7 +39,7 @@ class Enemy {
     return colors[rarity] || "white"; // Default to white if no color is found
   }
 
-  calculateHealth(level, rarity) {
+  calculateHealth (level, rarity) {
     const baseHealth = 50 + level * 10;
     switch (rarity) {
       case "rare":
@@ -46,7 +55,7 @@ class Enemy {
     }
   }
 
-  calculateDamage(level, rarity) {
+  calculateDamage (level, rarity) {
     const baseDamage = 5 + level * 2;
     switch (rarity) {
       case "rare":
@@ -62,7 +71,7 @@ class Enemy {
     }
   }
 
-  calculateAttackSpeed(rarity) {
+  calculateAttackSpeed (rarity) {
     const baseAttackSpeed = 1500;
     switch (rarity) {
       case "rare":
@@ -78,11 +87,11 @@ class Enemy {
     }
   }
 
-  canAttack(currentTime) {
+  canAttack (currentTime) {
     return currentTime - this.lastAttack >= this.attackSpeed;
   }
 
-  resetHealth() {
+  resetHealth () {
     this.currentHealth = this.maxHealth;
   }
 }
