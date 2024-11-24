@@ -1,4 +1,5 @@
 import Enemy from "./enemy.js";
+import { prestige } from "./main.js";
 
 export function initializeUI(game) {
   game.activeTab = "inventory";
@@ -35,16 +36,10 @@ export function updateResources(stats, game) {
     return;
   }
 
+  prestige.updateUI();
+
   // Update ghost icon (total souls)
   document.getElementById("souls").textContent = stats.souls || 0;
-
-  // Update "Prestige for" value
-  const bonusElement = document.querySelector(".earned-souls-display .bonus");
-  if (bonusElement) {
-    bonusElement.textContent = `+${Math.floor(stats.highestZone / 1) || 0}`;
-  } else {
-    console.warn("Bonus element not found in the DOM.");
-  }
 
   // Update highest zone if displayed
   const highestZoneElement = document.getElementById("highest-zone");

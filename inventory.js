@@ -21,6 +21,7 @@ export default class Inventory {
             gridContainer.appendChild(cell);
         }
         this.setupDragAndDrop();
+        this.setupItemDragAndTooltip();
 
 
         // TEST
@@ -43,29 +44,8 @@ export default class Inventory {
         });
     }
 
-    setupInventoryDrag () {
-        this.removeExistingListeners();
-        const items = document.querySelectorAll('.inventory-item');
-
-        items.forEach(item => {
-            item.addEventListener('dragstart', (e) => {
-                e.target.classList.add('dragging');
-                e.dataTransfer.setData('text/plain', item.dataset.itemId);
-                this.cleanupTooltips(); // Also clean tooltips on drag start
-            });
-
-            item.addEventListener('dragend', (e) => {
-                e.target.classList.remove('dragging');
-                document.querySelectorAll('.equipment-slot').forEach(slot => {
-                    slot.classList.remove('valid-target', 'invalid-target');
-                });
-            });
-        });
-    }
-
     setupDragAndDrop () {
-        this.setupInventoryDrag();
-        // this.setupEquipmentSlots();
+        this.setupItemDragAndTooltip();
         this.setupGridCells();
     }
 
@@ -216,6 +196,7 @@ export default class Inventory {
             }
         }
         this.updateInventoryGrid();
+        this.setupItemDragAndTooltip();
     }
 
     updateInventoryGrid () {
@@ -266,6 +247,22 @@ export default class Inventory {
         };
 
         items.forEach(item => {
+            // Add dragstart event listener
+            item.addEventListener('dragstart', (e) => {
+                console.log('Drag started');
+                e.target.classList.add('dragging');
+                e.dataTransfer.setData('text/plain', item.dataset.itemId);
+                this.cleanupTooltips(); // Also clean tooltips on drag start
+            });
+
+            item.addEventListener('dragend', (e) => {
+                console.log('Drag ended');
+                e.target.classList.remove('dragging');
+                document.querySelectorAll('.equipment-slot').forEach(slot => {
+                    slot.classList.remove('valid-target', 'invalid-target');
+                });
+            });
+
             // Tooltip events
             item.addEventListener('mouseenter', (e) => {
                 if (item.classList.contains('dragging')) return;

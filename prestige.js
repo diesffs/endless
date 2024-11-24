@@ -26,7 +26,7 @@ export default class Prestige {
     this.hero = game.hero; // Use the hero object from the game
   }
 
-  calculateSouls() {
+  calculateSouls () {
     if (!this.game || typeof this.game.stats.highestZone !== "number") {
       console.warn("Game or highestZone is not properly initialized.");
       return 0;
@@ -37,7 +37,7 @@ export default class Prestige {
     return souls;
   }
 
-  performPrestige() {
+  performPrestige () {
     const earnedSouls = this.calculateSouls();
     this.game.stats.souls += earnedSouls;
     this.game.stats.highestZone = 1;
@@ -49,7 +49,7 @@ export default class Prestige {
     this.initializePrestigeUI(); // Ensure UI reflects reset state
   }
 
-  resetGame() {
+  resetGame () {
     if (!this.game || typeof this.game.zone !== "number") {
       console.error(
         "Game is not properly initialized in resetGame:",
@@ -104,7 +104,7 @@ export default class Prestige {
   }
 
   // Initialize the prestige UI
-  async initializePrestigeUI() {
+  async initializePrestigeUI () {
     try {
       const earnedSouls = this.calculateSouls();
 
@@ -174,7 +174,26 @@ export default class Prestige {
     }
   }
 
-  setupPrestigeButton() {
+  updateUI () {
+    const damageDisplay = document.querySelector(".damage-display .bonus");
+    const soulsDisplay = document.querySelector(".earned-souls-display .bonus");
+
+    if (damageDisplay) {
+      const damageBonus = Math.floor(this.game.stats.souls * 0.1);
+      damageDisplay.textContent = `+${damageBonus}%`;
+    }
+
+    if (soulsDisplay) {
+      soulsDisplay.textContent = `+${this.calculateSouls()}`;
+    }
+
+    const modalSoulsAmount = document.getElementById("modal-souls-amount");
+    if (modalSoulsAmount) {
+      modalSoulsAmount.textContent = `${this.calculateSouls()}`;
+    }
+  }
+
+  setupPrestigeButton () {
     const prestigeButton = document.getElementById("prestige-btn");
     const modal = document.getElementById("prestige-modal");
     const confirmButton = document.getElementById("confirm-prestige");
