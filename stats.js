@@ -104,7 +104,7 @@ export default class Stats {
     this.stats.currentHealth = this.stats.maxHealth;
     this.recalculateFromAttributes();
     // Save after level up
-    saveGame(game);
+    saveGame();
   }
 
   allocateStat (stat) {
@@ -117,7 +117,7 @@ export default class Stats {
       }
 
       // Save after stat allocation
-      saveGame(game);
+      saveGame();
       return true;
     }
     return false;

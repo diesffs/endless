@@ -183,7 +183,7 @@ export default class Inventory {
             }
         }
         this.updateInventoryGrid();
-        saveGame(this.game); // Add save
+        saveGame(); // Add save
     }
 
     unequipItem (item) {
@@ -239,7 +239,7 @@ export default class Inventory {
             }
         }
         this.updateInventoryGrid();
-        saveGame(this.game); // Add save
+        saveGame(); // Add save
     }
 
     updateInventoryGrid () {
@@ -396,7 +396,7 @@ export default class Inventory {
         // Equip the new item
         this.equippedItems[slot] = item;
         hero.stats.recalculateFromAttributes();
-        saveGame(this.game); // Add save
+        saveGame(); // Add save
     }
 
     updateCharacterStats () {

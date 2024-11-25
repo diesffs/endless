@@ -192,7 +192,7 @@ export function updateStatsAndAttributesUI (stats) {
           document.getElementById(`${stat}-value`).textContent =
             stats.primaryStats[stat];
           updateStatsAndAttributesUI(stats); // Refresh all stats
-          updatePlayerHealth(stats.stats); // Update health bar dynamically
+          updatePlayerHealth(hero.stats.stats); // Update health bar dynamically
         }
       });
     });

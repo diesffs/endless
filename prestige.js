@@ -44,7 +44,7 @@ export default class Prestige {
     hero.stats.prestigeProgress = 0;
 
     this.resetGame();
-    saveGame(this.game);
+    saveGame();
 
     this.initializePrestigeUI(); // Ensure UI reflects reset state
   }

@@ -13,86 +13,55 @@ import {
 import { RARITY } from "./item.js";
 import { hero } from "./main.js";
 
-const BASE_ATTACK_SPEED = 1; // 1 attack per second
-const MIN_ATTACK_DELAY = 1000; // Minimum 1 second between attacks
-
-// Helper function to check if enough time has passed for an attack
-function canAttack (lastAttackTime, attackSpeed, currentTime) {
-  const timeBetweenAttacks = 1000 / attackSpeed; // Convert attacks/sec to ms
-  return currentTime - lastAttackTime >= timeBetweenAttacks;
-}
-
 export function enemyAttack (game, currentTime) {
-  if (!game || !hero || !game.currentEnemy) return;
-
-  // Initialize lastAttack if it doesn't exist
-  if (game.currentEnemy.lastAttack === undefined) {
-    game.currentEnemy.lastAttack = currentTime;
-    return; // Skip first attack frame
-  }
-
-  // Force minimum delay between attacks
-  if (currentTime - game.currentEnemy.lastAttack < MIN_ATTACK_DELAY) {
-    return;
-  }
-
-  if (
-    canAttack(
-      game.currentEnemy.lastAttack,
-      game.currentEnemy.attackSpeed,
-      currentTime
-    )
-  ) {
-    const armor = hero.stats.armor;
-    const damageReduction = armor / (100 + armor);
+  if (!game || !hero.stats.stats || !game.currentEnemy) return;
+  if (game.currentEnemy.canAttack(currentTime)) {
+    // Calculate armor reduction
+    const armor = hero.stats.stats.armor;
+    const damageReduction = armor / (100 + armor); // Example formula
     const effectiveDamage = game.currentEnemy.damage * (1 - damageReduction);
 
-    hero.stats.currentHealth -= effectiveDamage;
-    if (hero.stats.currentHealth <= 0) {
-      hero.stats.currentHealth = 0;
-      playerDeath(game);
-      return;
-    }
+    // Apply reduced damage to player's health
+    hero.stats.stats.currentHealth -= effectiveDamage;
+    if (hero.stats.stats.currentHealth < 0) hero.stats.stats.currentHealth = 0;
 
+    // Show the damage number (rounded down for clarity)
     createDamageNumber(Math.floor(effectiveDamage), true);
-    updatePlayerHealth(hero.stats);
+
+    // Update player health UI
+    updatePlayerHealth(hero.stats.stats);
+
+    // Record the enemy's last attack time
     game.currentEnemy.lastAttack = currentTime;
+
+    // Handle player death if health drops to 0
+    if (hero.stats.stats.currentHealth <= 0) playerDeath(game);
   }
 }
 
 export function playerAttack (game, currentTime) {
   if (!game || !game.currentEnemy) return;
-
-  // Initialize lastAttack if it doesn't exist
-  if (!game.lastPlayerAttack) {
-    game.lastPlayerAttack = currentTime;
-    return;
-  }
-
-  // Force minimum delay between attacks
-  if (currentTime - game.lastPlayerAttack < MIN_ATTACK_DELAY) {
-    return;
-  }
-
-  if (
-    canAttack(game.lastPlayerAttack, hero.stats.attackSpeed, currentTime)
-  ) {
+  const timeBetweenAttacks = 1000 / hero.stats.stats.attackSpeed; // Convert attacks/sec to ms
+  if (currentTime - game.lastPlayerAttack >= timeBetweenAttacks) {
     if (game.currentEnemy.currentHealth > 0) {
-      const isCritical = Math.random() * 100 < hero.stats.critChance;
+      // Calculate critical hit
+      const isCritical = Math.random() * 100 < hero.stats.stats.critChance; // Compare random number to critChance
       const damage = isCritical
-        ? hero.stats.damage * hero.stats.critDamage
-        : hero.stats.damage;
+        ? hero.stats.stats.damage * hero.stats.stats.critDamage // Critical hit: apply multiplier
+        : hero.stats.stats.damage; // Normal damage
 
+      // Apply damage to the enemy
       game.currentEnemy.currentHealth -= damage;
-      createDamageNumber(Math.floor(damage), false, isCritical);
+
+      // Display the damage with a critical marker if applicable
+      createDamageNumber(damage, false, isCritical);
       updateEnemyHealth(game.currentEnemy);
 
-      if (game.currentEnemy.currentHealth <= 0) {
-        game.currentEnemy.currentHealth = 0;
-        defeatEnemy(game);
-      }
+      // Check if the enemy is defeated
+      if (game.currentEnemy.currentHealth <= 0) defeatEnemy(game);
     }
-    game.lastPlayerAttack = currentTime;
+    game.lastPlayerAttack = currentTime; // Record attack time
+    if (game.hero && game.hero.displayStats) game.hero.displayStats();
   }
 }
 
@@ -104,7 +73,6 @@ export function playerDeath (game) {
   }
 
   game.gameStarted = false;
-  resetCombatTimers(game, Date.now());
 
   // Reset button state
   const startBtn = document.getElementById("start-btn");
@@ -122,7 +90,7 @@ export function playerDeath (game) {
   game.resetAllHealth();
 
   // Update UI elements
-  updatePlayerHealth(hero.stats);
+  updatePlayerHealth(hero.stats.stats);
   if (game.currentEnemy) {
     updateEnemyHealth(game.currentEnemy);
   }
@@ -141,18 +109,17 @@ function defeatEnemy (game) {
   const goldGained = 10 + game.zone * 5;
 
   // Gain gold and experience
-  hero.gold += goldGained;
-  hero.gainExp(expGained);
+  hero.stats.gold += goldGained;
+  hero.stats.gainExp(expGained);
 
   // Update "Prestige for" progress (but NOT total souls)
   const newPrestigeSouls = Math.floor(game.zone / 50); // 1 soul per 50 zones
-  hero.prestigeProgress = newPrestigeSouls;
+  hero.stats.prestigeProgress = newPrestigeSouls;
 
   // Increment zone and spawn a new enemy
   game.incrementZone();
-  game.hero.displayStats();
+  hero.displayStats();
   game.currentEnemy = new Enemy(game.zone);
-  resetCombatTimers(game, Date.now());
   game.currentEnemy.lastAttack = Date.now();
   // Update the UI
   updateResources(hero, game);
@@ -167,36 +134,6 @@ function defeatEnemy (game) {
 
     // Show loot notification
     showLootNotification(newItem);
-  }
-}
-
-export function resetCombatTimers (game, currentTime) {
-  if (!game) return;
-  const timestamp = currentTime || Date.now();
-  game.lastPlayerAttack = timestamp;
-  if (game.currentEnemy) {
-    game.currentEnemy.lastAttack = timestamp;
-  }
-}
-
-export function stopBattle (game) {
-  if (!game) return;
-  game.gameStarted = false;
-  // Clear the combat timers
-  game.lastPlayerAttack = 0;
-  if (game.currentEnemy) {
-    game.currentEnemy.lastAttack = 0;
-  }
-}
-
-export function startBattle (game) {
-  if (!game) return;
-  const currentTime = Date.now();
-  game.gameStarted = true;
-  // Initialize combat timers
-  game.lastPlayerAttack = currentTime;
-  if (game.currentEnemy) {
-    game.currentEnemy.lastAttack = currentTime;
   }
 }
 

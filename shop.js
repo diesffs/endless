@@ -56,7 +56,7 @@ export default class Shop {
       updatePlayerHealth(this.hero.stats.stats);
     }
 
-    saveGame(this.game);
+    saveGame();
   }
 
   updateShopUI (stat) {

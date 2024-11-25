@@ -1,26 +1,28 @@
-export const saveGame = (game) => {
+import { hero } from "./main.js";
+
+export const saveGame = () => {
   const saveData = {
     hero: {
       stats: {
-        level: game.stats.level,
-        gold: game.stats.gold,
-        crystals: game.stats.crystals,
-        exp: game.stats.exp,
-        expToNextLevel: game.stats.expToNextLevel,
-        primaryStats: game.stats.primaryStats,
-        statPoints: game.stats.statPoints,
-        stats: game.stats.stats,
-        upgradeCosts: game.stats.upgradeCosts,
-        upgradeLevels: game.stats.upgradeLevels,
-        souls: game.stats.souls, // Save total souls
-        prestigeProgress: game.stats.prestigeProgress,
-        highestZone: game.stats.highestZone, // Save the highest zone
+        level: hero.stats.level,
+        gold: hero.stats.gold,
+        crystals: hero.stats.crystals,
+        exp: hero.stats.exp,
+        expToNextLevel: hero.stats.expToNextLevel,
+        primaryStats: hero.stats.primaryStats,
+        statPoints: hero.stats.statPoints,
+        stats: hero.stats.stats,
+        upgradeCosts: hero.stats.upgradeCosts,
+        upgradeLevels: hero.stats.upgradeLevels,
+        souls: hero.stats.souls, // Save total souls
+        prestigeProgress: hero.stats.prestigeProgress,
+        highestZone: hero.stats.highestZone, // Save the highest zone
       },
     },
-    zone: game.zone,
+    zone: hero.zone,
     inventory: {
-      equippedItems: game.inventory.equippedItems,
-      inventoryItems: game.inventory.inventoryItems
+      equippedItems: hero.inventory.equippedItems,
+      inventoryItems: hero.inventory.inventoryItems
     }
   };
 

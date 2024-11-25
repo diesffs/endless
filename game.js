@@ -7,8 +7,6 @@ import {
 import {
   playerAttack,
   enemyAttack,
-  startBattle,
-  stopBattle,
 } from "./combat.js";
 import { saveGame } from "./storage.js";
 import Inventory from "./inventory.js";
@@ -28,24 +26,6 @@ class Game {
     this.lastPlayerAttack = Date.now();
   }
 
-  toggleBattle () {
-    if (this.gameStarted) {
-      stopBattle(this);
-    } else {
-      this.resetAllHealth();
-      this.lastPlayerAttack = Date.now(); // Reset timer explicitly
-      startBattle(this);
-    }
-  }
-
-  update (currentTime) {
-    if (!this.gameStarted) return;
-
-    // Handle combat
-    playerAttack(this, currentTime);
-    enemyAttack(this, currentTime);
-  }
-
   incrementZone () {
     this.zone += 1;
 
@@ -58,7 +38,7 @@ class Game {
 
   resetAllHealth () {
     hero.stats.currentHealth = hero.stats.maxHealth;
-    updatePlayerHealth(hero.stats);
+    updatePlayerHealth(hero.stats.stats);
     this.currentEnemy.resetHealth();
     updateEnemyHealth(this.currentEnemy);
 
@@ -85,7 +65,7 @@ class Game {
     }
 
     if (currentTime % 30000 < 16) {
-      saveGame(this);
+      saveGame();
     }
   }
 }
