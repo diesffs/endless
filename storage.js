@@ -21,8 +21,8 @@ export const saveGame = () => {
     },
     zone: hero.zone,
     inventory: {
-      equippedItems: hero.inventory.equippedItems,
-      inventoryItems: hero.inventory.inventoryItems
+      equippedItems: hero.stats.inventory.equippedItems,
+      inventoryItems: hero.stats.inventory.inventoryItems
     }
   };
 
