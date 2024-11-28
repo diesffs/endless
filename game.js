@@ -4,10 +4,7 @@ import {
   updateEnemyHealth,
   updateZoneUI,
 } from "./ui.js";
-import {
-  playerAttack,
-  enemyAttack,
-} from "./combat.js";
+import { playerAttack, enemyAttack } from "./combat.js";
 import { saveGame } from "./storage.js";
 import Inventory from "./inventory.js";
 import { hero } from "./main.js";
@@ -26,7 +23,7 @@ class Game {
     this.lastPlayerAttack = Date.now();
   }
 
-  incrementZone () {
+  incrementZone() {
     this.zone += 1;
 
     if (this.zone > hero.highestZone) {
@@ -36,8 +33,8 @@ class Game {
     updateZoneUI(this.zone);
   }
 
-  resetAllHealth () {
-    hero.stats.currentHealth = hero.stats.maxHealth;
+  resetAllHealth() {
+    hero.stats.stats.currentHealth = hero.stats.stats.maxHealth;
     updatePlayerHealth(hero.stats.stats);
     this.currentEnemy.resetHealth();
     updateEnemyHealth(this.currentEnemy);
@@ -51,7 +48,7 @@ class Game {
   }
 
   // Add auto-save functionality to gameLoop
-  gameLoop () {
+  gameLoop() {
     if (!this.gameStarted) return;
 
     const currentTime = Date.now();

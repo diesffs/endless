@@ -75,13 +75,13 @@ class Enemy {
     const baseAttackSpeed = 1; // 1 attack per second
     switch (rarity) {
       case "rare":
-        return baseAttackSpeed * 1.1; // 10% faster attack speed
+        return baseAttackSpeed * 0.9; // 10% faster attack speed
       case "epic":
-        return baseAttackSpeed * 1.2; // 20% faster attack speed
+        return baseAttackSpeed * 0.8; // 20% faster attack speed
       case "legendary":
-        return baseAttackSpeed * 1.3; // 30% faster attack speed
+        return baseAttackSpeed * 0.7; // 30% faster attack speed
       case "mythic":
-        return baseAttackSpeed * 1.5; // 50% faster attack speed
+        return baseAttackSpeed * 0.5; // 50% faster attack speed
       default: // "normal"
         return baseAttackSpeed;
     }

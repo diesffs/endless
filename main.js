@@ -11,8 +11,8 @@ window.log = console.log;
 const savedData = loadGame();
 
 // Initialize hero and game with saved data or create new instances
-export const game = new Game(null, savedData); // Game initialized without Prestige first
 export const hero = savedData ? new Hero(savedData?.hero?.stats) : new Hero();
+export const game = new Game(null, savedData); // Game initialized without Prestige first
 
 // Initialize Prestige and assign it to the game
 export const prestige = new Prestige(game); // Pass the fully initialized game instance

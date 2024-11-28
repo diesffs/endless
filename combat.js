@@ -11,9 +11,9 @@ import {
   rollForDrop,
 } from "./loot-table.js";
 import { RARITY } from "./item.js";
-import { hero } from "./main.js";
+import { hero, game } from "./main.js";
 
-export function enemyAttack (game, currentTime) {
+export function enemyAttack(game, currentTime) {
   if (!game || !hero.stats.stats || !game.currentEnemy) return;
   if (game.currentEnemy.canAttack(currentTime)) {
     // Calculate armor reduction
@@ -39,7 +39,7 @@ export function enemyAttack (game, currentTime) {
   }
 }
 
-export function playerAttack (game, currentTime) {
+export function playerAttack(game, currentTime) {
   if (!game || !game.currentEnemy) return;
   const timeBetweenAttacks = 1000 / hero.stats.stats.attackSpeed; // Convert attacks/sec to ms
   if (currentTime - game.lastPlayerAttack >= timeBetweenAttacks) {
@@ -66,7 +66,7 @@ export function playerAttack (game, currentTime) {
 }
 
 // Remove any duplicate definitions and keep this single version
-export function playerDeath (game) {
+export function playerDeath(game) {
   if (!game) {
     console.error("Game is not properly initialized in playerDeath.");
     return;
@@ -96,10 +96,10 @@ export function playerDeath (game) {
   }
 
   // Update resources for UI consistency
-  updateResources(hero, game);
+  updateResources(hero.stats, game);
 }
 
-function defeatEnemy (game) {
+function defeatEnemy(game) {
   if (!game) {
     console.error("Game is undefined in defeatEnemy");
     return;
@@ -122,7 +122,7 @@ function defeatEnemy (game) {
   game.currentEnemy = new Enemy(game.zone);
   game.currentEnemy.lastAttack = Date.now();
   // Update the UI
-  updateResources(hero, game);
+  updateResources(hero.stats, game);
   updateEnemyHealth(game.currentEnemy);
 
   // Roll for item drop
@@ -137,7 +137,7 @@ function defeatEnemy (game) {
   }
 }
 
-function showLootNotification (item) {
+function showLootNotification(item) {
   const notification = document.createElement("div");
   notification.className = "loot-notification";
   notification.style.color = RARITY[item.rarity].color;
@@ -147,7 +147,7 @@ function showLootNotification (item) {
   setTimeout(() => notification.remove(), 3000);
 }
 
-function createDamageNumber (damage, isPlayer, isCritical = false) {
+function createDamageNumber(damage, isPlayer, isCritical = false) {
   const target = isPlayer ? ".character-avatar" : ".enemy-avatar";
   const avatar = document.querySelector(target);
   const damageEl = document.createElement("div");

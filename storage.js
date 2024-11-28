@@ -21,9 +21,9 @@ export const saveGame = () => {
     },
     zone: hero.zone,
     inventory: {
-      equippedItems: hero.stats.inventory.equippedItems,
-      inventoryItems: hero.stats.inventory.inventoryItems
-    }
+      equippedItems: hero.inventory.equippedItems, // Access inventory from hero
+      inventoryItems: hero.inventory.inventoryItems, // Access inventory from hero
+    },
   };
 
   localStorage.setItem("gameProgress", JSON.stringify(saveData));
