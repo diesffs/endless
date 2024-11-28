@@ -13,7 +13,7 @@ import {
   BASE_DAMAGE,
   BASE_HEALTH,
   BASE_UPGRADE_COSTS,
-} from "./stats.js";
+} from "./hero.js";
 import { hero } from "./main.js";
 
 export default class Prestige {
@@ -28,20 +28,20 @@ export default class Prestige {
   }
 
   calculateSouls () {
-    if (!this.game || typeof hero.stats.highestZone !== "number") {
+    if (!this.game || typeof hero.highestZone !== "number") {
       console.warn("Game or highestZone is not properly initialized.");
       return 0;
     }
 
-    const souls = Math.floor(hero.stats.highestZone / 5); // Example: 1 soul per 5 zones
+    const souls = Math.floor(hero.highestZone / 5); // Example: 1 soul per 5 zones
     return souls;
   }
 
   performPrestige () {
     const earnedSouls = this.calculateSouls();
-    hero.stats.souls += earnedSouls;
-    hero.stats.highestZone = 1;
-    hero.stats.prestigeProgress = 0;
+    hero.souls += earnedSouls;
+    hero.highestZone = 1;
+    hero.prestigeProgress = 0;
 
     this.resetGame();
     saveGame();
@@ -59,17 +59,17 @@ export default class Prestige {
     }
 
     this.game.zone = 1;
-    hero.stats.highestZone = 1;
-    hero.stats.prestigeProgress = 0;
+    hero.highestZone = 1;
+    hero.prestigeProgress = 0;
     updateZoneUI(this.game.zone);
 
-    hero.stats.level = 1;
-    hero.stats.exp = 0;
-    hero.stats.expToNextLevel = 20;
-    hero.stats.gold = 0;
-    hero.stats.primaryStats = { strength: 0, agility: 0, vitality: 0 };
-    hero.stats.statPoints = 0;
-    hero.stats.stats = {
+    hero.level = 1;
+    hero.exp = 0;
+    hero.expToNextLevel = 20;
+    hero.gold = 0;
+    hero.primaryStats = { strength: 0, agility: 0, vitality: 0 };
+    hero.statPoints = 0;
+    hero = {
       damage: BASE_DAMAGE,
       attackSpeed: BASE_ATTACK_SPEED,
       critChance: BASE_CRIT_CHANCE,
@@ -78,7 +78,7 @@ export default class Prestige {
       maxHealth: BASE_HEALTH,
       armor: BASE_ARMOR,
     };
-    hero.stats.upgradeCosts = {
+    hero.upgradeCosts = {
       damage: BASE_UPGRADE_COSTS.damage,
       attackSpeed: BASE_UPGRADE_COSTS.attackSpeed,
       health: BASE_UPGRADE_COSTS.health,
@@ -86,7 +86,7 @@ export default class Prestige {
       critChance: BASE_UPGRADE_COSTS.critChance,
       critDamage: BASE_UPGRADE_COSTS.critDamage,
     };
-    hero.stats.upgradeLevels = {
+    hero.upgradeLevels = {
       damage: 0,
       attackSpeed: 0,
       health: 0,
@@ -95,8 +95,8 @@ export default class Prestige {
       critDamage: 0,
     };
 
-    updateResources(hero.stats, this.game); // Pass the game instance here
-    updatePlayerHealth(hero.stats.stats);
+    updateResources(hero, this.game); // Pass the game instance here
+    updatePlayerHealth(hero.stats);
     this.game.currentEnemy.resetHealth();
     updateEnemyHealth(this.game.currentEnemy);
 
@@ -155,7 +155,7 @@ export default class Prestige {
       const soulsDisplay = doc.querySelector(".earned-souls-display .bonus");
 
       if (damageDisplay) {
-        const damageBonus = Math.floor(hero.stats.souls * 0.1);
+        const damageBonus = Math.floor(hero.souls * 0.1);
         damageDisplay.textContent = `+${damageBonus}%`;
       }
 
@@ -179,7 +179,7 @@ export default class Prestige {
     const soulsDisplay = document.querySelector(".earned-souls-display .bonus");
 
     if (damageDisplay) {
-      const damageBonus = Math.floor(hero.stats.souls * 0.1);
+      const damageBonus = Math.floor(hero.souls * 0.1);
       damageDisplay.textContent = `+${damageBonus}%`;
     }
 

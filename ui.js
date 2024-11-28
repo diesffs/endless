@@ -24,13 +24,13 @@ export function switchTab(game, tabName) {
   document.querySelector(`[data-tab="${tabName}"]`).classList.add("active");
 
   if (tabName === "stats") {
-    updateStatsAndAttributesUI(hero.stats);
+    updateStatsAndAttributesUI(hero);
   }
 
   game.activeTab = tabName;
 }
 
-export function updateResources(stats, game) {
+export function updateResources(hero, game) {
   if (!game || typeof game.zone !== "number") {
     console.error("Game is not initialized properly:", game);
     return;
@@ -39,18 +39,18 @@ export function updateResources(stats, game) {
   prestige.updateUI();
 
   // Update ghost icon (total souls)
-  document.getElementById("souls").textContent = stats.souls || 0;
-  document.getElementById("crystals").textContent = stats.crystals || 0;
+  document.getElementById("souls").textContent = hero.souls || 0;
+  document.getElementById("crystals").textContent = hero.crystals || 0;
 
   // Update highest zone if displayed
   const highestZoneElement = document.getElementById("highest-zone");
   if (highestZoneElement) {
-    highestZoneElement.textContent = `Highest Zone: ${stats.highestZone || 1}`;
+    highestZoneElement.textContent = `Highest Zone: ${hero.highestZone || 1}`;
   }
 
   // Update other stats
-  document.getElementById("gold").textContent = stats.gold || 0;
-  document.getElementById("level").textContent = stats.level || 1;
+  document.getElementById("gold").textContent = hero.gold || 0;
+  document.getElementById("level").textContent = hero.level || 1;
 }
 
 export function updatePlayerHealth(stats) {
@@ -88,9 +88,9 @@ export function toggleGame(game) {
     updateZoneUI(game.zone);
     game.currentEnemy = new Enemy(game.zone);
 
-    hero.stats.stats.currentHealth = hero.stats.stats.maxHealth; // Reset player health
+    hero.stats.currentHealth = hero.stats.maxHealth; // Reset player health
     game.currentEnemy.resetHealth(); // Reset enemy health
-    updatePlayerHealth(hero.stats.stats);
+    updatePlayerHealth(hero.stats);
     updateEnemyHealth(game.currentEnemy);
   }
 
@@ -98,7 +98,7 @@ export function toggleGame(game) {
   startBtn.style.backgroundColor = game.gameStarted ? "#DC2626" : "#059669";
 }
 
-export function updateStatsAndAttributesUI(stats) {
+export function updateStatsAndAttributesUI(hero) {
   const statsGrid = document.querySelector(".stats-grid");
 
   if (!statsGrid) return;
@@ -112,37 +112,37 @@ export function updateStatsAndAttributesUI(stats) {
     statsContainer.className = "stats-container";
     statsContainer.innerHTML = `
           <div><strong>Level:</strong> <span id="level-value">${
-            stats.level || 1
+            hero.level || 1
           }</span></div>
           <div><strong>EXP:</strong> <span id="exp-value">${
-            stats.exp || 0
+            hero.exp || 0
           }</span> / <span id="exp-to-next-level-value">${
-      stats.expToNextLevel || 100
+      hero.expToNextLevel || 100
     }</span></div>
           <div><strong>Highest Zone:</strong> <span id="highest-zone-value">${
-            stats.highestZone
+            hero.highestZone
           }</span></div>
           <hr style="margin: 5px 1px"></hr>
-          <div><strong>Damage:</strong> <span id="damage-value">${stats.stats.damage.toFixed(
+          <div><strong>Damage:</strong> <span id="damage-value">${hero.stats.damage.toFixed(
             0
           )}</span></div>
-          <div><strong>Attack Speed:</strong> <span id="attack-speed-value">${stats.stats.attackSpeed
+          <div><strong>Attack Speed:</strong> <span id="attack-speed-value">${hero.stats.attackSpeed
             .toFixed(2)
             .replace(".", ",")}</span> attacks/sec</div>
-          <div><strong>Crit Chance:</strong> <span id="crit-chance-value">${stats.stats.critChance
+          <div><strong>Crit Chance:</strong> <span id="crit-chance-value">${hero.stats.critChance
             .toFixed(1)
             .replace(".", ",")}%</span></div>
-          <div><strong>Crit Damage:</strong> <span id="crit-damage-value">${stats.stats.critDamage
+          <div><strong>Crit Damage:</strong> <span id="crit-damage-value">${hero.stats.critDamage
             .toFixed(2)
             .replace(".", ",")}x</span></div>
           <hr style="margin: 5px 1px"></hr>
           <div><strong>Health:</strong> <span id="max-health-value">${
-            stats.stats.maxHealth
+            hero.stats.maxHealth
           }</span></div>
           <div><strong>Armor:</strong> <span id="armor-value">${
-            stats.stats.armor || 0
+            hero.stats.armor || 0
           }</span> 
-          (<span id="armor-reduction-value">${stats
+          (<span id="armor-reduction-value">${hero
             .calculateArmorReduction()
             .toFixed(2)
             .replace(".", ",")}%</span> reduction)
@@ -151,42 +151,42 @@ export function updateStatsAndAttributesUI(stats) {
     statsGrid.appendChild(statsContainer);
   } else {
     // Update dynamic stats values
-    document.getElementById("level-value").textContent = stats.level || 1;
-    document.getElementById("exp-value").textContent = stats.exp || 0;
+    document.getElementById("level-value").textContent = hero.level || 1;
+    document.getElementById("exp-value").textContent = hero.exp || 0;
     document.getElementById("exp-to-next-level-value").textContent =
-      stats.expToNextLevel || 100;
+      hero.expToNextLevel || 100;
     document.getElementById("highest-zone-value").textContent =
-      stats.highestZone;
+      hero.highestZone;
     document.getElementById("damage-value").textContent =
-      stats.stats.damage.toFixed(0);
+      hero.stats.damage.toFixed(0);
     document.getElementById("attack-speed-value").textContent =
-      stats.stats.attackSpeed.toFixed(2).replace(".", ",");
+      hero.stats.attackSpeed.toFixed(2).replace(".", ",");
     document.getElementById("crit-chance-value").textContent =
-      stats.stats.critChance.toFixed(1).replace(".", ",") + "%";
+      hero.stats.critChance.toFixed(1).replace(".", ",") + "%";
     document.getElementById("crit-damage-value").textContent =
-      stats.stats.critDamage.toFixed(2).replace(".", ",") + "x";
+      hero.stats.critDamage.toFixed(2).replace(".", ",") + "x";
     document.getElementById("max-health-value").textContent =
-      stats.stats.maxHealth;
-    document.getElementById("armor-value").textContent = stats.stats.armor || 0;
+      hero.stats.maxHealth;
+    document.getElementById("armor-value").textContent = hero.stats.armor || 0;
     document.getElementById("armor-reduction-value").textContent =
-      stats.calculateArmorReduction().toFixed(2).replace(".", ",") + "%";
+      hero.calculateArmorReduction().toFixed(2).replace(".", ",") + "%";
   }
 
   if (!attributesContainer) {
     attributesContainer = document.createElement("div");
     attributesContainer.className = "attributes-container";
     attributesContainer.innerHTML = `
-          <h3 id="attributes">Attributes (+${stats.statPoints})</h3>
+          <h3 id="attributes">Attributes (+${hero.statPoints})</h3>
           <div>
-              <strong>Strength:</strong> <span id="strength-value">${stats.primaryStats.strength}</span>
+              <strong>Strength:</strong> <span id="strength-value">${hero.primaryStats.strength}</span>
               <button class="allocate-btn" data-stat="strength">+</button>
           </div>
           <div>
-              <strong>Agility:</strong> <span id="agility-value">${stats.primaryStats.agility}</span>
+              <strong>Agility:</strong> <span id="agility-value">${hero.primaryStats.agility}</span>
               <button class="allocate-btn" data-stat="agility">+</button>
           </div>
           <div>
-              <strong>Vitality:</strong> <span id="vitality-value">${stats.primaryStats.vitality}</span>
+              <strong>Vitality:</strong> <span id="vitality-value">${hero.primaryStats.vitality}</span>
               <button class="allocate-btn" data-stat="vitality">+</button>
           </div>
       `;
@@ -196,26 +196,26 @@ export function updateStatsAndAttributesUI(stats) {
     attributesContainer.querySelectorAll(".allocate-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
         const stat = btn.dataset.stat;
-        if (stats.allocateStat(stat)) {
+        if (hero.allocateStat(stat)) {
           // Update only the specific stat value
           document.getElementById(`${stat}-value`).textContent =
-            stats.primaryStats[stat];
-          updateStatsAndAttributesUI(stats); // Refresh all stats
-          updatePlayerHealth(hero.stats.stats); // Update health bar dynamically
+            hero.primaryStats[stat];
+          updateStatsAndAttributesUI(hero); // Refresh all stats
+          updatePlayerHealth(hero.stats); // Update health bar dynamically
         }
       });
     });
   } else {
     document.getElementById(
       `attributes`
-    ).textContent = `Attributes (+${stats.statPoints})`;
+    ).textContent = `Attributes (+${hero.statPoints})`;
     // Update dynamic attribute values
     document.getElementById("strength-value").textContent =
-      stats.primaryStats.strength;
+      hero.primaryStats.strength;
     document.getElementById("agility-value").textContent =
-      stats.primaryStats.agility;
+      hero.primaryStats.agility;
     document.getElementById("vitality-value").textContent =
-      stats.primaryStats.vitality;
+      hero.primaryStats.vitality;
   }
 }
 export function updateZoneUI(zone) {

@@ -395,21 +395,21 @@ export default class Inventory {
 
         // Equip the new item
         this.equippedItems[slot] = item;
-        hero.stats.recalculateFromAttributes();
+        hero.recalculateFromAttributes();
         saveGame(); // Add save
     }
 
     updateCharacterStats () {
         // Reset equipment bonuses
-        Object.keys(hero.stats.equipmentBonuses).forEach(stat => {
-            hero.stats.equipmentBonuses[stat] = 0;
+        Object.keys(hero.equipmentBonuses).forEach(stat => {
+            hero.equipmentBonuses[stat] = 0;
         });
 
         // Calculate bonuses from all equipped items
         Object.values(this.equippedItems).forEach(item => {
             Object.entries(item.stats).forEach(([stat, value]) => {
-                if (hero.stats.equipmentBonuses[stat] !== undefined) {
-                    hero.stats.equipmentBonuses[stat] += value;
+                if (hero.equipmentBonuses[stat] !== undefined) {
+                    hero.equipmentBonuses[stat] += value;
                 }
             });
         });

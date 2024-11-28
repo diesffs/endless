@@ -15,41 +15,41 @@ import { hero, game } from "./main.js";
 import { saveGame } from "./storage.js";
 
 export function enemyAttack(game, currentTime) {
-  if (!game || !hero.stats.stats || !game.currentEnemy) return;
+  if (!game || !hero || !game.currentEnemy) return;
   if (game.currentEnemy.canAttack(currentTime)) {
     // Calculate armor reduction
-    const armor = hero.stats.stats.armor;
+    const armor = hero.stats.armor;
     const damageReduction = armor / (100 + armor); // Example formula
     const effectiveDamage = game.currentEnemy.damage * (1 - damageReduction);
 
     // Apply reduced damage to player's health
-    hero.stats.stats.currentHealth -= effectiveDamage;
-    if (hero.stats.stats.currentHealth < 0) hero.stats.stats.currentHealth = 0;
+    hero.stats.currentHealth -= effectiveDamage;
+    if (hero.stats.currentHealth < 0) hero.stats.currentHealth = 0;
 
     // Show the damage number (rounded down for clarity)
     createDamageNumber(Math.floor(effectiveDamage), true);
 
     // Update player health UI
-    updatePlayerHealth(hero.stats.stats);
+    updatePlayerHealth(hero.stats);
 
     // Record the enemy's last attack time
     game.currentEnemy.lastAttack = currentTime;
 
     // Handle player death if health drops to 0
-    if (hero.stats.stats.currentHealth <= 0) playerDeath(game);
+    if (hero.stats.currentHealth <= 0) playerDeath(game);
   }
 }
 
 export function playerAttack(game, currentTime) {
   if (!game || !game.currentEnemy) return;
-  const timeBetweenAttacks = 1000 / hero.stats.stats.attackSpeed; // Convert attacks/sec to ms
+  const timeBetweenAttacks = 1000 / hero.stats.attackSpeed; // Convert attacks/sec to ms
   if (currentTime - game.lastPlayerAttack >= timeBetweenAttacks) {
     if (game.currentEnemy.currentHealth > 0) {
       // Calculate critical hit
-      const isCritical = Math.random() * 100 < hero.stats.stats.critChance; // Compare random number to critChance
+      const isCritical = Math.random() * 100 < hero.stats.critChance; // Compare random number to critChance
       const damage = isCritical
-        ? hero.stats.stats.damage * hero.stats.stats.critDamage // Critical hit: apply multiplier
-        : hero.stats.stats.damage; // Normal damage
+        ? hero.stats.damage * hero.stats.critDamage // Critical hit: apply multiplier
+        : hero.stats.damage; // Normal damage
 
       // Apply damage to the enemy
       game.currentEnemy.currentHealth -= damage;
@@ -91,13 +91,13 @@ export function playerDeath(game) {
   game.resetAllHealth();
 
   // Update UI elements
-  updatePlayerHealth(hero.stats.stats);
+  updatePlayerHealth(hero.stats);
   if (game.currentEnemy) {
     updateEnemyHealth(game.currentEnemy);
   }
 
   // Update resources for UI consistency
-  updateResources(hero.stats, game);
+  updateResources(hero, game);
 }
 
 function defeatEnemy(game) {
@@ -110,12 +110,12 @@ function defeatEnemy(game) {
   const goldGained = 10 + game.zone * 5;
 
   // Gain gold and experience
-  hero.stats.gold += goldGained;
-  hero.stats.gainExp(expGained);
+  hero.gold += goldGained;
+  hero.gainExp(expGained);
 
   // Update "Prestige for" progress (but NOT total souls)
   const newPrestigeSouls = Math.floor(game.zone / 50); // 1 soul per 50 zones
-  hero.stats.prestigeProgress = newPrestigeSouls;
+  hero.prestigeProgress = newPrestigeSouls;
 
   // Increment zone and spawn a new enemy
   game.incrementZone();
@@ -123,7 +123,7 @@ function defeatEnemy(game) {
   game.currentEnemy = new Enemy(game.zone);
   game.currentEnemy.lastAttack = Date.now();
   // Update the UI
-  updateResources(hero.stats, game);
+  updateResources(hero, game);
   updateEnemyHealth(game.currentEnemy);
 
   // Roll for item drop

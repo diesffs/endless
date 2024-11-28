@@ -24,7 +24,7 @@ export const shop = new Shop(hero, game); // Shop depends on hero and game
 // Initialize the Prestige UI and update resources
 prestige.initializePrestigeUI();
 hero.displayStats();
-updateResources(hero.stats, game); // Update UI with initialized resources
+updateResources(hero, game); // Update UI with initialized resources
 
 // Game loop
 let isRunning = false;

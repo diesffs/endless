@@ -1,6 +1,6 @@
 import { updateResources, updatePlayerHealth } from "./ui.js";
 import { saveGame } from "./storage.js";
-import { ARMOR_ON_UPGRADE, ATTACK_SPEED_ON_UPGRADE, CRIT_CHANCE_ON_UPGRADE, CRIT_DAMAGE_ON_UPGRADE, DAMAGE_ON_UPGRADE, HEALTH_ON_UPGRADE } from "./stats.js";
+import { ARMOR_ON_UPGRADE, ATTACK_SPEED_ON_UPGRADE, CRIT_CHANCE_ON_UPGRADE, CRIT_DAMAGE_ON_UPGRADE, DAMAGE_ON_UPGRADE, HEALTH_ON_UPGRADE } from "./hero.js";
 import { showToast } from "./toast.js";
 
 const UPGRADE_CONFIG = {
@@ -65,7 +65,7 @@ export default class Shop {
   }
 
   createUpgradeButton(stat, config) {
-    const { upgradeCosts, upgradeLevels } = this.hero.stats;
+    const { upgradeCosts, upgradeLevels } = this.hero;
     return `
       <button data-stat="${stat}">
         <span class="upgrade-name">${config.label} (Lvl ${upgradeLevels[stat] || 0})</span>
@@ -78,24 +78,24 @@ export default class Shop {
   buyUpgrade(stat) {
     const isCrystalUpgrade = stat.startsWith('crystal');
     const currency = isCrystalUpgrade ? 'crystals' : 'gold';
-    const cost = this.hero.stats.upgradeCosts[stat];
+    const cost = this.hero.upgradeCosts[stat];
 
-    if (this.hero.stats[currency] < cost) {
+    if (this.hero[currency] < cost) {
       showToast(`Not enough ${currency}!`, 'error');
       return;
     }
 
-    this.hero.stats[currency] -= cost;
-    this.hero.stats.upgradeLevels[stat] = (this.hero.stats.upgradeLevels[stat] || 0) + 1;
-    this.hero.stats.upgradeCosts[stat] = cost * 1.5; // Increase cost for next upgrade
+    this.hero[currency] -= cost;
+    this.hero.upgradeLevels[stat] = (this.hero.upgradeLevels[stat] || 0) + 1;
+    this.hero.upgradeCosts[stat] = cost * 1.5; // Increase cost for next upgrade
 
     this.updateShopUI(isCrystalUpgrade ? 'crystal-upgrades' : 'gold-upgrades');
     this.hero.displayStats();
-    updateResources(this.hero.stats, this.game);
+    updateResources(this.hero, this.game);
 
     if (stat === "health" || stat === "crystalHealth") {
-      this.hero.stats.stats.currentHealth = this.hero.stats.stats.maxHealth;
-      updatePlayerHealth(this.hero.stats.stats);
+      this.hero.stats.currentHealth = this.hero.stats.maxHealth;
+      updatePlayerHealth(this.hero.stats);
     }
 
     saveGame();
