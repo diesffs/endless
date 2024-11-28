@@ -48,7 +48,7 @@ export default class Stats {
       agility: 0,
       vitality: 0,
       critChance: 0,
-      critDamage: 0
+      critDamage: 0,
     };
 
     // Default stats
@@ -86,17 +86,17 @@ export default class Stats {
     }
   }
 
-  gainSoul (amount) {
+  gainSoul(amount) {
     this.souls += amount;
   }
 
-  gainExp (amount) {
+  gainExp(amount) {
     this.exp += amount;
     while (this.exp >= this.expToNextLevel) {
       this.levelUp();
     }
   }
-  levelUp () {
+  levelUp() {
     this.exp -= this.expToNextLevel;
     this.level++;
     this.statPoints += STATS_ON_LEVEL_UP;
@@ -107,7 +107,7 @@ export default class Stats {
     saveGame();
   }
 
-  allocateStat (stat) {
+  allocateStat(stat) {
     if (this.statPoints > 0 && this.primaryStats[stat] !== undefined) {
       this.primaryStats[stat]++;
       this.statPoints--;
@@ -123,12 +123,13 @@ export default class Stats {
     return false;
   }
 
-  recalculateFromAttributes () {
+  recalculateFromAttributes() {
     this.stats.damage =
       BASE_DAMAGE +
       this.primaryStats.strength * 2 +
       this.upgradeLevels.damage * DAMAGE_ON_UPGRADE +
-      DAMAGE_ON_LEVEL_UP * this.level - DAMAGE_ON_LEVEL_UP;
+      DAMAGE_ON_LEVEL_UP * this.level -
+      DAMAGE_ON_LEVEL_UP;
 
     this.stats.attackSpeed =
       BASE_ATTACK_SPEED +
@@ -139,7 +140,8 @@ export default class Stats {
       BASE_HEALTH +
       this.primaryStats.vitality * 10 +
       this.upgradeLevels.health * HEALTH_ON_UPGRADE +
-      HEALTH_ON_LEVEL_UP * this.level - HEALTH_ON_LEVEL_UP;
+      HEALTH_ON_LEVEL_UP * this.level -
+      HEALTH_ON_LEVEL_UP;
 
     this.stats.armor = BASE_ARMOR + this.upgradeLevels.armor * ARMOR_ON_UPGRADE;
 
@@ -151,7 +153,7 @@ export default class Stats {
 
     // Recalculate equipment bonuses
     game.inventory.updateCharacterStats();
-    log(this.equipmentBonuses)
+    log(this.equipmentBonuses);
     // Add equipment bonuses
     Object.entries(this.equipmentBonuses).forEach(([stat, bonus]) => {
       if (this.stats[stat] !== undefined) {
@@ -160,7 +162,7 @@ export default class Stats {
     });
   }
 
-  buyUpgrade (stat) {
+  buyUpgrade(stat) {
     if (this.upgradeCosts[stat] && this.gold >= this.upgradeCosts[stat]) {
       this.gold -= this.upgradeCosts[stat];
       this.upgradeLevels[stat]++;
@@ -174,7 +176,7 @@ export default class Stats {
     return false;
   }
 
-  calculateArmorReduction () {
+  calculateArmorReduction() {
     const armor = this.stats.armor;
     return (armor / (100 + armor)) * 100;
   }

@@ -3,6 +3,7 @@ import {
   updatePlayerHealth,
   updateEnemyHealth,
   updateZoneUI,
+  updateResources,
 } from "./ui.js";
 import { playerAttack, enemyAttack } from "./combat.js";
 import { saveGame } from "./storage.js";
@@ -25,12 +26,14 @@ class Game {
 
   incrementZone() {
     this.zone += 1;
-
-    if (this.zone > hero.highestZone) {
-      hero.highestZone = this.zone;
+    console.log(hero.stats.crystals);
+    if (this.zone > hero.stats.highestZone) {
+      hero.stats.highestZone = this.zone;
+      hero.stats.crystals += 1; // Award 1 crystal for increasing highest zone
     }
 
     updateZoneUI(this.zone);
+    updateResources(hero.stats, this); // Update resources to reflect new crystal count
   }
 
   resetAllHealth() {

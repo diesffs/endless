@@ -1,7 +1,7 @@
 import Enemy from "./enemy.js";
 import { hero, prestige } from "./main.js";
 
-export function initializeUI (game) {
+export function initializeUI(game) {
   game.activeTab = "inventory";
   document.querySelectorAll(".tab-btn").forEach((btn) => {
     btn.addEventListener("click", () => switchTab(game, btn.dataset.tab));
@@ -13,7 +13,7 @@ export function initializeUI (game) {
   updateZoneUI(game.zone);
 }
 
-export function switchTab (game, tabName) {
+export function switchTab(game, tabName) {
   document
     .querySelectorAll(".tab-panel")
     .forEach((panel) => panel.classList.remove("active"));
@@ -30,7 +30,7 @@ export function switchTab (game, tabName) {
   game.activeTab = tabName;
 }
 
-export function updateResources (stats, game) {
+export function updateResources(stats, game) {
   if (!game || typeof game.zone !== "number") {
     console.error("Game is not initialized properly:", game);
     return;
@@ -40,6 +40,7 @@ export function updateResources (stats, game) {
 
   // Update ghost icon (total souls)
   document.getElementById("souls").textContent = stats.souls || 0;
+  document.getElementById("crystals").textContent = stats.crystals || 0;
 
   // Update highest zone if displayed
   const highestZoneElement = document.getElementById("highest-zone");
@@ -52,7 +53,7 @@ export function updateResources (stats, game) {
   document.getElementById("level").textContent = stats.level || 1;
 }
 
-export function updatePlayerHealth (stats) {
+export function updatePlayerHealth(stats) {
   const healthPercentage = (stats.currentHealth / stats.maxHealth) * 100;
   document.getElementById("health-fill").style.width = `${healthPercentage}%`;
   document.getElementById("health-text").textContent = `${Math.max(
@@ -61,7 +62,7 @@ export function updatePlayerHealth (stats) {
   )}/${Math.floor(stats.maxHealth)}`;
 }
 
-export function updateEnemyHealth (enemy) {
+export function updateEnemyHealth(enemy) {
   const healthPercentage = (enemy.currentHealth / enemy.maxHealth) * 100;
   document.getElementById(
     "enemy-health-fill"
@@ -72,7 +73,7 @@ export function updateEnemyHealth (enemy) {
   )}/${Math.floor(enemy.maxHealth)}`;
 }
 
-export function toggleGame (game) {
+export function toggleGame(game) {
   const startBtn = document.getElementById("start-btn");
   game.gameStarted = !game.gameStarted;
 
@@ -97,7 +98,7 @@ export function toggleGame (game) {
   startBtn.style.backgroundColor = game.gameStarted ? "#DC2626" : "#059669";
 }
 
-export function updateStatsAndAttributesUI (stats) {
+export function updateStatsAndAttributesUI(stats) {
   const statsGrid = document.querySelector(".stats-grid");
 
   if (!statsGrid) return;
@@ -110,34 +111,41 @@ export function updateStatsAndAttributesUI (stats) {
     statsContainer = document.createElement("div");
     statsContainer.className = "stats-container";
     statsContainer.innerHTML = `
-          <div><strong>Level:</strong> <span id="level-value">${stats.level || 1
-      }</span></div>
-          <div><strong>EXP:</strong> <span id="exp-value">${stats.exp || 0
-      }</span> / <span id="exp-to-next-level-value">${stats.expToNextLevel || 100
-      }</span></div>
-          <div><strong>Highest Zone:</strong> <span id="highest-zone-value">${stats.highestZone}</span></div>
+          <div><strong>Level:</strong> <span id="level-value">${
+            stats.level || 1
+          }</span></div>
+          <div><strong>EXP:</strong> <span id="exp-value">${
+            stats.exp || 0
+          }</span> / <span id="exp-to-next-level-value">${
+      stats.expToNextLevel || 100
+    }</span></div>
+          <div><strong>Highest Zone:</strong> <span id="highest-zone-value">${
+            stats.highestZone
+          }</span></div>
           <hr style="margin: 5px 1px"></hr>
           <div><strong>Damage:</strong> <span id="damage-value">${stats.stats.damage.toFixed(
-        0
-      )}</span></div>
+            0
+          )}</span></div>
           <div><strong>Attack Speed:</strong> <span id="attack-speed-value">${stats.stats.attackSpeed
-        .toFixed(2)
-        .replace(".", ",")}</span> attacks/sec</div>
+            .toFixed(2)
+            .replace(".", ",")}</span> attacks/sec</div>
           <div><strong>Crit Chance:</strong> <span id="crit-chance-value">${stats.stats.critChance
-        .toFixed(1)
-        .replace(".", ",")}%</span></div>
+            .toFixed(1)
+            .replace(".", ",")}%</span></div>
           <div><strong>Crit Damage:</strong> <span id="crit-damage-value">${stats.stats.critDamage
-        .toFixed(2)
-        .replace(".", ",")}x</span></div>
+            .toFixed(2)
+            .replace(".", ",")}x</span></div>
           <hr style="margin: 5px 1px"></hr>
-          <div><strong>Health:</strong> <span id="max-health-value">${stats.stats.maxHealth
-      }</span></div>
-          <div><strong>Armor:</strong> <span id="armor-value">${stats.stats.armor || 0
-      }</span> 
+          <div><strong>Health:</strong> <span id="max-health-value">${
+            stats.stats.maxHealth
+          }</span></div>
+          <div><strong>Armor:</strong> <span id="armor-value">${
+            stats.stats.armor || 0
+          }</span> 
           (<span id="armor-reduction-value">${stats
-        .calculateArmorReduction()
-        .toFixed(2)
-        .replace(".", ",")}%</span> reduction)
+            .calculateArmorReduction()
+            .toFixed(2)
+            .replace(".", ",")}%</span> reduction)
           </div>
       `;
     statsGrid.appendChild(statsContainer);
@@ -147,7 +155,8 @@ export function updateStatsAndAttributesUI (stats) {
     document.getElementById("exp-value").textContent = stats.exp || 0;
     document.getElementById("exp-to-next-level-value").textContent =
       stats.expToNextLevel || 100;
-    document.getElementById("highest-zone-value").textContent = stats.highestZone;
+    document.getElementById("highest-zone-value").textContent =
+      stats.highestZone;
     document.getElementById("damage-value").textContent =
       stats.stats.damage.toFixed(0);
     document.getElementById("attack-speed-value").textContent =
@@ -209,7 +218,7 @@ export function updateStatsAndAttributesUI (stats) {
       stats.primaryStats.vitality;
   }
 }
-export function updateZoneUI (zone) {
+export function updateZoneUI(zone) {
   const zoneDisplay = document.getElementById("zone-display");
   if (zoneDisplay) {
     zoneDisplay.textContent = `Zone: ${zone}`;

@@ -12,6 +12,7 @@ import {
 } from "./loot-table.js";
 import { RARITY } from "./item.js";
 import { hero, game } from "./main.js";
+import { saveGame } from "./storage.js";
 
 export function enemyAttack(game, currentTime) {
   if (!game || !hero.stats.stats || !game.currentEnemy) return;
@@ -135,6 +136,9 @@ function defeatEnemy(game) {
     // Show loot notification
     showLootNotification(newItem);
   }
+
+  // Save the game state
+  saveGame();
 }
 
 function showLootNotification(item) {

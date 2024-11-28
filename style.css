@@ -864,3 +864,26 @@ body {
   color: #ff0000;
   border-color: #ff0000;
 }
+
+.shop-sub-tabs {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 10px;
+}
+
+.sub-tab-btn {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.sub-tab-btn.active {
+  background-color: #ddd;
+}
+
+.sub-tab-panel {
+  display: none;
+}
+
+.sub-tab-panel.active {
+  display: block;
+}
