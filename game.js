@@ -1,5 +1,4 @@
 import {
-  initializeUI,
   updatePlayerHealth,
   updateEnemyHealth,
   updateZoneUI,
@@ -14,13 +13,9 @@ class Game {
   constructor(prestige = null, savedData) {
     this.gameStarted = false;
     this.currentEnemy = null;
-    this.lastPlayerAttack = 0;
     this.zone = 1;
     this.inventory = new Inventory(this, savedData?.inventory);
-
     this.prestige = prestige;
-
-    initializeUI(this);
     this.lastPlayerAttack = Date.now();
   }
 
@@ -65,6 +60,25 @@ class Game {
 
     if (currentTime % 30000 < 16) {
       saveGame();
+    }
+  }
+  toggle() {
+    this.gameStarted = !this.gameStarted;
+
+    if (this.gameStarted) {
+      this.currentEnemy.lastAttack = Date.now();
+      // When the game starts, reset health and update resources
+      this.resetAllHealth();
+      updateResources(hero, this); // Pass game here
+    } else {
+      this.zone = 1; // Reset zone
+      updateZoneUI(this.zone);
+      this.currentEnemy = new Enemy(this.zone);
+
+      hero.stats.currentHealth = hero.stats.maxHealth; // Reset player health
+      this.currentEnemy.resetHealth(); // Reset enemy health
+      updatePlayerHealth(hero.stats);
+      updateEnemyHealth(this.currentEnemy);
     }
   }
 }

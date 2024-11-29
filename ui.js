@@ -1,12 +1,13 @@
 import Enemy from './enemy.js';
-import { hero, prestige } from './main.js';
+import { game, hero, prestige } from './main.js';
 
 export function initializeUI(game) {
+  game.currentEnemy = new Enemy(game.zone);
   game.activeTab = 'inventory';
   document.querySelectorAll('.tab-btn').forEach((btn) => {
     btn.addEventListener('click', () => switchTab(game, btn.dataset.tab));
   });
-  document.getElementById('start-btn').addEventListener('click', () => toggleGame(game));
+  document.getElementById('start-btn').addEventListener('click', () => toggleGame());
 
   updateZoneUI(game.zone);
 }
@@ -65,26 +66,10 @@ export function updateEnemyHealth(enemy) {
   )}/${Math.floor(enemy.maxHealth)}`;
 }
 
-export function toggleGame(game) {
+export function toggleGame() {
   const startBtn = document.getElementById('start-btn');
-  game.gameStarted = !game.gameStarted;
 
-  if (game.gameStarted) {
-    game.currentEnemy = new Enemy(game.zone);
-    game.currentEnemy.lastAttack = Date.now();
-    // When the game starts, reset health and update resources
-    game.resetAllHealth();
-    updateResources(hero, game); // Pass game here
-  } else {
-    game.zone = 1; // Reset zone
-    updateZoneUI(game.zone);
-    game.currentEnemy = new Enemy(game.zone);
-
-    hero.stats.currentHealth = hero.stats.maxHealth; // Reset player health
-    game.currentEnemy.resetHealth(); // Reset enemy health
-    updatePlayerHealth(hero.stats);
-    updateEnemyHealth(game.currentEnemy);
-  }
+  game.toggle();
 
   startBtn.textContent = game.gameStarted ? 'Stop' : 'Start';
   startBtn.style.backgroundColor = game.gameStarted ? '#DC2626' : '#059669';

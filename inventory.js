@@ -203,23 +203,6 @@ export default class Inventory {
       }
     }
     this.updateInventoryGrid();
-    saveGame(); // Add save
-  }
-
-  unequipItem(item) {
-    if (!item) return;
-
-    // Remove from equipped items
-    for (const [slot, equippedItem] of Object.entries(this.equippedItems)) {
-      if (equippedItem.id === item.id) {
-        delete this.equippedItems[slot];
-        const emptySlot = this.inventoryItems.findIndex((slot) => slot === null);
-        if (emptySlot !== -1) {
-          this.inventoryItems[emptySlot] = item;
-        }
-        break;
-      }
-    }
     hero.recalculateFromAttributes();
     saveGame(); // Add save
   }

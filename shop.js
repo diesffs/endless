@@ -96,9 +96,9 @@ export default class Shop {
         <span class="upgrade-bonus">${this.getBonusText(
           stat,
           config,
-          upgradeLevels[stat] || 0
+          hero.upgradeLevels[stat] || 0
         )}</span>
-        <span class="upgrade-cost">${upgradeCosts[stat] || 0} ${
+        <span class="upgrade-cost">${hero.upgradeCosts[stat] || 0} ${
       stat.startsWith('crystal') ? 'Crystals' : 'Gold'
     }</span>
       </button>
