@@ -1,137 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Secret Tower</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Secret Tower</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-
-<body>
-  <div class="game-container">
-    <div class="resource-bar">
-      <div class="resource" title="Gold">
-        <span class="icon">💰</span><span id="gold"></span>
-      </div>
-      <div class="resource" title="Crystals">
-        <span class="icon">💎</span><span id="crystals"></span>
-      </div>
-      <div class="resource" title="Souls">
-        <span class="icon">👻</span><span id="souls"></span>
-      </div>
-      <div class="resource" title="Character Level">
-        <span>Level </span><span id="level"></span>
-      </div>
-    </div>
-
-    <div class="main-content">
-      <div class="game-panel">
-        <div class="tab-buttons">
-          <button class="tab-btn active" data-tab="stats">Stats</button>
-          <button class="tab-btn" data-tab="shop">Shop</button>
-          <button class="tab-btn" data-tab="prestige">Prestige</button>
-          <button class="tab-btn" data-tab="inventory">Inventory</button>
+  <body>
+    <div class="game-container">
+      <div class="resource-bar">
+        <div class="resource" title="Gold"><span class="icon">💰</span><span id="gold"></span></div>
+        <div class="resource" title="Crystals">
+          <span class="icon">💎</span><span id="crystals"></span>
         </div>
+        <div class="resource" title="Souls">
+          <span class="icon">👻</span><span id="souls"></span>
+        </div>
+        <div class="resource" title="Character Level">
+          <span>Level </span><span id="level"></span>
+        </div>
+      </div>
 
-        <div class="tab-content">
-          <div id="stats" class="tab-panel active">
-            <div class="stats-grid"></div>
+      <div class="main-content">
+        <div class="game-panel">
+          <div class="tab-buttons">
+            <button class="tab-btn active" data-tab="stats">Stats</button>
+            <button class="tab-btn" data-tab="shop">Shop</button>
+            <button class="tab-btn" data-tab="prestige">Prestige</button>
+            <button class="tab-btn" data-tab="inventory">Inventory</button>
           </div>
-          <div id="shop" class="tab-panel">
-            <div class="shop-sub-tabs">
-              <button class="sub-tab-btn active" data-sub-tab="gold-upgrades">Gold Upgrades</button>
-              <button class="sub-tab-btn" data-sub-tab="crystal-upgrades">Crystal Upgrades</button>
-            </div>
-            <div class="shop-sub-tab-content">
-              <div id="gold-upgrades" class="sub-tab-panel active">
-                <div class="shop-grid"></div>
-              </div>
-              <div id="crystal-upgrades" class="sub-tab-panel">
-                <div class="shop-grid"></div>
-              </div>
-            </div>
-          </div>
-          <div id="prestige" class="tab-panel">
-            <div class="prestige-items"></div>
-          </div>
-          <div id="inventory" class="tab-panel">
-            <div class="equipment-container">
-              <div class="equipment-layout">
-                <div class="equipment-slots">
-                  <div class="equipment-slot" data-slot="head" title="Helmet Slot">
-                    <div class="slot-indicator">🪖</div>
-                  </div>
-                  <div class="equipment-slot" data-slot="amulet" title="Amulet Slot">
-                    <div class="slot-indicator">📿</div>
-                  </div>
-                  <div class="equipment-slot" data-slot="chest" title="Armor Slot">
-                    <div class="slot-indicator">👕</div>
-                  </div>
-                  <div class="equipment-slot" data-slot="weapon" title="Weapon Slot">
-                    <div class="slot-indicator">⚔️</div>
-                  </div>
-                  <div class="equipment-slot" data-slot="offhand" title="Shield/Offhand Slot">
-                    <div class="slot-indicator">🛡️</div>
-                  </div>
-                  <div class="equipment-slot" data-slot="gloves" title="Gloves Slot">
-                    <div class="slot-indicator">🧤</div>
-                  </div>
-                  <div class="equipment-slot" data-slot="ring1" title="Ring Slot">
-                    <div class="slot-indicator">💍</div>
-                  </div>
-                  <div class="equipment-slot" data-slot="legs" title="Pants Slot">
-                    <div class="slot-indicator">👖</div>
-                  </div>
-                  <div class="equipment-slot" data-slot="ring2" title="Ring Slot">
-                    <div class="slot-indicator">💍</div>
-                  </div>
 
-                  <div class="equipment-slot" data-slot="boots" title="Boots">
-                    <div class="slot-indicator">👢</div>
-                  </div>
+          <div class="tab-content">
+            <div id="stats" class="tab-panel active">
+              <div class="stats-grid"></div>
+            </div>
+            <div id="shop" class="tab-panel">
+              <div class="shop-sub-tabs">
+                <button class="sub-tab-btn active" data-sub-tab="gold-upgrades">
+                  Gold Upgrades
+                </button>
+                <button class="sub-tab-btn" data-sub-tab="crystal-upgrades">
+                  Crystal Upgrades
+                </button>
+              </div>
+              <div class="shop-sub-tab-content">
+                <div id="gold-upgrades" class="sub-tab-panel active">
+                  <div class="shop-grid"></div>
                 </div>
-                <div class="character-preview">👤</div>
+                <div id="crystal-upgrades" class="sub-tab-panel">
+                  <div class="shop-grid"></div>
+                </div>
               </div>
-              <button id="salvage-all">Salvage All</button>
             </div>
-            <div class="inventory-grid">
-              <div class="grid-container"></div>
+            <div id="prestige" class="tab-panel">
+              <div class="prestige-items"></div>
             </div>
-            <div class="debug-controls">
-              <button id="spawn-sword">Spawn Sword</button>
-              <button id="spawn-armor">Spawn Armor</button>
-              <button id="spawn-helmet">Spawn Helmet</button>
+            <div id="inventory" class="tab-panel">
+              <div class="equipment-container">
+                <div class="equipment-layout">
+                  <div class="equipment-slots">
+                    <div class="equipment-slot" data-slot="head" title="Helmet Slot">
+                      <div class="slot-indicator">🪖</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="amulet" title="Amulet Slot">
+                      <div class="slot-indicator">📿</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="chest" title="Armor Slot">
+                      <div class="slot-indicator">👕</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="weapon" title="Weapon Slot">
+                      <div class="slot-indicator">⚔️</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="offhand" title="Shield/Offhand Slot">
+                      <div class="slot-indicator">🛡️</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="gloves" title="Gloves Slot">
+                      <div class="slot-indicator">🧤</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="ring1" title="Ring Slot">
+                      <div class="slot-indicator">💍</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="legs" title="Pants Slot">
+                      <div class="slot-indicator">👖</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="ring2" title="Ring Slot">
+                      <div class="slot-indicator">💍</div>
+                    </div>
+
+                    <div class="equipment-slot" data-slot="boots" title="Boots">
+                      <div class="slot-indicator">👢</div>
+                    </div>
+                  </div>
+                  <div class="character-preview">👤</div>
+                </div>
+                <button id="salvage-all">Salvage All</button>
+              </div>
+              <div class="inventory-grid">
+                <div class="grid-container"></div>
+              </div>
+              <div class="debug-controls">
+                <button id="spawn-sword">Spawn Sword</button>
+                <button id="spawn-armor">Spawn Armor</button>
+                <button id="spawn-helmet">Spawn Helmet</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="character-panel">
-        <h2 id="character-name">Hero</h2>
-        <div class="character-avatar">🛡️</div>
-        <div class="health-bar">
-          <div id="health-fill" style="width: 100%"></div>
-        </div>
-        <div id="health-text" class="health-text">100/100</div>
-        <div class="character-controls">
-          <button id="start-btn">Start</button>
-          <div id="zone-display">Zone: 1</div>
-        </div>
-
-        <div class="enemy-section">
-          <h3>Current Enemy</h3>
-          <div class="enemy-avatar">⚔️</div>
-          <div class="enemy-health-bar">
-            <div id="enemy-health-fill"></div>
+        <div class="character-panel">
+          <h2 id="character-name">Hero</h2>
+          <div class="character-avatar">🛡️</div>
+          <div class="health-bar">
+            <div id="health-fill" style="width: 100%"></div>
           </div>
-          <div id="enemy-health-text" class="health-text">50/50</div>
+          <div id="health-text" class="health-text">100/100</div>
+          <div class="character-controls">
+            <button id="start-btn">Start</button>
+            <div id="zone-display">Zone: 1</div>
+          </div>
+
+          <div class="enemy-section">
+            <h3>Current Enemy</h3>
+            <div class="enemy-avatar">⚔️</div>
+            <div class="enemy-health-bar">
+              <div id="enemy-health-fill"></div>
+            </div>
+            <div id="enemy-health-text" class="health-text">50/50</div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <script type="module" src="main.js"></script>
-</body>
-
+    <script type="module" src="main.js"></script>
+  </body>
 </html>

@@ -1,4 +1,4 @@
-import { game, hero } from "./main.js";
+import { game, hero } from './main.js';
 
 export const saveGame = () => {
   const saveData = {
@@ -6,11 +6,11 @@ export const saveGame = () => {
     inventory: game.inventory,
   };
 
-  localStorage.setItem("gameProgress", JSON.stringify(saveData));
+  localStorage.setItem('gameProgress', JSON.stringify(saveData));
 };
 
 export const loadGame = () => {
-  const savedData = localStorage.getItem("gameProgress");
+  const savedData = localStorage.getItem('gameProgress');
   if (savedData) {
     const parsedData = JSON.parse(savedData);
     return parsedData;
@@ -19,5 +19,5 @@ export const loadGame = () => {
 };
 
 export const clearSave = () => {
-  localStorage.removeItem("gameProgress");
+  localStorage.removeItem('gameProgress');
 };

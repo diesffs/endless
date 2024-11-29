@@ -1,7 +1,7 @@
-import { updateStatsAndAttributesUI } from "./ui.js";
-import Inventory from "./inventory.js";
-import { game } from "./main.js";
-import { saveGame } from "./storage.js";
+import { updateStatsAndAttributesUI } from './ui.js';
+import Inventory from './inventory.js';
+import { game } from './main.js';
+import { saveGame } from './storage.js';
 
 // Keep all the constants at the top
 export const BASE_DAMAGE = 10;
@@ -110,7 +110,7 @@ export default class Hero {
       this.primaryStats[stat]++;
       this.statPoints--;
       this.recalculateFromAttributes();
-      if (stat === "vitality" && !game.gameStarted) {
+      if (stat === 'vitality' && !game.gameStarted) {
         this.stats.currentHealth = this.stats.maxHealth;
       }
       saveGame();

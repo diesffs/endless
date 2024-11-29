@@ -1,6 +1,6 @@
-import { hero } from "./main.js";
-import { updateZoneUI, updateResources, updatePlayerHealth } from "./ui.js";
-import { saveGame } from "./storage.js";
+import { hero } from './main.js';
+import { updateZoneUI, updateResources, updatePlayerHealth } from './ui.js';
+import { saveGame } from './storage.js';
 import {
   BASE_DAMAGE,
   BASE_HEALTH,
@@ -9,14 +9,11 @@ import {
   BASE_CRIT_CHANCE,
   BASE_CRIT_DAMAGE,
   BASE_UPGRADE_COSTS,
-} from "./hero.js";
+} from './hero.js';
 export default class Prestige {
   constructor(game) {
-    if (!game || typeof game.zone !== "number") {
-      console.error(
-        "Game is not properly initialized in Prestige constructor:",
-        game
-      );
+    if (!game || typeof game.zone !== 'number') {
+      console.error('Game is not properly initialized in Prestige constructor:', game);
       return;
     }
 
@@ -25,8 +22,8 @@ export default class Prestige {
   }
 
   calculateSouls() {
-    if (!this.game || typeof hero.highestZone !== "number") {
-      console.warn("Game or highestZone is not properly initialized.");
+    if (!this.game || typeof hero.highestZone !== 'number') {
+      console.warn('Game or highestZone is not properly initialized.');
       return 0;
     }
 
@@ -47,11 +44,8 @@ export default class Prestige {
   }
 
   resetGame() {
-    if (!this.game || typeof this.game.zone !== "number") {
-      console.error(
-        "Game is not properly initialized in resetGame:",
-        this.game
-      );
+    if (!this.game || typeof this.game.zone !== 'number') {
+      console.error('Game is not properly initialized in resetGame:', this.game);
       return;
     }
 
@@ -107,50 +101,46 @@ export default class Prestige {
       const earnedSouls = this.calculateSouls();
 
       // Update the modal display
-      const modalDisplay = document.querySelector(".prestige-modal-display");
+      const modalDisplay = document.querySelector('.prestige-modal-display');
       if (modalDisplay) {
         modalDisplay.textContent = `${earnedSouls} Souls`;
       }
 
       // Update the "Prestige for" display in the main UI
-      const prestigeDisplay = document.querySelector(
-        ".earned-souls-display .bonus"
-      );
+      const prestigeDisplay = document.querySelector('.earned-souls-display .bonus');
       if (prestigeDisplay) {
         prestigeDisplay.textContent = `${earnedSouls}`;
       }
 
       // Also update the modal-specific earned souls value
-      const modalSoulsAmount = document.getElementById("modal-souls-amount");
+      const modalSoulsAmount = document.getElementById('modal-souls-amount');
       if (modalSoulsAmount) {
         modalSoulsAmount.textContent = `${earnedSouls}`;
       }
 
       // Ensure the Prestige tab is set up correctly
-      const prestigeTab = document.querySelector("#prestige");
+      const prestigeTab = document.querySelector('#prestige');
       if (!prestigeTab) return;
 
-      if (!prestigeTab.querySelector(".earned-souls-display")) {
-        const earnedSoulsDisplay = document.createElement("div");
-        earnedSoulsDisplay.className = "earned-souls-display";
+      if (!prestigeTab.querySelector('.earned-souls-display')) {
+        const earnedSoulsDisplay = document.createElement('div');
+        earnedSoulsDisplay.className = 'earned-souls-display';
         earnedSoulsDisplay.innerHTML = `<span class="bonus">+0</span>`;
         prestigeTab.appendChild(earnedSoulsDisplay);
       }
 
       // Fetch and load HTML template for dynamic content
-      const response = await fetch("prestige.html");
+      const response = await fetch('prestige.html');
       if (!response.ok)
-        throw new Error(
-          `Failed to fetch Prestige template: ${response.statusText}`
-        );
+        throw new Error(`Failed to fetch Prestige template: ${response.statusText}`);
 
       const templateText = await response.text();
       const parser = new DOMParser();
-      const doc = parser.parseFromString(templateText, "text/html");
+      const doc = parser.parseFromString(templateText, 'text/html');
 
       // Update template content with dynamic values
-      const damageDisplay = doc.querySelector(".damage-display .bonus");
-      const soulsDisplay = doc.querySelector(".earned-souls-display .bonus");
+      const damageDisplay = doc.querySelector('.damage-display .bonus');
+      const soulsDisplay = doc.querySelector('.earned-souls-display .bonus');
 
       if (damageDisplay) {
         const damageBonus = Math.floor(hero.souls * 0.1);
@@ -162,19 +152,19 @@ export default class Prestige {
       }
 
       // Clear existing content in the Prestige tab and append the new template
-      prestigeTab.textContent = "";
+      prestigeTab.textContent = '';
       prestigeTab.appendChild(doc.body.firstChild);
 
       // Set up event listeners for the Prestige button and modal actions
       this.setupPrestigeButton();
     } catch (error) {
-      console.error("Error initializing Prestige UI:", error);
+      console.error('Error initializing Prestige UI:', error);
     }
   }
 
   updateUI() {
-    const damageDisplay = document.querySelector(".damage-display .bonus");
-    const soulsDisplay = document.querySelector(".earned-souls-display .bonus");
+    const damageDisplay = document.querySelector('.damage-display .bonus');
+    const soulsDisplay = document.querySelector('.earned-souls-display .bonus');
 
     if (damageDisplay) {
       const damageBonus = Math.floor(hero.souls * 0.1);
@@ -185,49 +175,49 @@ export default class Prestige {
       soulsDisplay.textContent = `+${this.calculateSouls()}`;
     }
 
-    const modalSoulsAmount = document.getElementById("modal-souls-amount");
+    const modalSoulsAmount = document.getElementById('modal-souls-amount');
     if (modalSoulsAmount) {
       modalSoulsAmount.textContent = `${this.calculateSouls()}`;
     }
   }
 
   setupPrestigeButton() {
-    const prestigeButton = document.getElementById("prestige-btn");
-    const modal = document.getElementById("prestige-modal");
-    const confirmButton = document.getElementById("confirm-prestige");
-    const cancelButton = document.getElementById("cancel-prestige");
+    const prestigeButton = document.getElementById('prestige-btn');
+    const modal = document.getElementById('prestige-modal');
+    const confirmButton = document.getElementById('confirm-prestige');
+    const cancelButton = document.getElementById('cancel-prestige');
 
     if (!prestigeButton || !modal || !confirmButton || !cancelButton) {
-      console.error("Prestige modal or buttons are missing.");
+      console.error('Prestige modal or buttons are missing.');
       return;
     }
 
     // Open modal on Prestige button click
     prestigeButton.onclick = () => {
       const earnedSouls = this.calculateSouls(); // Recalculate to sync with UI
-      const modalSoulsAmount = document.getElementById("modal-souls-amount");
+      const modalSoulsAmount = document.getElementById('modal-souls-amount');
       if (modalSoulsAmount) {
         modalSoulsAmount.textContent = `${earnedSouls}`;
       }
-      modal.style.display = "block"; // Show the modal
+      modal.style.display = 'block'; // Show the modal
     };
 
     // Confirm Prestige action
     confirmButton.onclick = () => {
-      modal.style.display = "none";
+      modal.style.display = 'none';
       this.performPrestige(); // Perform the prestige logic
       this.initializePrestigeUI(); // Re-initialize UI to reflect reset
     };
 
     // Cancel Prestige action
     cancelButton.onclick = () => {
-      modal.style.display = "none";
+      modal.style.display = 'none';
     };
 
     // Close modal when clicking outside
     modal.onclick = (e) => {
       if (e.target === modal) {
-        modal.style.display = "none";
+        modal.style.display = 'none';
       }
     };
   }

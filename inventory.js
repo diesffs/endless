@@ -1,25 +1,19 @@
-import { EQUIPMENT_SLOTS, SLOT_REQUIREMENTS } from "./equipment-slots.js";
-import Item, { ITEM_TYPES, RARITY } from "./item.js";
-import { game, hero } from "./main.js";
-import { saveGame } from "./storage.js";
-import { showToast } from "./toast.js";
+import { EQUIPMENT_SLOTS, SLOT_REQUIREMENTS } from './equipment-slots.js';
+import Item, { ITEM_TYPES, RARITY } from './item.js';
+import { game, hero } from './main.js';
+import { saveGame } from './storage.js';
+import { showToast } from './toast.js';
 
 export default class Inventory {
   constructor(game = null, savedData = null) {
     this.equippedItems = savedData?.equippedItems || {};
-    this.inventoryItems =
-      savedData?.inventoryItems || new Array(200).fill(null);
+    this.inventoryItems = savedData?.inventoryItems || new Array(200).fill(null);
 
     if (savedData) {
       // Restore equipped items
       Object.entries(this.equippedItems).forEach(([slot, item]) => {
         if (item) {
-          this.equippedItems[slot] = new Item(
-            item.type,
-            item.level,
-            item.rarity,
-            item.stats
-          );
+          this.equippedItems[slot] = new Item(item.type, item.level, item.rarity, item.stats);
           this.equippedItems[slot].id = item.id;
         }
       });
@@ -27,12 +21,7 @@ export default class Inventory {
       // Restore inventory items
       this.inventoryItems = this.inventoryItems.map((item) => {
         if (item) {
-          const restoredItem = new Item(
-            item.type,
-            item.level,
-            item.rarity,
-            item.stats
-          );
+          const restoredItem = new Item(item.type, item.level, item.rarity, item.stats);
           restoredItem.id = item.id;
           return restoredItem;
         }
@@ -43,43 +32,41 @@ export default class Inventory {
     this.initializeInventoryUI();
 
     this.removeTooltip = this.removeTooltip.bind(this);
-    window.addEventListener("mouseout", (e) => {
+    window.addEventListener('mouseout', (e) => {
       if (e.relatedTarget === null) this.removeTooltip();
     });
   }
 
   initializeInventoryUI() {
-    const gridContainer = document.querySelector(".grid-container");
+    const gridContainer = document.querySelector('.grid-container');
     // Create 200 empty cells (10x20 grid)
     for (let i = 0; i < 200; i++) {
-      const cell = document.createElement("div");
-      cell.classList.add("grid-cell");
+      const cell = document.createElement('div');
+      cell.classList.add('grid-cell');
       gridContainer.appendChild(cell);
     }
     this.updateInventoryGrid();
 
     // TEST
-    document.getElementById("spawn-sword").addEventListener("click", () => {
+    document.getElementById('spawn-sword').addEventListener('click', () => {
       const sword = this.createItem(ITEM_TYPES.SWORD, game.zone);
       this.addItemToInventory(sword);
-      console.log("Created sword:", sword);
+      console.log('Created sword:', sword);
     });
 
-    document.getElementById("spawn-armor").addEventListener("click", () => {
+    document.getElementById('spawn-armor').addEventListener('click', () => {
       const armor = this.createItem(ITEM_TYPES.ARMOR, game.zone);
       this.addItemToInventory(armor);
-      console.log("Created armor:", armor);
+      console.log('Created armor:', armor);
     });
 
-    document.getElementById("spawn-helmet").addEventListener("click", () => {
+    document.getElementById('spawn-helmet').addEventListener('click', () => {
       const helmet = this.createItem(ITEM_TYPES.HELMET, game.zone);
       this.addItemToInventory(helmet);
-      console.log("Created helmet:", helmet);
+      console.log('Created helmet:', helmet);
     });
 
-    document
-      .getElementById("salvage-all")
-      .addEventListener("click", () => this.salvageAllItems());
+    document.getElementById('salvage-all').addEventListener('click', () => this.salvageAllItems());
   }
 
   salvageAllItems() {
@@ -93,11 +80,11 @@ export default class Inventory {
     });
 
     if (salvagedItems > 0) {
-      showToast(`Salvaged ${salvagedItems} items`, "success");
+      showToast(`Salvaged ${salvagedItems} items`, 'success');
       this.updateInventoryGrid();
       saveGame();
     } else {
-      showToast("No items to salvage", "info");
+      showToast('No items to salvage', 'info');
     }
   }
 
@@ -112,34 +99,34 @@ export default class Inventory {
   }
 
   setupGridCells() {
-    const cells = document.querySelectorAll(".grid-cell");
+    const cells = document.querySelectorAll('.grid-cell');
     cells.forEach((cell) => {
-      cell.addEventListener("dragover", this.handleDragOver.bind(this));
-      cell.addEventListener("drop", this.handleDrop.bind(this));
+      cell.addEventListener('dragover', this.handleDragOver.bind(this));
+      cell.addEventListener('drop', this.handleDrop.bind(this));
     });
   }
 
   removeGridListeners() {
-    const cells = document.querySelectorAll(".grid-cell");
+    const cells = document.querySelectorAll('.grid-cell');
     cells.forEach((cell) => {
-      cell.removeEventListener("dragover", this.boundHandleDragOver);
-      cell.removeEventListener("drop", this.boundHandleDrop);
+      cell.removeEventListener('dragover', this.boundHandleDragOver);
+      cell.removeEventListener('drop', this.boundHandleDrop);
     });
   }
 
   setupEquipmentSlots() {
-    const slots = document.querySelectorAll(".equipment-slot");
+    const slots = document.querySelectorAll('.equipment-slot');
     slots.forEach((slot) => {
-      slot.addEventListener("dragover", this.handleDragOver.bind(this));
-      slot.addEventListener("drop", this.handleDrop.bind(this));
+      slot.addEventListener('dragover', this.handleDragOver.bind(this));
+      slot.addEventListener('drop', this.handleDrop.bind(this));
     });
   }
 
   removeEquipmentListeners() {
-    const slots = document.querySelectorAll(".equipment-slot");
+    const slots = document.querySelectorAll('.equipment-slot');
     slots.forEach((slot) => {
-      slot.removeEventListener("dragover", this.boundHandleDragOver);
-      slot.removeEventListener("drop", this.boundHandleDrop);
+      slot.removeEventListener('dragover', this.boundHandleDragOver);
+      slot.removeEventListener('drop', this.boundHandleDrop);
     });
   }
 
@@ -150,19 +137,19 @@ export default class Inventory {
   handleDrop(e) {
     e.preventDefault();
     this.cleanupTooltips();
-    const itemId = e.dataTransfer.getData("text/plain");
+    const itemId = e.dataTransfer.getData('text/plain');
     const item = this.getItemById(itemId);
-    const slot = e.target.closest(".equipment-slot");
-    const cell = e.target.closest(".grid-cell");
+    const slot = e.target.closest('.equipment-slot');
+    const cell = e.target.closest('.grid-cell');
 
     if (!item) {
       if (cell) {
         const targetIndex = Array.from(cell.parentNode.children).indexOf(cell);
-        const draggedItemElement = document.querySelector(".dragging");
+        const draggedItemElement = document.querySelector('.dragging');
         if (draggedItemElement) {
-          const sourceIndex = Array.from(
-            draggedItemElement.parentNode.parentNode.children
-          ).indexOf(draggedItemElement.parentNode);
+          const sourceIndex = Array.from(draggedItemElement.parentNode.parentNode.children).indexOf(
+            draggedItemElement.parentNode
+          );
 
           // Swap positions
           this.inventoryItems[targetIndex] = this.inventoryItems[sourceIndex];
@@ -188,9 +175,7 @@ export default class Inventory {
 
   moveItemToPosition(item, newPosition) {
     // Get current position of item
-    const currentPosition = this.inventoryItems.findIndex(
-      (i) => i && i.id === item.id
-    );
+    const currentPosition = this.inventoryItems.findIndex((i) => i && i.id === item.id);
 
     // If there's an item in the target position, swap them
     const targetItem = this.inventoryItems[newPosition];
@@ -228,9 +213,7 @@ export default class Inventory {
     for (const [slot, equippedItem] of Object.entries(this.equippedItems)) {
       if (equippedItem.id === item.id) {
         delete this.equippedItems[slot];
-        const emptySlot = this.inventoryItems.findIndex(
-          (slot) => slot === null
-        );
+        const emptySlot = this.inventoryItems.findIndex((slot) => slot === null);
         if (emptySlot !== -1) {
           this.inventoryItems[emptySlot] = item;
         }
@@ -260,12 +243,12 @@ export default class Inventory {
       total += config.chance;
       if (rand <= total) return rarity;
     }
-    return "NORMAL";
+    return 'NORMAL';
   }
 
   addItemToInventory(item, specificPosition = null) {
     if (!item) {
-      console.error("Attempted to add null item to inventory");
+      console.error('Attempted to add null item to inventory');
       return;
     }
 
@@ -288,10 +271,10 @@ export default class Inventory {
   updateInventoryGrid() {
     this.cleanupTooltips();
 
-    const cells = document.querySelectorAll(".grid-cell");
-    cells.forEach((cell) => (cell.innerHTML = ""));
+    const cells = document.querySelectorAll('.grid-cell');
+    cells.forEach((cell) => (cell.innerHTML = ''));
 
-    const items = document.querySelectorAll(".inventory-item");
+    const items = document.querySelectorAll('.inventory-item');
     items.forEach((item) => item.remove());
 
     this.inventoryItems.forEach((item, index) => {
@@ -312,11 +295,11 @@ export default class Inventory {
       const slotElement = document.querySelector(`[data-slot="${slot}"]`);
       if (slotElement) {
         // Find existing inventory-item if any
-        const existingItem = slotElement.querySelector(".inventory-item");
+        const existingItem = slotElement.querySelector('.inventory-item');
 
         // Create new item element
-        const newItem = document.createElement("div");
-        newItem.className = "inventory-item";
+        const newItem = document.createElement('div');
+        newItem.className = 'inventory-item';
         newItem.draggable = true;
         newItem.dataset.itemId = item.id;
         newItem.style.borderColor = RARITY[item.rarity].color;
@@ -336,14 +319,14 @@ export default class Inventory {
 
   removeExistingListeners() {
     // Remove grid cell listeners
-    const cells = document.querySelectorAll(".grid-cell");
+    const cells = document.querySelectorAll('.grid-cell');
     cells.forEach((cell) => {
       const newCell = cell.cloneNode(true);
       cell.parentNode.replaceChild(newCell, cell);
     });
 
     // Remove equipment slot listeners
-    const slots = document.querySelectorAll(".equipment-slot");
+    const slots = document.querySelectorAll('.equipment-slot');
     slots.forEach((slot) => {
       const newSlot = slot.cloneNode(true);
       slot.parentNode.replaceChild(newSlot, slot);
@@ -351,50 +334,50 @@ export default class Inventory {
   }
 
   removeTooltip() {
-    const tooltips = document.querySelectorAll(".item-tooltip");
+    const tooltips = document.querySelectorAll('.item-tooltip');
     tooltips.forEach((tooltip) => tooltip.remove());
   }
 
   setupItemDragAndTooltip() {
-    const items = document.querySelectorAll(".inventory-item");
+    const items = document.querySelectorAll('.inventory-item');
     let activeTooltip = null;
 
     items.forEach((item) => {
       // Add dragstart event listener
-      item.addEventListener("dragstart", (e) => {
-        e.target.classList.add("dragging");
-        e.dataTransfer.setData("text/plain", item.dataset.itemId);
+      item.addEventListener('dragstart', (e) => {
+        e.target.classList.add('dragging');
+        e.dataTransfer.setData('text/plain', item.dataset.itemId);
         this.cleanupTooltips(); // Also clean tooltips on drag start
       });
 
-      item.addEventListener("dragend", (e) => {
-        e.target.classList.remove("dragging");
-        document.querySelectorAll(".equipment-slot").forEach((slot) => {
-          slot.classList.remove("valid-target", "invalid-target");
+      item.addEventListener('dragend', (e) => {
+        e.target.classList.remove('dragging');
+        document.querySelectorAll('.equipment-slot').forEach((slot) => {
+          slot.classList.remove('valid-target', 'invalid-target');
         });
       });
 
       // Tooltip events
-      item.addEventListener("mouseenter", (e) => {
-        if (item.classList.contains("dragging")) return;
+      item.addEventListener('mouseenter', (e) => {
+        if (item.classList.contains('dragging')) return;
 
         const itemData = this.getItemById(item.dataset.itemId);
         if (!itemData) return;
 
-        activeTooltip = document.createElement("div");
+        activeTooltip = document.createElement('div');
         activeTooltip.innerHTML = itemData.getTooltipHTML();
-        activeTooltip.style.position = "absolute";
+        activeTooltip.style.position = 'absolute';
         activeTooltip.style.left = `${e.pageX + 10}px`;
         activeTooltip.style.top = `${e.pageY + 10}px`;
         document.body.appendChild(activeTooltip);
       });
 
-      item.addEventListener("mouseleave", () => this.removeTooltip());
+      item.addEventListener('mouseleave', () => this.removeTooltip());
     });
   }
 
   cleanupTooltips() {
-    const tooltips = document.querySelectorAll(".item-tooltip");
+    const tooltips = document.querySelectorAll('.item-tooltip');
     tooltips.forEach((tooltip) => tooltip.remove());
   }
 
@@ -404,22 +387,18 @@ export default class Inventory {
 
   getItemById(id) {
     if (!id) {
-      console.error("Attempted to get item with null id");
+      console.error('Attempted to get item with null id');
       return null;
     }
 
-    const inventoryItem = this.inventoryItems.find(
-      (item) => item && item.id === id
-    );
+    const inventoryItem = this.inventoryItems.find((item) => item && item.id === id);
     if (inventoryItem) return inventoryItem;
 
     return Object.values(this.equippedItems).find((i) => i && i.id === id);
   }
 
   equipItem(item, slot) {
-    const currentPosition = this.inventoryItems.findIndex(
-      (i) => i && i.id === item.id
-    );
+    const currentPosition = this.inventoryItems.findIndex((i) => i && i.id === item.id);
 
     // Handle existing equipped item
     if (this.equippedItems[slot]) {
@@ -429,9 +408,7 @@ export default class Inventory {
         this.inventoryItems[currentPosition] = oldItem;
       } else {
         // Find first empty slot
-        const emptySlot = this.inventoryItems.findIndex(
-          (slot) => slot === null
-        );
+        const emptySlot = this.inventoryItems.findIndex((slot) => slot === null);
         if (emptySlot !== -1) {
           this.inventoryItems[emptySlot] = oldItem;
         }

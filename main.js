@@ -1,9 +1,9 @@
-import Hero from "./hero.js";
-import Game from "./game.js";
-import Shop from "./shop.js";
-import { updatePlayerHealth, updateResources } from "./ui.js";
-import { loadGame } from "./storage.js";
-import Prestige from "./prestige.js";
+import Hero from './hero.js';
+import Game from './game.js';
+import Shop from './shop.js';
+import { updatePlayerHealth, updateResources } from './ui.js';
+import { loadGame } from './storage.js';
+import Prestige from './prestige.js';
 
 window.log = console.log;
 
@@ -15,7 +15,7 @@ export const game = new Game(null, savedData);
 export const prestige = new Prestige(game);
 game.prestige = prestige;
 
-export const shop = new Shop(hero, game);
+export const shop = new Shop();
 
 prestige.initializePrestigeUI();
 hero.displayStats();

@@ -1,19 +1,9 @@
-import {
-  updatePlayerHealth,
-  updateEnemyHealth,
-  updateResources,
-  updateZoneUI,
-} from "./ui.js";
-import Enemy from "./enemy.js";
-import {
-  calculateItemLevel,
-  getRandomItemType,
-  rollForDrop,
-  dropLoot,
-} from "./loot-table.js";
-import { RARITY } from "./item.js";
-import { hero, game } from "./main.js";
-import { saveGame } from "./storage.js";
+import { updatePlayerHealth, updateEnemyHealth, updateResources, updateZoneUI } from './ui.js';
+import Enemy from './enemy.js';
+import { calculateItemLevel, getRandomItemType, rollForDrop, dropLoot } from './loot-table.js';
+import { RARITY } from './item.js';
+import { hero, game } from './main.js';
+import { saveGame } from './storage.js';
 
 export function enemyAttack(game, currentTime) {
   if (!game || !hero || !game.currentEnemy) return;
@@ -70,17 +60,17 @@ export function playerAttack(game, currentTime) {
 // Remove any duplicate definitions and keep this single version
 export function playerDeath(game) {
   if (!game) {
-    console.error("Game is not properly initialized in playerDeath.");
+    console.error('Game is not properly initialized in playerDeath.');
     return;
   }
 
   game.gameStarted = false;
 
   // Reset button state
-  const startBtn = document.getElementById("start-btn");
+  const startBtn = document.getElementById('start-btn');
   if (startBtn) {
-    startBtn.textContent = "Start";
-    startBtn.style.backgroundColor = "#059669";
+    startBtn.textContent = 'Start';
+    startBtn.style.backgroundColor = '#059669';
   }
 
   // Reset the zone and update the UI
@@ -106,7 +96,7 @@ function defeatEnemy(game) {
   const droppedItem = dropLoot(enemy);
 
   if (!game) {
-    console.error("Game is undefined in defeatEnemy");
+    console.error('Game is undefined in defeatEnemy');
     return;
   }
 
@@ -140,8 +130,8 @@ function defeatEnemy(game) {
 }
 
 function showLootNotification(item) {
-  const notification = document.createElement("div");
-  notification.className = "loot-notification";
+  const notification = document.createElement('div');
+  notification.className = 'loot-notification';
   notification.style.color = RARITY[item.rarity].color;
   notification.textContent = `Found: ${item.getDisplayName()}`;
   document.body.appendChild(notification);
@@ -150,17 +140,15 @@ function showLootNotification(item) {
 }
 
 function createDamageNumber(damage, isPlayer, isCritical = false) {
-  const target = isPlayer ? ".character-avatar" : ".enemy-avatar";
+  const target = isPlayer ? '.character-avatar' : '.enemy-avatar';
   const avatar = document.querySelector(target);
-  const damageEl = document.createElement("div");
-  damageEl.className = isCritical ? "damage-number critical" : "damage-number"; // Add "critical" class for critical hits
-  damageEl.textContent = isCritical
-    ? `CRIT! -${Math.floor(damage)}`
-    : `-${Math.floor(damage)}`;
+  const damageEl = document.createElement('div');
+  damageEl.className = isCritical ? 'damage-number critical' : 'damage-number'; // Add "critical" class for critical hits
+  damageEl.textContent = isCritical ? `CRIT! -${Math.floor(damage)}` : `-${Math.floor(damage)}`;
   const randomX = Math.random() * 40 - 20;
   const randomY = Math.random() * 40 - 20;
-  damageEl.style.setProperty("--x", `${randomX}px`);
-  damageEl.style.setProperty("--y", `${randomY}px`);
+  damageEl.style.setProperty('--x', `${randomX}px`);
+  damageEl.style.setProperty('--y', `${randomY}px`);
   avatar.appendChild(damageEl);
   setTimeout(() => damageEl.remove(), 1000);
 }

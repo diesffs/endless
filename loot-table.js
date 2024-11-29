@@ -1,6 +1,6 @@
-import { ITEM_TYPES, RARITY } from "./item.js";
-import Enemy from "./enemy.js";
-import Item from "./item.js";
+import { ITEM_TYPES, RARITY } from './item.js';
+import Enemy from './enemy.js';
+import Item from './item.js';
 
 export const ZONE_MULTIPLIER = 1.2;
 
@@ -28,7 +28,7 @@ export function getRandomItem(rarityChances) {
     }
   }
 
-  return "NORMAL";
+  return 'NORMAL';
 }
 
 export function dropLoot(enemy) {

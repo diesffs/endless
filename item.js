@@ -1,22 +1,22 @@
 export const ITEM_TYPES = {
-  HELMET: "HELMET",
-  ARMOR: "ARMOR",
-  PANTS: "PANTS",
-  BOOTS: "BOOTS",
-  SWORD: "SWORD",
-  AXE: "AXE",
-  MACE: "MACE",
-  SHIELD: "SHIELD",
-  GLOVES: "GLOVES",
-  AMULET: "AMULET",
-  RING: "RING",
+  HELMET: 'HELMET',
+  ARMOR: 'ARMOR',
+  PANTS: 'PANTS',
+  BOOTS: 'BOOTS',
+  SWORD: 'SWORD',
+  AXE: 'AXE',
+  MACE: 'MACE',
+  SHIELD: 'SHIELD',
+  GLOVES: 'GLOVES',
+  AMULET: 'AMULET',
+  RING: 'RING',
 };
 
 export const RARITY = {
-  NORMAL: { name: "Normal", color: "#ffffff", chance: 70, statMultiplier: 1 },
-  MAGIC: { name: "Magic", color: "#4287f5", chance: 20, statMultiplier: 1.5 },
-  RARE: { name: "Rare", color: "#ffd700", chance: 9, statMultiplier: 2 },
-  UNIQUE: { name: "Unique", color: "#ff8c00", chance: 1, statMultiplier: 3 },
+  NORMAL: { name: 'Normal', color: '#ffffff', chance: 70, statMultiplier: 1 },
+  MAGIC: { name: 'Magic', color: '#4287f5', chance: 20, statMultiplier: 1.5 },
+  RARE: { name: 'Rare', color: '#ffd700', chance: 9, statMultiplier: 2 },
+  UNIQUE: { name: 'Unique', color: '#ff8c00', chance: 1, statMultiplier: 3 },
 };
 export default class Item {
   constructor(type, level, rarity) {
@@ -117,15 +117,13 @@ export default class Item {
   getTooltipHTML() {
     return `
               <div class="item-tooltip">
-                  <div class="item-name" style="color: ${
-                    RARITY[this.rarity].color
-                  };">
+                  <div class="item-name" style="color: ${RARITY[this.rarity].color};">
                       ${this.getDisplayName()}
                   </div>
                   <div class="item-stats">
                       ${Object.entries(this.stats)
                         .map(([stat, value]) => `<div>${stat}: ${value}</div>`)
-                        .join("")}
+                        .join('')}
                   </div>
               </div>
           `;
