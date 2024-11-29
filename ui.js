@@ -82,7 +82,7 @@ export function toggleGame(game) {
     game.currentEnemy.lastAttack = Date.now();
     // When the game starts, reset health and update resources
     game.resetAllHealth();
-    updateResources(hero.stats, game); // Pass game here
+    updateResources(hero, game); // Pass game here
   } else {
     game.zone = 1; // Reset zone
     updateZoneUI(game.zone);

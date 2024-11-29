@@ -21,10 +21,10 @@ class Enemy {
 
   generateRarity() {
     const random = Math.random() * 100;
-    if (random < 60) return "normal";
-    if (random < 80) return "rare";
-    if (random < 90) return "epic";
-    if (random < 98) return "legendary";
+    if (random < 80) return "normal";
+    if (random < 90) return "rare";
+    if (random < 96) return "epic";
+    if (random < 99) return "legendary";
     return "mythic";
   }
 
@@ -93,6 +93,38 @@ class Enemy {
 
   resetHealth() {
     this.currentHealth = this.maxHealth;
+  }
+
+  getItemDropChances() {
+    const baseChances = {
+      normal: 70,
+      magic: 20,
+      rare: 9,
+      unique: 1,
+    };
+
+    switch (this.rarity) {
+      case "rare":
+        baseChances.rare += 5; // Increase rare item drop chance
+        baseChances.unique += 1; // Increase unique item drop chance
+        break;
+      case "epic":
+        baseChances.rare += 10; // Increase rare item drop chance
+        baseChances.unique += 3; // Increase unique item drop chance
+        break;
+      case "legendary":
+        baseChances.rare += 15; // Increase rare item drop chance
+        baseChances.unique += 5; // Increase unique item drop chance
+        break;
+      case "mythic":
+        baseChances.rare += 20; // Increase rare item drop chance
+        baseChances.unique += 10; // Increase unique item drop chance
+        break;
+      default: // "normal"
+        break;
+    }
+
+    return baseChances;
   }
 }
 

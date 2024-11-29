@@ -33,9 +33,9 @@ export const BASE_UPGRADE_COSTS = {
 
 export default class Hero {
   constructor(savedData = null) {
-
     if (savedData) {
       Object.assign(this, savedData);
+      return;
     }
 
     this.level = 1;
@@ -154,20 +154,6 @@ export default class Hero {
         this.stats[stat] += bonus;
       }
     });
-  }
-
-  buyUpgrade(stat) {
-    if (this.upgradeCosts[stat] && this.gold >= this.upgradeCosts[stat]) {
-      this.gold -= this.upgradeCosts[stat];
-      this.upgradeLevels[stat]++;
-      this.upgradeCosts[stat] =
-        BASE_UPGRADE_COSTS[stat] +
-        BASE_UPGRADE_COSTS[stat] * this.upgradeLevels[stat];
-
-      this.recalculateFromAttributes();
-      return true;
-    }
-    return false;
   }
 
   calculateArmorReduction() {

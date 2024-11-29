@@ -1,33 +1,30 @@
+import { hero } from "./main.js";
+import { updateZoneUI, updateResources, updatePlayerHealth } from "./ui.js";
+import { saveGame } from "./storage.js";
 import {
-  updateResources,
-  updateZoneUI,
-  updatePlayerHealth,
-  updateEnemyHealth,
-} from "./ui.js";
-import { clearSave, saveGame } from "./storage.js";
-import {
+  BASE_DAMAGE,
+  BASE_HEALTH,
   BASE_ARMOR,
   BASE_ATTACK_SPEED,
   BASE_CRIT_CHANCE,
   BASE_CRIT_DAMAGE,
-  BASE_DAMAGE,
-  BASE_HEALTH,
   BASE_UPGRADE_COSTS,
 } from "./hero.js";
-import { hero } from "./main.js";
-
 export default class Prestige {
   constructor(game) {
     if (!game || typeof game.zone !== "number") {
-      console.error("Invalid game object passed to Prestige:", game);
-      throw new Error("Game or zone is not properly initialized.");
+      console.error(
+        "Game is not properly initialized in Prestige constructor:",
+        game
+      );
+      return;
     }
 
-    this.game = game; // Assign the game object
-    this.hero = game.hero; // Use the hero object from the game
+    this.game = game;
+    this.hero = game.hero;
   }
 
-  calculateSouls () {
+  calculateSouls() {
     if (!this.game || typeof hero.highestZone !== "number") {
       console.warn("Game or highestZone is not properly initialized.");
       return 0;
@@ -37,7 +34,7 @@ export default class Prestige {
     return souls;
   }
 
-  performPrestige () {
+  performPrestige() {
     const earnedSouls = this.calculateSouls();
     hero.souls += earnedSouls;
     hero.highestZone = 1;
@@ -49,7 +46,7 @@ export default class Prestige {
     this.initializePrestigeUI(); // Ensure UI reflects reset state
   }
 
-  resetGame () {
+  resetGame() {
     if (!this.game || typeof this.game.zone !== "number") {
       console.error(
         "Game is not properly initialized in resetGame:",
@@ -69,7 +66,7 @@ export default class Prestige {
     hero.gold = 0;
     hero.primaryStats = { strength: 0, agility: 0, vitality: 0 };
     hero.statPoints = 0;
-    hero = {
+    hero.stats = {
       damage: BASE_DAMAGE,
       attackSpeed: BASE_ATTACK_SPEED,
       critChance: BASE_CRIT_CHANCE,
@@ -95,16 +92,17 @@ export default class Prestige {
       critDamage: 0,
     };
 
-    updateResources(hero, this.game); // Pass the game instance here
-    updatePlayerHealth(hero.stats);
-    this.game.currentEnemy.resetHealth();
-    updateEnemyHealth(this.game.currentEnemy);
+    this.game.inventory.salvageAllItems();
 
-    clearSave();
+    // Update UI and save game
+    updateResources(hero, this.game);
+    updatePlayerHealth(hero.stats);
+    saveGame();
+    this.initializePrestigeUI(); // Ensure UI reflects reset state
   }
 
   // Initialize the prestige UI
-  async initializePrestigeUI () {
+  async initializePrestigeUI() {
     try {
       const earnedSouls = this.calculateSouls();
 
@@ -174,7 +172,7 @@ export default class Prestige {
     }
   }
 
-  updateUI () {
+  updateUI() {
     const damageDisplay = document.querySelector(".damage-display .bonus");
     const soulsDisplay = document.querySelector(".earned-souls-display .bonus");
 
@@ -193,7 +191,7 @@ export default class Prestige {
     }
   }
 
-  setupPrestigeButton () {
+  setupPrestigeButton() {
     const prestigeButton = document.getElementById("prestige-btn");
     const modal = document.getElementById("prestige-modal");
     const confirmButton = document.getElementById("confirm-prestige");

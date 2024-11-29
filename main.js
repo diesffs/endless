@@ -1,32 +1,28 @@
 import Hero from "./hero.js";
 import Game from "./game.js";
 import Shop from "./shop.js";
-import { updateResources } from "./ui.js";
+import { updatePlayerHealth, updateResources } from "./ui.js";
 import { loadGame } from "./storage.js";
 import Prestige from "./prestige.js";
 
 window.log = console.log;
 
-// Initialize game with saved data or new game
 const savedData = loadGame();
 
-// Initialize hero and game with saved data or create new instances
-export const hero = savedData ? new Hero(savedData?.hero?.stats) : new Hero();
-export const game = new Game(null, savedData); // Game initialized without Prestige first
+export const hero = savedData ? new Hero(savedData?.hero) : new Hero();
+export const game = new Game(null, savedData);
 
-// Initialize Prestige and assign it to the game
-export const prestige = new Prestige(game); // Pass the fully initialized game instance
+export const prestige = new Prestige(game);
 game.prestige = prestige;
 
-// Initialize Shop
-export const shop = new Shop(hero, game); // Shop depends on hero and game
+export const shop = new Shop(hero, game);
 
-// Initialize the Prestige UI and update resources
 prestige.initializePrestigeUI();
 hero.displayStats();
-updateResources(hero, game); // Update UI with initialized resources
+updateResources(hero, game);
+hero.stats.currentHealth = hero.stats.maxHealth;
+updatePlayerHealth(hero.stats);
 
-// Game loop
 let isRunning = false;
 setInterval(() => {
   if (!isRunning) {
@@ -35,5 +31,3 @@ setInterval(() => {
     isRunning = false;
   }
 }, 100);
-
-console.log("Initialized game:", game);

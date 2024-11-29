@@ -26,7 +26,6 @@ class Game {
 
   incrementZone() {
     this.zone += 1;
-    console.log(hero.crystals);
     if (this.zone > hero.highestZone) {
       hero.highestZone = this.zone;
       hero.crystals += 1; // Award 1 crystal for increasing highest zone

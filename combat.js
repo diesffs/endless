@@ -9,6 +9,7 @@ import {
   calculateItemLevel,
   getRandomItemType,
   rollForDrop,
+  dropLoot,
 } from "./loot-table.js";
 import { RARITY } from "./item.js";
 import { hero, game } from "./main.js";
@@ -101,6 +102,9 @@ export function playerDeath(game) {
 }
 
 function defeatEnemy(game) {
+  const enemy = game.currentEnemy;
+  const droppedItem = dropLoot(enemy);
+
   if (!game) {
     console.error("Game is undefined in defeatEnemy");
     return;
@@ -109,35 +113,29 @@ function defeatEnemy(game) {
   const expGained = 20 + game.zone * 5;
   const goldGained = 10 + game.zone * 5;
 
-  // Gain gold and experience
   hero.gold += goldGained;
   hero.gainExp(expGained);
 
-  // Update "Prestige for" progress (but NOT total souls)
-  const newPrestigeSouls = Math.floor(game.zone / 50); // 1 soul per 50 zones
+  const newPrestigeSouls = Math.floor(game.zone / 50);
   hero.prestigeProgress = newPrestigeSouls;
 
-  // Increment zone and spawn a new enemy
   game.incrementZone();
   hero.displayStats();
   game.currentEnemy = new Enemy(game.zone);
   game.currentEnemy.lastAttack = Date.now();
-  // Update the UI
+
   updateResources(hero, game);
   updateEnemyHealth(game.currentEnemy);
 
-  // Roll for item drop
   if (rollForDrop(game.zone)) {
     const itemLevel = calculateItemLevel(game.zone);
     const itemType = getRandomItemType();
     const newItem = game.inventory.createItem(itemType, itemLevel);
     game.inventory.addItemToInventory(newItem);
 
-    // Show loot notification
     showLootNotification(newItem);
   }
 
-  // Save the game state
   saveGame();
 }
 
