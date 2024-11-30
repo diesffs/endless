@@ -48,19 +48,19 @@ export default class Inventory {
     this.updateInventoryGrid();
 
     document.getElementById('salvage-normal').addEventListener('click', () => {
-      this.salvageItemsByRarity(ITEM_RARITY_NORMAL.type);
+      this.salvageItemsByRarity(ITEM_RARITY.NORMAL.name);
       this.sortInventory();
     });
     document.getElementById('salvage-magic').addEventListener('click', () => {
-      this.salvageItemsByRarity(ITEM_RARITY.MAGIC.type);
+      this.salvageItemsByRarity(ITEM_RARITY.MAGIC.name);
       this.sortInventory();
     });
     document.getElementById('salvage-rare').addEventListener('click', () => {
-      this.salvageItemsByRarity(ITEM_RARITY.RARE.type);
+      this.salvageItemsByRarity(ITEM_RARITY.RARE.name);
       this.sortInventory();
     });
     document.getElementById('salvage-unique').addEventListener('click', () => {
-      this.salvageItemsByRarity(ITEM_RARITY.UNIQUE.type);
+      this.salvageItemsByRarity(ITEM_RARITY.UNIQUE.name);
       this.sortInventory();
     });
   }
@@ -208,7 +208,7 @@ export default class Inventory {
       total += config.chance;
       if (rand <= total) return rarity;
     }
-    return ITEM_RARITY_NORMAL.type;
+    return ITEM_RARITY.NORMAL.name;
   }
 
   addItemToInventory(item, specificPosition = null) {
