@@ -47,32 +47,24 @@ export default class Inventory {
     }
     this.updateInventoryGrid();
 
-    // TEST
-    document.getElementById('spawn-sword').addEventListener('click', () => {
-      const sword = this.createItem(ITEM_TYPES.SWORD, game.zone);
-      this.addItemToInventory(sword);
-      console.log('Created sword:', sword);
-    });
-
-    document.getElementById('spawn-armor').addEventListener('click', () => {
-      const armor = this.createItem(ITEM_TYPES.ARMOR, game.zone);
-      this.addItemToInventory(armor);
-      console.log('Created armor:', armor);
-    });
-
-    document.getElementById('spawn-helmet').addEventListener('click', () => {
-      const helmet = this.createItem(ITEM_TYPES.HELMET, game.zone);
-      this.addItemToInventory(helmet);
-      console.log('Created helmet:', helmet);
-    });
-
-    document.getElementById('salvage-all').addEventListener('click', () => this.salvageAllItems());
+    document
+      .getElementById('salvage-normal')
+      .addEventListener('click', () => this.salvageAllItems('NORMAL'));
+    document
+      .getElementById('salvage-magic')
+      .addEventListener('click', () => this.salvageAllItems('MAGIC'));
+    document
+      .getElementById('salvage-rare')
+      .addEventListener('click', () => this.salvageAllItems('RARE'));
+    document
+      .getElementById('salvage-unique')
+      .addEventListener('click', () => this.salvageAllItems('UNIQUE'));
   }
 
-  salvageAllItems() {
+  salvageAllItems(rarity) {
     let salvagedItems = 0;
     this.inventoryItems = this.inventoryItems.map((item) => {
-      if (item) {
+      if (item && item.rarity === rarity) {
         salvagedItems++;
         return null;
       }
@@ -80,11 +72,11 @@ export default class Inventory {
     });
 
     if (salvagedItems > 0) {
-      showToast(`Salvaged ${salvagedItems} items`, 'success');
+      showToast(`Salvaged ${salvagedItems} ${rarity.toLowerCase()} items`, 'success');
       this.updateInventoryGrid();
       saveGame();
     } else {
-      showToast('No items to salvage', 'info');
+      showToast(`No ${rarity.toLowerCase()} items to salvage`, 'info');
     }
   }
 
