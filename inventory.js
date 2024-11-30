@@ -1,12 +1,11 @@
-import { EQUIPMENT_SLOTS, SLOT_REQUIREMENTS } from './equipment-slots.js';
-import Item, { ITEM_TYPES, RARITY } from './item.js';
-import { game, hero } from './main.js';
+import { SLOT_REQUIREMENTS } from './equipment-slots.js';
+import Item, { ITEM_RARITY, RARITY_ORDER } from './item.js';
+import { hero } from './main.js';
 import { saveGame } from './storage.js';
 import { showToast } from './toast.js';
 
-const RARITY_ORDER = ['NORMAL', 'MAGIC', 'RARE', 'UNIQUE'];
 export default class Inventory {
-  constructor(game = null, savedData = null) {
+  constructor(savedData = null) {
     this.equippedItems = savedData?.equippedItems || {};
     this.inventoryItems = savedData?.inventoryItems || new Array(200).fill(null);
 
@@ -48,24 +47,27 @@ export default class Inventory {
     }
     this.updateInventoryGrid();
 
-    document
-      .getElementById('salvage-normal')
-      .addEventListener('click', () => this.salvageItemsByRarity('NORMAL'));
-    document
-      .getElementById('salvage-magic')
-      .addEventListener('click', () => this.salvageItemsByRarity('MAGIC'));
-    document
-      .getElementById('salvage-rare')
-      .addEventListener('click', () => this.salvageItemsByRarity('RARE'));
-    document
-      .getElementById('salvage-unique')
-      .addEventListener('click', () => this.salvageItemsByRarity('UNIQUE'));
+    document.getElementById('salvage-normal').addEventListener('click', () => {
+      this.salvageItemsByRarity(ITEM_RARITY_NORMAL.type);
+      this.sortInventory();
+    });
+    document.getElementById('salvage-magic').addEventListener('click', () => {
+      this.salvageItemsByRarity(ITEM_RARITY.MAGIC.type);
+      this.sortInventory();
+    });
+    document.getElementById('salvage-rare').addEventListener('click', () => {
+      this.salvageItemsByRarity(ITEM_RARITY.RARE.type);
+      this.sortInventory();
+    });
+    document.getElementById('salvage-unique').addEventListener('click', () => {
+      this.salvageItemsByRarity(ITEM_RARITY.UNIQUE.type);
+      this.sortInventory();
+    });
   }
 
   salvageItemsByRarity(rarity) {
     let salvagedItems = 0;
-    const rarities = ['NORMAL', 'MAGIC', 'RARE', 'UNIQUE'];
-    const salvageRarities = rarities.slice(0, rarities.indexOf(rarity) + 1);
+    const salvageRarities = RARITY_ORDER.slice(0, RARITY_ORDER.indexOf(rarity) + 1);
 
     this.inventoryItems = this.inventoryItems.map((item) => {
       if (item && salvageRarities.includes(item.rarity)) {
@@ -102,27 +104,11 @@ export default class Inventory {
     });
   }
 
-  removeGridListeners() {
-    const cells = document.querySelectorAll('.grid-cell');
-    cells.forEach((cell) => {
-      cell.removeEventListener('dragover', this.boundHandleDragOver);
-      cell.removeEventListener('drop', this.boundHandleDrop);
-    });
-  }
-
   setupEquipmentSlots() {
     const slots = document.querySelectorAll('.equipment-slot');
     slots.forEach((slot) => {
       slot.addEventListener('dragover', this.handleDragOver.bind(this));
       slot.addEventListener('drop', this.handleDrop.bind(this));
-    });
-  }
-
-  removeEquipmentListeners() {
-    const slots = document.querySelectorAll('.equipment-slot');
-    slots.forEach((slot) => {
-      slot.removeEventListener('dragover', this.boundHandleDragOver);
-      slot.removeEventListener('drop', this.boundHandleDrop);
     });
   }
 
@@ -218,11 +204,11 @@ export default class Inventory {
     const rand = Math.random() * 100;
     let total = 0;
 
-    for (const [rarity, config] of Object.entries(RARITY)) {
+    for (const [rarity, config] of Object.entries(ITEM_RARITY)) {
       total += config.chance;
       if (rand <= total) return rarity;
     }
-    return 'NORMAL';
+    return ITEM_RARITY_NORMAL.type;
   }
 
   addItemToInventory(item, specificPosition = null) {
@@ -281,7 +267,7 @@ export default class Inventory {
         newItem.className = 'inventory-item';
         newItem.draggable = true;
         newItem.dataset.itemId = item.id;
-        newItem.style.borderColor = RARITY[item.rarity].color;
+        newItem.style.borderColor = ITEM_RARITY[item.rarity].color;
         newItem.textContent = item.type.charAt(0);
 
         // Replace or append
@@ -417,5 +403,32 @@ export default class Inventory {
         }
       });
     });
+  }
+
+  sortInventory() {
+    // Filter out null values and sort items
+    const items = this.inventoryItems.filter((item) => item !== null);
+
+    // Sort by rarity (UNIQUE -> NORMAL) and then by level
+    items.sort((a, b) => {
+      // Compare rarity first
+      const rarityA = RARITY_ORDER.indexOf(a.rarity);
+      const rarityB = RARITY_ORDER.indexOf(b.rarity);
+
+      if (rarityA !== rarityB) {
+        // Higher rarity (lower index) comes first
+        return rarityA - rarityB;
+      }
+
+      // If same rarity, sort by level (higher level first)
+      return b.level - a.level;
+    });
+
+    // Fill sorted items back into inventory, with nulls at the end
+    this.inventoryItems = [...items, ...new Array(200 - items.length).fill(null)];
+
+    // Update the UI
+    this.updateInventoryGrid();
+    saveGame();
   }
 }

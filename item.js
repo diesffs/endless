@@ -12,12 +12,20 @@ export const ITEM_TYPES = {
   RING: 'RING',
 };
 
-export const RARITY = {
-  NORMAL: { name: 'Normal', color: '#ffffff', chance: 70, statMultiplier: 1 },
-  MAGIC: { name: 'Magic', color: '#4287f5', chance: 20, statMultiplier: 1.5 },
-  RARE: { name: 'Rare', color: '#ffd700', chance: 9, statMultiplier: 2 },
-  UNIQUE: { name: 'Unique', color: '#ff8c00', chance: 1, statMultiplier: 3 },
+export const ITEM_RARITY = {
+  NORMAL: { name: 'NORMAL', color: '#ffffff', chance: 70, statMultiplier: 1 },
+  MAGIC: { name: 'MAGIC', color: '#4287f5', chance: 20, statMultiplier: 1.5 },
+  RARE: { name: 'RARE', color: '#ffd700', chance: 9, statMultiplier: 2 },
+  UNIQUE: { name: 'UNIQUE', color: '#ff8c00', chance: 1, statMultiplier: 3 },
 };
+
+export const RARITY_ORDER = [
+  ITEM_RARITY.NORMAL.name,
+  ITEM_RARITY.MAGIC.name,
+  ITEM_RARITY.RARE.name,
+  ITEM_RARITY.UNIQUE.name,
+];
+
 export default class Item {
   constructor(type, level, rarity) {
     this.type = type;
@@ -29,7 +37,7 @@ export default class Item {
 
   generateStats() {
     const baseStats = this.getBaseStats();
-    const multiplier = RARITY[this.rarity].statMultiplier;
+    const multiplier = ITEM_RARITY[this.rarity].statMultiplier;
 
     return Object.entries(baseStats).reduce((stats, [stat, value]) => {
       stats[stat] = Math.round(value * multiplier * (1 + this.level * 0.1));
@@ -111,13 +119,13 @@ export default class Item {
   }
 
   getDisplayName() {
-    return `${RARITY[this.rarity].name} ${this.type}`;
+    return `${ITEM_RARITY[this.rarity].name} ${this.type}`;
   }
 
   getTooltipHTML() {
     return `
               <div class="item-tooltip">
-                  <div class="item-name" style="color: ${RARITY[this.rarity].color};">
+                  <div class="item-name" style="color: ${ITEM_RARITY[this.rarity].color};">
                       ${this.getDisplayName()}
                   </div>
                   <div class="item-stats">

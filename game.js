@@ -10,7 +10,7 @@ class Game {
     this.gameStarted = false;
     this.currentEnemy = null;
     this.zone = 1;
-    this.inventory = new Inventory(this, savedData?.inventory);
+    this.inventory = new Inventory(savedData?.inventory);
     this.prestige = prestige;
     this.lastPlayerAttack = Date.now();
   }

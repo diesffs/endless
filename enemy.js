@@ -1,11 +1,60 @@
+export const ENEMY_RARITY_NORMAL = {
+  type: 'NORMAL',
+  itemDropChance: 1,
+  color: 'gray',
+  threshold: 80,
+  healthBonus: 1,
+  bonusDamage: 1,
+  bonusAttackSpeed: 1,
+};
+
+export const ENEMY_RARITY_RARE = {
+  type: 'RARE',
+  itemDropChance: 0.1,
+  color: 'blue',
+  threshold: 90,
+  healthBonus: 1.2,
+  bonusDamage: 1.2,
+  bonusAttackSpeed: 0.9,
+};
+
+export const ENEMY_RARITY_EPIC = {
+  type: 'EPIC',
+  itemDropChance: 0.06,
+  color: 'purple',
+  threshold: 96,
+  healthBonus: 1.5,
+  bonusDamage: 1.5,
+  bonusAttackSpeed: 0.8,
+};
+
+export const ENEMY_RARITY_LEGENDARY = {
+  type: 'LEGENDARY',
+  itemDropChance: 0.03,
+  color: 'orange',
+  threshold: 99,
+  healthBonus: 2,
+  bonusDamage: 2,
+  bonusAttackSpeed: 0.7,
+};
+
+export const ENEMY_RARITY_MYTHIC = {
+  type: 'MYTHIC',
+  itemDropChance: 0.01,
+  color: 'red',
+  threshold: 100,
+  healthBonus: 3,
+  bonusDamage: 3,
+  bonusAttackSpeed: 0.5,
+};
 class Enemy {
-  constructor(level) {
+  constructor(zone) {
     this.rarity = this.generateRarity(); // Assign rarity based on weighted probabilities
     this.color = this.getRarityColor(this.rarity); // Assign color based on rarity
-    this.maxHealth = this.calculateHealth(level, this.rarity);
+    this.maxHealth = this.calculateHealth(zone, this.rarity);
     this.currentHealth = this.maxHealth;
-    this.name = `Enemy Lvl ${level} (${this.rarity})`;
-    this.damage = this.calculateDamage(level, this.rarity);
+    this.name = `Enemy Lvl ${zone} (${this.rarity})`;
+    this.damage = this.calculateDamage(zone, this.rarity);
     this.attackSpeed = this.calculateAttackSpeed(this.rarity);
     this.lastAttack = Date.now();
 
@@ -13,78 +62,74 @@ class Enemy {
     const enemySection = document.querySelector('.enemy-section');
 
     // Remove any existing rarity classes
-    enemySection.classList.remove('gray', 'blue', 'purple', 'orange', 'red');
-
+    enemySection.classList.remove(
+      ENEMY_RARITY_NORMAL.color,
+      ENEMY_RARITY_RARE.color,
+      ENEMY_RARITY_EPIC.color,
+      ENEMY_RARITY_LEGENDARY.color,
+      ENEMY_RARITY_MYTHIC.color
+    );
     // Add the new color class
     enemySection.classList.add(this.color);
   }
 
   generateRarity() {
     const random = Math.random() * 100;
-    if (random < 80) return 'normal';
-    if (random < 90) return 'rare';
-    if (random < 96) return 'epic';
-    if (random < 99) return 'legendary';
-    return 'mythic';
+    if (random < ENEMY_RARITY_NORMAL.threshold) return ENEMY_RARITY_NORMAL.type;
+    if (random < ENEMY_RARITY_RARE.threshold) return ENEMY_RARITY_RARE.type;
+    if (random < ENEMY_RARITY_EPIC.threshold) return ENEMY_RARITY_EPIC.type;
+    if (random < ENEMY_RARITY_LEGENDARY.threshold) return ENEMY_RARITY_LEGENDARY.type;
+    return ENEMY_RARITY_MYTHIC.type;
   }
 
   getRarityColor(rarity) {
-    const colors = {
-      normal: 'gray',
-      rare: 'blue',
-      epic: 'purple',
-      legendary: 'orange',
-      mythic: 'red',
+    const rarityMap = {
+      [ENEMY_RARITY_NORMAL.type]: ENEMY_RARITY_NORMAL.color,
+      [ENEMY_RARITY_RARE.type]: ENEMY_RARITY_RARE.color,
+      [ENEMY_RARITY_EPIC.type]: ENEMY_RARITY_EPIC.color,
+      [ENEMY_RARITY_LEGENDARY.type]: ENEMY_RARITY_LEGENDARY.color,
+      [ENEMY_RARITY_MYTHIC.type]: ENEMY_RARITY_MYTHIC.color,
     };
-    return colors[rarity] || 'white'; // Default to white if no color is found
+    return rarityMap[rarity] || 'white';
   }
 
-  calculateHealth(level, rarity) {
-    const baseHealth = 49 + Math.pow(level, 1.5);
-    switch (rarity) {
-      case 'rare':
-        return baseHealth * 1.2; // 20% more health
-      case 'epic':
-        return baseHealth * 1.5; // 50% more health
-      case 'legendary':
-        return baseHealth * 2; // 100% more health
-      case 'mythic':
-        return baseHealth * 3; // 200% more health
-      default: // "normal"
-        return baseHealth;
-    }
+  calculateHealth(zone, rarity) {
+    const baseHealth = 49 + Math.pow(zone, 1.5);
+    const rarityMap = {
+      [ENEMY_RARITY_NORMAL.type]: ENEMY_RARITY_NORMAL.healthBonus,
+      [ENEMY_RARITY_RARE.type]: ENEMY_RARITY_RARE.healthBonus,
+      [ENEMY_RARITY_EPIC.type]: ENEMY_RARITY_EPIC.healthBonus,
+      [ENEMY_RARITY_LEGENDARY.type]: ENEMY_RARITY_LEGENDARY.healthBonus,
+      [ENEMY_RARITY_MYTHIC.type]: ENEMY_RARITY_MYTHIC.healthBonus,
+    };
+
+    return baseHealth * (rarityMap[rarity] || ENEMY_RARITY_NORMAL.healthBonus);
   }
 
-  calculateDamage(level, rarity) {
-    const baseDamage = 5 + level * 2;
-    switch (rarity) {
-      case 'rare':
-        return baseDamage * 1.2; // 20% more damage
-      case 'epic':
-        return baseDamage * 1.5; // 50% more damage
-      case 'legendary':
-        return baseDamage * 2; // 100% more damage
-      case 'mythic':
-        return baseDamage * 3; // 200% more damage
-      default: // "normal"
-        return baseDamage;
-    }
+  calculateDamage(zone, rarity) {
+    const baseDamage = 5 + zone * 2;
+    const rarityMap = {
+      [ENEMY_RARITY_NORMAL.type]: ENEMY_RARITY_NORMAL.bonusDamage,
+      [ENEMY_RARITY_RARE.type]: ENEMY_RARITY_RARE.bonusDamage,
+      [ENEMY_RARITY_EPIC.type]: ENEMY_RARITY_EPIC.bonusDamage,
+      [ENEMY_RARITY_LEGENDARY.type]: ENEMY_RARITY_LEGENDARY.bonusDamage,
+      [ENEMY_RARITY_MYTHIC.type]: ENEMY_RARITY_MYTHIC.bonusDamage,
+    };
+
+    return baseDamage * (rarityMap[rarity] || ENEMY_RARITY_NORMAL.bonusDamage);
   }
 
   calculateAttackSpeed(rarity) {
-    const baseAttackSpeed = 1; // 1 attack per second
-    switch (rarity) {
-      case 'rare':
-        return baseAttackSpeed * 0.9; // 10% faster attack speed
-      case 'epic':
-        return baseAttackSpeed * 0.8; // 20% faster attack speed
-      case 'legendary':
-        return baseAttackSpeed * 0.7; // 30% faster attack speed
-      case 'mythic':
-        return baseAttackSpeed * 0.5; // 50% faster attack speed
-      default: // "normal"
-        return baseAttackSpeed;
-    }
+    const baseAttackSpeed = 1;
+    const rarityMap = {
+      [ENEMY_RARITY_NORMAL.type]: ENEMY_RARITY_NORMAL.bonusAttackSpeed,
+      [ENEMY_RARITY_RARE.type]: ENEMY_RARITY_RARE.bonusAttackSpeed,
+      [ENEMY_RARITY_EPIC.type]: ENEMY_RARITY_EPIC.bonusAttackSpeed,
+      [ENEMY_RARITY_LEGENDARY.type]: ENEMY_RARITY_LEGENDARY.bonusAttackSpeed,
+      [ENEMY_RARITY_MYTHIC.type]: ENEMY_RARITY_MYTHIC.bonusAttackSpeed,
+    };
+
+    return baseAttackSpeed * (rarityMap[rarity] || ENEMY_RARITY_NORMAL.bonusAttackSpeed);
   }
 
   canAttack(currentTime) {
@@ -94,38 +139,5 @@ class Enemy {
   resetHealth() {
     this.currentHealth = this.maxHealth;
   }
-
-  getItemDropChances() {
-    const baseChances = {
-      normal: 70,
-      magic: 20,
-      rare: 9,
-      unique: 1,
-    };
-
-    switch (this.rarity) {
-      case 'rare':
-        baseChances.rare += 5; // Increase rare item drop chance
-        baseChances.unique += 1; // Increase unique item drop chance
-        break;
-      case 'epic':
-        baseChances.rare += 10; // Increase rare item drop chance
-        baseChances.unique += 3; // Increase unique item drop chance
-        break;
-      case 'legendary':
-        baseChances.rare += 15; // Increase rare item drop chance
-        baseChances.unique += 5; // Increase unique item drop chance
-        break;
-      case 'mythic':
-        baseChances.rare += 20; // Increase rare item drop chance
-        baseChances.unique += 10; // Increase unique item drop chance
-        break;
-      default: // "normal"
-        break;
-    }
-
-    return baseChances;
-  }
 }
-
 export default Enemy;

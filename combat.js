@@ -1,7 +1,7 @@
 import { updatePlayerHealth, updateEnemyHealth, updateResources, updateZoneUI } from './ui.js';
 import Enemy from './enemy.js';
-import { calculateItemLevel, getRandomItemType, rollForDrop, dropLoot } from './loot-table.js';
-import { RARITY } from './item.js';
+import { calculateItemLevel, getRandomItemType, rollForDrop } from './loot-table.js';
+import { ITEM_RARITY } from './item.js';
 import { hero, game } from './main.js';
 import { saveGame } from './storage.js';
 
@@ -93,7 +93,7 @@ export function playerDeath(game) {
 
 function defeatEnemy(game) {
   const enemy = game.currentEnemy;
-  const droppedItem = dropLoot(enemy);
+  // const droppedItem = dropLoot(enemy);
 
   if (!game) {
     console.error('Game is undefined in defeatEnemy');
@@ -109,15 +109,7 @@ function defeatEnemy(game) {
   const newPrestigeSouls = Math.floor(game.zone / 50);
   hero.prestigeProgress = newPrestigeSouls;
 
-  game.incrementZone();
-  hero.displayStats();
-  game.currentEnemy = new Enemy(game.zone);
-  game.currentEnemy.lastAttack = Date.now();
-
-  updateResources(hero, game);
-  updateEnemyHealth(game.currentEnemy);
-
-  if (rollForDrop(game.zone)) {
+  if (rollForDrop(enemy)) {
     const itemLevel = calculateItemLevel(game.zone);
     const itemType = getRandomItemType();
     const newItem = game.inventory.createItem(itemType, itemLevel);
@@ -126,13 +118,21 @@ function defeatEnemy(game) {
     showLootNotification(newItem);
   }
 
+  game.incrementZone();
+  hero.displayStats();
+  game.currentEnemy = new Enemy(game.zone);
+  game.currentEnemy.lastAttack = Date.now();
+
+  updateResources(hero, game);
+  updateEnemyHealth(game.currentEnemy);
+
   saveGame();
 }
 
 function showLootNotification(item) {
   const notification = document.createElement('div');
   notification.className = 'loot-notification';
-  notification.style.color = RARITY[item.rarity].color;
+  notification.style.color = ITEM_RARITY[item.rarity].color;
   notification.textContent = `Found: ${item.getDisplayName()}`;
   document.body.appendChild(notification);
 

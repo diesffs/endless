@@ -16,6 +16,8 @@ import {
   BASE_UPGRADE_COSTS,
 } from './hero.js';
 import Shop from './shop.js';
+import { RARITY_ORDER } from './item.js';
+
 export default class Prestige {
   constructor(game) {
     if (!game || typeof game.zone !== 'number') {
@@ -101,8 +103,7 @@ export default class Prestige {
       critDamage: 0,
     };
 
-    const rarities = ['NORMAL', 'MAGIC', 'RARE', 'UNIQUE'];
-    rarities.forEach((rarity) => this.game.inventory.salvageItemsByRarity(rarity));
+    RARITY_ORDER.forEach((rarity) => this.game.inventory.salvageItemsByRarity(rarity));
 
     // Update UI and save game
     updateResources(hero, this.game);
