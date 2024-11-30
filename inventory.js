@@ -407,7 +407,7 @@ export default class Inventory {
     saveGame(); // Add save
   }
 
-  updateCharacterStats() {
+  updateItemBonuses() {
     // Reset equipment bonuses
     Object.keys(hero.equipmentBonuses).forEach((stat) => {
       hero.equipmentBonuses[stat] = 0;

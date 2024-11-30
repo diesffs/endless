@@ -20,9 +20,10 @@ game.prestige = prestige;
 export const shop = new Shop();
 
 prestige.initializePrestigeUI();
-hero.displayStats();
 updateResources(hero, game);
 hero.stats.currentHealth = hero.stats.maxHealth;
+hero.recalculateFromAttributes();
+hero.displayStats();
 updatePlayerHealth(hero.stats);
 updateEnemyHealth(game.currentEnemy);
 

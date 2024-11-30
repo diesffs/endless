@@ -57,6 +57,8 @@ export default class Hero {
       vitality: 0,
       critChance: 0,
       critDamage: 0,
+      attackSpeed: 0,
+      maxHealth: 0,
     };
 
     this.stats = {
@@ -119,22 +121,28 @@ export default class Hero {
     return false;
   }
 
+  getStat(stat) {
+    return this.primaryStats[stat] + this.equipmentBonuses[stat] || 0;
+  }
+
   recalculateFromAttributes() {
+    game.inventory.updateItemBonuses();
+
     this.stats.damage =
       BASE_DAMAGE +
-      this.primaryStats.strength * 2 +
+      (this.primaryStats.strength + this.equipmentBonuses.strength) * 2 +
       this.upgradeLevels.damage * DAMAGE_ON_UPGRADE +
       DAMAGE_ON_LEVEL_UP * this.level -
       DAMAGE_ON_LEVEL_UP;
 
     this.stats.attackSpeed =
       BASE_ATTACK_SPEED +
-      this.primaryStats.agility * 0.05 +
+      (this.primaryStats.agility + this.equipmentBonuses.agility) * 0.05 +
       this.upgradeLevels.attackSpeed * ATTACK_SPEED_ON_UPGRADE;
 
     this.stats.maxHealth =
       BASE_HEALTH +
-      this.primaryStats.vitality * 10 +
+      (this.primaryStats.vitality + this.equipmentBonuses.vitality) * 10 +
       this.upgradeLevels.health * HEALTH_ON_UPGRADE +
       HEALTH_ON_LEVEL_UP * this.level -
       HEALTH_ON_LEVEL_UP;
@@ -147,8 +155,7 @@ export default class Hero {
     this.stats.critDamage =
       BASE_CRIT_DAMAGE + this.upgradeLevels.critDamage * CRIT_DAMAGE_ON_UPGRADE;
 
-    game.inventory.updateCharacterStats();
-
+    // had to be after stats are calculated, to just add bonuses
     Object.entries(this.equipmentBonuses).forEach(([stat, bonus]) => {
       if (this.stats[stat] !== undefined) {
         this.stats[stat] += bonus;

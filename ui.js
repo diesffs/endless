@@ -146,15 +146,19 @@ export function updateStatsAndAttributesUI(hero) {
     attributesContainer.innerHTML = `
           <h3 id="attributes">Attributes (+${hero.statPoints})</h3>
           <div>
-              <strong>Strength:</strong> <span id="strength-value">${hero.primaryStats.strength}</span>
+              <strong>Strength:</strong> <span id="strength-value">${hero.getStat(
+                'strength'
+              )}</span>
               <button class="allocate-btn" data-stat="strength">+</button>
           </div>
           <div>
-              <strong>Agility:</strong> <span id="agility-value">${hero.primaryStats.agility}</span>
+              <strong>Agility:</strong> <span id="agility-value">${hero.getStat('agility')}</span>
               <button class="allocate-btn" data-stat="agility">+</button>
           </div>
           <div>
-              <strong>Vitality:</strong> <span id="vitality-value">${hero.primaryStats.vitality}</span>
+              <strong>Vitality:</strong> <span id="vitality-value">${hero.getStat(
+                'vitality'
+              )}</span>
               <button class="allocate-btn" data-stat="vitality">+</button>
           </div>
       `;
@@ -166,7 +170,7 @@ export function updateStatsAndAttributesUI(hero) {
         const stat = btn.dataset.stat;
         if (hero.allocateStat(stat)) {
           // Update only the specific stat value
-          document.getElementById(`${stat}-value`).textContent = hero.primaryStats[stat];
+          document.getElementById(`${stat}-value`).textContent = hero.getStat(stat);
           updateStatsAndAttributesUI(hero); // Refresh all stats
           updatePlayerHealth(hero.stats); // Update health bar dynamically
         }
@@ -175,9 +179,9 @@ export function updateStatsAndAttributesUI(hero) {
   } else {
     document.getElementById(`attributes`).textContent = `Attributes (+${hero.statPoints})`;
     // Update dynamic attribute values
-    document.getElementById('strength-value').textContent = hero.primaryStats.strength;
-    document.getElementById('agility-value').textContent = hero.primaryStats.agility;
-    document.getElementById('vitality-value').textContent = hero.primaryStats.vitality;
+    document.getElementById('strength-value').textContent = hero.getStat('strength');
+    document.getElementById('agility-value').textContent = hero.getStat('agility');
+    document.getElementById('vitality-value').textContent = hero.getStat('vitality');
   }
 }
 export function updateZoneUI(zone) {
