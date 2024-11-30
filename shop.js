@@ -69,19 +69,24 @@ export default class Shop {
 
         let intervalId;
         let isHolding = false;
+        let isMouseDown = true; // Add flag to track mouse state
 
         const startHolding = () => {
-          isHolding = true;
-          intervalId = setInterval(() => {
-            if (isHolding) {
-              this.buyUpgrade(stat);
-            } else {
-              clearInterval(intervalId);
-            }
-          }, 100); // Adjust the interval as needed
+          // Only start holding if mouse is still down
+          if (isMouseDown) {
+            isHolding = true;
+            intervalId = setInterval(() => {
+              if (isHolding) {
+                this.buyUpgrade(stat);
+              } else {
+                clearInterval(intervalId);
+              }
+            }, 100);
+          }
         };
 
         const stopHolding = () => {
+          isMouseDown = false; // Update mouse state
           isHolding = false;
           clearInterval(intervalId);
           document.removeEventListener('mouseup', stopHolding);
@@ -91,7 +96,7 @@ export default class Shop {
         document.addEventListener('mouseup', stopHolding);
         document.addEventListener('mouseleave', stopHolding);
 
-        setTimeout(startHolding, 500); // Start holding after 500ms
+        setTimeout(startHolding, 500);
       }
     });
   }
