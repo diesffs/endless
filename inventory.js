@@ -246,31 +246,26 @@ export default class Inventory {
       const cell = document.querySelector(`.grid-cell:nth-child(${index + 1})`);
       if (cell && item) {
         cell.innerHTML = `
-                        <div class="inventory-item rarity-${item.rarity.toLowerCase()}" 
-                             draggable="true" 
-                             data-item-id="${item.id}">
-                            <div class="item-icon">${item.type.charAt(0)}</div>
-                            <div class="item-level">Lvl ${item.level}</div>
-                        </div>
-                    `;
+          <div class="inventory-item rarity-${item.rarity.toLowerCase()}" 
+               draggable="true" 
+               data-item-id="${item.id}">
+              <div class="item-icon">${item.getIcon()}</div>
+          </div>
+        `;
       }
     });
 
     Object.entries(this.equippedItems).forEach(([slot, item]) => {
       const slotElement = document.querySelector(`[data-slot="${slot}"]`);
-      if (slotElement) {
-        // Find existing inventory-item if any
-        const existingItem = slotElement.querySelector('.inventory-item');
-
-        // Create new item element
+      if (slotElement && item) {
         const newItem = document.createElement('div');
         newItem.className = 'inventory-item';
         newItem.draggable = true;
         newItem.dataset.itemId = item.id;
         newItem.style.borderColor = ITEM_RARITY[item.rarity].color;
-        newItem.textContent = item.type.charAt(0);
+        newItem.innerHTML = `<div class="item-icon">${item.getIcon()}</div>`;
 
-        // Replace or append
+        const existingItem = slotElement.querySelector('.inventory-item');
         if (existingItem) {
           slotElement.replaceChild(newItem, existingItem);
         } else {
@@ -417,7 +412,7 @@ export default class Inventory {
 
       if (rarityA !== rarityB) {
         // Higher rarity (lower index) comes first
-        return rarityA - rarityB;
+        return -(rarityA - rarityB);
       }
 
       // If same rarity, sort by level (higher level first)

@@ -711,12 +711,22 @@ body {
 }
 
 .inventory-item {
-  width: 40px;
-  height: 40px;
   background: var(--bg-panel);
   border: 2px solid var(--accent);
   border-radius: 0.25rem;
   font-size: 0.8em; /* Smaller font for items */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.item-icon {
+  font-size: 2em;
+  text-align: center;
+  user-select: none;
 }
 
 /* Adjust equipment slots to match new size */
@@ -891,8 +901,8 @@ body {
 
 .salvage-container {
   display: flex;
-  justify-content: space-between; 
-  align-items: center; 
+  justify-content: space-between;
+  align-items: center;
   margin: 10px 20px;
 }
 

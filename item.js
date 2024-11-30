@@ -12,6 +12,20 @@ export const ITEM_TYPES = {
   RING: 'RING',
 };
 
+export const ITEM_ICONS = {
+  HELMET: '🪖',
+  ARMOR: '👚',
+  PANTS: '👖',
+  BOOTS: '👢',
+  SWORD: '⚔️',
+  AXE: '🪓',
+  MACE: '🔨',
+  SHIELD: '🛡️',
+  GLOVES: '🧤',
+  AMULET: '📿',
+  RING: '💍',
+};
+
 export const ITEM_RARITY = {
   NORMAL: { name: 'NORMAL', color: '#ffffff', chance: 70, statMultiplier: 1 },
   MAGIC: { name: 'MAGIC', color: '#4287f5', chance: 20, statMultiplier: 1.5 },
@@ -118,22 +132,27 @@ export default class Item {
     }
   }
 
+  getIcon() {
+    return ITEM_ICONS[this.type] || '❓';
+  }
+
   getDisplayName() {
     return `${ITEM_RARITY[this.rarity].name} ${this.type}`;
   }
 
   getTooltipHTML() {
     return `
-              <div class="item-tooltip">
-                  <div class="item-name" style="color: ${ITEM_RARITY[this.rarity].color};">
-                      ${this.getDisplayName()}
-                  </div>
-                  <div class="item-stats">
-                      ${Object.entries(this.stats)
-                        .map(([stat, value]) => `<div>${stat}: ${value}</div>`)
-                        .join('')}
-                  </div>
-              </div>
-          `;
+      <div class="item-tooltip">
+        <div class="item-name" style="color: ${ITEM_RARITY[this.rarity].color};">
+          ${this.getDisplayName()}
+        </div>
+        <div class="item-level">Level ${this.level}</div>
+        <div class="item-stats">
+          ${Object.entries(this.stats)
+            .map(([stat, value]) => `<div>${stat}: ${value}</div>`)
+            .join('')}
+        </div>
+      </div>
+    `;
   }
 }
