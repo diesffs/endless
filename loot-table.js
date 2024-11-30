@@ -1,7 +1,9 @@
-import { ITEM_TYPES, ITEM_RARITY } from './item.js';
+import { ENEMY_RARITY } from './enemy.js';
+import { ITEM_TYPES } from './item.js';
 
 export function calculateDropChance(enemy) {
-  return 2;
+  const enemyConst = ENEMY_RARITY[enemy.rarity];
+  return enemyConst.itemDropChance;
 }
 
 export function calculateItemLevel(zone) {
@@ -11,20 +13,6 @@ export function calculateItemLevel(zone) {
 export function rollForDrop(enemy) {
   const dropChance = calculateDropChance(enemy);
   return Math.random() * 100 <= dropChance;
-}
-
-export function getRandomItem(rarityChances) {
-  const random = Math.random() * 100;
-  let cumulativeChance = 0;
-
-  for (const [rarity, chance] of Object.entries(rarityChances)) {
-    cumulativeChance += chance;
-    if (random < cumulativeChance) {
-      return rarity.toUpperCase();
-    }
-  }
-
-  return ITEM_RARITY.NORMAL.type;
 }
 
 export function getRandomItemType() {
