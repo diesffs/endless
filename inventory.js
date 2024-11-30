@@ -62,10 +62,10 @@ export default class Inventory {
       .addEventListener('click', () => this.salvageAllItems('UNIQUE'));
   }
 
-  salvageAllItems(rarity = 'ALL') {
+  salvageItemsByRarity(rarity) {
     let salvagedItems = 0;
     this.inventoryItems = this.inventoryItems.map((item) => {
-      if (item && (rarity === 'ALL' || item.rarity === rarity)) {
+      if (item && item.rarity === rarity) {
         salvagedItems++;
         return null;
       }
@@ -73,13 +73,11 @@ export default class Inventory {
     });
 
     if (salvagedItems > 0) {
-      const message = rarity === 'ALL' ? 'all items' : `${rarity.toLowerCase()} items`;
-      showToast(`Salvaged ${salvagedItems} ${message}`, 'success');
+      showToast(`Salvaged ${salvagedItems} ${rarity.toLowerCase()} items`, 'success');
       this.updateInventoryGrid();
       saveGame();
     } else {
-      const message = rarity === 'ALL' ? 'items' : `${rarity.toLowerCase()} items`;
-      showToast(`No ${message} to salvage`, 'info');
+      showToast(`No ${rarity.toLowerCase()} items to salvage`, 'info');
     }
   }
 
