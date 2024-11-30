@@ -166,14 +166,43 @@ export function updateStatsAndAttributesUI(hero) {
 
     // Attach event listeners for allocation buttons (only once)
     attributesContainer.querySelectorAll('.allocate-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('mousedown', (e) => {
         const stat = btn.dataset.stat;
+
+        // Initial click allocation
         if (hero.allocateStat(stat)) {
-          // Update only the specific stat value
           document.getElementById(`${stat}-value`).textContent = hero.getStat(stat);
-          updateStatsAndAttributesUI(hero); // Refresh all stats
-          updatePlayerHealth(hero.stats); // Update health bar dynamically
+          updateStatsAndAttributesUI(hero);
+          updatePlayerHealth(hero.stats);
         }
+
+        let intervalId;
+        let holdingTimeout;
+
+        const startHolding = () => {
+          clearInterval(intervalId);
+          intervalId = setInterval(() => {
+            if (hero.allocateStat(stat)) {
+              document.getElementById(`${stat}-value`).textContent = hero.getStat(stat);
+              updateStatsAndAttributesUI(hero);
+              updatePlayerHealth(hero.stats);
+            }
+          }, 100); // Allocate every 100ms while holding
+        };
+
+        const stopHolding = () => {
+          clearTimeout(holdingTimeout);
+          clearInterval(intervalId);
+          document.removeEventListener('mouseup', stopHolding);
+          document.removeEventListener('mouseleave', stopHolding);
+        };
+
+        // Start holding after 500ms
+        holdingTimeout = setTimeout(startHolding, 500);
+
+        // Add event listeners to stop holding
+        document.addEventListener('mouseup', stopHolding);
+        document.addEventListener('mouseleave', stopHolding);
       });
     });
   } else {
