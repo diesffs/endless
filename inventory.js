@@ -64,7 +64,7 @@ export default class Inventory {
       .addEventListener('click', () => this.salvageAllItems('ALL'));
   }
 
-  salvageAllItems(rarity) {
+  salvageAllItems(rarity = 'ALL') {
     let salvagedItems = 0;
     this.inventoryItems = this.inventoryItems.map((item) => {
       if (item && (rarity === 'ALL' || item.rarity === rarity)) {

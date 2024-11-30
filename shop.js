@@ -61,9 +61,38 @@ export default class Shop {
       }
     });
 
-    shopGrid.addEventListener('click', (e) => {
+    shopGrid.addEventListener('mousedown', (e) => {
       const button = e.target.closest('button[data-stat]');
-      if (button) this.buyUpgrade(button.dataset.stat);
+      if (button) {
+        const stat = button.dataset.stat;
+        this.buyUpgrade(stat);
+
+        let intervalId;
+        let isHolding = false;
+
+        const startHolding = () => {
+          isHolding = true;
+          intervalId = setInterval(() => {
+            if (isHolding) {
+              this.buyUpgrade(stat);
+            } else {
+              clearInterval(intervalId);
+            }
+          }, 100); // Adjust the interval as needed
+        };
+
+        const stopHolding = () => {
+          isHolding = false;
+          clearInterval(intervalId);
+          document.removeEventListener('mouseup', stopHolding);
+          document.removeEventListener('mouseleave', stopHolding);
+        };
+
+        document.addEventListener('mouseup', stopHolding);
+        document.addEventListener('mouseleave', stopHolding);
+
+        setTimeout(startHolding, 500); // Start holding after 500ms
+      }
     });
   }
 
