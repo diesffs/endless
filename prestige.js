@@ -45,6 +45,7 @@ export default class Prestige {
 
     this.resetGame();
     hero.recalculateFromAttributes(); // Recalculate attributes after resetting the game
+    hero.stats.currentHealth = hero.stats.maxHealth;
     updateStatsAndAttributesUI(hero); // Update stats and attributes UI
     updateResources(hero, this.game); // Update resources UI
     updatePlayerHealth(hero.stats); // Update health bar dynamically
@@ -100,7 +101,8 @@ export default class Prestige {
       critDamage: 0,
     };
 
-    this.game.inventory.salvageAllItems();
+    const rarities = ['NORMAL', 'MAGIC', 'RARE', 'UNIQUE'];
+    rarities.forEach((rarity) => this.game.inventory.salvageItemsByRarity(rarity));
 
     // Update UI and save game
     updateResources(hero, this.game);

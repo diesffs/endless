@@ -50,22 +50,25 @@ export default class Inventory {
 
     document
       .getElementById('salvage-normal')
-      .addEventListener('click', () => this.salvageAllItems('NORMAL'));
+      .addEventListener('click', () => this.salvageItemsByRarity('NORMAL'));
     document
       .getElementById('salvage-magic')
-      .addEventListener('click', () => this.salvageAllItems('MAGIC'));
+      .addEventListener('click', () => this.salvageItemsByRarity('MAGIC'));
     document
       .getElementById('salvage-rare')
-      .addEventListener('click', () => this.salvageAllItems('RARE'));
+      .addEventListener('click', () => this.salvageItemsByRarity('RARE'));
     document
       .getElementById('salvage-unique')
-      .addEventListener('click', () => this.salvageAllItems('UNIQUE'));
+      .addEventListener('click', () => this.salvageItemsByRarity('UNIQUE'));
   }
 
   salvageItemsByRarity(rarity) {
     let salvagedItems = 0;
+    const rarities = ['NORMAL', 'MAGIC', 'RARE', 'UNIQUE'];
+    const salvageRarities = rarities.slice(0, rarities.indexOf(rarity) + 1);
+
     this.inventoryItems = this.inventoryItems.map((item) => {
-      if (item && item.rarity === rarity) {
+      if (item && salvageRarities.includes(item.rarity)) {
         salvagedItems++;
         return null;
       }
@@ -73,11 +76,11 @@ export default class Inventory {
     });
 
     if (salvagedItems > 0) {
-      showToast(`Salvaged ${salvagedItems} ${rarity.toLowerCase()} items`, 'success');
+      showToast(`Salvaged ${salvagedItems} ${rarity.toLowerCase()} or lower items`, 'success');
       this.updateInventoryGrid();
       saveGame();
     } else {
-      showToast(`No ${rarity.toLowerCase()} items to salvage`, 'info');
+      showToast(`No ${rarity.toLowerCase()} or lower items to salvage`, 'info');
     }
   }
 
