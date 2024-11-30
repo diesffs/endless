@@ -184,6 +184,7 @@ export function updateStatsAndAttributesUI(hero) {
     document.getElementById('vitality-value').textContent = hero.getStat('vitality');
   }
 }
+
 export function updateZoneUI(zone) {
   const zoneDisplay = document.getElementById('zone-display');
   if (zoneDisplay) {

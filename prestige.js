@@ -1,5 +1,10 @@
 import { hero } from './main.js';
-import { updateZoneUI, updateResources, updatePlayerHealth } from './ui.js';
+import {
+  updateZoneUI,
+  updateResources,
+  updatePlayerHealth,
+  updateStatsAndAttributesUI,
+} from './ui.js';
 import { saveGame } from './storage.js';
 import {
   BASE_DAMAGE,
@@ -10,6 +15,7 @@ import {
   BASE_CRIT_DAMAGE,
   BASE_UPGRADE_COSTS,
 } from './hero.js';
+import Shop from './shop.js';
 export default class Prestige {
   constructor(game) {
     if (!game || typeof game.zone !== 'number') {
@@ -38,9 +44,18 @@ export default class Prestige {
     hero.prestigeProgress = 0;
 
     this.resetGame();
+    hero.recalculateFromAttributes(); // Recalculate attributes after resetting the game
+    hero.stats.currentHealth = hero.stats.maxHealth;
+    updateStatsAndAttributesUI(hero); // Update stats and attributes UI
+    updateResources(hero, this.game); // Update resources UI
+    updatePlayerHealth(hero.stats); // Update health bar dynamically
     saveGame();
 
     this.initializePrestigeUI(); // Ensure UI reflects reset state
+
+    const shop = new Shop();
+    shop.updateShopUI('gold-upgrades');
+    shop.updateShopUI('crystal-upgrades');
   }
 
   resetGame() {
@@ -86,7 +101,8 @@ export default class Prestige {
       critDamage: 0,
     };
 
-    this.game.inventory.salvageAllItems();
+    const rarities = ['NORMAL', 'MAGIC', 'RARE', 'UNIQUE'];
+    rarities.forEach((rarity) => this.game.inventory.salvageItemsByRarity(rarity));
 
     // Update UI and save game
     updateResources(hero, this.game);

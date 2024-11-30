@@ -4,6 +4,7 @@ import { game, hero } from './main.js';
 import { saveGame } from './storage.js';
 import { showToast } from './toast.js';
 
+const RARITY_ORDER = ['NORMAL', 'MAGIC', 'RARE', 'UNIQUE'];
 export default class Inventory {
   constructor(game = null, savedData = null) {
     this.equippedItems = savedData?.equippedItems || {};
@@ -49,25 +50,25 @@ export default class Inventory {
 
     document
       .getElementById('salvage-normal')
-      .addEventListener('click', () => this.salvageAllItems('NORMAL'));
+      .addEventListener('click', () => this.salvageItemsByRarity('NORMAL'));
     document
       .getElementById('salvage-magic')
-      .addEventListener('click', () => this.salvageAllItems('MAGIC'));
+      .addEventListener('click', () => this.salvageItemsByRarity('MAGIC'));
     document
       .getElementById('salvage-rare')
-      .addEventListener('click', () => this.salvageAllItems('RARE'));
+      .addEventListener('click', () => this.salvageItemsByRarity('RARE'));
     document
       .getElementById('salvage-unique')
-      .addEventListener('click', () => this.salvageAllItems('UNIQUE'));
-    document
-      .getElementById('salvage-all')
-      .addEventListener('click', () => this.salvageAllItems('ALL'));
+      .addEventListener('click', () => this.salvageItemsByRarity('UNIQUE'));
   }
 
-  salvageAllItems(rarity = 'ALL') {
+  salvageItemsByRarity(rarity) {
     let salvagedItems = 0;
+    const rarities = ['NORMAL', 'MAGIC', 'RARE', 'UNIQUE'];
+    const salvageRarities = rarities.slice(0, rarities.indexOf(rarity) + 1);
+
     this.inventoryItems = this.inventoryItems.map((item) => {
-      if (item && (rarity === 'ALL' || item.rarity === rarity)) {
+      if (item && salvageRarities.includes(item.rarity)) {
         salvagedItems++;
         return null;
       }
@@ -75,13 +76,11 @@ export default class Inventory {
     });
 
     if (salvagedItems > 0) {
-      const message = rarity === 'ALL' ? 'all items' : `${rarity.toLowerCase()} items`;
-      showToast(`Salvaged ${salvagedItems} ${message}`, 'success');
+      showToast(`Salvaged ${salvagedItems} ${rarity.toLowerCase()} or lower items`, 'success');
       this.updateInventoryGrid();
       saveGame();
     } else {
-      const message = rarity === 'ALL' ? 'items' : `${rarity.toLowerCase()} items`;
-      showToast(`No ${message} to salvage`, 'info');
+      showToast(`No ${rarity.toLowerCase()} or lower items to salvage`, 'info');
     }
   }
 

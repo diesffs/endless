@@ -699,6 +699,7 @@ body {
   border-radius: 0.5rem;
   width: fit-content;
   overflow-y: auto;
+  margin-top: -30px;
 }
 
 .grid-cell {
@@ -886,4 +887,45 @@ body {
 
 .sub-tab-panel.active {
   display: block;
+}
+
+.salvage-container {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center; 
+  margin: 10px 20px;
+}
+
+.salvage-button {
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.salvage-button.normal {
+  background-color: white;
+  color: black;
+}
+
+.salvage-button.magic {
+  background-color: #4287f5; /* Blue */
+  color: white;
+}
+
+.salvage-button.rare {
+  background-color: #ffd700; /* Yellow */
+  color: black;
+}
+
+.salvage-button.unique {
+  background-color: #ff8c00; /* Orange */
+  color: white;
+}
+
+.salvage-button:hover {
+  opacity: 0.8;
 }
