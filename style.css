@@ -553,7 +553,7 @@ body {
 .equipment-layout {
   position: relative;
   width: 300px;
-  height: 400px;
+  height: 280px;
   margin: 0 auto;
 }
 
@@ -597,50 +597,55 @@ body {
 }
 
 [data-slot='amulet'] {
-  top: 80px;
+  top: 35px;
+  right: 70px;
+}
+
+[data-slot='chest'] {
+  top: 70px;
   left: 50%;
   transform: translateX(-50%);
 }
 
-[data-slot='chest'] {
-  top: 140px;
+[data-slot='belt'] {
+  top: 120px; /* Adjust this value between chest (140px) and legs (260px) */
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+[data-slot='legs'] {
+  top: 170px;
   left: 50%;
   transform: translateX(-50%);
 }
 
 [data-slot='weapon'] {
-  top: 140px;
+  top: 100px;
   left: 40px;
 }
 
 [data-slot='offhand'] {
-  top: 140px;
+  top: 100px;
   right: 40px;
 }
 
 [data-slot='gloves'] {
-  top: 200px;
+  top: 160px;
   left: 40px;
 }
 
 [data-slot='ring1'] {
-  top: 200px;
-  right: 40px;
-}
-
-[data-slot='legs'] {
-  top: 260px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 160px;
+  right: 20px;
 }
 
 [data-slot='ring2'] {
-  top: 260px;
-  right: 40px;
+  top: 160px;
+  right: 70px;
 }
 
 [data-slot='boots'] {
-  bottom: 20px;
+  top: 220px;
   left: 50%;
   transform: translateX(-50%);
 }

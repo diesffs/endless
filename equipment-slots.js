@@ -1,6 +1,7 @@
 export const EQUIPMENT_SLOTS = {
   HEAD: 'head',
   CHEST: 'chest',
+  BELT: 'belt',
   LEGS: 'legs',
   BOOTS: 'boots',
   WEAPON: 'weapon',
@@ -14,6 +15,7 @@ export const EQUIPMENT_SLOTS = {
 export const SLOT_REQUIREMENTS = {
   head: ['HELMET'],
   chest: ['ARMOR'],
+  belt: ['BELT'],
   legs: ['PANTS'],
   boots: ['BOOTS'],
   weapon: ['SWORD', 'AXE', 'MACE'],

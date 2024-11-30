@@ -1,6 +1,7 @@
 export const ITEM_TYPES = {
   HELMET: 'HELMET',
   ARMOR: 'ARMOR',
+  BELT: 'BELT',
   PANTS: 'PANTS',
   BOOTS: 'BOOTS',
   SWORD: 'SWORD',
@@ -15,6 +16,7 @@ export const ITEM_TYPES = {
 export const ITEM_ICONS = {
   HELMET: '🪖',
   ARMOR: '👚',
+  BELT: '🎗️',
   PANTS: '👖',
   BOOTS: '👢',
   SWORD: '⚔️',
@@ -72,6 +74,13 @@ export default class Item {
           armor: 10,
           vitality: 3,
           maxHealth: 20,
+        };
+      case ITEM_TYPES.BELT:
+        return {
+          armor: 4,
+          vitality: 2,
+          strength: 1,
+          maxHealth: 12,
         };
       case ITEM_TYPES.PANTS:
         return {
