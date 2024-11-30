@@ -156,7 +156,7 @@ export default class Hero {
       BASE_CRIT_DAMAGE + this.upgradeLevels.critDamage * CRIT_DAMAGE_ON_UPGRADE;
 
     // had to be after stats are calculated, to just add bonuses
-    game.inventory.updateCharacterStats();
+    game.inventory.updateItemBonuses();
 
     Object.entries(this.equipmentBonuses).forEach(([stat, bonus]) => {
       if (this.stats[stat] !== undefined) {
