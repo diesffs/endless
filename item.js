@@ -153,7 +153,7 @@ export default class Item {
     return `
       <div class="item-tooltip">
         <div class="item-name" style="color: ${ITEM_RARITY[this.rarity].color};">
-          ${isEquipped ? '(Currently Equipped) ' : ''}${this.getDisplayName()}
+          ${isEquipped ? '(Equipped) ' : ''}${this.getDisplayName()}
         </div>
         <div class="item-level">Level ${this.level}</div>
         <div class="item-stats">

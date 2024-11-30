@@ -303,6 +303,42 @@ export default class Inventory {
     let activeTooltip = null;
 
     items.forEach((item) => {
+      // Add double-click handler
+      item.addEventListener('dblclick', (e) => {
+        const itemData = this.getItemById(item.dataset.itemId);
+        if (!itemData) return;
+
+        // Check if item is currently equipped
+        const equippedSlot = Object.entries(this.equippedItems).find(
+          ([slot, equippedItem]) => equippedItem?.id === itemData.id
+        )?.[0];
+
+        if (equippedSlot) {
+          // Unequip item
+          const emptySlot = this.inventoryItems.findIndex((slot) => slot === null);
+          if (emptySlot !== -1) {
+            this.inventoryItems[emptySlot] = itemData;
+            delete this.equippedItems[equippedSlot];
+            hero.recalculateFromAttributes();
+            this.updateInventoryGrid();
+            saveGame();
+          }
+          return;
+        }
+
+        // Existing equip logic for inventory items
+        for (const [slot, requirements] of Object.entries(SLOT_REQUIREMENTS)) {
+          if (requirements.includes(itemData.type)) {
+            if (!this.equippedItems[slot] || this.canEquipInSlot(itemData, slot)) {
+              this.equipItem(itemData, slot);
+              hero.recalculateFromAttributes();
+              this.updateInventoryGrid();
+              return;
+            }
+          }
+        }
+      });
+
       // Add dragstart event listener
       item.addEventListener('dragstart', (e) => {
         e.target.classList.add('dragging');
@@ -330,6 +366,7 @@ export default class Inventory {
         tooltipContainer.style.top = `${e.pageY + 10}px`;
         tooltipContainer.style.display = 'flex';
         tooltipContainer.style.gap = '10px';
+        tooltipContainer.style.zIndex = '1000';
 
         // Main item tooltip
         const mainTooltip = document.createElement('div');
