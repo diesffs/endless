@@ -1,7 +1,7 @@
 export const ENEMY_RARITY = {
   NORMAL: {
     type: 'NORMAL',
-    itemDropChance: 80,
+    itemDropChance: 5,
     color: 'gray',
     threshold: 80,
     healthBonus: 1,
