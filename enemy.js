@@ -40,7 +40,7 @@ class Enemy {
   }
 
   calculateHealth(level, rarity) {
-    const baseHealth = 50 + level * 10;
+    const baseHealth = 49 + Math.pow(level, 1.5);
     switch (rarity) {
       case 'rare':
         return baseHealth * 1.2; // 20% more health

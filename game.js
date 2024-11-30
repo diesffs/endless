@@ -1,13 +1,9 @@
-import {
-  updatePlayerHealth,
-  updateEnemyHealth,
-  updateZoneUI,
-  updateResources,
-} from './ui.js';
+import { updatePlayerHealth, updateEnemyHealth, updateZoneUI, updateResources } from './ui.js';
 import { playerAttack, enemyAttack } from './combat.js';
 import { saveGame } from './storage.js';
 import Inventory from './inventory.js';
 import { hero } from './main.js';
+import Enemy from './enemy.js';
 
 class Game {
   constructor(prestige = null, savedData) {
