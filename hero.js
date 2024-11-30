@@ -1,7 +1,7 @@
 import { updateStatsAndAttributesUI } from './ui.js';
-import Inventory from './inventory.js';
 import { game } from './main.js';
 import { saveGame } from './storage.js';
+import { updatePlayerHealth, updateResources } from './ui.js';
 
 // Keep all the constants at the top
 export const BASE_DAMAGE = 10;
@@ -148,6 +148,15 @@ export default class Hero {
       BASE_CRIT_DAMAGE + this.upgradeLevels.critDamage * CRIT_DAMAGE_ON_UPGRADE;
 
     game.inventory.updateCharacterStats();
+
+    // Ensure current health does not exceed max health
+    if (this.stats.currentHealth > this.stats.maxHealth) {
+      this.stats.currentHealth = this.stats.maxHealth;
+    }
+
+    // Update the UI to reflect the new stats
+    updatePlayerHealth(this.stats);
+    updateResources(this, game);
 
     Object.entries(this.equipmentBonuses).forEach(([stat, bonus]) => {
       if (this.stats[stat] !== undefined) {
