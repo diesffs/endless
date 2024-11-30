@@ -68,30 +68,30 @@ export default class Shop {
         this.buyUpgrade(stat);
 
         let intervalId;
-        let isHolding = false;
+        let holdingTimeout;
 
         const startHolding = () => {
-          isHolding = true;
+          // Clear any existing interval to prevent multiple timers
+          clearInterval(intervalId);
           intervalId = setInterval(() => {
-            if (isHolding) {
-              this.buyUpgrade(stat);
-            } else {
-              clearInterval(intervalId);
-            }
+            this.buyUpgrade(stat);
           }, 100); // Adjust the interval as needed
         };
 
         const stopHolding = () => {
-          isHolding = false;
+          // Clear both the interval and the timeout
+          clearTimeout(holdingTimeout);
           clearInterval(intervalId);
           document.removeEventListener('mouseup', stopHolding);
           document.removeEventListener('mouseleave', stopHolding);
         };
 
+        // Set up the timeout for holding
+        holdingTimeout = setTimeout(startHolding, 500); // Start holding after 500ms
+
+        // Add event listeners to stop holding
         document.addEventListener('mouseup', stopHolding);
         document.addEventListener('mouseleave', stopHolding);
-
-        setTimeout(startHolding, 500); // Start holding after 500ms
       }
     });
   }

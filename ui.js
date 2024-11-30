@@ -152,7 +152,7 @@ export function updateStatsAndAttributesUI(hero) {
               <button class="allocate-btn" data-stat="strength">+</button>
           </div>
           <div>
-              <strong>Agility:</strong> <span id="agility-value">${hero.getStat('agility')}</span>
+              <strong>Agility:</trong> <span id="agility-value">${hero.getStat('agility')}</span>
               <button class="allocate-btn" data-stat="agility">+</button>
           </div>
           <div>
@@ -184,6 +184,7 @@ export function updateStatsAndAttributesUI(hero) {
     document.getElementById('vitality-value').textContent = hero.getStat('vitality');
   }
 }
+
 export function updateZoneUI(zone) {
   const zoneDisplay = document.getElementById('zone-display');
   if (zoneDisplay) {

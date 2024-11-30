@@ -102,8 +102,10 @@ export default class Hero {
     this.level++;
     this.statPoints += STATS_ON_LEVEL_UP;
     this.expToNextLevel += this.level * 20 - 20;
-    this.stats.currentHealth = this.stats.maxHealth;
     this.recalculateFromAttributes();
+    this.stats.currentHealth = this.stats.maxHealth; // Ensure current health is set to max health
+    updatePlayerHealth(this.stats); // Update health bar dynamically
+    updateStatsAndAttributesUI(this); // Update stats and attributes UI
     saveGame();
   }
 
@@ -163,6 +165,10 @@ export default class Hero {
         this.stats[stat] += bonus;
       }
     });
+
+    // Add damage bonus from souls
+    const damageBonusFromSouls = Math.floor(this.stats.damage * (this.souls * 0.01));
+    this.stats.damage += damageBonusFromSouls;
   }
 
   calculateArmorReduction() {
