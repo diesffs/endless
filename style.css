@@ -663,7 +663,6 @@ body {
 }
 
 .item-tooltip {
-  position: absolute;
   background: rgba(0, 0, 0, 0.9);
   padding: 10px;
   border-radius: 5px;

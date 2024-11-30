@@ -324,12 +324,38 @@ export default class Inventory {
         const itemData = this.getItemById(item.dataset.itemId);
         if (!itemData) return;
 
-        activeTooltip = document.createElement('div');
-        activeTooltip.innerHTML = itemData.getTooltipHTML();
-        activeTooltip.style.position = 'absolute';
-        activeTooltip.style.left = `${e.pageX + 10}px`;
-        activeTooltip.style.top = `${e.pageY + 10}px`;
-        document.body.appendChild(activeTooltip);
+        const tooltipContainer = document.createElement('div');
+        tooltipContainer.style.position = 'absolute';
+        tooltipContainer.style.left = `${e.pageX + 10}px`;
+        tooltipContainer.style.top = `${e.pageY + 10}px`;
+        tooltipContainer.style.display = 'flex';
+        tooltipContainer.style.gap = '10px';
+
+        // Main item tooltip
+        const mainTooltip = document.createElement('div');
+        mainTooltip.innerHTML = itemData.getTooltipHTML();
+        tooltipContainer.appendChild(mainTooltip);
+
+        // Find matching equipped items based on type
+        const equippedItems = [];
+        for (const [slot, equippedItem] of Object.entries(this.equippedItems)) {
+          if (SLOT_REQUIREMENTS[slot].includes(itemData.type)) {
+            equippedItems.push(equippedItem);
+          }
+        }
+
+        // Add equipped items tooltips
+        if (equippedItems.length > 0) {
+          equippedItems.forEach((equippedItem) => {
+            if (equippedItem && equippedItem.id !== itemData.id) {
+              const equippedTooltip = document.createElement('div');
+              equippedTooltip.innerHTML = equippedItem.getTooltipHTML(true);
+              tooltipContainer.appendChild(equippedTooltip);
+            }
+          });
+        }
+
+        document.body.appendChild(tooltipContainer);
       });
 
       item.addEventListener('mouseleave', () => this.removeTooltip());
