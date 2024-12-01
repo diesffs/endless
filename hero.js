@@ -140,7 +140,8 @@ export default class Hero {
     this.stats.attackSpeed =
       BASE_ATTACK_SPEED +
       (this.primaryStats.agility + this.equipmentBonuses.agility) * 0.05 +
-      this.upgradeLevels.attackSpeed * ATTACK_SPEED_ON_UPGRADE;
+      this.upgradeLevels.attackSpeed * ATTACK_SPEED_ON_UPGRADE +
+      this.equipmentBonuses.attackSpeed;
 
     this.stats.maxHealth =
       BASE_HEALTH +
