@@ -1,5 +1,6 @@
 import Enemy from './enemy.js';
 import { game, hero, prestige } from './main.js';
+import { calculateHitChance } from './combat.js';
 
 export function initializeUI(game) {
   game.currentEnemy = new Enemy(game.zone);
@@ -102,6 +103,10 @@ export function updateStatsAndAttributesUI(hero) {
           <div><strong>Attack Speed:</strong> <span id="attack-speed-value">${hero.stats.attackSpeed
             .toFixed(2)
             .replace(/\./g, ',')}</span> attacks/sec</div>
+          <div><strong>Attack Rating:</strong> <span id="attack-rating-value">${hero.stats.attackRating.toFixed(
+            0
+          )}</span> (<span id="hit-chance-value">
+          ${calculateHitChance(hero.stats.attackRating, game.zone).toFixed(1)}%</span>)</div>
           <div><strong>Crit Chance:</strong> <span id="crit-chance-value">${hero.stats.critChance
             .toFixed(1)
             .replace(/\./g, ',')}%</span></div>
@@ -133,6 +138,9 @@ export function updateStatsAndAttributesUI(hero) {
     document.getElementById('attack-speed-value').textContent = hero.stats.attackSpeed
       .toFixed(2)
       .replace(/\./g, ',');
+    document.getElementById('attack-rating-value').textContent = hero.stats.attackRating.toFixed(0);
+    document.getElementById('hit-chance-value').textContent =
+      calculateHitChance(hero.stats.attackRating, game.zone).toFixed(1) + '%';
     document.getElementById('crit-chance-value').textContent =
       hero.stats.critChance.toFixed(1).replace(/\./g, ',') + '%';
     document.getElementById('crit-damage-value').textContent =

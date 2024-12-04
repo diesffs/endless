@@ -55,6 +55,7 @@ export const AVAILABLE_STATS = {
   attackSpeed: { min: 0.05, max: 0.2, scaling: 'capped' },
   maxHealth: { min: 5, max: 25, scaling: 'full' },
   blockChance: { min: 2, max: 8, scaling: 'capped' },
+  attackRating: { min: 5, max: 20, scaling: 'full' },
 };
 
 export const ITEM_STAT_POOLS = {
@@ -80,11 +81,11 @@ export const ITEM_STAT_POOLS = {
   },
   SWORD: {
     mandatory: ['damage'],
-    possible: ['strength', 'critChance', 'critDamage', 'attackSpeed', 'agility'],
+    possible: ['strength', 'critChance', 'critDamage', 'attackSpeed', 'agility', 'attackRating'],
   },
   AXE: {
     mandatory: ['damage'],
-    possible: ['strength', 'critDamage', 'attackSpeed', 'vitality', 'maxHealth'],
+    possible: ['strength', 'critDamage', 'attackSpeed', 'vitality', 'maxHealth', 'attackRating'],
   },
   MACE: {
     mandatory: ['damage'],
@@ -96,15 +97,15 @@ export const ITEM_STAT_POOLS = {
   },
   GLOVES: {
     mandatory: ['armor'],
-    possible: ['attackSpeed', 'critChance', 'strength', 'agility', 'critDamage'],
+    possible: ['attackSpeed', 'critChance', 'strength', 'agility', 'critDamage', 'attackRating'],
   },
   AMULET: {
     mandatory: [],
-    possible: ['strength', 'agility', 'vitality', 'critChance', 'maxHealth', 'critDamage'],
+    possible: ['strength', 'agility', 'vitality', 'critChance', 'maxHealth', 'critDamage', 'attackRating'],
   },
   RING: {
     mandatory: [],
-    possible: ['critChance', 'critDamage', 'attackSpeed', 'strength', 'agility', 'vitality'],
+    possible: ['critChance', 'critDamage', 'attackSpeed', 'strength', 'agility', 'vitality', 'attackRating'],
   },
 };
 

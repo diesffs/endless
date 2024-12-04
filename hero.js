@@ -12,6 +12,7 @@ export const BASE_ATTACK_SPEED = 1.0;
 export const BASE_CRIT_CHANCE = 5;
 export const BASE_CRIT_DAMAGE = 1.5;
 export const BASE_BLOCK_CHANCE = 0;
+export const BASE_ATTACK_RATING = 100;
 
 export const DAMAGE_ON_UPGRADE = 1;
 export const ATTACK_SPEED_ON_UPGRADE = 0.01;
@@ -23,6 +24,7 @@ export const CRIT_DAMAGE_ON_UPGRADE = 0.01;
 export const DAMAGE_ON_LEVEL_UP = 1;
 export const HEALTH_ON_LEVEL_UP = 10;
 export const STATS_ON_LEVEL_UP = 3;
+export const ATTACK_RATING_ON_LEVEL_UP = 0;
 
 export const BASE_UPGRADE_COSTS = {
   damage: 100,
@@ -77,6 +79,7 @@ export default class Hero {
       maxHealth: BASE_HEALTH,
       armor: BASE_ARMOR,
       blockChance: BASE_BLOCK_CHANCE,
+      attackRating: BASE_ATTACK_RATING,
     };
 
     this.upgradeCosts = { ...BASE_UPGRADE_COSTS };
@@ -150,9 +153,12 @@ export default class Hero {
       DAMAGE_ON_LEVEL_UP;
 
     this.stats.attackSpeed =
-      BASE_ATTACK_SPEED +
-      (this.primaryStats.agility + this.equipmentBonuses.agility) * 0.01 +
-      this.upgradeLevels.attackSpeed * ATTACK_SPEED_ON_UPGRADE;
+      BASE_ATTACK_SPEED + this.upgradeLevels.attackSpeed * ATTACK_SPEED_ON_UPGRADE;
+
+    this.stats.attackRating =
+      BASE_ATTACK_RATING +
+      (this.primaryStats.agility + this.equipmentBonuses.agility) * 10 +
+      ATTACK_RATING_ON_LEVEL_UP * this.level;
 
     this.stats.maxHealth =
       BASE_HEALTH +
@@ -198,6 +204,7 @@ export default class Hero {
     }
 
     updatePlayerHealth(this.stats);
+    updateStatsAndAttributesUI(this);
   }
 
   calculateArmorReduction() {

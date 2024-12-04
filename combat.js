@@ -1,4 +1,4 @@
-import { updatePlayerHealth, updateEnemyHealth, updateResources, updateZoneUI } from './ui.js';
+import { updatePlayerHealth, updateEnemyHealth, updateResources, updateZoneUI, updateStatsAndAttributesUI } from './ui.js';
 import Enemy from './enemy.js';
 import { calculateItemLevel, getRandomItemType, rollForDrop } from './loot-table.js';
 import { ITEM_RARITY } from './item.js';
@@ -41,27 +41,33 @@ export function enemyAttack(game, currentTime) {
 
 export function playerAttack(game, currentTime) {
   if (!game || !game.currentEnemy) return;
-  const timeBetweenAttacks = 1000 / hero.stats.attackSpeed; // Convert attacks/sec to ms
+  const timeBetweenAttacks = 1000 / hero.stats.attackSpeed;
+
   if (currentTime - game.lastPlayerAttack >= timeBetweenAttacks) {
     if (game.currentEnemy.currentHealth > 0) {
-      // Calculate critical hit
-      const isCritical = Math.random() * 100 < hero.stats.critChance; // Compare random number to critChance
-      const damage = isCritical
-        ? hero.stats.damage * hero.stats.critDamage // Critical hit: apply multiplier
-        : hero.stats.damage; // Normal damage
+      // Calculate if attack hits
+      const hitChance = calculateHitChance(hero.stats.attackRating, game.zone);
+      const roll = Math.random() * 100;
 
-      // Apply damage to the enemy
-      game.currentEnemy.currentHealth -= damage;
+      if (roll > hitChance) {
+        // Miss
+        createDamageNumber('MISS', false, false, false, true);
+      } else {
+        // Hit - existing damage calculation code
+        const isCritical = Math.random() * 100 < hero.stats.critChance;
+        const damage = isCritical ? hero.stats.damage * hero.stats.critDamage : hero.stats.damage;
 
-      // Display the damage with a critical marker if applicable
-      createDamageNumber(damage, false, isCritical);
+        game.currentEnemy.currentHealth -= damage;
+        createDamageNumber(damage, false, isCritical);
+      }
+
       updateEnemyHealth(game.currentEnemy);
 
-      // Check if the enemy is defeated
-      if (game.currentEnemy.currentHealth <= 0) defeatEnemy(game);
+      if (game.currentEnemy.currentHealth <= 0) {
+        defeatEnemy(game);
+      }
     }
-    game.lastPlayerAttack = currentTime; // Record attack time
-    if (game.hero && game.hero.displayStats) game.hero.displayStats();
+    game.lastPlayerAttack = currentTime;
   }
 }
 
@@ -133,6 +139,7 @@ function defeatEnemy(game) {
 
   updateResources(hero, game);
   updateEnemyHealth(game.currentEnemy);
+  updateStatsAndAttributesUI(hero);
 
   saveGame();
 }
@@ -147,7 +154,13 @@ function showLootNotification(item) {
   setTimeout(() => notification.remove(), 3000);
 }
 
-function createDamageNumber(damage, isPlayer, isCritical = false, isBlocked = false) {
+function createDamageNumber(
+  damage,
+  isPlayer,
+  isCritical = false,
+  isBlocked = false,
+  isMiss = false
+) {
   const target = isPlayer ? '.character-avatar' : '.enemy-avatar';
   const avatar = document.querySelector(target);
   const damageEl = document.createElement('div');
@@ -155,7 +168,11 @@ function createDamageNumber(damage, isPlayer, isCritical = false, isBlocked = fa
   if (isBlocked) {
     damageEl.className = 'damage-number blocked';
     damageEl.textContent = 'BLOCKED';
-    damageEl.style.color = '#4CAF50'; // Green color for blocked attacks
+    damageEl.style.color = '#4CAF50';
+  } else if (isMiss) {
+    damageEl.className = 'damage-number miss';
+    damageEl.textContent = 'MISS';
+    damageEl.style.color = '#888888';
   } else {
     damageEl.className = isCritical ? 'damage-number critical' : 'damage-number';
     damageEl.textContent = isCritical ? `CRIT! -${Math.floor(damage)}` : `-${Math.floor(damage)}`;
@@ -184,4 +201,12 @@ export function createCombatText(text) {
   textEl.style.setProperty('--y', `${randomY}px`);
   avatar.appendChild(textEl);
   setTimeout(() => textEl.remove(), 1000);
+}
+
+export function calculateHitChance(attackRating, zone) {
+  console.log('asdfasdf, calca');
+  
+  const zoneScaling = Math.pow(1.05, zone - 1);
+  const baseChance = (attackRating / (attackRating + 15 * zoneScaling)) * 100; // Reduced from 50 to 15
+  return Math.min(Math.max(baseChance, 5), 95);
 }
