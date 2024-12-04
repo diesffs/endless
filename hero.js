@@ -109,7 +109,7 @@ export default class Hero {
     this.exp -= this.expToNextLevel;
     this.level++;
     this.statPoints += STATS_ON_LEVEL_UP;
-    this.expToNextLevel += this.level * 20 - 20;
+    this.expToNextLevel += this.level * 40 - 20;
     this.recalculateFromAttributes();
     this.stats.currentHealth = this.stats.maxHealth; // Full heal on level up
 

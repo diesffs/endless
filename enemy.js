@@ -43,13 +43,13 @@ export const ENEMY_RARITY = {
     healthBonus: 3,
     bonusDamage: 3,
     bonusAttackSpeed: 0.5,
-  }
+  },
 };
 
 class Enemy {
   constructor(zone) {
-    this.rarity = this.generateRarity(); // Assign rarity based on weighted probabilities
-    this.color = this.getRarityColor(this.rarity); // Assign color based on rarity
+    this.rarity = this.generateRarity();
+    this.color = this.getRarityColor(this.rarity);
     this.maxHealth = this.calculateHealth(zone, this.rarity);
     this.currentHealth = this.maxHealth;
     this.name = `Enemy Lvl ${zone} (${this.rarity})`;
@@ -71,7 +71,6 @@ class Enemy {
     // Add the new color class
     enemySection.classList.add(this.color);
   }
-
   generateRarity() {
     const random = Math.random() * 100;
     if (random < ENEMY_RARITY.NORMAL.threshold) return ENEMY_RARITY.NORMAL.type;
@@ -93,7 +92,7 @@ class Enemy {
   }
 
   calculateHealth(zone, rarity) {
-    const baseHealth = 49 + Math.pow(zone, 1.5);
+    const baseHealth = 49 + Math.pow(zone, 1.8);
     const rarityMap = {
       [ENEMY_RARITY.NORMAL.type]: ENEMY_RARITY.NORMAL.healthBonus,
       [ENEMY_RARITY.RARE.type]: ENEMY_RARITY.RARE.healthBonus,
@@ -106,7 +105,7 @@ class Enemy {
   }
 
   calculateDamage(zone, rarity) {
-    const baseDamage = 5 + zone * 2;
+    const baseDamage = 5 + Math.pow(zone, 1.4);
     const rarityMap = {
       [ENEMY_RARITY.NORMAL.type]: ENEMY_RARITY.NORMAL.bonusDamage,
       [ENEMY_RARITY.RARE.type]: ENEMY_RARITY.RARE.bonusDamage,
@@ -130,7 +129,6 @@ class Enemy {
 
     return baseAttackSpeed * (rarityMap[rarity] || ENEMY_RARITY.NORMAL.bonusAttackSpeed);
   }
-
   canAttack(currentTime) {
     return currentTime - this.lastAttack >= this.attackSpeed * 1000; // Convert to ms
   }
