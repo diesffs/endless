@@ -203,9 +203,7 @@ export function createCombatText(text) {
   setTimeout(() => textEl.remove(), 1000);
 }
 
-export function calculateHitChance(attackRating, zone) {
-  console.log('asdfasdf, calca');
-  
+export function calculateHitChance(attackRating, zone) {  
   const zoneScaling = Math.pow(1.05, zone - 1);
   const baseChance = (attackRating / (attackRating + 15 * zoneScaling)) * 100; // Reduced from 50 to 15
   return Math.min(Math.max(baseChance, 5), 95);
