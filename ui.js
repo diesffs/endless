@@ -101,13 +101,13 @@ export function updateStatsAndAttributesUI(hero) {
           )}</span></div>
           <div><strong>Attack Speed:</strong> <span id="attack-speed-value">${hero.stats.attackSpeed
             .toFixed(2)
-            .replace('.', ',')}</span> attacks/sec</div>
+            .replace(/\./g, ',')}</span> attacks/sec</div>
           <div><strong>Crit Chance:</strong> <span id="crit-chance-value">${hero.stats.critChance
             .toFixed(1)
-            .replace('.', ',')}%</span></div>
+            .replace(/\./g, ',')}%</span></div>
           <div><strong>Crit Damage:</strong> <span id="crit-damage-value">${hero.stats.critDamage
             .toFixed(2)
-            .replace('.', ',')}x</span></div>
+            .replace(/\./g, ',')}x</span></div> 
           <hr style="margin: 5px 1px"></hr>
           <div><strong>Health:</strong> <span id="max-health-value">${
             hero.stats.maxHealth
@@ -116,7 +116,7 @@ export function updateStatsAndAttributesUI(hero) {
           (<span id="armor-reduction-value">${hero
             .calculateArmorReduction()
             .toFixed(2)
-            .replace('.', ',')}%</span> reduction)
+            .replace(/\./g, ',')}%</span> reduction)
           </div>
       `;
     statsGrid.appendChild(statsContainer);
@@ -129,15 +129,15 @@ export function updateStatsAndAttributesUI(hero) {
     document.getElementById('damage-value').textContent = hero.stats.damage.toFixed(0);
     document.getElementById('attack-speed-value').textContent = hero.stats.attackSpeed
       .toFixed(2)
-      .replace('.', ',');
+      .replace(/\./g, ',');
     document.getElementById('crit-chance-value').textContent =
-      hero.stats.critChance.toFixed(1).replace('.', ',') + '%';
+      hero.stats.critChance.toFixed(1).replace(/\./g, ',') + '%';
     document.getElementById('crit-damage-value').textContent =
-      hero.stats.critDamage.toFixed(2).replace('.', ',') + 'x';
+      hero.stats.critDamage.toFixed(2).replace(/\./g, ',') + 'x';
     document.getElementById('max-health-value').textContent = hero.stats.maxHealth;
     document.getElementById('armor-value').textContent = hero.stats.armor || 0;
     document.getElementById('armor-reduction-value').textContent =
-      hero.calculateArmorReduction().toFixed(2).replace('.', ',') + '%';
+      hero.calculateArmorReduction().toFixed(2).replace(/\./g, ',') + '%';
   }
 
   if (!attributesContainer) {
