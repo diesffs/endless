@@ -103,6 +103,7 @@ export function playerDeath(game) {
 
   // Update resources for UI consistency
   updateResources(hero, game);
+  updateStatsAndAttributesUI(hero);
 }
 
 function defeatEnemy(game) {
