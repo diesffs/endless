@@ -29,10 +29,10 @@ export const ITEM_ICONS = {
 };
 
 export const ITEM_RARITY = {
-  NORMAL: { name: 'NORMAL', color: '#ffffff', chance: 70, statMultiplier: 1 },
-  MAGIC: { name: 'MAGIC', color: '#4287f5', chance: 20, statMultiplier: 1.5 },
-  RARE: { name: 'RARE', color: '#ffd700', chance: 9, statMultiplier: 2 },
-  UNIQUE: { name: 'UNIQUE', color: '#ff8c00', chance: 1, statMultiplier: 3 },
+  NORMAL: { name: 'NORMAL', color: '#ffffff', chance: 70, statMultiplier: 1, totalStats: 3 },
+  MAGIC: { name: 'MAGIC', color: '#4287f5', chance: 20, statMultiplier: 1.5, totalStats: 3 },
+  RARE: { name: 'RARE', color: '#ffd700', chance: 9, statMultiplier: 2, totalStats: 4 },
+  UNIQUE: { name: 'UNIQUE', color: '#ff8c00', chance: 1, statMultiplier: 3, totalStats: 5 },
 };
 
 export const RARITY_ORDER = [
@@ -42,103 +42,120 @@ export const RARITY_ORDER = [
   ITEM_RARITY.UNIQUE.name,
 ];
 
+export const DECIMAL_STATS = ['critDamage', 'attackSpeed', 'critChance'];
+
+export const AVAILABLE_STATS = {
+  damage: { min: 5, max: 15, scaling: 'full' },
+  armor: { min: 3, max: 10, scaling: 'full' },
+  strength: { min: 1, max: 5, scaling: 'full' },
+  agility: { min: 1, max: 5, scaling: 'full' },
+  vitality: { min: 1, max: 5, scaling: 'full' },
+  critChance: { min: 0.5, max: 3, scaling: 'capped' },
+  critDamage: { min: 0.05, max: 0.2, scaling: 'full' },
+  attackSpeed: { min: 0.05, max: 0.2, scaling: 'capped' },
+  maxHealth: { min: 5, max: 25, scaling: 'full' },
+  blockChance: { min: 2, max: 8, scaling: 'capped' },
+};
+
+export const ITEM_STAT_POOLS = {
+  HELMET: {
+    mandatory: ['armor'],
+    possible: ['vitality', 'maxHealth', 'strength', 'agility', 'critChance', 'blockChance'],
+  },
+  ARMOR: {
+    mandatory: ['armor'],
+    possible: ['vitality', 'maxHealth', 'strength', 'blockChance', 'critDamage'],
+  },
+  BELT: {
+    mandatory: ['armor'],
+    possible: ['vitality', 'strength', 'maxHealth', 'agility', 'critChance'],
+  },
+  PANTS: {
+    mandatory: ['armor'],
+    possible: ['vitality', 'maxHealth', 'agility', 'strength', 'critDamage'],
+  },
+  BOOTS: {
+    mandatory: ['armor'],
+    possible: ['agility', 'maxHealth', 'attackSpeed', 'strength', 'vitality'],
+  },
+  SWORD: {
+    mandatory: ['damage'],
+    possible: ['strength', 'critChance', 'critDamage', 'attackSpeed', 'agility'],
+  },
+  AXE: {
+    mandatory: ['damage'],
+    possible: ['strength', 'critDamage', 'attackSpeed', 'vitality', 'maxHealth'],
+  },
+  MACE: {
+    mandatory: ['damage'],
+    possible: ['strength', 'armor', 'critChance', 'maxHealth', 'vitality'],
+  },
+  SHIELD: {
+    mandatory: ['armor', 'blockChance'],
+    possible: ['vitality', 'maxHealth', 'strength', 'critChance', 'agility'],
+  },
+  GLOVES: {
+    mandatory: ['armor'],
+    possible: ['attackSpeed', 'critChance', 'strength', 'agility', 'critDamage'],
+  },
+  AMULET: {
+    mandatory: [],
+    possible: ['strength', 'agility', 'vitality', 'critChance', 'maxHealth', 'critDamage'],
+  },
+  RING: {
+    mandatory: [],
+    possible: ['critChance', 'critDamage', 'attackSpeed', 'strength', 'agility', 'vitality'],
+  },
+};
+
 export default class Item {
-  constructor(type, level, rarity) {
+  constructor(type, level, rarity, existingStats = null) {
     this.type = type;
     this.level = level;
     this.rarity = rarity.toUpperCase();
-    this.stats = this.generateStats();
+    // Only generate new stats if no existing stats provided
+    this.stats = existingStats || this.generateStats();
     this.id = crypto.randomUUID();
   }
 
   generateStats() {
-    const baseStats = this.getBaseStats();
+    const stats = {};
+    const itemPool = ITEM_STAT_POOLS[this.type];
     const multiplier = ITEM_RARITY[this.rarity].statMultiplier;
+    const totalStatsNeeded = ITEM_RARITY[this.rarity].totalStats;
 
-    return Object.entries(baseStats).reduce((stats, [stat, value]) => {
-      stats[stat] = Math.round(value * multiplier * (1 + this.level * 0.1));
-      return stats;
-    }, {});
-  }
+    const calculateStatValue = (stat, baseValue) => {
+      const scaling = AVAILABLE_STATS[stat].scaling;
+      const value =
+        scaling === 'capped'
+          ? baseValue * multiplier * Math.min(1 + this.level * 0.01, 2)
+          : baseValue * multiplier * (1 + this.level * 0.1);
 
-  getBaseStats() {
-    switch (this.type) {
-      case ITEM_TYPES.HELMET:
-        return {
-          armor: 5,
-          vitality: 2,
-          maxHealth: 10,
-        };
-      case ITEM_TYPES.ARMOR:
-        return {
-          armor: 10,
-          vitality: 3,
-          maxHealth: 20,
-        };
-      case ITEM_TYPES.BELT:
-        return {
-          armor: 4,
-          vitality: 2,
-          strength: 1,
-          maxHealth: 12,
-        };
-      case ITEM_TYPES.PANTS:
-        return {
-          armor: 7,
-          vitality: 2,
-          maxHealth: 15,
-        };
-      case ITEM_TYPES.BOOTS:
-        return {
-          armor: 3,
-          vitality: 1,
-          maxHealth: 5,
-        };
-      case ITEM_TYPES.SWORD:
-        return {
-          damage: 10,
-          strength: 2,
-          critChance: 2,
-        };
-      case ITEM_TYPES.AXE:
-        return {
-          damage: 12,
-          strength: 3,
-          critDamage: 0.1,
-        };
-      case ITEM_TYPES.MACE:
-        return {
-          damage: 8,
-          strength: 4,
-          armor: 2,
-        };
-      case ITEM_TYPES.SHIELD:
-        return {
-          armor: 8,
-          vitality: 2,
-          blockChance: 5,
-        };
-      case ITEM_TYPES.GLOVES:
-        return {
-          armor: 3,
-          attackSpeed: 0.1,
-          critChance: 1,
-        };
-      case ITEM_TYPES.AMULET:
-        return {
-          strength: 2,
-          agility: 2,
-          vitality: 2,
-        };
-      case ITEM_TYPES.RING:
-        return {
-          critChance: 2,
-          critDamage: 0.1,
-          attackSpeed: 0.05,
-        };
-      default:
-        return {};
+      return DECIMAL_STATS.includes(stat) ? Number(value.toFixed(2)) : Math.round(value);
+    };
+
+    // Add mandatory stats first
+    itemPool.mandatory.forEach((stat) => {
+      const range = AVAILABLE_STATS[stat];
+      const baseValue = Math.random() * (range.max - range.min) + range.min;
+      stats[stat] = calculateStatValue(stat, baseValue);
+    });
+
+    // Add random stats from possible pool until totalStatsNeeded
+    const remainingStats = totalStatsNeeded - itemPool.mandatory.length;
+    const availableStats = [...itemPool.possible].filter(
+      (stat) => !itemPool.mandatory.includes(stat)
+    );
+
+    for (let i = 0; i < remainingStats && availableStats.length > 0; i++) {
+      const randomIndex = Math.floor(Math.random() * availableStats.length);
+      const stat = availableStats.splice(randomIndex, 1)[0];
+      const range = AVAILABLE_STATS[stat];
+      const baseValue = Math.random() * (range.max - range.min) + range.min;
+      stats[stat] = calculateStatValue(stat, baseValue);
     }
+
+    return stats;
   }
 
   getIcon() {
@@ -158,7 +175,10 @@ export default class Item {
         <div class="item-level">Level ${this.level}</div>
         <div class="item-stats">
           ${Object.entries(this.stats)
-            .map(([stat, value]) => `<div>${stat}: ${value}</div>`)
+            .map(([stat, value]) => {
+              const formattedValue = DECIMAL_STATS.includes(stat) ? value.toFixed(2) : value;
+              return `<div>${stat}: ${formattedValue}</div>`;
+            })
             .join('')}
         </div>
       </div>

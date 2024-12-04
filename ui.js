@@ -118,6 +118,9 @@ export function updateStatsAndAttributesUI(hero) {
             .toFixed(2)
             .replace(/\./g, ',')}%</span> reduction)
           </div>
+          <div><strong>Block Chance:</strong> <span id="block-chance-value">${hero.stats.blockChance
+            .toFixed(1)
+            .replace(/\./g, ',')}%</span></div>
       `;
     statsGrid.appendChild(statsContainer);
   } else {
@@ -138,6 +141,8 @@ export function updateStatsAndAttributesUI(hero) {
     document.getElementById('armor-value').textContent = hero.stats.armor || 0;
     document.getElementById('armor-reduction-value').textContent =
       hero.calculateArmorReduction().toFixed(2).replace(/\./g, ',') + '%';
+    document.getElementById('block-chance-value').textContent =
+      hero.stats.blockChance.toFixed(1).replace(/\./g, ',') + '%';
   }
 
   if (!attributesContainer) {

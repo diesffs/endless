@@ -1,7 +1,7 @@
 import { updateStatsAndAttributesUI } from './ui.js';
 import { game } from './main.js';
 import { saveGame } from './storage.js';
-import { updatePlayerHealth, updateResources } from './ui.js';
+import { updatePlayerHealth } from './ui.js';
 
 // Keep all the constants at the top
 export const BASE_DAMAGE = 10;
@@ -10,6 +10,7 @@ export const BASE_ARMOR = 0;
 export const BASE_ATTACK_SPEED = 1.0;
 export const BASE_CRIT_CHANCE = 5;
 export const BASE_CRIT_DAMAGE = 1.5;
+export const BASE_BLOCK_CHANCE = 0;
 
 export const DAMAGE_ON_UPGRADE = 1;
 export const ATTACK_SPEED_ON_UPGRADE = 0.01;
@@ -33,6 +34,10 @@ export const BASE_UPGRADE_COSTS = {
 
 export default class Hero {
   constructor(savedData = null) {
+    this.setBaseStats(savedData);
+  }
+
+  setBaseStats(savedData = null) {
     if (savedData) {
       Object.assign(this, savedData);
       return;
@@ -59,6 +64,7 @@ export default class Hero {
       critDamage: 0,
       attackSpeed: 0,
       maxHealth: 0,
+      blockChance: 0,
     };
 
     this.stats = {
@@ -68,7 +74,8 @@ export default class Hero {
       critDamage: BASE_CRIT_DAMAGE,
       currentHealth: BASE_HEALTH,
       maxHealth: BASE_HEALTH,
-      armor: 0,
+      armor: BASE_ARMOR,
+      blockChance: BASE_BLOCK_CHANCE,
     };
 
     this.upgradeCosts = { ...BASE_UPGRADE_COSTS };
@@ -170,11 +177,22 @@ export default class Hero {
     const damageBonusFromSouls = Math.floor(this.stats.damage * (this.souls * 0.01));
     this.stats.damage += damageBonusFromSouls;
 
+    // Cap block chance at 75%
+    if (this.stats.blockChance > 75) {
+      this.stats.blockChance = 75;
+    }
+
+    if (this.stats.critChance > 100) {
+      this.stats.critChance = 100;
+    }
+
     updatePlayerHealth(this.stats);
   }
 
   calculateArmorReduction() {
     const armor = this.stats.armor;
-    return (armor / (100 + armor)) * 100;
+    const constant = 100 + this.level * 10;
+    const reduction = (armor / (armor + constant)) * 100;
+    return Math.min(reduction, 95); // Changed cap to 95%
   }
 }

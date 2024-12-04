@@ -11,22 +11,28 @@ export default class Inventory {
 
     if (savedData) {
       // Restore equipped items
-      Object.entries(this.equippedItems).forEach(([slot, item]) => {
+      this.equippedItems = {};
+      Object.entries(savedData.equippedItems).forEach(([slot, item]) => {
         if (item) {
+          // Pass existing stats when creating item
           this.equippedItems[slot] = new Item(item.type, item.level, item.rarity, item.stats);
           this.equippedItems[slot].id = item.id;
         }
       });
 
       // Restore inventory items
-      this.inventoryItems = this.inventoryItems.map((item) => {
+      this.inventoryItems = savedData.inventoryItems.map((item) => {
         if (item) {
+          // Pass existing stats when creating item
           const restoredItem = new Item(item.type, item.level, item.rarity, item.stats);
           restoredItem.id = item.id;
           return restoredItem;
         }
         return null;
       });
+    } else {
+      this.equippedItems = {};
+      this.inventoryItems = new Array(200).fill(null);
     }
 
     this.initializeInventoryUI();

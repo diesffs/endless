@@ -1,4 +1,4 @@
-import { hero } from './main.js';
+import { game, hero } from './main.js';
 import {
   updateZoneUI,
   updateResources,
@@ -17,6 +17,7 @@ import {
 } from './hero.js';
 import Shop from './shop.js';
 import { RARITY_ORDER } from './item.js';
+import Enemy from './enemy.js';
 
 export default class Prestige {
   constructor(game) {
@@ -24,13 +25,10 @@ export default class Prestige {
       console.error('Game is not properly initialized in Prestige constructor:', game);
       return;
     }
-
-    this.game = game;
-    this.hero = game.hero;
   }
 
   calculateSouls() {
-    if (!this.game || typeof hero.highestZone !== 'number') {
+    if (!game || typeof hero.highestZone !== 'number') {
       console.warn('Game or highestZone is not properly initialized.');
       return 0;
     }
@@ -41,15 +39,13 @@ export default class Prestige {
 
   performPrestige() {
     const earnedSouls = this.calculateSouls();
+    hero.setBaseStats(null);
     hero.souls += earnedSouls;
-    hero.highestZone = 1;
-    hero.prestigeProgress = 0;
 
     this.resetGame();
-    hero.recalculateFromAttributes(); // Recalculate attributes after resetting the game
-    hero.stats.currentHealth = hero.stats.maxHealth;
+    hero.recalculateFromAttributes();
     updateStatsAndAttributesUI(hero); // Update stats and attributes UI
-    updateResources(hero, this.game); // Update resources UI
+    updateResources(hero, game); // Update resources UI
     updatePlayerHealth(hero.stats); // Update health bar dynamically
     saveGame();
 
@@ -61,52 +57,20 @@ export default class Prestige {
   }
 
   resetGame() {
-    if (!this.game || typeof this.game.zone !== 'number') {
-      console.error('Game is not properly initialized in resetGame:', this.game);
+    if (!game || typeof game.zone !== 'number') {
+      console.error('Game is not properly initialized in resetGame:', game);
       return;
     }
 
-    this.game.zone = 1;
-    hero.highestZone = 1;
-    hero.prestigeProgress = 0;
-    updateZoneUI(this.game.zone);
+    game.zone = 1;
+    game.gameStarted = false;
+    game.currentEnemy = new Enemy(game.zone);
+    updateZoneUI(game.zone);
 
-    hero.level = 1;
-    hero.exp = 0;
-    hero.expToNextLevel = 20;
-    hero.gold = 0;
-    hero.primaryStats = { strength: 0, agility: 0, vitality: 0 };
-    hero.statPoints = 0;
-    hero.stats = {
-      damage: BASE_DAMAGE,
-      attackSpeed: BASE_ATTACK_SPEED,
-      critChance: BASE_CRIT_CHANCE,
-      critDamage: BASE_CRIT_DAMAGE,
-      currentHealth: BASE_HEALTH,
-      maxHealth: BASE_HEALTH,
-      armor: BASE_ARMOR,
-    };
-    hero.upgradeCosts = {
-      damage: BASE_UPGRADE_COSTS.damage,
-      attackSpeed: BASE_UPGRADE_COSTS.attackSpeed,
-      health: BASE_UPGRADE_COSTS.health,
-      armor: BASE_UPGRADE_COSTS.armor,
-      critChance: BASE_UPGRADE_COSTS.critChance,
-      critDamage: BASE_UPGRADE_COSTS.critDamage,
-    };
-    hero.upgradeLevels = {
-      damage: 0,
-      attackSpeed: 0,
-      health: 0,
-      armor: 0,
-      critChance: 0,
-      critDamage: 0,
-    };
-
-    RARITY_ORDER.forEach((rarity) => this.game.inventory.salvageItemsByRarity(rarity));
+    RARITY_ORDER.forEach((rarity) => game.inventory.salvageItemsByRarity(rarity));
 
     // Update UI and save game
-    updateResources(hero, this.game);
+    updateResources(hero, game);
     updatePlayerHealth(hero.stats);
     saveGame();
     this.initializePrestigeUI(); // Ensure UI reflects reset state
@@ -160,7 +124,7 @@ export default class Prestige {
       const soulsDisplay = doc.querySelector('.earned-souls-display .bonus');
 
       if (damageDisplay) {
-        const damageBonus = Math.floor(hero.souls * 0.1);
+        const damageBonus = Math.floor(hero.souls * 1);
         damageDisplay.textContent = `+${damageBonus}%`;
       }
 
