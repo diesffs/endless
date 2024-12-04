@@ -8,26 +8,34 @@ import { saveGame } from './storage.js';
 export function enemyAttack(game, currentTime) {
   if (!game || !hero || !game.currentEnemy) return;
   if (game.currentEnemy.canAttack(currentTime)) {
-    // Calculate armor reduction
-    const armor = hero.stats.armor;
-    const damageReduction = armor / (100 + armor); // Example formula
-    const effectiveDamage = game.currentEnemy.damage * (1 - damageReduction);
+    // Check for block first
+    const isBlocked = Math.random() * 100 < hero.stats.blockChance;
 
-    // Apply reduced damage to player's health
-    hero.stats.currentHealth -= effectiveDamage;
-    if (hero.stats.currentHealth < 0) hero.stats.currentHealth = 0;
+    if (isBlocked) {
+      // Show "BLOCKED" text instead of damage number
+      createDamageNumber('BLOCKED', true, false, true);
+    } else {
+      // Calculate armor reduction
+      const armor = hero.stats.armor;
+      const damageReduction = armor / (100 + armor);
+      const effectiveDamage = game.currentEnemy.damage * (1 - damageReduction);
 
-    // Show the damage number (rounded down for clarity)
-    createDamageNumber(Math.floor(effectiveDamage), true);
+      // Apply reduced damage to player's health
+      hero.stats.currentHealth -= effectiveDamage;
+      if (hero.stats.currentHealth < 0) hero.stats.currentHealth = 0;
 
-    // Update player health UI
-    updatePlayerHealth(hero.stats);
+      // Show the damage number
+      createDamageNumber(Math.floor(effectiveDamage), true);
+
+      // Update player health UI
+      updatePlayerHealth(hero.stats);
+
+      // Handle player death if health drops to 0
+      if (hero.stats.currentHealth <= 0) playerDeath(game);
+    }
 
     // Record the enemy's last attack time
     game.currentEnemy.lastAttack = currentTime;
-
-    // Handle player death if health drops to 0
-    if (hero.stats.currentHealth <= 0) playerDeath(game);
   }
 }
 
@@ -139,16 +147,41 @@ function showLootNotification(item) {
   setTimeout(() => notification.remove(), 3000);
 }
 
-function createDamageNumber(damage, isPlayer, isCritical = false) {
+function createDamageNumber(damage, isPlayer, isCritical = false, isBlocked = false) {
   const target = isPlayer ? '.character-avatar' : '.enemy-avatar';
   const avatar = document.querySelector(target);
   const damageEl = document.createElement('div');
-  damageEl.className = isCritical ? 'damage-number critical' : 'damage-number'; // Add "critical" class for critical hits
-  damageEl.textContent = isCritical ? `CRIT! -${Math.floor(damage)}` : `-${Math.floor(damage)}`;
+
+  if (isBlocked) {
+    damageEl.className = 'damage-number blocked';
+    damageEl.textContent = 'BLOCKED';
+    damageEl.style.color = '#4CAF50'; // Green color for blocked attacks
+  } else {
+    damageEl.className = isCritical ? 'damage-number critical' : 'damage-number';
+    damageEl.textContent = isCritical ? `CRIT! -${Math.floor(damage)}` : `-${Math.floor(damage)}`;
+  }
+
   const randomX = Math.random() * 40 - 20;
   const randomY = Math.random() * 40 - 20;
   damageEl.style.setProperty('--x', `${randomX}px`);
   damageEl.style.setProperty('--y', `${randomY}px`);
   avatar.appendChild(damageEl);
   setTimeout(() => damageEl.remove(), 1000);
+}
+
+export function createCombatText(text) {
+  const target = '.character-avatar';
+  const avatar = document.querySelector(target);
+  const textEl = document.createElement('div');
+
+  textEl.className = 'damage-number level-up';
+  textEl.textContent = text;
+  textEl.style.color = '#FFD700';
+
+  const randomX = Math.random() * 40 - 20;
+  const randomY = Math.random() * 40 - 20;
+  textEl.style.setProperty('--x', `${randomX}px`);
+  textEl.style.setProperty('--y', `${randomY}px`);
+  avatar.appendChild(textEl);
+  setTimeout(() => textEl.remove(), 1000);
 }

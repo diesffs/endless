@@ -2,6 +2,7 @@ import { updateStatsAndAttributesUI } from './ui.js';
 import { game } from './main.js';
 import { saveGame } from './storage.js';
 import { updatePlayerHealth } from './ui.js';
+import { createCombatText } from './combat.js';
 
 // Keep all the constants at the top
 export const BASE_DAMAGE = 10;
@@ -44,7 +45,7 @@ export default class Hero {
     }
 
     this.level = 1;
-    this.gold = 1234123412340;
+    this.gold = 0;
     this.crystals = 0;
     this.exp = 0;
     this.expToNextLevel = 20;
@@ -110,9 +111,13 @@ export default class Hero {
     this.statPoints += STATS_ON_LEVEL_UP;
     this.expToNextLevel += this.level * 20 - 20;
     this.recalculateFromAttributes();
-    this.stats.currentHealth = this.stats.maxHealth; // Ensure current health is set to max health
-    updatePlayerHealth(this.stats); // Update health bar dynamically
-    updateStatsAndAttributesUI(this); // Update stats and attributes UI
+    this.stats.currentHealth = this.stats.maxHealth; // Full heal on level up
+
+    // Add level up notification
+    createCombatText(`LEVEL UP! (${this.level})`);
+
+    updatePlayerHealth(this.stats);
+    updateStatsAndAttributesUI(this);
     saveGame();
   }
 
@@ -146,7 +151,7 @@ export default class Hero {
 
     this.stats.attackSpeed =
       BASE_ATTACK_SPEED +
-      (this.primaryStats.agility + this.equipmentBonuses.agility) * 0.05 +
+      (this.primaryStats.agility + this.equipmentBonuses.agility) * 0.01 +
       this.upgradeLevels.attackSpeed * ATTACK_SPEED_ON_UPGRADE;
 
     this.stats.maxHealth =
@@ -163,6 +168,8 @@ export default class Hero {
 
     this.stats.critDamage =
       BASE_CRIT_DAMAGE + this.upgradeLevels.critDamage * CRIT_DAMAGE_ON_UPGRADE;
+
+    this.stats.blockChance = 0;
 
     // had to be after stats are calculated, to just add bonuses
     game.inventory.updateItemBonuses();

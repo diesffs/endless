@@ -944,3 +944,16 @@ body {
 .salvage-button:hover {
   opacity: 0.8;
 }
+
+.damage-number.blocked {
+  font-weight: bold;
+  font-size: 1.2em;
+  text-shadow: 0 0 3px #000;
+}
+
+.damage-number.level-up {
+  font-weight: bold;
+  font-size: 1.2em;
+  text-shadow: 0 0 3px #000;
+  z-index: 100;
+}
