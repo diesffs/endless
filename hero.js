@@ -193,6 +193,10 @@ export default class Hero {
       this.stats.critChance = 100;
     }
 
+    if (this.stats.attackSpeed > 5) {
+      this.stats.attackSpeed = 5;
+    }
+
     updatePlayerHealth(this.stats);
   }
 

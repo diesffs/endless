@@ -153,11 +153,6 @@ export default class Shop {
     hero.recalculateFromAttributes();
     updateResources(hero, game);
 
-    if (stat === 'health' || stat === 'crystalHealth') {
-      hero.stats.currentHealth = hero.stats.maxHealth;
-      updatePlayerHealth(hero.stats);
-    }
-
     saveGame();
   }
 

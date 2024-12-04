@@ -6,15 +6,6 @@ import {
   updateStatsAndAttributesUI,
 } from './ui.js';
 import { saveGame } from './storage.js';
-import {
-  BASE_DAMAGE,
-  BASE_HEALTH,
-  BASE_ARMOR,
-  BASE_ATTACK_SPEED,
-  BASE_CRIT_CHANCE,
-  BASE_CRIT_DAMAGE,
-  BASE_UPGRADE_COSTS,
-} from './hero.js';
 import Shop from './shop.js';
 import { RARITY_ORDER } from './item.js';
 import Enemy from './enemy.js';
@@ -148,7 +139,7 @@ export default class Prestige {
     const soulsDisplay = document.querySelector('.earned-souls-display .bonus');
 
     if (damageDisplay) {
-      const damageBonus = Math.floor(hero.souls * 0.1);
+      const damageBonus = Math.floor(hero.souls * 1);
       damageDisplay.textContent = `+${damageBonus}%`;
     }
 

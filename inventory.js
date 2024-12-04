@@ -53,6 +53,12 @@ export default class Inventory {
     }
     this.updateInventoryGrid();
 
+    document.getElementById('sort-inventory').addEventListener('click', () => {
+      this.sortInventory();
+
+      showToast(`Sorted items by rarity, then level`, 'success');
+    });
+
     document.getElementById('salvage-normal').addEventListener('click', () => {
       this.salvageItemsByRarity(ITEM_RARITY.NORMAL.name);
       this.sortInventory();
@@ -363,10 +369,13 @@ export default class Inventory {
       item.addEventListener('mouseenter', (e) => {
         if (item.classList.contains('dragging')) return;
 
+        this.removeTooltip();
+
         const itemData = this.getItemById(item.dataset.itemId);
         if (!itemData) return;
 
         const tooltipContainer = document.createElement('div');
+        tooltipContainer.className = 'item-tooltip';
         tooltipContainer.style.position = 'absolute';
         tooltipContainer.style.left = `${e.pageX + 10}px`;
         tooltipContainer.style.top = `${e.pageY + 10}px`;
@@ -399,9 +408,13 @@ export default class Inventory {
         }
 
         document.body.appendChild(tooltipContainer);
+        activeTooltip = tooltipContainer;
       });
 
-      item.addEventListener('mouseleave', () => this.removeTooltip());
+      item.addEventListener('mouseleave', () => {
+        this.removeTooltip();
+        activeTooltip = null;
+      });
     });
   }
 
