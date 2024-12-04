@@ -136,27 +136,13 @@ export default class Inventory {
     const slot = e.target.closest('.equipment-slot');
     const cell = e.target.closest('.grid-cell');
 
-    if (!item) {
-      if (cell) {
-        const targetIndex = Array.from(cell.parentNode.children).indexOf(cell);
-        const draggedItemElement = document.querySelector('.dragging');
-        if (draggedItemElement) {
-          const sourceIndex = Array.from(draggedItemElement.parentNode.parentNode.children).indexOf(
-            draggedItemElement.parentNode
-          );
-
-          // Swap positions
-          this.inventoryItems[targetIndex] = this.inventoryItems[sourceIndex];
-          this.inventoryItems[sourceIndex] = null;
-
-          this.updateInventoryGrid();
-        }
-      }
-      return;
-    }
+    if (!item) return;
 
     if (slot) {
-      if (this.canEquipInSlot(item, slot.dataset.slot)) {
+      // Special handling for ring slots
+      if (slot.dataset.slot === 'ring1' || slot.dataset.slot === 'ring2') {
+        this.handleRingSlotDrop(item, slot.dataset.slot);
+      } else if (this.canEquipInSlot(item, slot.dataset.slot)) {
         this.equipItem(item, slot.dataset.slot);
       }
     } else if (cell) {
@@ -167,7 +153,45 @@ export default class Inventory {
     this.updateInventoryGrid();
   }
 
+  handleRingSlotDrop(draggedRing, targetSlot) {
+    // Find which slot the dragged ring is currently equipped in
+    const currentSlot =
+      this.equippedItems.ring1?.id === draggedRing.id
+        ? 'ring1'
+        : this.equippedItems.ring2?.id === draggedRing.id
+        ? 'ring2'
+        : null;
+
+    if (currentSlot) {
+      // Ring is being moved between ring slots
+      const targetRing = this.equippedItems[targetSlot];
+
+      if (targetRing) {
+        // Swap rings
+        this.equippedItems[currentSlot] = targetRing;
+        this.equippedItems[targetSlot] = draggedRing;
+      } else {
+        // Move ring to empty slot
+        delete this.equippedItems[currentSlot];
+        this.equippedItems[targetSlot] = draggedRing;
+      }
+    } else {
+      // Ring is coming from inventory
+      const inventoryIndex = this.inventoryItems.findIndex((item) => item?.id === draggedRing.id);
+      if (inventoryIndex !== -1) {
+        // Remove from inventory
+        this.inventoryItems[inventoryIndex] = this.equippedItems[targetSlot] || null;
+        // Equip in target slot
+        this.equippedItems[targetSlot] = draggedRing;
+      }
+    }
+
+    hero.recalculateFromAttributes();
+    saveGame();
+  }
+
   moveItemToPosition(item, newPosition) {
+    console.log(('Moving item to position:', newPosition));
     // Get current position of item
     const currentPosition = this.inventoryItems.findIndex((i) => i && i.id === item.id);
 
@@ -259,8 +283,8 @@ export default class Inventory {
       if (cell && item) {
         cell.innerHTML = `
           <div class="inventory-item rarity-${item.rarity.toLowerCase()}" 
-               draggable="true" 
-               data-item-id="${item.id}">
+              draggable="true" 
+              data-item-id="${item.id}">
               <div class="item-icon">${item.getIcon()}</div>
           </div>
         `;
@@ -440,6 +464,7 @@ export default class Inventory {
   }
 
   equipItem(item, slot) {
+    log('Equipping item:', item, 'in slot:', slot);
     const currentPosition = this.inventoryItems.findIndex((i) => i && i.id === item.id);
 
     // Handle existing equipped item
