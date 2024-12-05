@@ -139,6 +139,14 @@ export default class Inventory {
     if (!item) return;
 
     if (slot) {
+      // Add this check to prevent dropping on current slot
+      const currentSlot = Object.entries(this.equippedItems).find(
+        ([_, equippedItem]) => equippedItem?.id === item.id
+      )?.[0];
+
+      if (currentSlot === slot.dataset.slot) {
+        return; // Exit if trying to drop on same slot
+      }
       // Special handling for ring slots
       if (slot.dataset.slot === 'ring1' || slot.dataset.slot === 'ring2') {
         this.handleRingSlotDrop(item, slot.dataset.slot);
