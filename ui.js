@@ -46,7 +46,6 @@ export function updateResources(hero, game) {
 
   // Update other stats
   document.getElementById('gold').textContent = hero.gold || 0;
-  document.getElementById('level').textContent = hero.level || 1;
 }
 
 export function updatePlayerHealth(stats) {
