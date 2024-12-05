@@ -15,7 +15,7 @@ const CRYSTAL_UPGRADE_CONFIG = {
   startingZone: {
     label: 'Starting Zone',
     bonus: 1,
-    baseCost: 3,
+    baseCost: 2,
   },
   startingGold: {
     label: 'Starting Gold',
