@@ -191,7 +191,6 @@ export default class Inventory {
   }
 
   moveItemToPosition(item, newPosition) {
-    console.log(('Moving item to position:', newPosition));
     // Get current position of item
     const currentPosition = this.inventoryItems.findIndex((i) => i && i.id === item.id);
 

@@ -2,7 +2,7 @@ import Hero from './hero.js';
 import Game from './game.js';
 import Shop from './shop.js';
 import { initializeUI, updateEnemyHealth, updatePlayerHealth, updateResources } from './ui.js';
-import { loadGame } from './storage.js';
+import { loadGame, saveGame } from './storage.js';
 import Prestige from './prestige.js';
 
 window.log = console.log;
@@ -26,6 +26,8 @@ hero.recalculateFromAttributes();
 hero.displayStats();
 updatePlayerHealth(hero.stats);
 updateEnemyHealth(game.currentEnemy);
+
+saveGame();
 
 let isRunning = false;
 setInterval(() => {

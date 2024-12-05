@@ -41,11 +41,6 @@ export default class Hero {
   }
 
   setBaseStats(savedData = null) {
-    if (savedData) {
-      Object.assign(this, savedData);
-      return;
-    }
-
     this.level = 1;
     this.gold = 0;
     this.crystals = 0;
@@ -56,6 +51,9 @@ export default class Hero {
     this.souls = 0;
     this.prestigeProgress = 0;
     this.highestZone = 1;
+
+    this.startingZone = 1;
+    this.startingGold = 0;
 
     this.equipmentBonuses = {
       damage: 0,
@@ -83,6 +81,7 @@ export default class Hero {
     };
 
     this.upgradeCosts = { ...BASE_UPGRADE_COSTS };
+
     this.upgradeLevels = {
       damage: 0,
       attackSpeed: 0,
@@ -91,6 +90,23 @@ export default class Hero {
       critChance: 0,
       critDamage: 0,
     };
+
+    this.crystalUpgrades = {
+      startingZone: 0,
+      startingGold: 0,
+    };
+
+    if (savedData) {
+      Object.keys(this).forEach((key) => {
+        if (savedData.hasOwnProperty(key)) {
+          if (typeof this[key] === 'object' && !Array.isArray(this[key])) {
+            this[key] = { ...this[key], ...savedData[key] };
+          } else {
+            this[key] = savedData[key];
+          }
+        }
+      });
+    }
   }
 
   displayStats() {

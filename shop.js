@@ -7,7 +7,7 @@ import {
   CRIT_DAMAGE_ON_UPGRADE,
   DAMAGE_ON_UPGRADE,
   HEALTH_ON_UPGRADE,
-  BASE_UPGRADE_COSTS, // Import BASE_UPGRADE_COSTS
+  BASE_UPGRADE_COSTS,
 } from './hero.js';
 import { showToast } from './toast.js';
 import { game, hero } from './main.js';
@@ -35,13 +35,6 @@ const UPGRADE_CONFIG = {
   },
 };
 
-const CRYSTAL_UPGRADE_CONFIG = {
-  // Define crystal upgrades here
-  crystalDamage: { label: 'Crystal Damage', bonus: DAMAGE_ON_UPGRADE * 2 },
-  crystalHealth: { label: 'Crystal Health', bonus: HEALTH_ON_UPGRADE * 2 },
-  // Add more crystal upgrades as needed
-};
-
 export default class Shop {
   constructor() {
     this.initializeShopUI();
@@ -51,17 +44,13 @@ export default class Shop {
     const shopGrid = document.querySelector('.shop-grid');
     if (!shopGrid) return;
 
+    const goldGrid = document.querySelector('#gold-upgrades .shop-grid');
+    if (goldGrid) this.attachGridListeners(goldGrid);
     this.updateShopUI('gold-upgrades');
+  }
 
-    const shopSubTabs = document.querySelector('.shop-sub-tabs');
-    shopSubTabs.addEventListener('click', (e) => {
-      const button = e.target.closest('button[data-sub-tab]');
-      if (button) {
-        this.switchSubTab(button.dataset.subTab);
-      }
-    });
-
-    shopGrid.addEventListener('mousedown', (e) => {
+  attachGridListeners(grid) {
+    grid.addEventListener('mousedown', (e) => {
       const button = e.target.closest('button[data-stat]');
       if (button) {
         const stat = button.dataset.stat;
@@ -112,51 +101,50 @@ export default class Shop {
     const shopGrid = document.querySelector(`#${subTab} .shop-grid`);
     if (!shopGrid) return;
 
-    const config = subTab === 'gold-upgrades' ? UPGRADE_CONFIG : CRYSTAL_UPGRADE_CONFIG;
-    shopGrid.innerHTML = Object.entries(config)
+    shopGrid.innerHTML = Object.entries(UPGRADE_CONFIG)
       .map(([stat, config]) => this.createUpgradeButton(stat, config))
       .join('');
   }
 
   createUpgradeButton(stat, config) {
+    const cost = hero.upgradeCosts[stat] || 0;
+    const level = hero.upgradeLevels[stat] || 0;
+    const bonus = this.getBonusText(config, level);
+
     return `
       <button data-stat="${stat}">
-        <span class="upgrade-name">${config.label} (Lvl ${hero.upgradeLevels[stat] || 0})</span>
-        <span class="upgrade-bonus">${this.getBonusText(
-          stat,
-          config,
-          hero.upgradeLevels[stat] || 0
-        )}</span>
-        <span class="upgrade-cost">${hero.upgradeCosts[stat] || 0} ${
-      stat.startsWith('crystal') ? 'Crystals' : 'Gold'
-    }</span>
+        <span class="upgrade-name">${config.label} (Lvl ${level})</span>
+        <span class="upgrade-bonus"> ${bonus}
+        </span>
+        <span class="upgrade-cost">${cost} ${'Gold'}</span>
       </button>
     `;
   }
 
   buyUpgrade(stat) {
-    const isCrystalUpgrade = stat.startsWith('crystal');
-    const currency = isCrystalUpgrade ? 'crystals' : 'gold';
+    const currency = 'gold';
     const cost = hero.upgradeCosts[stat];
 
+    // Check if player has enough currency
     if (hero[currency] < cost) {
       showToast(`Not enough ${currency}!`, 'error');
       return;
     }
 
+    // Deduct cost and increase level
     hero[currency] -= cost;
     hero.upgradeLevels[stat] = (hero.upgradeLevels[stat] || 0) + 1;
-    hero.upgradeCosts[stat] += BASE_UPGRADE_COSTS[stat]; // Increase cost by base value
+    hero.upgradeCosts[stat] += BASE_UPGRADE_COSTS[stat];
 
-    this.updateShopUI(isCrystalUpgrade ? 'crystal-upgrades' : 'gold-upgrades');
-    hero.displayStats();
+    // Update UI
+    this.updateShopUI('gold-upgrades');
     hero.recalculateFromAttributes();
+    hero.displayStats();
     updateResources(hero, game);
-
     saveGame();
   }
 
-  getBonusText(stat, config, level) {
+  getBonusText(config, level) {
     const value = config.bonus * level;
     const formattedValue = config.fixed ? value.toFixed(config.fixed) : value;
     return `+${formattedValue}${config.suffix || ''} ${config.label}`;

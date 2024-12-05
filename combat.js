@@ -88,7 +88,7 @@ export function playerDeath(game) {
   }
 
   // Reset the zone and update the UI
-  game.zone = 1;
+  game.zone = hero.startingZone;
   updateZoneUI(game.zone);
   game.currentEnemy = new Enemy(game.zone);
 

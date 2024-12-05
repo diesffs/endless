@@ -9,7 +9,7 @@ class Game {
   constructor(prestige = null, savedData) {
     this.gameStarted = false;
     this.currentEnemy = null;
-    this.zone = 1;
+    this.zone = hero?.startingZone || 1;
     this.inventory = new Inventory(savedData?.inventory);
     this.prestige = prestige;
     this.lastPlayerAttack = Date.now();
@@ -67,7 +67,7 @@ class Game {
       this.resetAllHealth();
       updateResources(hero, this); // Pass game here
     } else {
-      this.zone = 1; // Reset zone
+      this.zone = hero.startingZone; // Reset zone
       updateZoneUI(this.zone);
       this.currentEnemy = new Enemy(this.zone);
 
