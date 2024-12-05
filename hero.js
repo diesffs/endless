@@ -94,6 +94,7 @@ export default class Hero {
     this.crystalUpgrades = {
       startingZone: 0,
       startingGold: 0,
+      continuousPlay: false 
     };
 
     if (savedData) {

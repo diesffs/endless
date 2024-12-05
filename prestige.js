@@ -22,6 +22,12 @@ const CRYSTAL_UPGRADE_CONFIG = {
     bonus: 1000,
     baseCost: 1,
   },
+  continuousPlay: {
+    label: 'Continuous Play',
+    bonus: 'Auto-continue after death',
+    baseCost: 50,
+    oneTime: true, // Add this to mark as one-time purchase
+  },
 };
 
 export default class Prestige {
@@ -151,15 +157,23 @@ export default class Prestige {
       console.error('Error initializing Prestige UI:', error);
     }
   }
+
   createCrystalUpgradeButton(stat, config) {
-    const cost = config.baseCost * (hero.crystalUpgrades[stat] + 1);
+    const isOneTime = config.oneTime;
+    const alreadyPurchased = isOneTime && hero.crystalUpgrades[stat];
+    const level = isOneTime ? '' : `(Lvl ${hero.crystalUpgrades[stat] || 0})`;
+    const bonus = isOneTime
+      ? config.bonus
+      : `+${config.bonus * (hero.crystalUpgrades[stat] || 0)} ${config.label}`;
+
+    const cost = isOneTime ? config.baseCost : config.baseCost * (hero.crystalUpgrades[stat] + 1);
     return `
-      <button class="crystal-upgrade-btn" data-stat="${stat}">
-        <span class="upgrade-name">${config.label} (Lvl ${hero.crystalUpgrades[stat] || 0})</span>
-        <span class="upgrade-bonus">+${config.bonus * (hero.crystalUpgrades[stat] || 0)} ${
-      config.label
-    }</span>
-        <span class="upgrade-cost">${cost} Crystals</span>
+      <button class="crystal-upgrade-btn ${
+        alreadyPurchased ? 'purchased' : ''
+      }" data-stat="${stat}">
+        <span class="upgrade-name">${config.label} ${level}</span>
+        <span class="upgrade-bonus">${bonus}</span>
+      <span class="upgrade-cost">${alreadyPurchased ? 'Purchased' : `${cost} Crystals`}</span>
       </button>
     `;
   }
@@ -176,23 +190,29 @@ export default class Prestige {
 
   buyCrystalUpgrade(stat) {
     const config = CRYSTAL_UPGRADE_CONFIG[stat];
-    const cost = config.baseCost * (hero.crystalUpgrades[stat] + 1);
+    const cost = config.oneTime
+      ? config.baseCost
+      : config.baseCost * (hero.crystalUpgrades[stat] + 1);
+
+    if (config.oneTime && hero.crystalUpgrades[stat]) {
+      showToast('Already purchased!', 'info');
+      return;
+    }
 
     if (hero.crystals >= cost) {
       hero.crystals -= cost;
-      hero.crystalUpgrades[stat] = (hero.crystalUpgrades[stat] || 0) + 1;
-
-      if (stat === 'startingZone') {
-        hero.startingZone = 1 + hero.crystalUpgrades[stat];
-      } else if (stat === 'startingGold') {
-        hero.startingGold = hero.crystalUpgrades[stat] * 1000;
+      if (config.oneTime) {
+        hero.crystalUpgrades[stat] = true;
+      } else {
+        hero.crystalUpgrades[stat] = (hero.crystalUpgrades[stat] || 0) + 1;
       }
+
+      // ... rest of your existing upgrade logic ...
 
       updateResources(hero, game);
       this.initializePrestigeUI();
       saveGame();
     } else {
-      // Add toast notification for insufficient crystals
       showToast(`Need ${cost} crystals for this upgrade`, 'error');
     }
   }

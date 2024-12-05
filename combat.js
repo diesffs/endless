@@ -1,4 +1,10 @@
-import { updatePlayerHealth, updateEnemyHealth, updateResources, updateZoneUI, updateStatsAndAttributesUI } from './ui.js';
+import {
+  updatePlayerHealth,
+  updateEnemyHealth,
+  updateResources,
+  updateZoneUI,
+  updateStatsAndAttributesUI,
+} from './ui.js';
 import Enemy from './enemy.js';
 import { calculateItemLevel, getRandomItemType, rollForDrop } from './loot-table.js';
 import { ITEM_RARITY } from './item.js';
@@ -78,32 +84,39 @@ export function playerDeath(game) {
     return;
   }
 
-  game.gameStarted = false;
+  const shouldContinue = hero.crystalUpgrades.continuousPlay;
 
-  // Reset button state
-  const startBtn = document.getElementById('start-btn');
-  if (startBtn) {
-    startBtn.textContent = 'Start';
-    startBtn.style.backgroundColor = '#059669';
+  if (!shouldContinue) {
+    game.gameStarted = false;
+    const startBtn = document.getElementById('start-btn');
+    if (startBtn) {
+      startBtn.textContent = 'Start';
+      startBtn.style.backgroundColor = '#059669';
+    }
   }
 
-  // Reset the zone and update the UI
+  // Reset everything regardless of continue state
   game.zone = hero.startingZone;
   updateZoneUI(game.zone);
   game.currentEnemy = new Enemy(game.zone);
-
-  // Reset player and enemy health
   game.resetAllHealth();
 
-  // Update UI elements
+  // Update all UI elements
   updatePlayerHealth(hero.stats);
   if (game.currentEnemy) {
     updateEnemyHealth(game.currentEnemy);
   }
-
-  // Update resources for UI consistency
   updateResources(hero, game);
   updateStatsAndAttributesUI(hero);
+
+  // If continuing, restart the game state
+  if (shouldContinue) {
+    game.gameStarted = true;
+    game.lastPlayerAttack = Date.now();
+    if (game.currentEnemy) {
+      game.currentEnemy.lastAttack = Date.now();
+    }
+  }
 }
 
 function defeatEnemy(game) {
@@ -204,7 +217,7 @@ export function createCombatText(text) {
   setTimeout(() => textEl.remove(), 1000);
 }
 
-export function calculateHitChance(attackRating, zone) {  
+export function calculateHitChance(attackRating, zone) {
   const zoneScaling = Math.pow(1.05, zone - 1);
   const baseChance = (attackRating / (attackRating + 15 * zoneScaling)) * 100; // Reduced from 50 to 15
   return Math.min(Math.max(baseChance, 5), 95);

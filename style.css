@@ -1010,3 +1010,8 @@ body {
   font-size: 0.9rem;
   color: #27c7cc;
 }
+
+.crystal-upgrade-btn.purchased {
+  opacity: 0.7;
+  cursor: default;
+}
