@@ -635,12 +635,12 @@ body {
 
 [data-slot='ring1'] {
   top: 160px;
-  right: 20px;
+  right: 70px;
 }
 
 [data-slot='ring2'] {
   top: 160px;
-  right: 70px;
+  right: 20px;
 }
 
 [data-slot='boots'] {

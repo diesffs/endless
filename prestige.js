@@ -62,8 +62,9 @@ export default class Prestige {
       },
     };
 
+    const currentSouls = hero.souls;
     hero.setBaseStats(null);
-    hero.souls += earnedSouls;
+    hero.souls += currentSouls + earnedSouls;
 
     // Restore crystal-related values
     hero.crystals = savedValues.crystals;
@@ -207,7 +208,11 @@ export default class Prestige {
         hero.crystalUpgrades[stat] = (hero.crystalUpgrades[stat] || 0) + 1;
       }
 
-      // ... rest of your existing upgrade logic ...
+      if (stat === 'startingZone') {
+        hero.startingZone = 1 + hero.crystalUpgrades[stat];
+      } else if (stat === 'startingGold') {
+        hero.startingGold = hero.crystalUpgrades[stat] * 1000;
+      }
 
       updateResources(hero, game);
       this.initializePrestigeUI();
