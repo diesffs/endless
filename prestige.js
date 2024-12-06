@@ -59,6 +59,7 @@ export default class Prestige {
       crystalUpgrades: {
         startingZone: hero.crystalUpgrades.startingZone,
         startingGold: hero.crystalUpgrades.startingGold,
+        continuousPlay: hero.crystalUpgrades.continuousPlay,
       },
     };
 
@@ -72,12 +73,21 @@ export default class Prestige {
     hero.startingGold = savedValues.startingGold;
     hero.crystalUpgrades.startingZone = savedValues.crystalUpgrades.startingZone;
     hero.crystalUpgrades.startingGold = savedValues.crystalUpgrades.startingGold;
+    hero.crystalUpgrades.continuousPlay = savedValues.crystalUpgrades.continuousPlay;
 
     this.resetGame();
     hero.recalculateFromAttributes();
     updateStatsAndAttributesUI(hero); // Update stats and attributes UI
     updateResources(hero, game); // Update resources UI
     updatePlayerHealth(hero.stats); // Update health bar dynamically
+    game.resetAllHealth();
+
+    const startBtn = document.getElementById('start-btn');
+    if (startBtn) {
+      startBtn.textContent = 'Start';
+      startBtn.style.backgroundColor = '#059669';
+    }
+
     saveGame();
 
     this.initializePrestigeUI(); // Ensure UI reflects reset state
