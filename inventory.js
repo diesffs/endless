@@ -471,7 +471,6 @@ export default class Inventory {
   }
 
   equipItem(item, slot) {
-    log('Equipping item:', item, 'in slot:', slot);
     const currentPosition = this.inventoryItems.findIndex((i) => i && i.id === item.id);
 
     // Handle existing equipped item

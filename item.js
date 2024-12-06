@@ -51,7 +51,7 @@ export const AVAILABLE_STATS = {
   agility: { min: 1, max: 5, scaling: 'full' },
   vitality: { min: 1, max: 5, scaling: 'full' },
   critChance: { min: 0.5, max: 3, scaling: 'capped' },
-  critDamage: { min: 0.05, max: 0.2, scaling: 'full' },
+  critDamage: { min: 0.02, max: 0.1, scaling: 'full' },
   attackSpeed: { min: 0.05, max: 0.2, scaling: 'capped' },
   maxHealth: { min: 5, max: 25, scaling: 'full' },
   blockChance: { min: 2, max: 8, scaling: 'capped' },
