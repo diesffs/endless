@@ -1,4 +1,4 @@
-import { game, hero } from './main.js';
+import { game, hero, inventory, shop } from './main.js';
 import {
   updateZoneUI,
   updateResources,
@@ -31,12 +31,7 @@ const CRYSTAL_UPGRADE_CONFIG = {
 };
 
 export default class Prestige {
-  constructor(game) {
-    if (!game || typeof game.zone !== 'number') {
-      console.error('Game is not properly initialized in Prestige constructor:', game);
-      return;
-    }
-  }
+  constructor() {}
 
   calculateSouls() {
     if (!game || typeof hero.highestZone !== 'number') {
@@ -77,9 +72,9 @@ export default class Prestige {
 
     this.resetGame();
     hero.recalculateFromAttributes();
-    updateStatsAndAttributesUI(hero); // Update stats and attributes UI
-    updateResources(hero, game); // Update resources UI
-    updatePlayerHealth(hero.stats); // Update health bar dynamically
+    updateStatsAndAttributesUI(); // Update stats and attributes UI
+    updateResources(); // Update resources UI
+    updatePlayerHealth(); // Update health bar dynamically
     game.resetAllHealth();
 
     const startBtn = document.getElementById('start-btn');
@@ -92,7 +87,6 @@ export default class Prestige {
 
     this.initializePrestigeUI(); // Ensure UI reflects reset state
 
-    const shop = new Shop();
     shop.updateShopUI('gold-upgrades');
     shop.updateShopUI('crystal-upgrades');
   }
@@ -107,13 +101,13 @@ export default class Prestige {
     hero.gold = hero.startingGold;
     game.gameStarted = false;
     game.currentEnemy = new Enemy(game.zone);
-    updateZoneUI(game.zone);
+    updateZoneUI();
 
-    RARITY_ORDER.forEach((rarity) => game.inventory.salvageItemsByRarity(rarity));
+    RARITY_ORDER.forEach((rarity) => inventory.salvageItemsByRarity(rarity));
 
     // Update UI and save game
-    updateResources(hero, game);
-    updatePlayerHealth(hero.stats);
+    updateResources();
+    updatePlayerHealth();
     saveGame();
     this.initializePrestigeUI(); // Ensure UI reflects reset state
   }
@@ -224,7 +218,7 @@ export default class Prestige {
         hero.startingGold = hero.crystalUpgrades[stat] * 1000;
       }
 
-      updateResources(hero, game);
+      updateResources();
       this.initializePrestigeUI();
       saveGame();
     } else {

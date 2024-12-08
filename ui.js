@@ -2,7 +2,7 @@ import Enemy from './enemy.js';
 import { game, hero, prestige } from './main.js';
 import { calculateHitChance } from './combat.js';
 
-export function initializeUI(game) {
+export function initializeUI() {
   game.currentEnemy = new Enemy(game.zone);
   game.activeTab = 'inventory';
   document.querySelectorAll('.tab-btn').forEach((btn) => {
@@ -10,7 +10,7 @@ export function initializeUI(game) {
   });
   document.getElementById('start-btn').addEventListener('click', () => toggleGame());
 
-  updateZoneUI(game.zone);
+  updateZoneUI();
 }
 
 export function switchTab(game, tabName) {
@@ -20,13 +20,13 @@ export function switchTab(game, tabName) {
   document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
 
   if (tabName === 'stats') {
-    updateStatsAndAttributesUI(hero);
+    updateStatsAndAttributesUI();
   }
 
   game.activeTab = tabName;
 }
 
-export function updateResources(hero, game) {
+export function updateResources() {
   if (!game || typeof game.zone !== 'number') {
     console.error('Game is not initialized properly:', game);
     return;
@@ -48,7 +48,8 @@ export function updateResources(hero, game) {
   document.getElementById('gold').textContent = hero.gold || 0;
 }
 
-export function updatePlayerHealth(stats) {
+export function updatePlayerHealth() {
+  const stats = hero.stats;
   const healthPercentage = (stats.currentHealth / stats.maxHealth) * 100;
   document.getElementById('health-fill').style.width = `${healthPercentage}%`;
   document.getElementById('health-text').textContent = `${Math.max(
@@ -57,7 +58,8 @@ export function updatePlayerHealth(stats) {
   )}/${Math.floor(stats.maxHealth)}`;
 }
 
-export function updateEnemyHealth(enemy) {
+export function updateEnemyHealth() {
+  const enemy = game.currentEnemy;
   const healthPercentage = (enemy.currentHealth / enemy.maxHealth) * 100;
   document.getElementById('enemy-health-fill').style.width = `${healthPercentage}%`;
   document.getElementById('enemy-health-text').textContent = `${Math.max(
@@ -75,7 +77,7 @@ export function toggleGame() {
   startBtn.style.backgroundColor = game.gameStarted ? '#DC2626' : '#059669';
 }
 
-export function updateStatsAndAttributesUI(hero) {
+export function updateStatsAndAttributesUI() {
   const statsGrid = document.querySelector('.stats-grid');
 
   if (!statsGrid) return;
@@ -184,8 +186,8 @@ export function updateStatsAndAttributesUI(hero) {
         // Initial click allocation
         if (hero.allocateStat(stat)) {
           document.getElementById(`${stat}-value`).textContent = hero.getStat(stat);
-          updateStatsAndAttributesUI(hero);
-          updatePlayerHealth(hero.stats);
+          updateStatsAndAttributesUI();
+          updatePlayerHealth();
         }
 
         let intervalId;
@@ -196,8 +198,8 @@ export function updateStatsAndAttributesUI(hero) {
           intervalId = setInterval(() => {
             if (hero.allocateStat(stat)) {
               document.getElementById(`${stat}-value`).textContent = hero.getStat(stat);
-              updateStatsAndAttributesUI(hero);
-              updatePlayerHealth(hero.stats);
+              updateStatsAndAttributesUI();
+              updatePlayerHealth();
             }
           }, 100); // Allocate every 100ms while holding
         };
@@ -226,7 +228,8 @@ export function updateStatsAndAttributesUI(hero) {
   }
 }
 
-export function updateZoneUI(zone) {
+export function updateZoneUI() {
+  const zone = game.zone;
   const zoneDisplay = document.getElementById('zone-display');
   if (zoneDisplay) {
     zoneDisplay.textContent = `Zone: ${zone}`;

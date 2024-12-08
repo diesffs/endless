@@ -1,4 +1,4 @@
-import { updateResources, updatePlayerHealth } from './ui.js';
+import { updateResources, updatePlayerHealth, updateStatsAndAttributesUI } from './ui.js';
 import { saveGame } from './storage.js';
 import {
   ARMOR_ON_UPGRADE,
@@ -139,8 +139,8 @@ export default class Shop {
     // Update UI
     this.updateShopUI('gold-upgrades');
     hero.recalculateFromAttributes();
-    hero.displayStats();
-    updateResources(hero, game);
+    updateStatsAndAttributesUI();
+    updateResources();
     saveGame();
   }
 

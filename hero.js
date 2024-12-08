@@ -1,5 +1,5 @@
 import { updateStatsAndAttributesUI } from './ui.js';
-import { game } from './main.js';
+import { game, inventory } from './main.js';
 import { saveGame } from './storage.js';
 import { updatePlayerHealth } from './ui.js';
 import { createCombatText } from './combat.js';
@@ -110,10 +110,6 @@ export default class Hero {
     }
   }
 
-  displayStats() {
-    updateStatsAndAttributesUI(this);
-  }
-
   gainSoul(amount) {
     this.souls += amount;
   }
@@ -136,8 +132,10 @@ export default class Hero {
     // Add level up notification
     createCombatText(`LEVEL UP! (${this.level})`);
 
+    skillTree.addSkillPoints(1); // Add 1 skill point per level
+
     updatePlayerHealth(this.stats);
-    updateStatsAndAttributesUI(this);
+    updateStatsAndAttributesUI();
     saveGame();
   }
 
@@ -160,7 +158,7 @@ export default class Hero {
   }
 
   recalculateFromAttributes() {
-    game.inventory.updateItemBonuses();
+    inventory.updateItemBonuses();
 
     this.stats.damage =
       BASE_DAMAGE +
@@ -195,7 +193,7 @@ export default class Hero {
     this.stats.blockChance = 0;
 
     // had to be after stats are calculated, to just add bonuses
-    game.inventory.updateItemBonuses();
+    inventory.updateItemBonuses();
 
     Object.entries(this.equipmentBonuses).forEach(([stat, bonus]) => {
       if (this.stats[stat] !== undefined) {
@@ -221,7 +219,7 @@ export default class Hero {
     }
 
     updatePlayerHealth(this.stats);
-    updateStatsAndAttributesUI(this);
+    updateStatsAndAttributesUI();
   }
 
   calculateArmorReduction() {

@@ -1,31 +1,38 @@
 import Hero from './hero.js';
 import Game from './game.js';
 import Shop from './shop.js';
-import { initializeUI, updateEnemyHealth, updatePlayerHealth, updateResources } from './ui.js';
+import {
+  initializeUI,
+  updateEnemyHealth,
+  updatePlayerHealth,
+  updateResources,
+  updateStatsAndAttributesUI,
+  updateZoneUI,
+} from './ui.js';
 import { loadGame, saveGame } from './storage.js';
 import Prestige from './prestige.js';
+import Inventory from './inventory.js';
 
 window.log = console.log;
 
 const savedData = loadGame();
 
-export const hero = savedData ? new Hero(savedData?.hero) : new Hero();
-export const game = new Game(null, savedData);
-
-initializeUI(game);
-
-export const prestige = new Prestige(game);
-game.prestige = prestige;
-
+export const game = new Game();
+export const hero = new Hero(savedData?.hero);
+export const inventory = new Inventory(savedData?.inventory);
+export const prestige = new Prestige();
 export const shop = new Shop();
 
+game.zone = hero?.startingZone || 1;
+initializeUI();
 prestige.initializePrestigeUI();
-updateResources(hero, game);
-hero.stats.currentHealth = hero.stats.maxHealth;
+updateResources();
 hero.recalculateFromAttributes();
-hero.displayStats();
-updatePlayerHealth(hero.stats);
-updateEnemyHealth(game.currentEnemy);
+hero.stats.currentHealth = hero.stats.maxHealth;
+updatePlayerHealth();
+updateStatsAndAttributesUI();
+updateZoneUI();
+updateEnemyHealth();
 
 saveGame();
 

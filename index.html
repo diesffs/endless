@@ -26,20 +26,24 @@
             <button class="tab-btn" data-tab="shop">Shop</button>
             <button class="tab-btn" data-tab="prestige">Prestige</button>
             <button class="tab-btn" data-tab="inventory">Inventory</button>
+            <button class="tab-btn" data-tab="skilltree">Skill Tree</button>
           </div>
 
           <div class="tab-content">
             <div id="stats" class="tab-panel active">
               <div class="stats-grid"></div>
             </div>
+
             <div id="shop" class="tab-panel">
               <div id="gold-upgrades" class="sub-tab-panel active">
                 <div class="shop-grid"></div>
               </div>
             </div>
+
             <div id="prestige" class="tab-panel">
               <div class="prestige-items"></div>
             </div>
+
             <div id="inventory" class="tab-panel">
               <div class="equipment-container">
                 <div class="equipment-layout">
@@ -115,6 +119,17 @@
               </div>
               <div class="inventory-grid">
                 <div class="grid-container"></div>
+              </div>
+            </div>
+
+            <div id="skilltree" class="tab-panel">
+              <div class="skill-points">
+                Skill Points: <span id="available-skill-points">0</span>
+              </div>
+              <div class="skill-tree-container">
+                <div class="strength-path" id="strength-skills"></div>
+                <div class="agility-path" id="agility-skills"></div>
+                <div class="vitality-path" id="vitality-skills"></div>
               </div>
             </div>
           </div>

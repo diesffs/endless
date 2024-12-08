@@ -8,7 +8,7 @@ import {
 import Enemy from './enemy.js';
 import { calculateItemLevel, getRandomItemType, rollForDrop } from './loot-table.js';
 import { ITEM_RARITY } from './item.js';
-import { hero, game } from './main.js';
+import { hero, game, inventory } from './main.js';
 import { saveGame } from './storage.js';
 
 export function enemyAttack(game, currentTime) {
@@ -34,7 +34,7 @@ export function enemyAttack(game, currentTime) {
       createDamageNumber(Math.floor(effectiveDamage), true);
 
       // Update player health UI
-      updatePlayerHealth(hero.stats);
+      updatePlayerHealth();
 
       // Handle player death if health drops to 0
       if (hero.stats.currentHealth <= 0) playerDeath(game);
@@ -67,7 +67,7 @@ export function playerAttack(game, currentTime) {
         createDamageNumber(damage, false, isCritical);
       }
 
-      updateEnemyHealth(game.currentEnemy);
+      updateEnemyHealth();
 
       if (game.currentEnemy.currentHealth <= 0) {
         defeatEnemy(game);
@@ -97,17 +97,17 @@ export function playerDeath(game) {
 
   // Reset everything regardless of continue state
   game.zone = hero.startingZone;
-  updateZoneUI(game.zone);
+  updateZoneUI();
   game.currentEnemy = new Enemy(game.zone);
   game.resetAllHealth();
 
   // Update all UI elements
-  updatePlayerHealth(hero.stats);
+  updatePlayerHealth();
   if (game.currentEnemy) {
-    updateEnemyHealth(game.currentEnemy);
+    updateEnemyHealth();
   }
-  updateResources(hero, game);
-  updateStatsAndAttributesUI(hero);
+  updateResources();
+  updateStatsAndAttributesUI();
 
   // If continuing, restart the game state
   if (shouldContinue) {
@@ -140,20 +140,19 @@ function defeatEnemy(game) {
   if (rollForDrop(enemy)) {
     const itemLevel = calculateItemLevel(game.zone);
     const itemType = getRandomItemType();
-    const newItem = game.inventory.createItem(itemType, itemLevel);
-    game.inventory.addItemToInventory(newItem);
+    const newItem = inventory.createItem(itemType, itemLevel);
+    inventory.addItemToInventory(newItem);
 
     showLootNotification(newItem);
   }
 
   game.incrementZone();
-  hero.displayStats();
   game.currentEnemy = new Enemy(game.zone);
   game.currentEnemy.lastAttack = Date.now();
 
-  updateResources(hero, game);
-  updateEnemyHealth(game.currentEnemy);
-  updateStatsAndAttributesUI(hero);
+  updateResources();
+  updateEnemyHealth();
+  updateStatsAndAttributesUI();
 
   saveGame();
 }

@@ -1,17 +1,14 @@
 import { updatePlayerHealth, updateEnemyHealth, updateZoneUI, updateResources } from './ui.js';
 import { playerAttack, enemyAttack } from './combat.js';
 import { saveGame } from './storage.js';
-import Inventory from './inventory.js';
-import { hero } from './main.js';
+import { hero, prestige } from './main.js';
 import Enemy from './enemy.js';
 
 class Game {
-  constructor(prestige = null, savedData) {
+  constructor() {
     this.gameStarted = false;
     this.currentEnemy = null;
-    this.zone = hero?.startingZone || 1;
-    this.inventory = new Inventory(savedData?.inventory);
-    this.prestige = prestige;
+    this.zone = 1;
     this.lastPlayerAttack = Date.now();
   }
 
@@ -22,15 +19,15 @@ class Game {
       hero.crystals += 1; // Award 1 crystal for increasing highest zone
     }
 
-    updateZoneUI(this.zone);
-    updateResources(hero, this); // Update resources to reflect new crystal count
+    updateZoneUI();
+    updateResources(); // Update resources to reflect new crystal count
   }
 
   resetAllHealth() {
     hero.stats.currentHealth = hero.stats.maxHealth;
-    updatePlayerHealth(hero.stats);
+    updatePlayerHealth();
     this.currentEnemy.resetHealth();
-    updateEnemyHealth(this.currentEnemy);
+    updateEnemyHealth();
 
     // Reset combat timers
     const currentTime = Date.now();
@@ -51,7 +48,7 @@ class Game {
     // Only update Prestige UI after zone progression
     if (this.zoneChanged) {
       this.zoneChanged = false; // Reset flag
-      this.prestige.initializePrestigeUI(); // Update Prestige UI
+      prestige.initializePrestigeUI(); // Update Prestige UI
     }
 
     if (currentTime % 30000 < 16) {
@@ -65,16 +62,16 @@ class Game {
       this.currentEnemy.lastAttack = Date.now();
       // When the game starts, reset health and update resources
       this.resetAllHealth();
-      updateResources(hero, this); // Pass game here
+      updateResources(); // Pass game here
     } else {
       this.zone = hero.startingZone; // Reset zone
-      updateZoneUI(this.zone);
+      updateZoneUI();
       this.currentEnemy = new Enemy(this.zone);
 
       hero.stats.currentHealth = hero.stats.maxHealth; // Reset player health
       this.currentEnemy.resetHealth(); // Reset enemy health
-      updatePlayerHealth(hero.stats);
-      updateEnemyHealth(this.currentEnemy);
+      updatePlayerHealth();
+      updateEnemyHealth();
     }
   }
 }
