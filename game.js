@@ -10,6 +10,7 @@ class Game {
     this.currentEnemy = null;
     this.zone = 1;
     this.lastPlayerAttack = Date.now();
+    this.lastRegen = Date.now();
   }
 
   incrementZone() {
@@ -25,6 +26,7 @@ class Game {
 
   resetAllHealth() {
     hero.stats.currentHealth = hero.stats.maxHealth;
+    hero.stats.currentMana = hero.stats.maxMana;
     updatePlayerHealth();
     this.currentEnemy.resetHealth();
     updateEnemyHealth();
@@ -45,6 +47,12 @@ class Game {
     playerAttack(this, currentTime);
     enemyAttack(this, currentTime);
 
+    // Regenerate health and mana every second
+    if (currentTime - this.lastRegen >= 1000) {
+      hero.regenerate();
+      this.lastRegen = currentTime;
+    }
+
     // Only update Prestige UI after zone progression
     if (this.zoneChanged) {
       this.zoneChanged = false; // Reset flag
@@ -55,6 +63,7 @@ class Game {
       saveGame();
     }
   }
+
   toggle() {
     this.gameStarted = !this.gameStarted;
 
@@ -69,6 +78,7 @@ class Game {
       this.currentEnemy = new Enemy(this.zone);
 
       hero.stats.currentHealth = hero.stats.maxHealth; // Reset player health
+      hero.stats.currentMana = hero.stats.maxMana; // Reset player mana
       this.currentEnemy.resetHealth(); // Reset enemy health
       updatePlayerHealth();
       updateEnemyHealth();

@@ -13,6 +13,9 @@ export const BASE_CRIT_CHANCE = 5;
 export const BASE_CRIT_DAMAGE = 1.5;
 export const BASE_BLOCK_CHANCE = 0;
 export const BASE_ATTACK_RATING = 100;
+export const BASE_MANA = 50;
+export const BASE_MANA_REGEN = 1;
+export const BASE_LIFE_REGEN = 1;
 
 export const DAMAGE_ON_UPGRADE = 1;
 export const ATTACK_SPEED_ON_UPGRADE = 0.01;
@@ -20,11 +23,13 @@ export const HEALTH_ON_UPGRADE = 10;
 export const ARMOR_ON_UPGRADE = 1;
 export const CRIT_CHANCE_ON_UPGRADE = 0.1;
 export const CRIT_DAMAGE_ON_UPGRADE = 0.01;
+export const MANA_ON_UPGRADE = 5;
 
 export const DAMAGE_ON_LEVEL_UP = 1;
 export const HEALTH_ON_LEVEL_UP = 10;
 export const STATS_ON_LEVEL_UP = 3;
 export const ATTACK_RATING_ON_LEVEL_UP = 0;
+export const MANA_ON_LEVEL_UP = 5;
 
 export const BASE_UPGRADE_COSTS = {
   damage: 100,
@@ -66,6 +71,9 @@ export default class Hero {
       attackSpeed: 0,
       maxHealth: 0,
       blockChance: 0,
+      maxMana: 0,
+      manaRegen: 0,
+      lifeRegen: 0,
     };
 
     this.stats = {
@@ -78,6 +86,10 @@ export default class Hero {
       armor: BASE_ARMOR,
       blockChance: BASE_BLOCK_CHANCE,
       attackRating: BASE_ATTACK_RATING,
+      currentMana: BASE_MANA,
+      maxMana: BASE_MANA,
+      manaRegen: BASE_MANA_REGEN,
+      lifeRegen: BASE_LIFE_REGEN,
     };
 
     this.upgradeCosts = { ...BASE_UPGRADE_COSTS };
@@ -89,6 +101,7 @@ export default class Hero {
       armor: 0,
       critChance: 0,
       critDamage: 0,
+      mana: 0,
     };
 
     this.crystalUpgrades = {
@@ -192,7 +205,19 @@ export default class Hero {
 
     this.stats.blockChance = 0;
 
-    // had to be after stats are calculated, to just add bonuses
+    this.stats.maxMana =
+      BASE_MANA +
+      this.upgradeLevels.mana * MANA_ON_UPGRADE +
+      MANA_ON_LEVEL_UP * this.level -
+      MANA_ON_LEVEL_UP;
+
+    this.stats.manaRegen = BASE_MANA_REGEN + this.equipmentBonuses.manaRegen;
+    this.stats.lifeRegen = BASE_LIFE_REGEN + this.equipmentBonuses.lifeRegen;
+
+    if (this.stats.currentMana > this.stats.maxMana) {
+      this.stats.currentMana = this.stats.maxMana;
+    }
+
     inventory.updateItemBonuses();
 
     Object.entries(this.equipmentBonuses).forEach(([stat, bonus]) => {
@@ -227,5 +252,17 @@ export default class Hero {
     const constant = 100 + this.level * 10;
     const reduction = (armor / (armor + constant)) * 100;
     return Math.min(reduction, 95); // Changed cap to 95%
+  }
+
+  regenerate() {
+    this.stats.currentHealth = Math.min(
+      this.stats.maxHealth,
+      this.stats.currentHealth + this.stats.lifeRegen
+    );
+    this.stats.currentMana = Math.min(
+      this.stats.maxMana,
+      this.stats.currentMana + this.stats.manaRegen
+    );
+    updatePlayerHealth();
   }
 }

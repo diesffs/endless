@@ -56,6 +56,13 @@ export function updatePlayerHealth() {
     0,
     Math.floor(stats.currentHealth)
   )}/${Math.floor(stats.maxHealth)}`;
+
+  const manaPercentage = (stats.currentMana / stats.maxMana) * 100;
+  document.getElementById('mana-fill').style.width = `${manaPercentage}%`;
+  document.getElementById('mana-text').textContent = `${Math.max(
+    0,
+    Math.floor(stats.currentMana)
+  )}/${Math.floor(stats.maxMana)}`;
 }
 
 export function updateEnemyHealth() {
@@ -118,6 +125,7 @@ export function updateStatsAndAttributesUI() {
           <div><strong>Health:</strong> <span id="max-health-value">${
             hero.stats.maxHealth
           }</span></div>
+          <div><strong>Mana:</strong> <span id="max-mana-value">${hero.stats.maxMana}</span></div>
           <div><strong>Armor:</strong> <span id="armor-value">${hero.stats.armor || 0}</span> 
           (<span id="armor-reduction-value">${hero
             .calculateArmorReduction()
@@ -147,6 +155,7 @@ export function updateStatsAndAttributesUI() {
     document.getElementById('crit-damage-value').textContent =
       hero.stats.critDamage.toFixed(2).replace(/\./g, ',') + 'x';
     document.getElementById('max-health-value').textContent = hero.stats.maxHealth;
+    document.getElementById('max-mana-value').textContent = hero.stats.maxMana;
     document.getElementById('armor-value').textContent = hero.stats.armor || 0;
     document.getElementById('armor-reduction-value').textContent =
       hero.calculateArmorReduction().toFixed(2).replace(/\./g, ',') + '%';

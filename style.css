@@ -107,7 +107,6 @@ body {
   position: relative;
 }
 
-.health-bar,
 .enemy-health-bar {
   width: 100%;
   height: 1rem;
@@ -117,19 +116,10 @@ body {
   overflow: hidden;
 }
 
-#health-fill,
 #enemy-health-fill {
   height: 100%;
   background-color: var(--health);
   transition: width 0.3s;
-}
-
-.health-text {
-  text-align: center;
-  margin-top: -0.5rem;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-  color: var(--text);
 }
 
 .character-controls {
@@ -1051,4 +1041,44 @@ body {
 .skill-level {
   font-size: 0.9em;
   color: #888;
+}
+
+.health-bar,
+.mana-bar {
+  position: relative;
+  height: 20px;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  margin: 5px 0;
+}
+
+#health-fill,
+#mana-fill {
+  height: 100%;
+  border-radius: 5px;
+}
+
+#health-fill {
+  background-color: #ff4d4d;
+}
+
+#mana-fill {
+  background-color: #4d4dff;
+}
+
+.health-text,
+.mana-text {
+  width: 100%;
+  text-align: center;
+  top: 0;
+  left: 0;
+  line-height: 20px;
+  font-weight: bold;
+  color: #fff;
+  z-index: 1;
+}
+
+.health-bar,
+.mana-bar {
+  overflow: hidden;
 }
