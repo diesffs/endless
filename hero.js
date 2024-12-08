@@ -19,11 +19,13 @@ export const BASE_LIFE_REGEN = 1;
 
 export const DAMAGE_ON_UPGRADE = 1;
 export const ATTACK_SPEED_ON_UPGRADE = 0.01;
-export const HEALTH_ON_UPGRADE = 10;
 export const ARMOR_ON_UPGRADE = 1;
 export const CRIT_CHANCE_ON_UPGRADE = 0.1;
 export const CRIT_DAMAGE_ON_UPGRADE = 0.01;
+export const HEALTH_ON_UPGRADE = 10;
 export const MANA_ON_UPGRADE = 5;
+export const HEALTH_REGEN_ON_UPGRADE = 0.1;
+export const MANA_REGEN_ON_UPGRADE = 0.1;
 
 export const DAMAGE_ON_LEVEL_UP = 1;
 export const HEALTH_ON_LEVEL_UP = 10;
@@ -38,6 +40,9 @@ export const BASE_UPGRADE_COSTS = {
   armor: 250,
   critChance: 300,
   critDamage: 400,
+  mana: 200,
+  healthRegen: 200,
+  manaRegen: 200,
 };
 
 export default class Hero {
@@ -47,7 +52,7 @@ export default class Hero {
 
   setBaseStats(savedData = null) {
     this.level = 1;
-    this.gold = 0;
+    this.gold = 1231230;
     this.crystals = 0;
     this.exp = 0;
     this.expToNextLevel = 20;
@@ -102,6 +107,8 @@ export default class Hero {
       critChance: 0,
       critDamage: 0,
       mana: 0,
+      healthRegen: 0,
+      manaRegen: 0,
     };
 
     this.crystalUpgrades = {
@@ -211,8 +218,15 @@ export default class Hero {
       MANA_ON_LEVEL_UP * this.level -
       MANA_ON_LEVEL_UP;
 
-    this.stats.manaRegen = BASE_MANA_REGEN + this.equipmentBonuses.manaRegen;
-    this.stats.lifeRegen = BASE_LIFE_REGEN + this.equipmentBonuses.lifeRegen;
+    this.stats.manaRegen =
+      BASE_MANA_REGEN +
+      this.upgradeLevels.manaRegen * MANA_REGEN_ON_UPGRADE +
+      this.equipmentBonuses.manaRegen;
+
+    this.stats.lifeRegen =
+      BASE_LIFE_REGEN +
+      this.upgradeLevels.healthRegen * HEALTH_REGEN_ON_UPGRADE +
+      this.equipmentBonuses.lifeRegen;
 
     if (this.stats.currentMana > this.stats.maxMana) {
       this.stats.currentMana = this.stats.maxMana;

@@ -9,6 +9,8 @@ import {
   HEALTH_ON_UPGRADE,
   MANA_ON_UPGRADE,
   BASE_UPGRADE_COSTS,
+  HEALTH_REGEN_ON_UPGRADE,
+  MANA_REGEN_ON_UPGRADE,
 } from './hero.js';
 import { showToast } from './toast.js';
 import { game, hero } from './main.js';
@@ -35,6 +37,16 @@ const UPGRADE_CONFIG = {
     suffix: '%',
   },
   mana: { label: 'Mana', bonus: MANA_ON_UPGRADE },
+  healthRegen: {
+    label: 'Health Regen',
+    bonus: HEALTH_REGEN_ON_UPGRADE,
+    fixed: 1,
+  },
+  manaRegen: {
+    label: 'Mana Regen',
+    bonus: MANA_REGEN_ON_UPGRADE,
+    fixed: 1,
+  },
 };
 
 export default class Shop {
