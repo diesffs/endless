@@ -1,149 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Secret Tower</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Secret Tower</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-
-<body>
-  <div class="game-container">
-    <div class="resource-bar">
-      <div class="resource" title="Gold"><span class="icon">💰</span><span id="gold"></span></div>
-      <div class="resource" title="Crystals">
-        <span class="icon">💎</span><span id="crystals"></span>
-      </div>
-      <div class="resource" title="Souls">
-        <span class="icon">👻</span><span id="souls"></span>
-      </div>
-    </div>
-
-    <div class="main-content">
-      <div class="game-panel">
-        <div class="tab-buttons">
-          <button class="tab-btn active" data-tab="stats">Stats</button>
-          <button class="tab-btn" data-tab="shop">Shop</button>
-          <button class="tab-btn" data-tab="prestige">Prestige</button>
-          <button class="tab-btn" data-tab="inventory">Inventory</button>
-          <button class="tab-btn" data-tab="skilltree">Skill Tree</button>
+  <body>
+    <div class="game-container">
+      <div class="resource-bar">
+        <div class="resource" title="Gold"><span class="icon">💰</span><span id="gold"></span></div>
+        <div class="resource" title="Crystals">
+          <span class="icon">💎</span><span id="crystals"></span>
         </div>
+        <div class="resource" title="Souls">
+          <span class="icon">👻</span><span id="souls"></span>
+        </div>
+      </div>
 
-        <div class="tab-content">
-          <div id="stats" class="tab-panel active">
-            <div class="stats-grid"></div>
+      <div class="main-content">
+        <div class="game-panel">
+          <div class="tab-buttons">
+            <button class="tab-btn active" data-tab="stats">Stats</button>
+            <button class="tab-btn" data-tab="shop">Shop</button>
+            <button class="tab-btn" data-tab="prestige">Prestige</button>
+            <button class="tab-btn" data-tab="inventory">Inventory</button>
+            <button class="tab-btn" data-tab="skilltree">Skill Tree</button>
           </div>
 
-          <div id="shop" class="tab-panel">
-            <div id="gold-upgrades" class="sub-tab-panel active">
-              <div class="shop-grid"></div>
+          <div class="tab-content">
+            <div id="stats" class="tab-panel active">
+              <div class="stats-grid"></div>
             </div>
-          </div>
 
-          <div id="prestige" class="tab-panel">
-            <div class="prestige-items"></div>
-          </div>
+            <div id="shop" class="tab-panel">
+              <div id="gold-upgrades" class="sub-tab-panel active">
+                <div class="shop-grid"></div>
+              </div>
+            </div>
 
-          <div id="inventory" class="tab-panel">
-            <div class="equipment-container">
-              <div class="equipment-layout">
-                <div class="equipment-slots">
-                  <div class="equipment-slot" data-slot="head" title="Helmet Slot">
-                    <div class="slot-indicator">🪖</div>
-                  </div>
-                  <div class="equipment-slot" data-slot="amulet" title="Amulet Slot">
-                    <div class="slot-indicator">📿</div>
-                  </div>
-                  <div class="equipment-slot" data-slot="chest" title="Armor Slot">
-                    <div class="slot-indicator">👕</div>
-                  </div>
-                  <div class="equipment-slot" data-slot="belt" title="Belt Slot">
-                    <div class="slot-indicator">🎗️</div>
-                  </div>
-                  <div class="equipment-slot" data-slot="weapon" title="Weapon Slot">
-                    <div class="slot-indicator">⚔️</div>
-                  </div>
-                  <div class="equipment-slot" data-slot="offhand" title="Shield/Offhand Slot">
-                    <div class="slot-indicator">🛡️</div>
-                  </div>
-                  <div class="equipment-slot" data-slot="gloves" title="Gloves Slot">
-                    <div class="slot-indicator">🧤</div>
-                  </div>
-                  <div class="equipment-slot" data-slot="ring1" title="Ring Slot">
-                    <div class="slot-indicator">💍</div>
-                  </div>
-                  <div class="equipment-slot" data-slot="legs" title="Pants Slot">
-                    <div class="slot-indicator">👖</div>
-                  </div>
-                  <div class="equipment-slot" data-slot="ring2" title="Ring Slot">
-                    <div class="slot-indicator">💍</div>
-                  </div>
+            <div id="prestige" class="tab-panel">
+              <div class="prestige-items"></div>
+            </div>
 
-                  <div class="equipment-slot" data-slot="boots" title="Boots">
-                    <div class="slot-indicator">👢</div>
+            <div id="inventory" class="tab-panel">
+              <div class="equipment-container">
+                <div class="equipment-layout">
+                  <div class="equipment-slots">
+                    <div class="equipment-slot" data-slot="head" title="Helmet Slot">
+                      <div class="slot-indicator">🪖</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="amulet" title="Amulet Slot">
+                      <div class="slot-indicator">📿</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="chest" title="Armor Slot">
+                      <div class="slot-indicator">👕</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="belt" title="Belt Slot">
+                      <div class="slot-indicator">🎗️</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="weapon" title="Weapon Slot">
+                      <div class="slot-indicator">⚔️</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="offhand" title="Shield/Offhand Slot">
+                      <div class="slot-indicator">🛡️</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="gloves" title="Gloves Slot">
+                      <div class="slot-indicator">🧤</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="ring1" title="Ring Slot">
+                      <div class="slot-indicator">💍</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="legs" title="Pants Slot">
+                      <div class="slot-indicator">👖</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="ring2" title="Ring Slot">
+                      <div class="slot-indicator">💍</div>
+                    </div>
+
+                    <div class="equipment-slot" data-slot="boots" title="Boots">
+                      <div class="slot-indicator">👢</div>
+                    </div>
                   </div>
+                  <div class="character-preview">👤</div>
                 </div>
-                <div class="character-preview">👤</div>
+                <div class="salvage-container">
+                  <button id="sort-inventory" class="inventory-btn">Sort Items</button>
+                  <button
+                    id="salvage-normal"
+                    class="salvage-button normal"
+                    title="Salvage all Normal (white) items"
+                  >
+                    Normal
+                  </button>
+                  <button
+                    id="salvage-magic"
+                    class="salvage-button magic"
+                    title="Salvage all Magic (blue) items and below"
+                  >
+                    Magic
+                  </button>
+                  <button
+                    id="salvage-rare"
+                    class="salvage-button rare"
+                    title="Salvage all Rare (yellow) items and below"
+                  >
+                    Rare
+                  </button>
+                  <button
+                    id="salvage-unique"
+                    class="salvage-button unique"
+                    title="Salvage all Unique (orange) items and below"
+                  >
+                    Unique
+                  </button>
+                </div>
               </div>
-              <div class="salvage-container">
-                <button id="sort-inventory" class="inventory-btn">Sort Items</button>
-                <button id="salvage-normal" class="salvage-button normal" title="Salvage all Normal (white) items">
-                  Normal
-                </button>
-                <button id="salvage-magic" class="salvage-button magic"
-                  title="Salvage all Magic (blue) items and below">
-                  Magic
-                </button>
-                <button id="salvage-rare" class="salvage-button rare" title="Salvage all Rare (yellow) items and below">
-                  Rare
-                </button>
-                <button id="salvage-unique" class="salvage-button unique"
-                  title="Salvage all Unique (orange) items and below">
-                  Unique
-                </button>
+              <div class="inventory-grid">
+                <div class="grid-container"></div>
               </div>
             </div>
-            <div class="inventory-grid">
-              <div class="grid-container"></div>
+
+            <div id="skilltree" class="tab-panel">
+              <div id="class-selection" class="class-selection">
+                <!-- Will be populated by JavaScript -->
+              </div>
+              <div id="skill-tree-container" class="skill-tree-container hidden">
+                <!-- Will show skill tree after class selection -->
+              </div>
             </div>
           </div>
+        </div>
 
-          <div id="skilltree" class="tab-panel">
-
+        <div class="character-panel">
+          <h2 id="character-name">Hero</h2>
+          <div class="character-avatar">🛡️</div>
+          <div class="health-bar">
+            <div id="health-fill" style="width: 100%"></div>
           </div>
-        </div>
-      </div>
-
-      <div class="character-panel">
-        <h2 id="character-name">Hero</h2>
-        <div class="character-avatar">🛡️</div>
-        <div class="health-bar">
-          <div id="health-fill" style="width: 100%"></div>
-        </div>
-        <div id="health-text" class="health-text">100/100</div>
-        <div class="mana-bar">
-          <div id="mana-fill" style="width: 100%"></div>
-        </div>
-        <div id="mana-text" class="mana-text">50/50</div>
-        <div class="character-controls">
-          <button id="start-btn">Start</button>
-          <div id="zone-display">Zone: 1</div>
-        </div>
-
-        <div class="enemy-section">
-          <h3>Current Enemy</h3>
-          <div class="enemy-avatar">⚔️</div>
-          <div class="enemy-health-bar">
-            <div id="enemy-health-fill"></div>
+          <div id="health-text" class="health-text">100/100</div>
+          <div class="mana-bar">
+            <div id="mana-fill" style="width: 100%"></div>
           </div>
-          <div id="enemy-health-text" class="health-text">50/50</div>
+          <div id="mana-text" class="mana-text">50/50</div>
+          <div class="character-controls">
+            <button id="start-btn">Start</button>
+            <div id="zone-display">Zone: 1</div>
+          </div>
+
+          <div class="enemy-section">
+            <h3>Current Enemy</h3>
+            <div class="enemy-avatar">⚔️</div>
+            <div class="enemy-health-bar">
+              <div id="enemy-health-fill"></div>
+            </div>
+            <div id="enemy-health-text" class="health-text">50/50</div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <script type="module" src="main.js"></script>
-</body>
-
+    <script type="module" src="main.js"></script>
+  </body>
 </html>

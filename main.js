@@ -13,6 +13,7 @@ import { loadGame, saveGame } from './storage.js';
 import Prestige from './prestige.js';
 import Inventory from './inventory.js';
 import SkillTree from './skillTree.js';
+import { initializeSkillTreeUI } from './skillTreeUI.js';
 
 window.log = console.log;
 
@@ -35,6 +36,8 @@ updatePlayerHealth();
 updateStatsAndAttributesUI();
 updateZoneUI();
 updateEnemyHealth();
+
+initializeSkillTreeUI();
 
 saveGame();
 

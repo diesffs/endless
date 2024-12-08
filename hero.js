@@ -76,6 +76,19 @@ export default class Hero {
       lifeRegen: 0,
     };
 
+    this.skillBonuses = {
+      damage: 0,
+      armor: 0,
+      strength: 0,
+      agility: 0,
+      vitality: 0,
+      critChance: 0,
+      critDamage: 0,
+      attackSpeed: 0,
+      maxHealth: 0,
+      blockChance: 0,
+    };
+
     this.stats = {
       damage: BASE_DAMAGE,
       attackSpeed: BASE_ATTACK_SPEED,
@@ -172,6 +185,7 @@ export default class Hero {
 
   recalculateFromAttributes() {
     inventory.updateItemBonuses();
+    skillTree.updateSkillBonuses();
 
     this.stats.damage =
       BASE_DAMAGE +
@@ -218,7 +232,11 @@ export default class Hero {
       this.stats.currentMana = this.stats.maxMana;
     }
 
-    inventory.updateItemBonuses();
+    Object.entries(this.skillBonuses).forEach(([stat, bonus]) => {
+      if (this.stats[stat] !== undefined) {
+        this.stats[stat] += bonus;
+      }
+    });
 
     Object.entries(this.equipmentBonuses).forEach(([stat, bonus]) => {
       if (this.stats[stat] !== undefined) {

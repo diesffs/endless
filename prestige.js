@@ -62,6 +62,12 @@ export default class Prestige {
     hero.setBaseStats(null);
     hero.souls += currentSouls + earnedSouls;
 
+    // Reset skill tree
+    skillTree.skillPoints = 0;
+    skillTree.selectedPath = null;
+    skillTree.unlockedSkills = {};
+    skillTree.skillLevels = {};
+
     // Restore crystal-related values
     hero.crystals = savedValues.crystals;
     hero.startingZone = savedValues.startingZone;
