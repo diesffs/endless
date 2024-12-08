@@ -125,7 +125,13 @@ export function updateStatsAndAttributesUI() {
           <div><strong>Health:</strong> <span id="max-health-value">${
             hero.stats.maxHealth
           }</span></div>
+          <div><strong>Health Regen:</strong> <span id="health-regen-value">${hero.stats.lifeRegen
+            .toFixed(1)
+            .replace(/\./g, ',')}</span>/s</div>
           <div><strong>Mana:</strong> <span id="max-mana-value">${hero.stats.maxMana}</span></div>
+          <div><strong>Mana Regen:</strong> <span id="mana-regen-value">${hero.stats.manaRegen
+            .toFixed(1)
+            .replace(/\./g, ',')}</span>/s</div>
           <div><strong>Armor:</strong> <span id="armor-value">${hero.stats.armor || 0}</span> 
           (<span id="armor-reduction-value">${hero
             .calculateArmorReduction()
@@ -155,7 +161,13 @@ export function updateStatsAndAttributesUI() {
     document.getElementById('crit-damage-value').textContent =
       hero.stats.critDamage.toFixed(2).replace(/\./g, ',') + 'x';
     document.getElementById('max-health-value').textContent = hero.stats.maxHealth;
+    document.getElementById('health-regen-value').textContent = hero.stats.lifeRegen
+      .toFixed(1)
+      .replace(/\./g, ',');
     document.getElementById('max-mana-value').textContent = hero.stats.maxMana;
+    document.getElementById('mana-regen-value').textContent = hero.stats.manaRegen
+      .toFixed(1)
+      .replace(/\./g, ',');
     document.getElementById('armor-value').textContent = hero.stats.armor || 0;
     document.getElementById('armor-reduction-value').textContent =
       hero.calculateArmorReduction().toFixed(2).replace(/\./g, ',') + '%';
