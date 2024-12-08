@@ -12,6 +12,7 @@ import {
 import { loadGame, saveGame } from './storage.js';
 import Prestige from './prestige.js';
 import Inventory from './inventory.js';
+import SkillTree from './skillTree.js';
 
 window.log = console.log;
 
@@ -20,6 +21,7 @@ const savedData = loadGame();
 export const game = new Game();
 export const hero = new Hero(savedData?.hero);
 export const inventory = new Inventory(savedData?.inventory);
+export const skillTree = new SkillTree(savedData?.skillTree);
 export const prestige = new Prestige();
 export const shop = new Shop();
 

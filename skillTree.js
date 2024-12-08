@@ -1,57 +1,26 @@
-import { hero } from './main';
+import { hero } from './main.js';
 
 export default class SkillTree {
-  constructor() {
+  constructor(savedData = null) {
     this.skillPoints = 0;
     this.unlockedSkills = new Set();
 
     // Define skill tree structure
     this.skills = {
-      // Strength Path
-      strengthMastery: {
-        id: 'strengthMastery',
-        name: 'Strength Mastery',
-        maxLevel: 5,
-        currentLevel: 0,
-        path: 'strength',
-        cost: 1,
-        effect: (level) => ({
-          strength: level * 2,
-          damage: level * 5,
-        }),
-        requires: null,
-      },
-
-      // Agility Path
-      agilityMastery: {
-        id: 'agilityMastery',
-        name: 'Agility Mastery',
-        maxLevel: 5,
-        currentLevel: 0,
-        path: 'agility',
-        cost: 1,
-        effect: (level) => ({
-          agility: level * 2,
-          attackSpeed: level * 0.02,
-        }),
-        requires: null,
-      },
-
-      // Vitality Path
-      vitalityMastery: {
-        id: 'vitalityMastery',
-        name: 'Vitality Mastery',
-        maxLevel: 5,
-        currentLevel: 0,
-        path: 'vitality',
-        cost: 1,
-        effect: (level) => ({
-          vitality: level * 2,
-          maxHealth: level * 20,
-        }),
-        requires: null,
-      },
+      
     };
+
+    if (savedData) {
+      Object.keys(this).forEach((key) => {
+        if (savedData.hasOwnProperty(key)) {
+          if (typeof this[key] === 'object' && !Array.isArray(this[key])) {
+            this[key] = { ...this[key], ...savedData[key] };
+          } else {
+            this[key] = savedData[key];
+          }
+        }
+      });
+    }
   }
 
   addSkillPoints(points) {
@@ -95,33 +64,5 @@ export default class SkillTree {
     });
 
     hero.recalculateFromAttributes();
-  }
-
-  // For loading saved data
-  loadSkillTree(savedData) {
-    if (!savedData) return;
-
-    this.skillPoints = savedData.skillPoints;
-    this.unlockedSkills = new Set(savedData.unlockedSkills);
-
-    Object.entries(savedData.skills).forEach(([skillId, data]) => {
-      if (this.skills[skillId]) {
-        this.skills[skillId].currentLevel = data.currentLevel;
-      }
-    });
-  }
-
-  // For saving data
-  getSaveData() {
-    return {
-      skillPoints: this.skillPoints,
-      unlockedSkills: Array.from(this.unlockedSkills),
-      skills: Object.fromEntries(
-        Object.entries(this.skills).map(([id, skill]) => [
-          id,
-          { currentLevel: skill.current + Level },
-        ])
-      ),
-    };
   }
 }

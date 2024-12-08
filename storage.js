@@ -1,9 +1,10 @@
-import { game, hero, inventory } from './main.js';
+import { game, hero, inventory, skillTree } from './main.js';
 
 export const saveGame = () => {
   const saveData = {
     hero: hero,
     inventory: inventory,
+    skillTree: skillTree,
   };
 
   localStorage.setItem('gameProgress', JSON.stringify(saveData));

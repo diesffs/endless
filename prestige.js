@@ -103,7 +103,7 @@ export default class Prestige {
     game.currentEnemy = new Enemy(game.zone);
     updateZoneUI();
 
-    RARITY_ORDER.forEach((rarity) => inventory.salvageItemsByRarity(rarity));
+    // RARITY_ORDER.forEach((rarity) => inventory.salvageItemsByRarity(rarity));
 
     // Update UI and save game
     updateResources();

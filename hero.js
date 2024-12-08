@@ -1,5 +1,5 @@
 import { updateStatsAndAttributesUI } from './ui.js';
-import { game, inventory } from './main.js';
+import { game, inventory, skillTree } from './main.js';
 import { saveGame } from './storage.js';
 import { updatePlayerHealth } from './ui.js';
 import { createCombatText } from './combat.js';
@@ -134,7 +134,7 @@ export default class Hero {
 
     skillTree.addSkillPoints(1); // Add 1 skill point per level
 
-    updatePlayerHealth(this.stats);
+    updatePlayerHealth();
     updateStatsAndAttributesUI();
     saveGame();
   }
@@ -218,7 +218,7 @@ export default class Hero {
       this.stats.attackSpeed = 5;
     }
 
-    updatePlayerHealth(this.stats);
+    updatePlayerHealth();
     updateStatsAndAttributesUI();
   }
 
