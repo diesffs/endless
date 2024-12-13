@@ -1,6 +1,7 @@
 import Enemy from './enemy.js';
-import { game, hero, prestige } from './main.js';
+import { game, hero, prestige, skillTree } from './main.js';
 import { calculateHitChance } from './combat.js';
+import { CLASS_PATHS } from './skillTree.js';
 
 export function initializeUI() {
   game.currentEnemy = new Enemy(game.zone);
