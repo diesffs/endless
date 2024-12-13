@@ -1,3 +1,31 @@
+export const EQUIPMENT_SLOTS = {
+  HEAD: 'head',
+  CHEST: 'chest',
+  BELT: 'belt',
+  LEGS: 'legs',
+  BOOTS: 'boots',
+  WEAPON: 'weapon',
+  OFFHAND: 'offhand',
+  GLOVES: 'gloves',
+  AMULET: 'amulet',
+  RING1: 'ring1',
+  RING2: 'ring2',
+};
+
+export const SLOT_REQUIREMENTS = {
+  head: ['HELMET'],
+  chest: ['ARMOR'],
+  belt: ['BELT'],
+  legs: ['PANTS'],
+  boots: ['BOOTS'],
+  weapon: ['SWORD', 'AXE', 'MACE'],
+  offhand: ['SHIELD'],
+  gloves: ['GLOVES'],
+  amulet: ['AMULET'],
+  ring1: ['RING'],
+  ring2: ['RING'],
+};
+
 export const ITEM_TYPES = {
   HELMET: 'HELMET',
   ARMOR: 'ARMOR',

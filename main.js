@@ -9,7 +9,6 @@ import {
   updateStatsAndAttributesUI,
   updateZoneUI,
 } from './ui.js';
-import { loadGame, saveGame } from './storage.js';
 import Prestige from './prestige.js';
 import Inventory from './inventory.js';
 import SkillTree from './skillTree.js';
@@ -17,9 +16,9 @@ import { initializeSkillTreeUI } from './skillTreeUI.js';
 
 window.log = console.log;
 
-const savedData = loadGame();
 
 export const game = new Game();
+const savedData = game.loadGame();
 export const hero = new Hero(savedData?.hero);
 export const inventory = new Inventory(savedData?.inventory);
 export const skillTree = new SkillTree(savedData?.skillTree);
@@ -39,7 +38,7 @@ updateEnemyHealth();
 
 initializeSkillTreeUI();
 
-saveGame();
+game.saveGame();
 
 let isRunning = false;
 setInterval(() => {

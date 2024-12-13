@@ -1,5 +1,4 @@
 import { updateResources, updatePlayerHealth, updateStatsAndAttributesUI } from './ui.js';
-import { saveGame } from './storage.js';
 import {
   ARMOR_ON_UPGRADE,
   ATTACK_SPEED_ON_UPGRADE,
@@ -12,8 +11,8 @@ import {
   HEALTH_REGEN_ON_UPGRADE,
   MANA_REGEN_ON_UPGRADE,
 } from './hero.js';
-import { showToast } from './toast.js';
-import { game, hero } from './main.js';
+import { showToast } from './ui.js';
+import {  game, hero } from './main.js';
 
 const UPGRADE_CONFIG = {
   damage: { label: 'Damage', bonus: DAMAGE_ON_UPGRADE },
@@ -155,7 +154,7 @@ export default class Shop {
     hero.recalculateFromAttributes();
     updateStatsAndAttributesUI();
     updateResources();
-    saveGame();
+    game.saveGame();
   }
 
   getBonusText(config, level) {

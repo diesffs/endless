@@ -1,8 +1,6 @@
-import { SLOT_REQUIREMENTS } from './equipment-slots.js';
-import Item, { ITEM_RARITY, RARITY_ORDER } from './item.js';
-import { hero } from './main.js';
-import { saveGame } from './storage.js';
-import { showToast } from './toast.js';
+import Item, { ITEM_RARITY, RARITY_ORDER, SLOT_REQUIREMENTS } from './item.js';
+import { game, hero } from './main.js';
+import { showToast } from './ui.js';
 
 export default class Inventory {
   constructor(savedData = null) {
@@ -92,7 +90,7 @@ export default class Inventory {
     if (salvagedItems > 0) {
       showToast(`Salvaged ${salvagedItems} ${rarity.toLowerCase()} or lower items`, 'success');
       this.updateInventoryGrid();
-      saveGame();
+      game.saveGame();
     } else {
       showToast(`No ${rarity.toLowerCase()} or lower items to salvage`, 'info');
     }
@@ -195,7 +193,7 @@ export default class Inventory {
     }
 
     hero.recalculateFromAttributes();
-    saveGame();
+    game.saveGame();
   }
 
   moveItemToPosition(item, newPosition) {
@@ -229,7 +227,7 @@ export default class Inventory {
     }
     this.updateInventoryGrid();
     hero.recalculateFromAttributes();
-    saveGame(); // Add save
+    game.saveGame(); // Add save
   }
 
   getEquippedItemById(id) {
@@ -273,7 +271,7 @@ export default class Inventory {
       }
     }
     this.updateInventoryGrid();
-    saveGame(); // Add save
+    game.saveGame(); // Add save
   }
 
   updateInventoryGrid() {
@@ -364,7 +362,7 @@ export default class Inventory {
             delete this.equippedItems[equippedSlot];
             hero.recalculateFromAttributes();
             this.updateInventoryGrid();
-            saveGame();
+            game.saveGame();
           }
           return;
         }
@@ -494,7 +492,7 @@ export default class Inventory {
     // Equip the new item
     this.equippedItems[slot] = item;
     hero.recalculateFromAttributes();
-    saveGame(); // Add save
+    game.saveGame(); // Add save
   }
 
   updateItemBonuses() {
@@ -537,6 +535,6 @@ export default class Inventory {
 
     // Update the UI
     this.updateInventoryGrid();
-    saveGame();
+    game.saveGame();
   }
 }

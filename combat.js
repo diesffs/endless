@@ -6,10 +6,8 @@ import {
   updateStatsAndAttributesUI,
 } from './ui.js';
 import Enemy from './enemy.js';
-import { calculateItemLevel, getRandomItemType, rollForDrop } from './loot-table.js';
 import { ITEM_RARITY } from './item.js';
 import { hero, game, inventory } from './main.js';
-import { saveGame } from './storage.js';
 
 export function enemyAttack(game, currentTime) {
   if (!game || !hero || !game.currentEnemy) return;
@@ -70,7 +68,7 @@ export function playerAttack(game, currentTime) {
       updateEnemyHealth();
 
       if (game.currentEnemy.currentHealth <= 0) {
-        defeatEnemy(game);
+        defeatEnemy();
       }
     }
     game.lastPlayerAttack = currentTime;
@@ -119,7 +117,7 @@ export function playerDeath(game) {
   }
 }
 
-function defeatEnemy(game) {
+function defeatEnemy() {
   const enemy = game.currentEnemy;
   // const droppedItem = dropLoot(enemy);
 
@@ -137,9 +135,9 @@ function defeatEnemy(game) {
   const newPrestigeSouls = Math.floor(game.zone / 50);
   hero.prestigeProgress = newPrestigeSouls;
 
-  if (rollForDrop(enemy)) {
-    const itemLevel = calculateItemLevel(game.zone);
-    const itemType = getRandomItemType();
+  if (enemy.rollForDrop()) {
+    const itemLevel = enemy.calculateItemLevel(game.zone);
+    const itemType = enemy.getRandomItemType();
     const newItem = inventory.createItem(itemType, itemLevel);
     inventory.addItemToInventory(newItem);
 
@@ -154,7 +152,7 @@ function defeatEnemy(game) {
   updateEnemyHealth();
   updateStatsAndAttributesUI();
 
-  saveGame();
+  game.saveGame();
 }
 
 function showLootNotification(item) {

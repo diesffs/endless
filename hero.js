@@ -1,6 +1,5 @@
 import { updateStatsAndAttributesUI } from './ui.js';
 import { game, inventory, skillTree } from './main.js';
-import { saveGame } from './storage.js';
 import { updatePlayerHealth } from './ui.js';
 import { createCombatText } from './combat.js';
 
@@ -169,7 +168,7 @@ export default class Hero {
 
     updatePlayerHealth();
     updateStatsAndAttributesUI();
-    saveGame();
+    game.saveGame();
   }
 
   allocateStat(stat) {
@@ -180,7 +179,7 @@ export default class Hero {
       if (stat === 'vitality' && !game.gameStarted) {
         this.stats.currentHealth = this.stats.maxHealth;
       }
-      saveGame();
+      game.saveGame();
       return true;
     }
     return false;

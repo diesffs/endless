@@ -1,7 +1,6 @@
 import { updatePlayerHealth, updateEnemyHealth, updateZoneUI, updateResources } from './ui.js';
 import { playerAttack, enemyAttack } from './combat.js';
-import { saveGame } from './storage.js';
-import { hero, prestige } from './main.js';
+import { game, hero, inventory, prestige, skillTree } from './main.js';
 import Enemy from './enemy.js';
 
 class Game {
@@ -60,7 +59,7 @@ class Game {
     }
 
     if (currentTime % 30000 < 16) {
-      saveGame();
+      game.saveGame();
     }
   }
 
@@ -83,6 +82,29 @@ class Game {
       updatePlayerHealth();
       updateEnemyHealth();
     }
+  }
+
+  saveGame() {
+    const saveData = {
+      hero: hero,
+      inventory: inventory,
+      skillTree: skillTree,
+    };
+
+    localStorage.setItem('gameProgress', JSON.stringify(saveData));
+  }
+
+  loadGame() {
+    const savedData = localStorage.getItem('gameProgress');
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+      return parsedData;
+    }
+    return null;
+  }
+
+  clearSave() {
+    localStorage.removeItem('gameProgress');
   }
 }
 

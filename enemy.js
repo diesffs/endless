@@ -136,5 +136,24 @@ class Enemy {
   resetHealth() {
     this.currentHealth = this.maxHealth;
   }
+
+  calculateDropChance() {
+    const enemyConst = ENEMY_RARITY[this.rarity];
+    return enemyConst.itemDropChance;
+  }
+
+  calculateItemLevel(zone) {
+    return Math.max(1, Math.floor(zone * 0.7));
+  }
+
+  rollForDrop() {
+    const dropChance = this.calculateDropChance();
+    return Math.random() * 100 <= dropChance;
+  }
+
+  getRandomItemType() {
+    const types = Object.values(ITEM_TYPES);
+    return types[Math.floor(Math.random() * types.length)];
+  }
 }
 export default Enemy;

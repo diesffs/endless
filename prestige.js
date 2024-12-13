@@ -5,9 +5,8 @@ import {
   updatePlayerHealth,
   updateStatsAndAttributesUI,
 } from './ui.js';
-import { saveGame } from './storage.js';
 import Enemy from './enemy.js';
-import { showToast } from './toast.js';
+import { showToast } from './ui.js';
 
 const CRYSTAL_UPGRADE_CONFIG = {
   startingZone: {
@@ -87,7 +86,7 @@ export default class Prestige {
       startBtn.style.backgroundColor = '#059669';
     }
 
-    saveGame();
+    game.saveGame();
 
     this.initializePrestigeUI(); // Ensure UI reflects reset state
 
@@ -112,7 +111,7 @@ export default class Prestige {
     // Update UI and save game
     updateResources();
     updatePlayerHealth();
-    saveGame();
+    game.saveGame();
     this.initializePrestigeUI(); // Ensure UI reflects reset state
   }
 
@@ -209,7 +208,7 @@ export default class Prestige {
 
       updateResources();
       this.initializePrestigeUI();
-      saveGame();
+      game.saveGame();
     } else {
       showToast(`Need ${cost} crystals for this upgrade`, 'error');
     }
