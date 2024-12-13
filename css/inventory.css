@@ -1,0 +1,274 @@
+.inventory-btn {
+  padding: 5px 5px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+#sort-inventory {
+  background-color: #4a4a4a;
+  color: white;
+  border: 1px solid #666;
+}
+
+#sort-inventory:hover {
+  background-color: #5a5a5a;
+}
+
+.equipment-container {
+  padding: 1rem;
+  background: var(--bg-element);
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.equipment-layout {
+  position: relative;
+  width: 300px;
+  height: 280px;
+  margin: 0 auto;
+}
+
+.equipment-slots {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+}
+
+.character-preview {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5rem;
+  background: var(--bg-panel);
+  border-radius: 0.5rem;
+  z-index: 1;
+}
+
+.equipment-slot {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background: var(--bg-panel);
+  border: 2px solid #3d4757;
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Position each slot */
+[data-slot='head'] {
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+[data-slot='amulet'] {
+  top: 35px;
+  right: 70px;
+}
+
+[data-slot='chest'] {
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+[data-slot='belt'] {
+  top: 120px; /* Adjust this value between chest (140px) and legs (260px) */
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+[data-slot='legs'] {
+  top: 170px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+[data-slot='weapon'] {
+  top: 100px;
+  left: 40px;
+}
+
+[data-slot='offhand'] {
+  top: 100px;
+  right: 40px;
+}
+
+[data-slot='gloves'] {
+  top: 160px;
+  left: 40px;
+}
+
+[data-slot='ring1'] {
+  top: 160px;
+  right: 70px;
+}
+
+[data-slot='ring2'] {
+  top: 160px;
+  right: 20px;
+}
+
+[data-slot='boots'] {
+  top: 220px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.slot-indicator {
+  position: absolute;
+  opacity: 0.3;
+  font-size: 1.5rem;
+  pointer-events: none;
+}
+
+/* Hide indicator when slot has an item */
+.equipment-slot.has-item .slot-indicator {
+  display: none;
+}
+
+.item-tooltip {
+  background: rgba(0, 0, 0, 0.9);
+  padding: 10px;
+  border-radius: 5px;
+  pointer-events: none;
+  z-index: 1000;
+  min-width: 200px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.item-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.item-level {
+  color: #888;
+  font-size: 0.9em;
+  margin-bottom: 5px;
+}
+
+.item-stat {
+  color: #4caf50;
+}
+
+.inventory-grid {
+  display: block;
+  align-content: center;
+  justify-items: center;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(10, 40px);
+  grid-template-rows: repeat(20, 40px);
+  gap: 0; /* Remove gap */
+  padding: 8px;
+  background: var(--bg-panel);
+  border-radius: 0.5rem;
+  width: fit-content;
+  overflow-y: auto;
+  margin-top: -30px;
+}
+
+.grid-cell {
+  width: 40px;
+  height: 40px;
+  background: var(--bg-panel);
+  border: 1px solid var(--bg-element);
+  border-radius: 0.25rem;
+}
+
+.inventory-item {
+  background: var(--bg-panel);
+  border: 2px solid var(--accent);
+  border-radius: 0.25rem;
+  font-size: 0.8em; /* Smaller font for items */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.item-icon {
+  font-size: 2em;
+  text-align: center;
+  user-select: none;
+}
+
+/* Adjust equipment slots to match new size */
+.equipment-slot {
+  width: 40px;
+  height: 40px;
+}
+
+.equipment-slot .inventory-item {
+  z-index: 1;
+}
+
+.inventory-item.dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+
+.equipment-slot.valid-target {
+  background-color: rgba(76, 175, 80, 0.2);
+}
+
+.equipment-slot.invalid-target {
+  background-color: rgba(244, 67, 54, 0.2);
+}
+
+#inventory {
+  user-select: none;
+}
+
+.loot-notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--bg-panel);
+  padding: 10px 20px;
+  border-radius: 5px;
+  animation: slideIn 0.3s ease-out, fadeOut 0.3s ease-in 2.7s;
+  z-index: 1000;
+}
+
+@keyframes equipItem {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.inventory-item.equipping {
+  animation: equipItem 0.3s ease-out;
+}
+
+.rarity-normal {
+  border-color: #ffffff;
+}
+.rarity-magic {
+  border-color: #4287f5;
+}
+.rarity-rare {
+  border-color: #ffd700;
+}
+.rarity-unique {
+  border-color: #ff8c00;
+}
