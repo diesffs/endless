@@ -2,6 +2,7 @@ import Hero from './hero.js';
 import Game from './game.js';
 import Shop from './shop.js';
 import {
+  initializeSkillTreeUI,
   initializeUI,
   updateEnemyHealth,
   updatePlayerHealth,
@@ -12,10 +13,8 @@ import {
 import Prestige from './prestige.js';
 import Inventory from './inventory.js';
 import SkillTree from './skillTree.js';
-import { initializeSkillTreeUI } from './skillTreeUI.js';
 
 window.log = console.log;
-
 
 export const game = new Game();
 const savedData = game.loadGame();
@@ -26,8 +25,11 @@ export const prestige = new Prestige();
 export const shop = new Shop();
 
 game.zone = hero?.startingZone || 1;
+
 initializeUI();
 prestige.initializePrestigeUI();
+initializeSkillTreeUI();
+
 updateResources();
 hero.recalculateFromAttributes();
 hero.stats.currentHealth = hero.stats.maxHealth;
@@ -36,7 +38,6 @@ updateStatsAndAttributesUI();
 updateZoneUI();
 updateEnemyHealth();
 
-initializeSkillTreeUI();
 
 game.saveGame();
 
