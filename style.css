@@ -1007,40 +1007,10 @@ body {
   cursor: default;
 }
 
-.skill-tree-container {
-  display: flex;
-  justify-content: space-around;
-  padding: 20px;
-}
-
 .skill-points {
   text-align: center;
   font-size: 1.2em;
   margin: 10px;
-}
-
-.skill-node {
-  border: 2px solid #666;
-  margin: 10px;
-  cursor: pointer;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.skill-node.available {
-  border-color: #4caf50;
-}
-
-.skill-node.unlocked {
-  background: #2196f3;
-  color: white;
-}
-
-.skill-node:hover {
-  border-color: #666;
 }
 
 .skill-name {
@@ -1048,16 +1018,12 @@ body {
   margin-bottom: 5px;
 }
 
-.skill-level {
-  font-size: 0.9em;
-  color: #888;
-}
-
 .health-bar,
+.enemy-health-bar,
 .mana-bar {
   position: relative;
   height: 20px;
-  background-color: #e0e0e0;
+  background-color: #a8a3a3;
   border-radius: 5px;
   margin: 5px 0;
 }
@@ -1078,6 +1044,7 @@ body {
 
 .health-text,
 .mana-text {
+  position: absolute;
   width: 100%;
   text-align: center;
   top: 0;
@@ -1095,4 +1062,114 @@ body {
 
 .hidden {
   display: none !important;
+}
+
+/* Class Selection Styling */
+.class-selection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.class-path {
+  background: var(--bg-panel);
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.class-path:hover {
+  transform: translateY(-5px);
+}
+
+.class-path h3 {
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.base-stats {
+  margin: 15px 0;
+  padding: 10px;
+  background: var(--bg-element);
+  border-radius: 5px;
+}
+
+.base-stats div {
+  color: #4caf50;
+  margin: 5px 0;
+}
+
+/* Skill Tree Styling */
+.skill-tree-container {
+  padding: 20px;
+  background: var(--bg-panel);
+  border-radius: 8px;
+}
+
+.skill-row {
+  display: flex;
+  justify-content: space-around;
+  margin: 30px 0;
+  position: relative;
+}
+
+/* Add connecting lines between rows */
+.skill-row:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  bottom: -30px;
+  left: 10%;
+  right: 10%;
+  height: 30px;
+  background: linear-gradient(var(--accent) 0 0) 50%/1px 100% no-repeat;
+}
+
+.skill-node {
+  width: 80px;
+  height: 80px;
+  background: var(--bg-element);
+  border: 2px solid #666;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.skill-node.available {
+  border-color: #4caf50;
+}
+
+.skill-node.unlocked {
+  background: var(--accent);
+  border-color: #fff;
+}
+
+.skill-node:hover .skill-description {
+  display: block;
+}
+
+.skill-description {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  padding: 10px;
+  border-radius: 5px;
+  width: 200px;
+  z-index: 10;
+  margin-top: 10px;
+}
+
+.skill-level {
+  font-size: 0.8em;
+  color: #aaa;
 }

@@ -1,4 +1,4 @@
-import { game, hero, inventory, shop } from './main.js';
+import { game, hero, shop } from './main.js';
 import {
   updateZoneUI,
   updateResources,
@@ -6,8 +6,6 @@ import {
   updateStatsAndAttributesUI,
 } from './ui.js';
 import { saveGame } from './storage.js';
-import Shop from './shop.js';
-import { RARITY_ORDER } from './item.js';
 import Enemy from './enemy.js';
 import { showToast } from './toast.js';
 
@@ -119,55 +117,40 @@ export default class Prestige {
   }
 
   async initializePrestigeUI() {
-    try {
-      const earnedSouls = this.calculateSouls();
-      const prestigeTab = document.querySelector('#prestige');
-      if (!prestigeTab) return;
-
-      // Load template first
-      const response = await fetch('prestige.html');
-      if (!response.ok) throw new Error(`Failed to fetch template: ${response.statusText}`);
-
-      const templateText = await response.text();
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(templateText, 'text/html');
-
-      // Update template values
-      const damageDisplay = doc.querySelector('.damage-display .bonus');
-      const soulsDisplay = doc.querySelector('.earned-souls-display .bonus');
-
-      if (damageDisplay) {
-        const damageBonus = Math.floor(hero.souls * 1);
-        damageDisplay.textContent = `+${damageBonus}%`;
-      }
-
-      if (soulsDisplay) {
-        soulsDisplay.textContent = `+${earnedSouls}`;
-      }
-
-      // Clear and append template
-      prestigeTab.textContent = '';
-      prestigeTab.appendChild(doc.body.firstChild);
-
-      // Add crystal upgrades to the dedicated container
-      const upgradesContainer = prestigeTab.querySelector('.prestige-upgrades-container');
-      if (upgradesContainer) {
-        upgradesContainer.innerHTML = `
-          <div class="crystal-upgrades-grid">
-            ${Object.entries(CRYSTAL_UPGRADE_CONFIG)
-              .map(([stat, config]) => this.createCrystalUpgradeButton(stat, config))
-              .join('')}
-          </div>
-        `;
-      }
-
-      // Setup event listeners
-      this.setupPrestigeButton();
-      this.setupCrystalUpgradeHandlers();
-    } catch (error) {
-      console.error('Error initializing Prestige UI:', error);
+    const earnedSouls = this.calculateSouls();
+    const prestigeTab = document.querySelector('#prestige');
+    if (!prestigeTab) return;
+  
+    // Update existing DOM values
+    const damageDisplay = prestigeTab.querySelector('.damage-display .bonus');
+    const soulsDisplay = prestigeTab.querySelector('.earned-souls-display .bonus');
+  
+    if (damageDisplay) {
+      const damageBonus = Math.floor(hero.souls * 1);
+      damageDisplay.textContent = `+${damageBonus}%`;
     }
+  
+    if (soulsDisplay) {
+      soulsDisplay.textContent = `+${earnedSouls}`;
+    }
+  
+    // Update crystal upgrades
+    const upgradesContainer = prestigeTab.querySelector('.prestige-upgrades-container');
+    if (upgradesContainer) {
+      upgradesContainer.innerHTML = `
+        <div class="crystal-upgrades-grid">
+          ${Object.entries(CRYSTAL_UPGRADE_CONFIG)
+            .map(([stat, config]) => this.createCrystalUpgradeButton(stat, config))
+            .join('')}
+        </div>
+      `;
+    }
+  
+    // Setup event listeners
+    this.setupPrestigeButton();
+    this.setupCrystalUpgradeHandlers();
   }
+  
 
   createCrystalUpgradeButton(stat, config) {
     const isOneTime = config.oneTime;

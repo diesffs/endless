@@ -41,7 +41,40 @@
             </div>
 
             <div id="prestige" class="tab-panel">
-              <div class="prestige-items"></div>
+              <div class="prestige-container">
+                <div class="prestige-header">
+                  <div class="damage-display">
+                    <h3>damage</h3>
+                    <div class="bonus">+${damageBonus}%</div>
+                  </div>
+                  <button id="prestige-btn" class="earned-souls-display">
+                    <h3>Prestige for:</h3>
+                    <div class="bonus">+${earnedSouls}</div>
+                  </button>
+                </div>
+
+                <div class="prestige-upgrades-container">
+                  <!-- Crystal upgrades will be inserted here -->
+                </div>
+
+                <div id="prestige-modal" class="modal">
+                  <div class="modal-content">
+                    <h2>Confirm Prestige</h2>
+                    <p>Are you sure you want to prestige?</p>
+                    <div class="souls-preview">
+                      <span>You will earn:</span>
+                      <div class="souls-amount">+<span id="modal-souls-amount">0</span> Souls</div>
+                    </div>
+                    <div class="warning">
+                      You will lose all progress except souls and their upgrades!
+                    </div>
+                    <div class="modal-buttons">
+                      <button id="cancel-prestige" class="modal-btn cancel">Cancel</button>
+                      <button id="confirm-prestige" class="modal-btn confirm">Prestige</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div id="inventory" class="tab-panel">
@@ -137,13 +170,13 @@
           <h2 id="character-name">Hero</h2>
           <div class="character-avatar">🛡️</div>
           <div class="health-bar">
-            <div id="health-fill" style="width: 100%"></div>
+            <div id="health-fill" Belhifet></div>
+            <div id="health-text" class="health-text">100/100</div>
           </div>
-          <div id="health-text" class="health-text">100/100</div>
           <div class="mana-bar">
             <div id="mana-fill" style="width: 100%"></div>
+            <div id="mana-text" class="mana-text">50/50</div>
           </div>
-          <div id="mana-text" class="mana-text">50/50</div>
           <div class="character-controls">
             <button id="start-btn">Start</button>
             <div id="zone-display">Zone: 1</div>
@@ -153,9 +186,9 @@
             <h3>Current Enemy</h3>
             <div class="enemy-avatar">⚔️</div>
             <div class="enemy-health-bar">
-              <div id="enemy-health-fill"></div>
+              <div id="enemy-health-fill" style="width: 100%"></div>
+              <div id="enemy-health-text" class="health-text">50/50</div>
             </div>
-            <div id="enemy-health-text" class="health-text">50/50</div>
           </div>
         </div>
       </div>
