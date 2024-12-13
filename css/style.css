@@ -379,3 +379,16 @@ body {
 .hidden {
   display: none !important;
 }
+
+.elemental-damage {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.elemental-damage div {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}

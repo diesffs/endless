@@ -12,7 +12,7 @@ import {
   MANA_REGEN_ON_UPGRADE,
 } from './hero.js';
 import { showToast } from './ui.js';
-import {  game, hero } from './main.js';
+import { game, hero } from './main.js';
 
 const UPGRADE_CONFIG = {
   damage: { label: 'Damage', bonus: DAMAGE_ON_UPGRADE },
@@ -100,9 +100,7 @@ export default class Shop {
 
   switchSubTab(subTab) {
     document.querySelectorAll('.sub-tab-btn').forEach((btn) => btn.classList.remove('active'));
-    document
-      .querySelectorAll('.sub-tab-panel')
-      .forEach((panel) => panel.classList.remove('active'));
+    document.querySelectorAll('.sub-tab-panel').forEach((panel) => panel.classList.remove('active'));
 
     document.querySelector(`button[data-sub-tab="${subTab}"]`).classList.add('active');
     document.getElementById(subTab).classList.add('active');

@@ -84,6 +84,15 @@ export const AVAILABLE_STATS = {
   maxHealth: { min: 5, max: 25, scaling: 'full' },
   blockChance: { min: 2, max: 8, scaling: 'capped' },
   attackRating: { min: 5, max: 20, scaling: 'full' },
+  lifeSteal: { min: 1, max: 3, scaling: 'capped' },
+  fireDamage: { min: 3, max: 10, scaling: 'full' },
+  coldDamage: { min: 3, max: 10, scaling: 'full' },
+  lightningDamage: { min: 3, max: 10, scaling: 'full' },
+  waterDamage: { min: 3, max: 10, scaling: 'full' },
+  airDamage: { min: 3, max: 10, scaling: 'full' },
+  earthDamage: { min: 3, max: 10, scaling: 'full' },
+  attackRatingPercent: { min: 2, max: 8, scaling: 'capped' },
+  damagePercent: { min: 2, max: 8, scaling: 'capped' },
 };
 
 export const ITEM_STAT_POOLS = {
@@ -109,11 +118,26 @@ export const ITEM_STAT_POOLS = {
   },
   SWORD: {
     mandatory: ['damage'],
-    possible: ['strength', 'critChance', 'critDamage', 'attackSpeed', 'agility', 'attackRating'],
+    possible: [
+      'strength',
+      'critChance',
+      'critDamage',
+      'attackSpeed',
+      'agility',
+      'attackRating',
+      'damagePercent',
+      'attackRatingPercent',
+      'fireDamage',
+      'coldDamage',
+      'lightningDamage',
+      'waterDamage',
+      'airDamage',
+      'earthDamage',
+    ],
   },
   AXE: {
     mandatory: ['damage'],
-    possible: ['strength', 'critDamage', 'attackSpeed', 'vitality', 'maxHealth', 'attackRating'],
+    possible: ['strength', 'critDamage', 'attackSpeed', 'vitality', 'maxHealth', 'attackRating', 'lifeSteal'],
   },
   MACE: {
     mandatory: ['damage'],
@@ -125,15 +149,46 @@ export const ITEM_STAT_POOLS = {
   },
   GLOVES: {
     mandatory: ['armor'],
-    possible: ['attackSpeed', 'critChance', 'strength', 'agility', 'critDamage', 'attackRating'],
+    possible: ['attackSpeed', 'critChance', 'strength', 'agility', 'critDamage', 'attackRating', 'lifeSteal'],
   },
   AMULET: {
     mandatory: [],
-    possible: ['strength', 'agility', 'vitality', 'critChance', 'maxHealth', 'critDamage', 'attackRating'],
+    possible: [
+      'strength',
+      'agility',
+      'vitality',
+      'critChance',
+      'maxHealth',
+      'critDamage',
+      'attackRating',
+      'fireDamage',
+      'coldDamage',
+      'lightningDamage',
+      'waterDamage',
+      'airDamage',
+      'earthDamage',
+      'attackRatingPercent',
+    ],
   },
   RING: {
     mandatory: [],
-    possible: ['critChance', 'critDamage', 'attackSpeed', 'strength', 'agility', 'vitality', 'attackRating'],
+    possible: [
+      'critChance',
+      'critDamage',
+      'attackSpeed',
+      'strength',
+      'agility',
+      'vitality',
+      'attackRating',
+      'fireDamage',
+      'coldDamage',
+      'lightningDamage',
+      'waterDamage',
+      'airDamage',
+      'earthDamage',
+      'damagePercent',
+      'attackRatingPercent',
+    ],
   },
 };
 
@@ -172,9 +227,7 @@ export default class Item {
 
     // Add random stats from possible pool until totalStatsNeeded
     const remainingStats = totalStatsNeeded - itemPool.mandatory.length;
-    const availableStats = [...itemPool.possible].filter(
-      (stat) => !itemPool.mandatory.includes(stat)
-    );
+    const availableStats = [...itemPool.possible].filter((stat) => !itemPool.mandatory.includes(stat));
 
     for (let i = 0; i < remainingStats && availableStats.length > 0; i++) {
       const randomIndex = Math.floor(Math.random() * availableStats.length);

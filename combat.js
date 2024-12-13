@@ -59,7 +59,9 @@ export function playerAttack(game, currentTime) {
       } else {
         // Hit - existing damage calculation code
         const isCritical = Math.random() * 100 < hero.stats.critChance;
-        const damage = isCritical ? hero.stats.damage * hero.stats.critDamage : hero.stats.damage;
+        const damage = hero.calculateTotalDamage(isCritical);
+        const lifeStealAmount = damage * (hero.stats.lifeSteal / 100);
+        hero.stats.currentHealth = Math.min(hero.stats.maxHealth, hero.stats.currentHealth + lifeStealAmount);
 
         game.currentEnemy.currentHealth -= damage;
         createDamageNumber(damage, false, isCritical);
@@ -165,13 +167,7 @@ function showLootNotification(item) {
   setTimeout(() => notification.remove(), 3000);
 }
 
-function createDamageNumber(
-  damage,
-  isPlayer,
-  isCritical = false,
-  isBlocked = false,
-  isMiss = false
-) {
+function createDamageNumber(damage, isPlayer, isCritical = false, isBlocked = false, isMiss = false) {
   const target = isPlayer ? '.character-avatar' : '.enemy-avatar';
   const avatar = document.querySelector(target);
   const damageEl = document.createElement('div');

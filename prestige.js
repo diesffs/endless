@@ -1,10 +1,5 @@
 import { game, hero, shop } from './main.js';
-import {
-  updateZoneUI,
-  updateResources,
-  updatePlayerHealth,
-  updateStatsAndAttributesUI,
-} from './ui.js';
+import { updateZoneUI, updateResources, updatePlayerHealth, updateStatsAndAttributesUI } from './ui.js';
 import Enemy from './enemy.js';
 import { showToast } from './ui.js';
 
@@ -119,20 +114,20 @@ export default class Prestige {
     const earnedSouls = this.calculateSouls();
     const prestigeTab = document.querySelector('#prestige');
     if (!prestigeTab) return;
-  
+
     // Update existing DOM values
     const damageDisplay = prestigeTab.querySelector('.damage-display .bonus');
     const soulsDisplay = prestigeTab.querySelector('.earned-souls-display .bonus');
-  
+
     if (damageDisplay) {
       const damageBonus = Math.floor(hero.souls * 1);
       damageDisplay.textContent = `+${damageBonus}%`;
     }
-  
+
     if (soulsDisplay) {
       soulsDisplay.textContent = `+${earnedSouls}`;
     }
-  
+
     // Update crystal upgrades
     const upgradesContainer = prestigeTab.querySelector('.prestige-upgrades-container');
     if (upgradesContainer) {
@@ -144,26 +139,21 @@ export default class Prestige {
         </div>
       `;
     }
-  
+
     // Setup event listeners
     this.setupPrestigeButton();
     this.setupCrystalUpgradeHandlers();
   }
-  
 
   createCrystalUpgradeButton(stat, config) {
     const isOneTime = config.oneTime;
     const alreadyPurchased = isOneTime && hero.crystalUpgrades[stat];
     const level = isOneTime ? '' : `(Lvl ${hero.crystalUpgrades[stat] || 0})`;
-    const bonus = isOneTime
-      ? config.bonus
-      : `+${config.bonus * (hero.crystalUpgrades[stat] || 0)} ${config.label}`;
+    const bonus = isOneTime ? config.bonus : `+${config.bonus * (hero.crystalUpgrades[stat] || 0)} ${config.label}`;
 
     const cost = isOneTime ? config.baseCost : config.baseCost * (hero.crystalUpgrades[stat] + 1);
     return `
-      <button class="crystal-upgrade-btn ${
-        alreadyPurchased ? 'purchased' : ''
-      }" data-stat="${stat}">
+      <button class="crystal-upgrade-btn ${alreadyPurchased ? 'purchased' : ''}" data-stat="${stat}">
         <span class="upgrade-name">${config.label} ${level}</span>
         <span class="upgrade-bonus">${bonus}</span>
       <span class="upgrade-cost">${alreadyPurchased ? 'Purchased' : `${cost} Crystals`}</span>
@@ -183,9 +173,7 @@ export default class Prestige {
 
   buyCrystalUpgrade(stat) {
     const config = CRYSTAL_UPGRADE_CONFIG[stat];
-    const cost = config.oneTime
-      ? config.baseCost
-      : config.baseCost * (hero.crystalUpgrades[stat] + 1);
+    const cost = config.oneTime ? config.baseCost : config.baseCost * (hero.crystalUpgrades[stat] + 1);
 
     if (config.oneTime && hero.crystalUpgrades[stat]) {
       showToast('Already purchased!', 'info');

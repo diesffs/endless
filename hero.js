@@ -32,6 +32,18 @@ export const STATS_ON_LEVEL_UP = 3;
 export const ATTACK_RATING_ON_LEVEL_UP = 0;
 export const MANA_ON_LEVEL_UP = 5;
 
+export const BASE_LIFE_STEAL = 0;
+export const BASE_ELEMENTAL_DAMAGE = {
+  fire: 0,
+  cold: 0,
+  lightning: 0,
+  water: 0,
+  air: 0,
+  earth: 0,
+};
+export const BASE_ATTACK_RATING_PERCENT = 0;
+export const BASE_DAMAGE_PERCENT = 0;
+
 export const BASE_UPGRADE_COSTS = {
   damage: 100,
   attackSpeed: 200,
@@ -78,6 +90,15 @@ export default class Hero {
       maxMana: 0,
       manaRegen: 0,
       lifeRegen: 0,
+      lifeSteal: 0,
+      fireDamage: 0,
+      coldDamage: 0,
+      lightningDamage: 0,
+      waterDamage: 0,
+      airDamage: 0,
+      earthDamage: 0,
+      attackRatingPercent: 0,
+      damagePercent: 0,
     };
 
     this.skillBonuses = {
@@ -91,6 +112,15 @@ export default class Hero {
       attackSpeed: 0,
       maxHealth: 0,
       blockChance: 0,
+      lifeSteal: 0,
+      fireDamage: 0,
+      coldDamage: 0,
+      lightningDamage: 0,
+      waterDamage: 0,
+      airDamage: 0,
+      earthDamage: 0,
+      attackRatingPercent: 0,
+      damagePercent: 0,
     };
 
     this.stats = {
@@ -107,6 +137,15 @@ export default class Hero {
       maxMana: BASE_MANA,
       manaRegen: BASE_MANA_REGEN,
       lifeRegen: BASE_LIFE_REGEN,
+      lifeSteal: BASE_LIFE_STEAL,
+      fireDamage: BASE_ELEMENTAL_DAMAGE.fire,
+      coldDamage: BASE_ELEMENTAL_DAMAGE.cold,
+      lightningDamage: BASE_ELEMENTAL_DAMAGE.lightning,
+      waterDamage: BASE_ELEMENTAL_DAMAGE.water,
+      airDamage: BASE_ELEMENTAL_DAMAGE.air,
+      earthDamage: BASE_ELEMENTAL_DAMAGE.earth,
+      attackRatingPercent: BASE_ATTACK_RATING_PERCENT,
+      damagePercent: BASE_DAMAGE_PERCENT,
     };
 
     this.upgradeCosts = { ...BASE_UPGRADE_COSTS };
@@ -200,13 +239,13 @@ export default class Hero {
       DAMAGE_ON_LEVEL_UP * this.level -
       DAMAGE_ON_LEVEL_UP;
 
-    this.stats.attackSpeed =
-      BASE_ATTACK_SPEED + this.upgradeLevels.attackSpeed * ATTACK_SPEED_ON_UPGRADE;
+    this.stats.attackSpeed = BASE_ATTACK_SPEED + this.upgradeLevels.attackSpeed * ATTACK_SPEED_ON_UPGRADE;
 
     this.stats.attackRating =
-      BASE_ATTACK_RATING +
-      (this.primaryStats.agility + this.equipmentBonuses.agility) * 10 +
-      ATTACK_RATING_ON_LEVEL_UP * this.level;
+      (BASE_ATTACK_RATING +
+        (this.primaryStats.agility + this.equipmentBonuses.agility) * 10 +
+        ATTACK_RATING_ON_LEVEL_UP * this.level) *
+      (1 + this.stats.attackRatingPercent / 100);
 
     this.stats.maxHealth =
       BASE_HEALTH +
@@ -217,29 +256,30 @@ export default class Hero {
 
     this.stats.armor = BASE_ARMOR + this.upgradeLevels.armor * ARMOR_ON_UPGRADE;
 
-    this.stats.critChance =
-      BASE_CRIT_CHANCE + this.upgradeLevels.critChance * CRIT_CHANCE_ON_UPGRADE;
+    this.stats.critChance = BASE_CRIT_CHANCE + this.upgradeLevels.critChance * CRIT_CHANCE_ON_UPGRADE;
 
-    this.stats.critDamage =
-      BASE_CRIT_DAMAGE + this.upgradeLevels.critDamage * CRIT_DAMAGE_ON_UPGRADE;
+    this.stats.critDamage = BASE_CRIT_DAMAGE + this.upgradeLevels.critDamage * CRIT_DAMAGE_ON_UPGRADE;
 
     this.stats.blockChance = 0;
 
     this.stats.maxMana =
-      BASE_MANA +
-      this.upgradeLevels.mana * MANA_ON_UPGRADE +
-      MANA_ON_LEVEL_UP * this.level -
-      MANA_ON_LEVEL_UP;
+      BASE_MANA + this.upgradeLevels.mana * MANA_ON_UPGRADE + MANA_ON_LEVEL_UP * this.level - MANA_ON_LEVEL_UP;
 
     this.stats.manaRegen =
-      BASE_MANA_REGEN +
-      this.upgradeLevels.manaRegen * MANA_REGEN_ON_UPGRADE +
-      this.equipmentBonuses.manaRegen;
+      BASE_MANA_REGEN + this.upgradeLevels.manaRegen * MANA_REGEN_ON_UPGRADE + this.equipmentBonuses.manaRegen;
 
     this.stats.lifeRegen =
-      BASE_LIFE_REGEN +
-      this.upgradeLevels.healthRegen * HEALTH_REGEN_ON_UPGRADE +
-      this.equipmentBonuses.lifeRegen;
+      BASE_LIFE_REGEN + this.upgradeLevels.healthRegen * HEALTH_REGEN_ON_UPGRADE + this.equipmentBonuses.lifeRegen;
+
+    this.stats.lifeSteal = BASE_LIFE_STEAL;
+    this.stats.fireDamage = BASE_ELEMENTAL_DAMAGE.fire;
+    this.stats.coldDamage = BASE_ELEMENTAL_DAMAGE.cold;
+    this.stats.lightningDamage = BASE_ELEMENTAL_DAMAGE.lightning;
+    this.stats.waterDamage = BASE_ELEMENTAL_DAMAGE.water;
+    this.stats.airDamage = BASE_ELEMENTAL_DAMAGE.air;
+    this.stats.earthDamage = BASE_ELEMENTAL_DAMAGE.earth;
+    this.stats.attackRatingPercent = BASE_ATTACK_RATING_PERCENT;
+    this.stats.damagePercent = BASE_DAMAGE_PERCENT;
 
     if (this.stats.currentMana > this.stats.maxMana) {
       this.stats.currentMana = this.stats.maxMana;
@@ -286,14 +326,23 @@ export default class Hero {
   }
 
   regenerate() {
-    this.stats.currentHealth = Math.min(
-      this.stats.maxHealth,
-      this.stats.currentHealth + this.stats.lifeRegen
-    );
-    this.stats.currentMana = Math.min(
-      this.stats.maxMana,
-      this.stats.currentMana + this.stats.manaRegen
-    );
+    this.stats.currentHealth = Math.min(this.stats.maxHealth, this.stats.currentHealth + this.stats.lifeRegen);
+    this.stats.currentMana = Math.min(this.stats.maxMana, this.stats.currentMana + this.stats.manaRegen);
     updatePlayerHealth();
+  }
+
+  calculateTotalDamage(isCritical) {
+    let baseDamage = this.stats.damage * (1 + this.stats.damagePercent / 100);
+    if (isCritical) baseDamage *= this.stats.critDamage;
+
+    const elementalDamage =
+      this.stats.fireDamage +
+      this.stats.coldDamage +
+      this.stats.lightningDamage +
+      this.stats.waterDamage +
+      this.stats.airDamage +
+      this.stats.earthDamage;
+
+    return baseDamage + elementalDamage;
   }
 }

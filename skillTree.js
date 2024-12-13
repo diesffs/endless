@@ -178,9 +178,7 @@ export default class SkillTree {
     const currentLevel = this.skillLevels[skillId] || 0;
     const requiredPoints = skill.row === 1 ? 1 : skill.row * 2;
 
-    return (
-      this.skillPoints >= requiredPoints && currentLevel < 10 && this.arePrerequisitesMet(skill)
-    );
+    return this.skillPoints >= requiredPoints && currentLevel < 10 && this.arePrerequisitesMet(skill);
   }
 
   arePrerequisitesMet(skill) {

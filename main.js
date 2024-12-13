@@ -38,7 +38,6 @@ updateStatsAndAttributesUI();
 updateZoneUI();
 updateEnemyHealth();
 
-
 game.saveGame();
 
 let isRunning = false;

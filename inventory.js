@@ -258,11 +258,7 @@ export default class Inventory {
       return;
     }
 
-    if (
-      specificPosition !== null &&
-      specificPosition < 200 &&
-      !this.inventoryItems[specificPosition]
-    ) {
+    if (specificPosition !== null && specificPosition < 200 && !this.inventoryItems[specificPosition]) {
       this.inventoryItems[specificPosition] = item;
     } else {
       const emptySlot = this.inventoryItems.findIndex((slot) => slot === null);

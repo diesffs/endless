@@ -53,17 +53,15 @@ export function updatePlayerHealth() {
   const stats = hero.stats;
   const healthPercentage = (stats.currentHealth / stats.maxHealth) * 100;
   document.getElementById('health-fill').style.width = `${healthPercentage}%`;
-  document.getElementById('health-text').textContent = `${Math.max(
-    0,
-    Math.floor(stats.currentHealth)
-  )}/${Math.floor(stats.maxHealth)}`;
+  document.getElementById('health-text').textContent = `${Math.max(0, Math.floor(stats.currentHealth))}/${Math.floor(
+    stats.maxHealth
+  )}`;
 
   const manaPercentage = (stats.currentMana / stats.maxMana) * 100;
   document.getElementById('mana-fill').style.width = `${manaPercentage}%`;
-  document.getElementById('mana-text').textContent = `${Math.max(
-    0,
-    Math.floor(stats.currentMana)
-  )}/${Math.floor(stats.maxMana)}`;
+  document.getElementById('mana-text').textContent = `${Math.max(0, Math.floor(stats.currentMana))}/${Math.floor(
+    stats.maxMana
+  )}`;
 }
 
 export function updateEnemyHealth() {
@@ -102,13 +100,9 @@ export function updateStatsAndAttributesUI() {
           <div><strong>EXP:</strong> <span id="exp-value">${
             hero.exp || 0
           }</span> / <span id="exp-to-next-level-value">${hero.expToNextLevel || 100}</span></div>
-          <div><strong>Highest Zone:</strong> <span id="highest-zone-value">${
-            hero.highestZone
-          }</span></div>
+          <div><strong>Highest Zone:</strong> <span id="highest-zone-value">${hero.highestZone}</span></div>
           <hr style="margin: 5px 1px"></hr>
-          <div><strong>Damage:</strong> <span id="damage-value">${hero.stats.damage.toFixed(
-            0
-          )}</span></div>
+          <div><strong>Damage:</strong> <span id="damage-value">${hero.stats.damage.toFixed(0)}</span></div>
           <div><strong>Attack Speed:</strong> <span id="attack-speed-value">${hero.stats.attackSpeed
             .toFixed(2)
             .replace(/\./g, ',')}</span> attacks/sec</div>
@@ -122,10 +116,21 @@ export function updateStatsAndAttributesUI() {
           <div><strong>Crit Damage:</strong> <span id="crit-damage-value">${hero.stats.critDamage
             .toFixed(2)
             .replace(/\./g, ',')}x</span></div> 
+            <div><strong>Life Steal:</strong> <span id="life-steal-value">${hero.stats.lifeSteal.toFixed(
+              1
+            )}%</span></div>
+          <div class="elemental-damage">
+            <div><strong>🔥 Fire Damage:</strong> <span id="fire-damage-value">${hero.stats.fireDamage}</span></div>
+            <div><strong>❄️ Cold Damage:</strong> <span id="cold-damage-value">${hero.stats.coldDamage}</span></div>
+            <div><strong>⚡ Lightning Damage:</strong> <span id="lightning-damage-value">${
+              hero.stats.lightningDamage
+            }</span></div>
+            <div><strong>💧 Water Damage:</strong> <span id="water-damage-value">${hero.stats.waterDamage}</span></div>
+            <div><strong>🌪️ Air Damage:</strong> <span id="air-damage-value">${hero.stats.airDamage}</span></div>
+            <div><strong>🌎 Earth Damage:</strong> <span id="earth-damage-value">${hero.stats.earthDamage}</span></div>
+          </div>
           <hr style="margin: 5px 1px"></hr>
-          <div><strong>Health:</strong> <span id="max-health-value">${
-            hero.stats.maxHealth
-          }</span></div>
+          <div><strong>Health:</strong> <span id="max-health-value">${hero.stats.maxHealth}</span></div>
           <div><strong>Health Regen:</strong> <span id="health-regen-value">${hero.stats.lifeRegen
             .toFixed(1)
             .replace(/\./g, ',')}</span>/s</div>
@@ -151,9 +156,7 @@ export function updateStatsAndAttributesUI() {
     document.getElementById('exp-to-next-level-value').textContent = hero.expToNextLevel || 100;
     document.getElementById('highest-zone-value').textContent = hero.highestZone;
     document.getElementById('damage-value').textContent = hero.stats.damage.toFixed(0);
-    document.getElementById('attack-speed-value').textContent = hero.stats.attackSpeed
-      .toFixed(2)
-      .replace(/\./g, ',');
+    document.getElementById('attack-speed-value').textContent = hero.stats.attackSpeed.toFixed(2).replace(/\./g, ',');
     document.getElementById('attack-rating-value').textContent = hero.stats.attackRating.toFixed(0);
     document.getElementById('hit-chance-value').textContent =
       calculateHitChance(hero.stats.attackRating, game.zone).toFixed(1) + '%';
@@ -162,13 +165,9 @@ export function updateStatsAndAttributesUI() {
     document.getElementById('crit-damage-value').textContent =
       hero.stats.critDamage.toFixed(2).replace(/\./g, ',') + 'x';
     document.getElementById('max-health-value').textContent = hero.stats.maxHealth;
-    document.getElementById('health-regen-value').textContent = hero.stats.lifeRegen
-      .toFixed(1)
-      .replace(/\./g, ',');
+    document.getElementById('health-regen-value').textContent = hero.stats.lifeRegen.toFixed(1).replace(/\./g, ',');
     document.getElementById('max-mana-value').textContent = hero.stats.maxMana;
-    document.getElementById('mana-regen-value').textContent = hero.stats.manaRegen
-      .toFixed(1)
-      .replace(/\./g, ',');
+    document.getElementById('mana-regen-value').textContent = hero.stats.manaRegen.toFixed(1).replace(/\./g, ',');
     document.getElementById('armor-value').textContent = hero.stats.armor || 0;
     document.getElementById('armor-reduction-value').textContent =
       hero.calculateArmorReduction().toFixed(2).replace(/\./g, ',') + '%';
@@ -182,9 +181,7 @@ export function updateStatsAndAttributesUI() {
     attributesContainer.innerHTML = `
           <h3 id="attributes">Attributes (+${hero.statPoints})</h3>
           <div>
-              <strong>Strength:</strong> <span id="strength-value">${hero.getStat(
-                'strength'
-              )}</span>
+              <strong>Strength:</strong> <span id="strength-value">${hero.getStat('strength')}</span>
               <button class="allocate-btn" data-stat="strength">+</button>
           </div>
           <div>
@@ -192,9 +189,7 @@ export function updateStatsAndAttributesUI() {
               <button class="allocate-btn" data-stat="agility">+</button>
           </div>
           <div>
-              <strong>Vitality:</strong> <span id="vitality-value">${hero.getStat(
-                'vitality'
-              )}</span>
+              <strong>Vitality:</strong> <span id="vitality-value">${hero.getStat('vitality')}</span>
               <button class="allocate-btn" data-stat="vitality">+</button>
           </div>
       `;
