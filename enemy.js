@@ -94,7 +94,7 @@ class Enemy {
   }
 
   calculateHealth(zone, rarity) {
-    const baseHealth = 49 + Math.pow(zone, 1.8);
+    const baseHealth = 49 + Math.pow(zone, 2);
     const rarityMap = {
       [ENEMY_RARITY.NORMAL.type]: ENEMY_RARITY.NORMAL.healthBonus,
       [ENEMY_RARITY.RARE.type]: ENEMY_RARITY.RARE.healthBonus,
@@ -107,7 +107,7 @@ class Enemy {
   }
 
   calculateDamage(zone, rarity) {
-    const baseDamage = 5 + Math.pow(zone, 1.4);
+    const baseDamage = 5 + Math.pow(zone, 1.3);
     const rarityMap = {
       [ENEMY_RARITY.NORMAL.type]: ENEMY_RARITY.NORMAL.bonusDamage,
       [ENEMY_RARITY.RARE.type]: ENEMY_RARITY.RARE.bonusDamage,
