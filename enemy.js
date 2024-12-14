@@ -1,3 +1,5 @@
+import { ITEM_TYPES } from './item.js';
+
 export const ENEMY_RARITY = {
   NORMAL: {
     type: 'NORMAL',

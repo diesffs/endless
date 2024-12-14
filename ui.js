@@ -1,7 +1,8 @@
 import Enemy from './enemy.js';
 import { game, hero, prestige, skillTree } from './main.js';
 import { calculateHitChance } from './combat.js';
-import { CLASS_PATHS } from './skillTree.js';
+import { CLASS_PATHS, SKILL_TREES } from './skillTree.js';
+const html = String.raw;
 
 export function initializeUI() {
   game.currentEnemy = new Enemy(game.zone);
@@ -95,59 +96,79 @@ export function updateStatsAndAttributesUI() {
   if (!statsContainer) {
     statsContainer = document.createElement('div');
     statsContainer.className = 'stats-container';
-    statsContainer.innerHTML = `
-          <div><strong>Level:</strong> <span id="level-value">${hero.level || 1}</span></div>
-          <div><strong>EXP:</strong> <span id="exp-value">${
-            hero.exp || 0
-          }</span> / <span id="exp-to-next-level-value">${hero.expToNextLevel || 100}</span></div>
-          <div><strong>Highest Zone:</strong> <span id="highest-zone-value">${hero.highestZone}</span></div>
-          <hr style="margin: 5px 1px"></hr>
-          <div><strong>Damage:</strong> <span id="damage-value">${hero.stats.damage.toFixed(0)}</span></div>
-          <div><strong>Attack Speed:</strong> <span id="attack-speed-value">${hero.stats.attackSpeed
-            .toFixed(2)
-            .replace(/\./g, ',')}</span> attacks/sec</div>
-          <div><strong>Attack Rating:</strong> <span id="attack-rating-value">${hero.stats.attackRating.toFixed(
-            0
-          )}</span> (<span id="hit-chance-value">
-          ${calculateHitChance(hero.stats.attackRating, game.zone).toFixed(1)}%</span>)</div>
-          <div><strong>Crit Chance:</strong> <span id="crit-chance-value">${hero.stats.critChance
-            .toFixed(1)
-            .replace(/\./g, ',')}%</span></div>
-          <div><strong>Crit Damage:</strong> <span id="crit-damage-value">${hero.stats.critDamage
-            .toFixed(2)
-            .replace(/\./g, ',')}x</span></div> 
-            <div><strong>Life Steal:</strong> <span id="life-steal-value">${hero.stats.lifeSteal.toFixed(
-              1
-            )}%</span></div>
-          <div class="elemental-damage">
-            <div><strong>🔥 Fire Damage:</strong> <span id="fire-damage-value">${hero.stats.fireDamage}</span></div>
-            <div><strong>❄️ Cold Damage:</strong> <span id="cold-damage-value">${hero.stats.coldDamage}</span></div>
-            <div><strong>⚡ Lightning Damage:</strong> <span id="lightning-damage-value">${
-              hero.stats.lightningDamage
-            }</span></div>
-            <div><strong>💧 Water Damage:</strong> <span id="water-damage-value">${hero.stats.waterDamage}</span></div>
-            <div><strong>🌪️ Air Damage:</strong> <span id="air-damage-value">${hero.stats.airDamage}</span></div>
-            <div><strong>🌎 Earth Damage:</strong> <span id="earth-damage-value">${hero.stats.earthDamage}</span></div>
-          </div>
-          <hr style="margin: 5px 1px"></hr>
-          <div><strong>Health:</strong> <span id="max-health-value">${hero.stats.maxHealth}</span></div>
-          <div><strong>Health Regen:</strong> <span id="health-regen-value">${hero.stats.lifeRegen
-            .toFixed(1)
-            .replace(/\./g, ',')}</span>/s</div>
-          <div><strong>Mana:</strong> <span id="max-mana-value">${hero.stats.maxMana}</span></div>
-          <div><strong>Mana Regen:</strong> <span id="mana-regen-value">${hero.stats.manaRegen
-            .toFixed(1)
-            .replace(/\./g, ',')}</span>/s</div>
-          <div><strong>Armor:</strong> <span id="armor-value">${hero.stats.armor || 0}</span> 
-          (<span id="armor-reduction-value">${hero
-            .calculateArmorReduction()
-            .toFixed(2)
-            .replace(/\./g, ',')}%</span> reduction)
-          </div>
-          <div><strong>Block Chance:</strong> <span id="block-chance-value">${hero.stats.blockChance
-            .toFixed(1)
-            .replace(/\./g, ',')}%</span></div>
-      `;
+    statsContainer.innerHTML = html`
+      <!-- xp, lvl, zone -->
+      <div><strong>Level:</strong> <span id="level-value">${hero.level || 1}</span></div>
+      <div>
+        <strong>EXP:</strong> <span id="exp-value">${hero.exp || 0}</span> /
+        <span id="exp-to-next-level-value">${hero.expToNextLevel || 100}</span>
+      </div>
+      <div><strong>Highest Zone:</strong><span id="highest-zone-value">${hero.highestZone}</span></div>
+
+      <!-- OFFENSE -->
+
+      <hr style="margin: 5px 1px" />
+      <div><strong>Damage:</strong> <span id="damage-value">${hero.stats.damage.toFixed(0)}</span></div>
+
+      <div>
+        <strong>Attack Speed:</strong>
+        <span id="attack-speed-value">${hero.stats.attackSpeed.toFixed(2).replace(/\./g, ',')}</span> attacks/sec
+      </div>
+
+      <div>
+        <strong>Attack Rating:</strong>
+        <span id="attack-rating-value">${hero.stats.attackRating.toFixed(0)}</span> (<span id="hit-chance-value">
+          ${calculateHitChance(hero.stats.attackRating, game.zone).toFixed(1)}%</span
+        >)
+      </div>
+
+      <div>
+        <strong>Crit Chance:</strong>
+        <span id="crit-chance-value">${hero.stats.critChance.toFixed(1).replace(/\./g, ',')}%</span>
+      </div>
+
+      <div>
+        <strong>Crit Damage:</strong>
+        <span id="crit-damage-value">${hero.stats.critDamage.toFixed(2).replace(/\./g, ',')}x</span>
+      </div>
+
+      <div><strong>Life Steal:</strong> <span id="life-steal-value">${hero.stats.lifeSteal.toFixed(1)}%</span></div>
+      <div class="elemental-damage">
+        <div><strong>🔥 Fire Damage:</strong> <span id="fire-damage-value">${hero.stats.fireDamage}</span></div>
+        <div><strong>❄️ Cold Damage:</strong> <span id="cold-damage-value">${hero.stats.coldDamage}</span></div>
+        <div>
+          <strong>⚡ Lightning Damage:</strong> <span id="lightning-damage-value">${hero.stats.lightningDamage}</span>
+        </div>
+        <div><strong>💧 Water Damage:</strong> <span id="water-damage-value">${hero.stats.waterDamage}</span></div>
+        <div><strong>🌪️ Air Damage:</strong> <span id="air-damage-value">${hero.stats.airDamage}</span></div>
+        <div><strong>🌎 Earth Damage:</strong> <span id="earth-damage-value">${hero.stats.earthDamage}</span></div>
+      </div>
+
+      <!-- DEFENSE -->
+      <hr style="margin: 5px 1px" />
+
+      <div><strong>Health:</strong> <span id="max-health-value">${hero.stats.maxHealth}</span></div>
+      <div>
+        <strong>Health Regen:</strong>
+        <span id="health-regen-value">${hero.stats.lifeRegen.toFixed(1).replace(/\./g, ',')}</span>/s
+      </div>
+      <div><strong>Mana:</strong> <span id="max-mana-value">${hero.stats.maxMana}</span></div>
+      <div>
+        <strong>Mana Regen:</strong>
+        <span id="mana-regen-value">${hero.stats.manaRegen.toFixed(1).replace(/\./g, ',')}</span>/s
+      </div>
+
+      <div>
+        <strong>Armor:</strong> <span id="armor-value">${hero.stats.armor || 0}</span> (
+        <span id="armor-reduction-value"> ${hero.calculateArmorReduction().toFixed(2).replace(/\./g, ',')} </span>
+        reduction)
+      </div>
+
+      <div>
+        <strong>Block Chance:</strong>
+        <span id="block-chance-value">${hero.stats.blockChance.toFixed(1).replace(/\./g, ',')}%</span>
+      </div>
+    `;
     statsGrid.appendChild(statsContainer);
   } else {
     // Update dynamic stats values
@@ -178,21 +199,21 @@ export function updateStatsAndAttributesUI() {
   if (!attributesContainer) {
     attributesContainer = document.createElement('div');
     attributesContainer.className = 'attributes-container';
-    attributesContainer.innerHTML = `
-          <h3 id="attributes">Attributes (+${hero.statPoints})</h3>
-          <div>
-              <strong>Strength:</strong> <span id="strength-value">${hero.getStat('strength')}</span>
-              <button class="allocate-btn" data-stat="strength">+</button>
-          </div>
-          <div>
-              <strong>Agility:</strong> <span id="agility-value">${hero.getStat('agility')}</span>
-              <button class="allocate-btn" data-stat="agility">+</button>
-          </div>
-          <div>
-              <strong>Vitality:</strong> <span id="vitality-value">${hero.getStat('vitality')}</span>
-              <button class="allocate-btn" data-stat="vitality">+</button>
-          </div>
-      `;
+    attributesContainer.innerHTML = html`
+      <h3 id="attributes">Attributes (+${hero.statPoints})</h3>
+      <div>
+        <strong>Strength:</strong> <span id="strength-value">${hero.getStat('strength')}</span>
+        <button class="allocate-btn" data-stat="strength">+</button>
+      </div>
+      <div>
+        <strong>Agility:</strong> <span id="agility-value">${hero.getStat('agility')}</span>
+        <button class="allocate-btn" data-stat="agility">+</button>
+      </div>
+      <div>
+        <strong>Vitality:</strong> <span id="vitality-value">${hero.getStat('vitality')}</span>
+        <button class="allocate-btn" data-stat="vitality">+</button>
+      </div>
+    `;
     statsGrid.appendChild(attributesContainer);
 
     // Attach event listeners for allocation buttons (only once)
@@ -242,6 +263,11 @@ export function updateStatsAndAttributesUI() {
     document.getElementById('strength-value').textContent = hero.getStat('strength');
     document.getElementById('agility-value').textContent = hero.getStat('agility');
     document.getElementById('vitality-value').textContent = hero.getStat('vitality');
+  }
+
+  if (hero.level >= 10) {
+    const skillTreeTab = document.querySelector('[data-tab="skilltree"]');
+    skillTreeTab.classList.remove('hidden');
   }
 }
 
@@ -303,6 +329,7 @@ export function initializeSkillTreeUI() {
     showSkillTree();
   }
 }
+
 function showClassSelection() {
   const classSelection = document.getElementById('class-selection');
   classSelection.innerHTML = '';
@@ -310,12 +337,16 @@ function showClassSelection() {
   Object.entries(CLASS_PATHS).forEach(([pathId, pathData]) => {
     const pathElement = document.createElement('div');
     pathElement.className = 'class-path';
-    pathElement.innerHTML = `
+    pathElement.innerHTML = html`
       <h3>${pathData.name}</h3>
       <p>${pathData.description}</p>
       <div class="base-stats">
         ${Object.entries(pathData.baseStats)
-          .map(([stat, value]) => `<div>${stat}: +${value}</div>`)
+          .map(([stat, value]) => {
+            // Convert camelCase to Title Case
+            const readableStat = stat.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
+            return `<div>${readableStat}: +${value}</div>`;
+          })
           .join('')}
       </div>
     `;

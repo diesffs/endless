@@ -1,4 +1,4 @@
-import { hero } from './main.js';
+import { game, hero } from './main.js';
 
 export const CLASS_PATHS = {
   WARRIOR: {
@@ -25,41 +25,41 @@ export const CLASS_PATHS = {
     name: 'Vampire',
     baseStats: {
       lifeSteal: 5,
-      nightDamage: 10,
-      critDamage: 0.2,
-      maxHealth: 30,
+      critDamage: 0.3,
+      attackSpeed: 0.1,
+      damage: 8,
     },
-    description: 'Master of life-stealing and night powers',
+    description: 'Master of life-stealing and critical strikes',
   },
   PALADIN: {
     name: 'Paladin',
     baseStats: {
       blockChance: 10,
       armor: 15,
-      holyDamage: 10,
+      vitality: 4,
       maxHealth: 40,
     },
-    description: 'Holy warrior specializing in defense and divine power',
+    description: 'Holy warrior specializing in defense and vitality',
   },
   BERSERKER: {
     name: 'Berserker',
     baseStats: {
       damage: 15,
       attackSpeed: 0.2,
-      rageDamage: 10,
       strength: 3,
+      critChance: 3,
     },
-    description: 'Frenzied fighter that gets stronger as health decreases',
+    description: 'Frenzied fighter focusing on raw damage output',
   },
   ELEMENTALIST: {
     name: 'Elementalist',
     baseStats: {
-      elementalDamage: 20,
+      fireDamage: 8,
+      lightningDamage: 8,
+      coldDamage: 8,
       critChance: 3,
-      spellPower: 10,
-      maxHealth: 20,
     },
-    description: 'Master of elemental magic and devastating spells',
+    description: 'Master of elemental damage types',
   },
 };
 
@@ -153,15 +153,15 @@ export default class SkillTree {
     if (!CLASS_PATHS[pathName]) return false;
 
     this.selectedPath = pathName;
-    // Apply base stats from the selected path
     const baseStats = CLASS_PATHS[pathName].baseStats;
+
     Object.entries(baseStats).forEach(([stat, value]) => {
-      if (hero.stats[stat] !== undefined) {
-        hero.stats[stat] += value;
-      }
+      hero.pathBonuses[stat] += value;
     });
 
     hero.recalculateFromAttributes();
+
+    game.saveGame();
     return true;
   }
 

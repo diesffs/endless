@@ -76,6 +76,31 @@ export default class Hero {
     this.startingZone = 1;
     this.startingGold = 0;
 
+    this.pathBonuses = {
+      damage: 0,
+      armor: 0,
+      strength: 0,
+      agility: 0,
+      vitality: 0,
+      critChance: 0,
+      critDamage: 0,
+      attackSpeed: 0,
+      maxHealth: 0,
+      blockChance: 0,
+      maxMana: 0,
+      manaRegen: 0,
+      lifeRegen: 0,
+      lifeSteal: 0,
+      fireDamage: 0,
+      coldDamage: 0,
+      lightningDamage: 0,
+      waterDamage: 0,
+      airDamage: 0,
+      earthDamage: 0,
+      attackRatingPercent: 0,
+      damagePercent: 0,
+    };
+
     this.equipmentBonuses = {
       damage: 0,
       armor: 0,
@@ -225,7 +250,7 @@ export default class Hero {
   }
 
   getStat(stat) {
-    return this.primaryStats[stat] + this.equipmentBonuses[stat] || 0;
+    return this.primaryStats[stat] + this.equipmentBonuses[stat] + this.pathBonuses[stat] || 0;
   }
 
   recalculateFromAttributes() {
@@ -281,10 +306,6 @@ export default class Hero {
     this.stats.attackRatingPercent = BASE_ATTACK_RATING_PERCENT;
     this.stats.damagePercent = BASE_DAMAGE_PERCENT;
 
-    if (this.stats.currentMana > this.stats.maxMana) {
-      this.stats.currentMana = this.stats.maxMana;
-    }
-
     Object.entries(this.skillBonuses).forEach(([stat, bonus]) => {
       if (this.stats[stat] !== undefined) {
         this.stats[stat] += bonus;
@@ -297,6 +318,12 @@ export default class Hero {
       }
     });
 
+    Object.entries(this.pathBonuses).forEach(([stat, bonus]) => {
+      if (this.stats[stat] !== undefined) {
+        this.stats[stat] += bonus;
+      }
+    });
+    
     // Add damage bonus from souls
     const damageBonusFromSouls = Math.floor(this.stats.damage * (this.souls * 0.01));
     this.stats.damage += damageBonusFromSouls;
