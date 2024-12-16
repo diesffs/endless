@@ -63,11 +63,19 @@ export default class Hero {
 
   setBaseStats(savedData = null) {
     this.level = 1;
-    this.gold = 1231230;
+    this.gold = 123123012123;
     this.crystals = 0;
     this.exp = 0;
     this.expToNextLevel = 20;
-    this.primaryStats = { strength: 0, agility: 0, vitality: 0 };
+    this.primaryStats = {
+      strength: 0,
+      agility: 0,
+      vitality: 0,
+      wisdom: 0,
+      intelligence: 0,
+      endurance: 0,
+      dexterity: 0,
+    };
     this.statPoints = 0;
     this.souls = 0;
     this.prestigeProgress = 0;
@@ -82,6 +90,10 @@ export default class Hero {
       strength: 0,
       agility: 0,
       vitality: 0,
+      wisdom: 0,
+      intelligence: 0,
+      endurance: 0,
+      dexterity: 0,
       critChance: 0,
       critDamage: 0,
       attackSpeed: 0,
@@ -107,6 +119,10 @@ export default class Hero {
       strength: 0,
       agility: 0,
       vitality: 0,
+      wisdom: 0,
+      intelligence: 0,
+      endurance: 0,
+      dexterity: 0,
       critChance: 0,
       critDamage: 0,
       attackSpeed: 0,
@@ -132,6 +148,10 @@ export default class Hero {
       strength: 0,
       agility: 0,
       vitality: 0,
+      wisdom: 0,
+      intelligence: 0,
+      endurance: 0,
+      dexterity: 0,
       critChance: 0,
       critDamage: 0,
       attackSpeed: 0,
@@ -257,46 +277,72 @@ export default class Hero {
     inventory.updateItemBonuses();
     skillTree.updateSkillBonuses();
 
+    // Base stats calculations
+    const strMultiplier = Math.floor((this.primaryStats.strength + this.equipmentBonuses.strength) / 5) * 0.01;
+    const agiMultiplier = Math.floor((this.primaryStats.agility + this.equipmentBonuses.agility) / 5) * 0.01;
+    const vitMultiplier = Math.floor((this.primaryStats.vitality + this.equipmentBonuses.vitality) / 5) * 0.01;
+    const vitRegenMultiplier = Math.floor((this.primaryStats.vitality + this.equipmentBonuses.vitality) / 10) * 0.01;
+    const wisMultiplier = Math.floor((this.primaryStats.wisdom + this.equipmentBonuses.wisdom) / 5) * 0.01;
+    const wisRegenMultiplier = Math.floor((this.primaryStats.wisdom + this.equipmentBonuses.wisdom) / 10) * 0.01;
+    const endMultiplier = Math.floor((this.primaryStats.endurance + this.equipmentBonuses.endurance) / 5) * 0.01;
+    const dexCritChanceMultiplier =
+      Math.floor((this.primaryStats.dexterity + this.equipmentBonuses.dexterity) / 25) * 0.01;
+    const dexCritDamageMultiplier =
+      Math.floor((this.primaryStats.dexterity + this.equipmentBonuses.dexterity) / 10) * 0.01;
+
+    // Recalculate stats
     this.stats.damage =
       BASE_DAMAGE +
-      (this.primaryStats.strength + this.equipmentBonuses.strength) * 2 +
+      this.equipmentBonuses.strength * 2 +
       this.upgradeLevels.damage * DAMAGE_ON_UPGRADE +
       DAMAGE_ON_LEVEL_UP * this.level -
       DAMAGE_ON_LEVEL_UP;
 
-    this.stats.attackSpeed = BASE_ATTACK_SPEED + this.upgradeLevels.attackSpeed * ATTACK_SPEED_ON_UPGRADE;
+    this.stats.damage += this.stats.damage * strMultiplier;
+
+    this.stats.attackSpeed =
+      BASE_ATTACK_SPEED +
+      this.upgradeLevels.attackSpeed * ATTACK_SPEED_ON_UPGRADE +
+      Math.floor((this.primaryStats.agility + this.equipmentBonuses.agility) / 25) * 0.01;
 
     this.stats.attackRating =
-      (BASE_ATTACK_RATING +
-        (this.primaryStats.agility + this.equipmentBonuses.agility) * 10 +
-        ATTACK_RATING_ON_LEVEL_UP * this.level) *
+      (BASE_ATTACK_RATING + this.equipmentBonuses.agility * 10 + ATTACK_RATING_ON_LEVEL_UP * this.level) *
       (1 + this.stats.attackRatingPercent / 100);
+
+    this.stats.attackRating += this.stats.attackRating * agiMultiplier;
 
     this.stats.maxHealth =
       BASE_HEALTH +
-      (this.primaryStats.vitality + this.equipmentBonuses.vitality) * 10 +
+      this.equipmentBonuses.vitality * 10 +
       this.upgradeLevels.health * HEALTH_ON_UPGRADE +
       HEALTH_ON_LEVEL_UP * this.level -
       HEALTH_ON_LEVEL_UP;
 
-    this.stats.armor = BASE_ARMOR + this.upgradeLevels.armor * ARMOR_ON_UPGRADE;
-
-    this.stats.critChance = BASE_CRIT_CHANCE + this.upgradeLevels.critChance * CRIT_CHANCE_ON_UPGRADE;
-
-    this.stats.critDamage = BASE_CRIT_DAMAGE + this.upgradeLevels.critDamage * CRIT_DAMAGE_ON_UPGRADE;
-
-    this.stats.blockChance = 0;
-
-    this.stats.maxMana =
-      BASE_MANA + this.upgradeLevels.mana * MANA_ON_UPGRADE + MANA_ON_LEVEL_UP * this.level - MANA_ON_LEVEL_UP;
-
-    this.stats.manaRegen =
-      BASE_MANA_REGEN + this.upgradeLevels.manaRegen * MANA_REGEN_ON_UPGRADE + this.equipmentBonuses.manaRegen;
+    this.stats.maxHealth += this.stats.maxHealth * vitMultiplier;
 
     this.stats.lifeRegen =
       BASE_LIFE_REGEN + this.upgradeLevels.healthRegen * HEALTH_REGEN_ON_UPGRADE + this.equipmentBonuses.lifeRegen;
 
-    this.stats.lifeSteal = BASE_LIFE_STEAL;
+    this.stats.lifeRegen += this.stats.lifeRegen * vitRegenMultiplier;
+
+    this.stats.armor = BASE_ARMOR + this.upgradeLevels.armor * ARMOR_ON_UPGRADE + this.stats.armor * endMultiplier;
+
+    this.stats.critChance =
+      BASE_CRIT_CHANCE + this.upgradeLevels.critChance * CRIT_CHANCE_ON_UPGRADE + dexCritChanceMultiplier;
+
+    this.stats.critDamage =
+      BASE_CRIT_DAMAGE + this.upgradeLevels.critDamage * CRIT_DAMAGE_ON_UPGRADE + dexCritDamageMultiplier;
+
+    this.stats.maxMana =
+      BASE_MANA + this.upgradeLevels.mana * MANA_ON_UPGRADE + MANA_ON_LEVEL_UP * this.level - MANA_ON_LEVEL_UP;
+
+    this.stats.maxMana += this.stats.maxMana * wisMultiplier;
+
+    this.stats.manaRegen =
+      BASE_MANA_REGEN + this.upgradeLevels.manaRegen * MANA_REGEN_ON_UPGRADE + this.equipmentBonuses.manaRegen;
+
+    this.stats.manaRegen += this.stats.manaRegen * wisRegenMultiplier;
+
     this.stats.fireDamage = BASE_ELEMENTAL_DAMAGE.fire;
     this.stats.coldDamage = BASE_ELEMENTAL_DAMAGE.cold;
     this.stats.lightningDamage = BASE_ELEMENTAL_DAMAGE.lightning;
@@ -306,6 +352,7 @@ export default class Hero {
     this.stats.attackRatingPercent = BASE_ATTACK_RATING_PERCENT;
     this.stats.damagePercent = BASE_DAMAGE_PERCENT;
 
+    // Apply skill, equipment, and path bonuses
     Object.entries(this.skillBonuses).forEach(([stat, bonus]) => {
       if (this.stats[stat] !== undefined) {
         this.stats[stat] += bonus;
@@ -333,10 +380,12 @@ export default class Hero {
       this.stats.blockChance = 75;
     }
 
+    // Cap critical chance at 100%
     if (this.stats.critChance > 100) {
       this.stats.critChance = 100;
     }
 
+    // Cap attack speed
     if (this.stats.attackSpeed > 5) {
       this.stats.attackSpeed = 5;
     }
