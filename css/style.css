@@ -63,8 +63,7 @@ body {
   gap: 0.5rem;
   margin-bottom: 1rem;
   overflow-x: auto;
-  width: 100%; /* Ensure it takes up the full width */
-  justify-content: space-between; /* Distribute buttons evenly */
+  width: 100%;
 }
 
 .tab-btn {
