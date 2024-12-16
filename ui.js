@@ -213,48 +213,31 @@ export function updateStatsAndAttributesUI() {
         <strong>Vitality:</strong> <span id="vitality-value">${hero.getStat('vitality')}</span>
         <button class="allocate-btn" data-stat="vitality">+</button>
       </div>
+      <div>
+        <strong>Wisdom:</strong> <span id="wisdom-value">${hero.getStat('wisdom')}</span>
+        <button class="allocate-btn" data-stat="wisdom">+</button>
+      </div>
+      <div>
+        <strong>Intelligence:</strong> <span id="intelligence-value">${hero.getStat('intelligence')}</span>
+        <button class="allocate-btn" data-stat="intelligence">+</button>
+      </div>
+      <div>
+        <strong>Endurance:</strong> <span id="endurance-value">${hero.getStat('endurance')}</span>
+        <button class="allocate-btn" data-stat="endurance">+</button>
+      </div>
+      <div>
+        <strong>Dexterity:</strong> <span id="dexterity-value">${hero.getStat('dexterity')}</span>
+        <button class="allocate-btn" data-stat="dexterity">+</button>
+      </div>
     `;
     statsGrid.appendChild(attributesContainer);
 
     // Attach event listeners for allocation buttons (only once)
     attributesContainer.querySelectorAll('.allocate-btn').forEach((btn) => {
       btn.addEventListener('mousedown', (e) => {
-        const stat = btn.dataset.stat;
-
-        // Initial click allocation
-        if (hero.allocateStat(stat)) {
-          document.getElementById(`${stat}-value`).textContent = hero.getStat(stat);
-          updateStatsAndAttributesUI();
-          updatePlayerHealth();
-        }
-
-        let intervalId;
-        let holdingTimeout;
-
-        const startHolding = () => {
-          clearInterval(intervalId);
-          intervalId = setInterval(() => {
-            if (hero.allocateStat(stat)) {
-              document.getElementById(`${stat}-value`).textContent = hero.getStat(stat);
-              updateStatsAndAttributesUI();
-              updatePlayerHealth();
-            }
-          }, 100); // Allocate every 100ms while holding
-        };
-
-        const stopHolding = () => {
-          clearTimeout(holdingTimeout);
-          clearInterval(intervalId);
-          document.removeEventListener('mouseup', stopHolding);
-          document.removeEventListener('mouseleave', stopHolding);
-        };
-
-        // Start holding after 500ms
-        holdingTimeout = setTimeout(startHolding, 500);
-
-        // Add event listeners to stop holding
-        document.addEventListener('mouseup', stopHolding);
-        document.addEventListener('mouseleave', stopHolding);
+        const stat = e.target.dataset.stat;
+        hero.allocateStat(stat);
+        updateStatsAndAttributesUI();
       });
     });
   } else {
@@ -263,6 +246,10 @@ export function updateStatsAndAttributesUI() {
     document.getElementById('strength-value').textContent = hero.getStat('strength');
     document.getElementById('agility-value').textContent = hero.getStat('agility');
     document.getElementById('vitality-value').textContent = hero.getStat('vitality');
+    document.getElementById('wisdom-value').textContent = hero.getStat('wisdom');
+    document.getElementById('intelligence-value').textContent = hero.getStat('intelligence');
+    document.getElementById('endurance-value').textContent = hero.getStat('endurance');
+    document.getElementById('dexterity-value').textContent = hero.getStat('dexterity');
   }
 
   if (hero.level >= 10) {

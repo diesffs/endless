@@ -323,7 +323,7 @@ export default class Hero {
         this.stats[stat] += bonus;
       }
     });
-    
+
     // Add damage bonus from souls
     const damageBonusFromSouls = Math.floor(this.stats.damage * (this.souls * 0.01));
     this.stats.damage += damageBonusFromSouls;
