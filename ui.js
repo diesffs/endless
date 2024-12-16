@@ -1,7 +1,7 @@
 import Enemy from './enemy.js';
 import { game, hero, prestige, skillTree } from './main.js';
 import { calculateHitChance } from './combat.js';
-import { CLASS_PATHS, SKILL_TREES } from './skillTree.js';
+import { CLASS_PATHS, SKILL_LEVEL_TIERS, SKILL_TREES } from './skillTree.js';
 const html = String.raw;
 
 export function initializeUI() {
@@ -373,25 +373,38 @@ function showSkillTree() {
   container.innerHTML = '';
 
   const skills = SKILL_TREES[skillTree.selectedPath];
-  const rows = {};
+  const levelGroups = SKILL_LEVEL_TIERS.reduce((acc, level) => {
+    if (level <= hero.level) {
+      acc[level] = [];
+    }
+    return acc;
+  }, {});
 
-  // Group skills by row
+  // Group skills by required level
   Object.entries(skills).forEach(([skillId, skillData]) => {
-    if (!rows[skillData.row]) rows[skillData.row] = [];
-    rows[skillData.row].push({ id: skillId, ...skillData });
+    if (skillData.requiredLevel <= hero.level) {
+      levelGroups[skillData.requiredLevel].push({ id: skillId, ...skillData });
+    }
   });
 
-  // Create row elements
-  Object.entries(rows).forEach(([rowNum, rowSkills]) => {
-    const rowElement = document.createElement('div');
-    rowElement.className = 'skill-row';
+  // Create row elements for each level group
+  Object.entries(levelGroups).forEach(([reqLevel, groupSkills]) => {
+    if (groupSkills.length > 0) {
+      const rowElement = document.createElement('div');
+      rowElement.className = 'skill-row';
 
-    rowSkills.forEach((skill) => {
-      const skillElement = createSkillElement(skill);
-      rowElement.appendChild(skillElement);
-    });
+      const levelLabel = document.createElement('div');
+      levelLabel.className = 'level-requirement';
+      levelLabel.textContent = `Level ${reqLevel}`;
+      container.appendChild(levelLabel);
 
-    container.appendChild(rowElement);
+      groupSkills.forEach((skill) => {
+        const skillElement = createSkillElement(skill);
+        rowElement.appendChild(skillElement);
+      });
+
+      container.appendChild(rowElement);
+    }
   });
 }
 
@@ -399,27 +412,30 @@ function createSkillElement(skill) {
   const skillElement = document.createElement('div');
   skillElement.className = 'skill-node';
   skillElement.dataset.skillId = skill.id;
+  skillElement.dataset.skillType = skill.type;
 
   const currentLevel = skillTree.skillLevels[skill.id] || 0;
   const isUnlocked = skillTree.unlockedSkills[skill.id];
   const canUnlock = skillTree.canUnlockSkill(skill.id);
 
-  skillElement.innerHTML = `
-    <div class="skill-icon">${skill.name}</div>
+  skillElement.innerHTML = html`
+    <div class="skill-icon" style="background-image: url('assets/skills/${skill.icon}.png')"></div>
     <div class="skill-level">${currentLevel}/10</div>
-    <div class="skill-description">${skill.description}</div>
+    <div class="skill-description">[${skill.type.toUpperCase()}] ${skill.description}</div>
   `;
 
-  if (canUnlock) {
-    skillElement.classList.add('available');
-  }
-  if (isUnlocked) {
-    skillElement.classList.add('unlocked');
-  }
+  if (canUnlock) skillElement.classList.add('available');
+  if (isUnlocked) skillElement.classList.add('unlocked');
+
+  skillElement.addEventListener('mousemove', (e) => {
+    const tooltip = skillElement.querySelector('.skill-description');
+    tooltip.style.left = e.pageX + 10 + 'px';
+    tooltip.style.top = e.pageY + 10 + 'px';
+  });
 
   skillElement.addEventListener('click', () => {
     if (skillTree.unlockSkill(skill.id)) {
-      showSkillTree(); // Refresh the display
+      showSkillTree();
     }
   });
 

@@ -63,42 +63,45 @@ export const CLASS_PATHS = {
   },
 };
 
+export const SKILL_LEVEL_TIERS = [10, 25, 50, 100, 200, 300, 400, 500];
+
 export const SKILL_TREES = {
   WARRIOR: {
-    // Row 1
     bash: {
       name: 'Bash',
-      row: 1,
+      type: 'active',
+      requiredLevel: 10,
+      icon: 'war-axe',
       description: 'A powerful strike that deals extra damage',
-      prerequisites: [],
       effect: (level) => ({
         damage: level * 5,
       }),
     },
     toughness: {
       name: 'Toughness',
-      row: 1,
+      type: 'passive',
+      requiredLevel: 10,
+      icon: 'aura',
       description: 'Increases armor and health',
-      prerequisites: [],
       effect: (level) => ({
         armor: level * 3,
         maxHealth: level * 10,
       }),
     },
-    // Row 2 skills would require Row 1 skills
     doubleStrike: {
       name: 'Double Strike',
-      row: 2,
+      type: 'active',
+      requiredLevel: 50,
+      icon: 'double-strike',
       description: 'Attack twice in quick succession',
-      prerequisites: ['bash'],
       effect: (level) => ({
         attackSpeed: level * 0.05,
         damage: level * 3,
       }),
     },
-    // Add more skills...
+    // Add more skills with their required levels...
   },
-  // Add other class paths...
+  // Other class paths...
 };
 
 export default class SkillTree {
@@ -108,14 +111,17 @@ export default class SkillTree {
     this.unlockedSkills = {};
     this.skillLevels = {};
     this.skillEffects = {};
+    this.activeSkillSlots = {};
 
     if (savedData) {
       this.skillPoints = savedData.skillPoints;
       this.selectedPath = savedData.selectedPath;
       this.unlockedSkills = savedData.unlockedSkills || {};
       this.skillLevels = savedData.skillLevels || {};
-      this.recalculateAllSkillEffects();
+      this.skillEffects = savedData.skillEffects || {};
+      this.activeSkillSlots = savedData.activeSkillSlots || {};
     }
+    this.updateActionBar();
   }
 
   updateSkillBonuses() {
@@ -176,9 +182,7 @@ export default class SkillTree {
     if (!skill) return false;
 
     const currentLevel = this.skillLevels[skillId] || 0;
-    const requiredPoints = skill.row === 1 ? 1 : skill.row * 2;
-
-    return this.skillPoints >= requiredPoints && currentLevel < 10 && this.arePrerequisitesMet(skill);
+    return this.skillPoints >= 1 && currentLevel < 10 && hero.level >= skill.requiredLevel;
   }
 
   arePrerequisitesMet(skill) {
@@ -197,6 +201,12 @@ export default class SkillTree {
     const currentLevel = this.skillLevels[skillId] || 0;
     const requiredPoints = skill.row === 1 ? 1 : skill.row * 2;
 
+    if (skill.type === 'active') {
+      const nextSlot = Object.keys(this.activeSkillSlots).length + 1;
+      this.activeSkillSlots[nextSlot] = skillId;
+      this.updateActionBar();
+    }
+
     this.skillPoints -= requiredPoints;
     this.skillLevels[skillId] = currentLevel + 1;
     this.unlockedSkills[skillId] = true;
@@ -206,5 +216,29 @@ export default class SkillTree {
     hero.recalculateFromAttributes();
 
     return true;
+  }
+
+  updateActionBar() {
+    const skillSlotsContainer = document.querySelector('.skill-slots');
+    if (!skillSlotsContainer) return;
+
+    skillSlotsContainer.innerHTML = '';
+    Object.entries(this.activeSkillSlots).forEach(([slot, skillId]) => {
+      const skillSlot = document.createElement('div');
+      skillSlot.className = 'skill-slot';
+      skillSlot.dataset.key = slot;
+      skillSlot.dataset.skillId = skillId;
+
+      const skill = SKILL_TREES[this.selectedPath][skillId];
+      const html = String.raw;
+      if (skill) {
+        skillSlot.innerHTML = html`<div
+          class="skill-icon"
+          style="background-image: url('assets/skills/${skill.icon}.png')"
+        ></div>`;
+      }
+
+      skillSlotsContainer.appendChild(skillSlot);
+    });
   }
 }
