@@ -107,7 +107,7 @@ class Enemy {
   }
 
   calculateDamage(zone, rarity) {
-    const baseDamage = 5 + Math.pow(zone, 1.3);
+    const baseDamage = 4 + Math.pow(zone, 1.03);
     const rarityMap = {
       [ENEMY_RARITY.NORMAL.type]: ENEMY_RARITY.NORMAL.bonusDamage,
       [ENEMY_RARITY.RARE.type]: ENEMY_RARITY.RARE.bonusDamage,
