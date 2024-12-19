@@ -168,6 +168,32 @@ export default class Hero {
       damagePercent: 0,
     };
 
+    this.activeSkillBonuses = {
+      damage: 0,
+      armor: 0,
+      strength: 0,
+      agility: 0,
+      vitality: 0,
+      wisdom: 0,
+      intelligence: 0,
+      endurance: 0,
+      dexterity: 0,
+      critChance: 0,
+      critDamage: 0,
+      attackSpeed: 0,
+      maxHealth: 0,
+      blockChance: 0,
+      lifeSteal: 0,
+      fireDamage: 0,
+      coldDamage: 0,
+      lightningDamage: 0,
+      waterDamage: 0,
+      airDamage: 0,
+      earthDamage: 0,
+      attackRatingPercent: 0,
+      damagePercent: 0,
+    };
+
     this.stats = {
       damage: BASE_DAMAGE,
       attackSpeed: BASE_ATTACK_SPEED,

@@ -363,13 +363,14 @@ function showSkillTree() {
   const levelGroups = SKILL_LEVEL_TIERS.reduce((acc, level) => {
     if (level <= hero.level) {
       acc[level] = [];
+      acc[level] = [];
     }
     return acc;
   }, {});
 
   // Group skills by required level
   Object.entries(skills).forEach(([skillId, skillData]) => {
-    if (skillData.requiredLevel <= hero.level) {
+    if (skillData.requiredLevel <= hero.level && levelGroups[skillData.requiredLevel]) {
       levelGroups[skillData.requiredLevel].push({ id: skillId, ...skillData });
     }
   });

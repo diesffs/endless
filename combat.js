@@ -7,7 +7,8 @@ import {
 } from './ui.js';
 import Enemy from './enemy.js';
 import { ITEM_RARITY } from './item.js';
-import { hero, game, inventory } from './main.js';
+import { hero, game, inventory, skillTree } from './main.js';
+import { SKILL_TREES } from './skillTree.js';
 
 export function enemyAttack(game, currentTime) {
   if (!game || !hero || !game.currentEnemy) return;
@@ -49,6 +50,24 @@ export function playerAttack(game, currentTime) {
 
   if (currentTime - game.lastPlayerAttack >= timeBetweenAttacks) {
     if (game.currentEnemy.currentHealth > 0) {
+      // Handle toggle skills during attack
+      Object.entries(skillTree.activeSkillStates).forEach(([skillId, isActive]) => {
+        if (isActive) {
+          console.log('active');
+          const skill = SKILL_TREES[skillTree.selectedPath][skillId];
+          if (skill.type === 'toggle' && hero.stats.currentMana >= skill.manaCost) {
+            // Apply toggle skill effects
+            const effects = skill.effect(skillTree.skillLevels[skillId] || 0);
+            Object.entries(effects).forEach(([stat, value]) => {
+              if (hero.skillBonuses[stat] !== undefined) {
+                hero.skillBonuses[stat] += value;
+              }
+            });
+            hero.stats.currentMana -= skill.manaCost;
+          }
+        }
+      });
+
       // Calculate if attack hits
       const hitChance = calculateHitChance(hero.stats.attackRating, game.zone);
       const roll = Math.random() * 100;
@@ -72,6 +91,21 @@ export function playerAttack(game, currentTime) {
       if (game.currentEnemy.currentHealth <= 0) {
         defeatEnemy();
       }
+
+      // Reset toggle skill effects after attack
+      Object.entries(skillTree.activeSkillStates).forEach(([skillId, isActive]) => {
+        if (isActive) {
+          const skill = SKILL_TREES[skillTree.selectedPath][skillId];
+          if (skill.type === 'toggle') {
+            const effects = skill.effect(skillTree.skillLevels[skillId] || 0);
+            Object.entries(effects).forEach(([stat, value]) => {
+              if (hero.skillBonuses[stat] !== undefined) {
+                hero.skillBonuses[stat] -= value;
+              }
+            });
+          }
+        }
+      });
     }
     game.lastPlayerAttack = currentTime;
   }
@@ -167,7 +201,7 @@ function showLootNotification(item) {
   setTimeout(() => notification.remove(), 3000);
 }
 
-function createDamageNumber(damage, isPlayer, isCritical = false, isBlocked = false, isMiss = false) {
+export function createDamageNumber(damage, isPlayer, isCritical = false, isBlocked = false, isMiss = false) {
   const target = isPlayer ? '.character-avatar' : '.enemy-avatar';
   const avatar = document.querySelector(target);
   const damageEl = document.createElement('div');

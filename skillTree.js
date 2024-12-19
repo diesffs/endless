@@ -1,4 +1,6 @@
+import { createDamageNumber } from './combat.js';
 import { game, hero } from './main.js';
+import { updateEnemyHealth } from './ui.js';
 
 export const CLASS_PATHS = {
   WARRIOR: {
@@ -67,41 +69,60 @@ export const SKILL_LEVEL_TIERS = [10, 25, 50, 100, 200, 300, 400, 500];
 
 export const SKILL_TREES = {
   WARRIOR: {
+    // Toggle skill - costs mana per attack
     bash: {
       name: 'Bash',
-      type: 'active',
+      type: 'toggle',
+      manaCost: 10, // Mana cost per attack
       requiredLevel: 10,
       icon: 'war-axe',
-      description: 'A powerful strike that deals extra damage',
+      description: 'While active, increases damage but costs mana per attack',
+      effect: (level) => ({
+        damage: level * 3,
+      }),
+    },
+
+    // Instant active skill with cooldown
+    groundSlam: {
+      name: 'Ground Slam',
+      type: 'instant',
+      manaCost: 25,
+      cooldown: 5000,
+      requiredLevel: 15,
+      icon: 'slam',
+      description: 'Deals instant area damage',
+      effect: (level) => ({
+        damage: level * 10,
+      }),
+    },
+
+    // Buff skill with duration and cooldown
+    battleCry: {
+      name: 'Battle Cry',
+      type: 'buff',
+      manaCost: 40,
+      cooldown: 15000,
+      duration: 5000,
+      requiredLevel: 20,
+      icon: 'cry',
+      description: 'Temporarily increases damage',
       effect: (level) => ({
         damage: level * 5,
       }),
     },
+
+    // Passive skill
     toughness: {
       name: 'Toughness',
       type: 'passive',
       requiredLevel: 10,
-      icon: 'aura',
-      description: 'Increases armor and health',
+      icon: 'shield',
+      description: 'Permanently increases armor',
       effect: (level) => ({
         armor: level * 3,
-        maxHealth: level * 10,
       }),
     },
-    doubleStrike: {
-      name: 'Double Strike',
-      type: 'active',
-      requiredLevel: 50,
-      icon: 'double-strike',
-      description: 'Attack twice in quick succession',
-      effect: (level) => ({
-        attackSpeed: level * 0.05,
-        damage: level * 3,
-      }),
-    },
-    // Add more skills with their required levels...
   },
-  // Other class paths...
 };
 
 export default class SkillTree {
@@ -112,6 +133,7 @@ export default class SkillTree {
     this.skillLevels = {};
     this.skillEffects = {};
     this.activeSkillSlots = {};
+    this.activeSkillStates = {}; // Tracks which skills are toggled on
 
     if (savedData) {
       this.skillPoints = savedData.skillPoints;
@@ -120,6 +142,7 @@ export default class SkillTree {
       this.skillLevels = savedData.skillLevels || {};
       this.skillEffects = savedData.skillEffects || {};
       this.activeSkillSlots = savedData.activeSkillSlots || {};
+      this.activeSkillStates = savedData.activeSkillStates || {};
     }
     this.updateActionBar();
   }
@@ -230,15 +253,97 @@ export default class SkillTree {
       skillSlot.dataset.skillId = skillId;
 
       const skill = SKILL_TREES[this.selectedPath][skillId];
-      const html = String.raw;
-      if (skill) {
-        skillSlot.innerHTML = html`<div
-          class="skill-icon"
-          style="background-image: url('assets/skills/${skill.icon}.png')"
-        ></div>`;
+      if (skill && skill.type !== 'passive') {
+        skillSlot.innerHTML = `<div class="skill-icon" style="background-image: url('assets/skills/${skill.icon}.png')"></div>`;
+
+        // Add click handler for toggling
+        skillSlot.addEventListener('click', () => this.toggleSkill(skillId));
+
+        // Show active state if skill is toggled on
+        if (this.activeSkillStates[skillId]) {
+          skillSlot.classList.add('active');
+        }
       }
 
       skillSlotsContainer.appendChild(skillSlot);
     });
+  }
+
+  toggleSkill(skillId) {
+    if (!this.unlockedSkills[skillId]) return;
+
+    const skill = SKILL_TREES[this.selectedPath][skillId];
+    if (skill.type !== 'active' && skill.type !== 'toggle') return;
+
+    this.activeSkillStates[skillId] = !this.activeSkillStates[skillId];
+
+    // Update UI to show toggled state
+    const skillSlot = document.querySelector(`.skill-slot[data-skill-id="${skillId}"]`);
+    if (skillSlot) {
+      skillSlot.classList.toggle('active', this.activeSkillStates[skillId]);
+    }
+  }
+
+  activateSkill(skillId) {
+    const skill = SKILL_TREES[this.selectedPath][skillId];
+    const skillLevel = this.skillLevels[skillId] || 0;
+    const effects = skill.effect(skillLevel);
+
+    switch (skill.type) {
+      case 'instant':
+        this.handleInstantSkill(skillId, effects);
+        break;
+      case 'buff':
+        this.handleBuffSkill(skillId, effects);
+        break;
+      case 'toggle':
+        // Toggle skills are handled during combat
+        break;
+      case 'passive':
+        // Passive skills are applied automatically when learned
+        break;
+    }
+  }
+  handleInstantSkill(skillId, effects) {
+    if (hero.stats.currentMana >= SKILL_TREES[this.selectedPath][skillId].manaCost) {
+      // Apply instant effect (like damage)
+      Object.entries(effects).forEach(([stat, value]) => {
+        if (stat === 'damage') {
+          const damage = value * hero.calculateTotalDamage(false);
+          game.currentEnemy.currentHealth -= damage;
+          createDamageNumber(damage, false, false, false, false, true);
+          updateEnemyHealth();
+        }
+      });
+
+      hero.stats.currentMana -= SKILL_TREES[this.selectedPath][skillId].manaCost;
+      updatePlayerHealth();
+    }
+  }
+
+  handleBuffSkill(skillId, effects) {
+    const skill = SKILL_TREES[this.selectedPath][skillId];
+    if (hero.stats.currentMana >= skill.manaCost) {
+      // Apply buff effects
+      Object.entries(effects).forEach(([stat, value]) => {
+        if (hero.skillBonuses[stat] !== undefined) {
+          hero.skillBonuses[stat] += value;
+        }
+      });
+
+      hero.recalculateFromAttributes();
+      hero.stats.currentMana -= skill.manaCost;
+      updatePlayerHealth();
+
+      // Remove buff after duration
+      setTimeout(() => {
+        Object.entries(effects).forEach(([stat, value]) => {
+          if (hero.skillBonuses[stat] !== undefined) {
+            hero.skillBonuses[stat] -= value;
+          }
+        });
+        hero.recalculateFromAttributes();
+      }, skill.duration);
+    }
   }
 }

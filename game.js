@@ -87,8 +87,8 @@ class Game {
   saveGame() {
     const saveData = {
       hero: hero,
-      inventory: inventory,
       skillTree: skillTree,
+      inventory: inventory,
     };
 
     localStorage.setItem('gameProgress', JSON.stringify(saveData));
