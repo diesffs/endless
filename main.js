@@ -18,11 +18,12 @@ window.log = console.log;
 
 export const game = new Game();
 const savedData = game.loadGame();
+
 export const hero = new Hero(savedData?.hero);
 export const inventory = new Inventory(savedData?.inventory);
 export const skillTree = new SkillTree(savedData?.skillTree);
-export const prestige = new Prestige();
-export const shop = new Shop();
+export const prestige = new Prestige(savedData?.prestige);
+export const shop = new Shop(savedData?.shop);
 
 game.zone = hero?.startingZone || 1;
 
@@ -50,27 +51,33 @@ setInterval(() => {
   }
 }, 100);
 
-// asdasdasd
-
+// Debugging
 
 function createDebugUI() {
   const indentPx = 10;
   const debugDiv = document.createElement('div');
   debugDiv.style.position = 'fixed';
-  debugDiv.style.bottom = '0';
+  debugDiv.style.top = '0';
   debugDiv.style.left = '0';
   debugDiv.style.backgroundColor = 'black';
   debugDiv.style.color = 'white'; // For readability
   debugDiv.style.border = '1px solid black';
   debugDiv.style.padding = '10px';
-  debugDiv.style.maxHeight = '400px';
+  debugDiv.style.maxHeight = '100%';
+  debugDiv.style.maxWidth = '350px';
   debugDiv.style.overflowY = 'scroll';
   debugDiv.style.zIndex = '9999';
   debugDiv.style.fontFamily = 'monospace';
   debugDiv.style.fontSize = '12px';
   document.body.appendChild(debugDiv);
 
-  const expandedState = new Map();
+  // Load saved expanded states
+  const expandedState = new Map(JSON.parse(localStorage.getItem('debugUIState') || '[]'));
+
+  // Save expanded state whenever it changes
+  function saveExpandedState() {
+    localStorage.setItem('debugUIState', JSON.stringify([...expandedState]));
+  }
 
   // Helper function to render nested objects and arrays with spacing
   function renderObject(obj, parent, path = '', level = 0) {
@@ -103,10 +110,14 @@ function createDebugUI() {
           // Track changes to the expansion state
           details.addEventListener('toggle', () => {
             expandedState.set(fullPath, details.open);
+            saveExpandedState();
           });
 
           const summary = document.createElement('summary');
           summary.textContent = key;
+          summary.style.cursor = 'pointer';
+          summary.style.fontWeight = 'bold';
+          summary.style.color = 'orange';
           details.appendChild(summary);
 
           // Recursively render child objects
@@ -131,6 +142,9 @@ function createDebugUI() {
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
       let value;
+
+      if (key === 'debugUIState') continue;
+
       try {
         value = JSON.parse(localStorage.getItem(key));
       } catch {
@@ -165,6 +179,7 @@ function createDebugUI() {
   // Initial update and monitor changes
   updateDebugUI();
   setInterval(updateDebugUI, 1000);
+  setInterval(game.saveGame, 100);
 }
 
 createDebugUI();
