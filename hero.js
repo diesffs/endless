@@ -38,8 +38,6 @@ export const BASE_ELEMENTAL_DAMAGE = {
   cold: 0,
   lightning: 0,
   water: 0,
-  air: 0,
-  earth: 0,
 };
 export const BASE_ATTACK_RATING_PERCENT = 0;
 export const BASE_DAMAGE_PERCENT = 0;
@@ -72,7 +70,6 @@ export default class Hero {
       agility: 0,
       vitality: 0,
       wisdom: 0,
-      intelligence: 0,
       endurance: 0,
       dexterity: 0,
     };
@@ -91,7 +88,6 @@ export default class Hero {
       agility: 0,
       vitality: 0,
       wisdom: 0,
-      intelligence: 0,
       endurance: 0,
       dexterity: 0,
       critChance: 0,
@@ -107,8 +103,6 @@ export default class Hero {
       coldDamage: 0,
       lightningDamage: 0,
       waterDamage: 0,
-      airDamage: 0,
-      earthDamage: 0,
       attackRatingPercent: 0,
       damagePercent: 0,
     };
@@ -120,7 +114,6 @@ export default class Hero {
       agility: 0,
       vitality: 0,
       wisdom: 0,
-      intelligence: 0,
       endurance: 0,
       dexterity: 0,
       critChance: 0,
@@ -136,8 +129,6 @@ export default class Hero {
       coldDamage: 0,
       lightningDamage: 0,
       waterDamage: 0,
-      airDamage: 0,
-      earthDamage: 0,
       attackRatingPercent: 0,
       damagePercent: 0,
     };
@@ -149,7 +140,6 @@ export default class Hero {
       agility: 0,
       vitality: 0,
       wisdom: 0,
-      intelligence: 0,
       endurance: 0,
       dexterity: 0,
       critChance: 0,
@@ -162,8 +152,6 @@ export default class Hero {
       coldDamage: 0,
       lightningDamage: 0,
       waterDamage: 0,
-      airDamage: 0,
-      earthDamage: 0,
       attackRatingPercent: 0,
       damagePercent: 0,
     };
@@ -175,7 +163,6 @@ export default class Hero {
       agility: 0,
       vitality: 0,
       wisdom: 0,
-      intelligence: 0,
       endurance: 0,
       dexterity: 0,
       critChance: 0,
@@ -188,8 +175,6 @@ export default class Hero {
       coldDamage: 0,
       lightningDamage: 0,
       waterDamage: 0,
-      airDamage: 0,
-      earthDamage: 0,
       attackRatingPercent: 0,
       damagePercent: 0,
     };
@@ -213,8 +198,6 @@ export default class Hero {
       coldDamage: BASE_ELEMENTAL_DAMAGE.cold,
       lightningDamage: BASE_ELEMENTAL_DAMAGE.lightning,
       waterDamage: BASE_ELEMENTAL_DAMAGE.water,
-      airDamage: BASE_ELEMENTAL_DAMAGE.air,
-      earthDamage: BASE_ELEMENTAL_DAMAGE.earth,
       attackRatingPercent: BASE_ATTACK_RATING_PERCENT,
       damagePercent: BASE_DAMAGE_PERCENT,
     };
@@ -373,8 +356,6 @@ export default class Hero {
     this.stats.coldDamage = BASE_ELEMENTAL_DAMAGE.cold;
     this.stats.lightningDamage = BASE_ELEMENTAL_DAMAGE.lightning;
     this.stats.waterDamage = BASE_ELEMENTAL_DAMAGE.water;
-    this.stats.airDamage = BASE_ELEMENTAL_DAMAGE.air;
-    this.stats.earthDamage = BASE_ELEMENTAL_DAMAGE.earth;
     this.stats.attackRatingPercent = BASE_ATTACK_RATING_PERCENT;
     this.stats.damagePercent = BASE_DAMAGE_PERCENT;
 
@@ -438,12 +419,7 @@ export default class Hero {
     if (isCritical) baseDamage *= this.stats.critDamage;
 
     const elementalDamage =
-      this.stats.fireDamage +
-      this.stats.coldDamage +
-      this.stats.lightningDamage +
-      this.stats.waterDamage +
-      this.stats.airDamage +
-      this.stats.earthDamage;
+      this.stats.fireDamage + this.stats.coldDamage + this.stats.lightningDamage + this.stats.waterDamage;
 
     return baseDamage + elementalDamage;
   }

@@ -140,8 +140,6 @@ export function updateStatsAndAttributesUI() {
           <strong>⚡ Lightning Damage:</strong> <span id="lightning-damage-value">${hero.stats.lightningDamage}</span>
         </div>
         <div><strong>💧 Water Damage:</strong> <span id="water-damage-value">${hero.stats.waterDamage}</span></div>
-        <div><strong>🌪️ Air Damage:</strong> <span id="air-damage-value">${hero.stats.airDamage}</span></div>
-        <div><strong>🌎 Earth Damage:</strong> <span id="earth-damage-value">${hero.stats.earthDamage}</span></div>
       </div>
 
       <!-- DEFENSE -->
@@ -202,32 +200,28 @@ export function updateStatsAndAttributesUI() {
     attributesContainer.innerHTML = html`
       <h3 id="attributes">Attributes (+${hero.statPoints})</h3>
       <div>
-        <strong>Strength:</strong> <span id="strength-value">${hero.getStat('strength')}</span>
         <button class="allocate-btn" data-stat="strength">+</button>
+        <strong>Strength:</strong> <span id="strength-value">${hero.getStat('strength')}</span>
       </div>
       <div>
-        <strong>Agility:</strong> <span id="agility-value">${hero.getStat('agility')}</span>
         <button class="allocate-btn" data-stat="agility">+</button>
+        <strong>Agility:</strong> <span id="agility-value">${hero.getStat('agility')}</span>
       </div>
       <div>
-        <strong>Vitality:</strong> <span id="vitality-value">${hero.getStat('vitality')}</span>
         <button class="allocate-btn" data-stat="vitality">+</button>
+        <strong>Vitality:</strong> <span id="vitality-value">${hero.getStat('vitality')}</span>
       </div>
       <div>
-        <strong>Wisdom:</strong> <span id="wisdom-value">${hero.getStat('wisdom')}</span>
         <button class="allocate-btn" data-stat="wisdom">+</button>
+        <strong>Wisdom:</strong> <span id="wisdom-value">${hero.getStat('wisdom')}</span>
       </div>
       <div>
-        <strong>Intelligence:</strong> <span id="intelligence-value">${hero.getStat('intelligence')}</span>
-        <button class="allocate-btn" data-stat="intelligence">+</button>
-      </div>
-      <div>
-        <strong>Endurance:</strong> <span id="endurance-value">${hero.getStat('endurance')}</span>
         <button class="allocate-btn" data-stat="endurance">+</button>
+        <strong>Endurance:</strong> <span id="endurance-value">${hero.getStat('endurance')}</span>
       </div>
       <div>
-        <strong>Dexterity:</strong> <span id="dexterity-value">${hero.getStat('dexterity')}</span>
         <button class="allocate-btn" data-stat="dexterity">+</button>
+        <strong>Dexterity:</strong> <span id="dexterity-value">${hero.getStat('dexterity')}</span>
       </div>
     `;
     statsGrid.appendChild(attributesContainer);
@@ -247,7 +241,6 @@ export function updateStatsAndAttributesUI() {
     document.getElementById('agility-value').textContent = hero.getStat('agility');
     document.getElementById('vitality-value').textContent = hero.getStat('vitality');
     document.getElementById('wisdom-value').textContent = hero.getStat('wisdom');
-    document.getElementById('intelligence-value').textContent = hero.getStat('intelligence');
     document.getElementById('endurance-value').textContent = hero.getStat('endurance');
     document.getElementById('dexterity-value').textContent = hero.getStat('dexterity');
   }
