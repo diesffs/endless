@@ -194,36 +194,46 @@ export function updateStatsAndAttributesUI() {
       hero.stats.blockChance.toFixed(1).replace(/\./g, ',') + '%';
   }
 
+  const ATTRIBUTE_TOOLTIPS = {
+    strength: 'Each point increases:\n• Damage by 2\n• Every 5 points adds 1% to total damage',
+    agility:
+      'Each point increases:\n• Attack Rating by 10\n• Every 5 points adds 1% to total attack rating\n• Every 25 points adds 1% attack speed',
+    vitality:
+      'Each point increases:\n• Health by 10\n• Every 5 points adds 1% to total health\n• Every 10 points adds 1% health regeneration',
+    wisdom:
+      'Each point increases:\n• Mana by 5\n• Every 5 points adds 1% to total mana\n• Every 10 points adds 1% mana regeneration',
+    endurance: 'Each point increases:\n• Armor by 1\n• Every 5 points adds 1% to total armor',
+    dexterity:
+      'Each point increases:\n• Every 25 points adds 1% critical strike chance\n• Every 10 points adds 1% critical strike damage',
+  };
+
   if (!attributesContainer) {
     attributesContainer = document.createElement('div');
     attributesContainer.className = 'attributes-container';
     attributesContainer.innerHTML = html`
       <h3 id="attributes">Attributes (+${hero.statPoints})</h3>
-      <div>
-        <button class="allocate-btn" data-stat="strength">+</button>
-        <strong>Strength:</strong> <span id="strength-value">${hero.getStat('strength')}</span>
+      ${Object.entries(hero.primaryStats)
+        .map(
+          ([stat, value]) => `
+      <div class="attribute-row">
+        <button class="allocate-btn" data-stat="${stat}">+</button>
+        <strong>${stat.charAt(0).toUpperCase() + stat.slice(1)}:</strong>
+        <span id="${stat}-value">${hero.getStat(stat)}</span>
+        <div class="attribute-description">${ATTRIBUTE_TOOLTIPS[stat]}</div>
       </div>
-      <div>
-        <button class="allocate-btn" data-stat="agility">+</button>
-        <strong>Agility:</strong> <span id="agility-value">${hero.getStat('agility')}</span>
-      </div>
-      <div>
-        <button class="allocate-btn" data-stat="vitality">+</button>
-        <strong>Vitality:</strong> <span id="vitality-value">${hero.getStat('vitality')}</span>
-      </div>
-      <div>
-        <button class="allocate-btn" data-stat="wisdom">+</button>
-        <strong>Wisdom:</strong> <span id="wisdom-value">${hero.getStat('wisdom')}</span>
-      </div>
-      <div>
-        <button class="allocate-btn" data-stat="endurance">+</button>
-        <strong>Endurance:</strong> <span id="endurance-value">${hero.getStat('endurance')}</span>
-      </div>
-      <div>
-        <button class="allocate-btn" data-stat="dexterity">+</button>
-        <strong>Dexterity:</strong> <span id="dexterity-value">${hero.getStat('dexterity')}</span>
-      </div>
+    `
+        )
+        .join('')}
     `;
+
+    attributesContainer.querySelectorAll('.attribute-row').forEach((row) => {
+      row.addEventListener('mousemove', (e) => {
+        const tooltip = row.querySelector('.attribute-description');
+        tooltip.style.left = e.pageX + 10 + 'px';
+        tooltip.style.top = e.pageY + 10 + 'px';
+      });
+    });
+
     statsGrid.appendChild(attributesContainer);
 
     // Attach event listeners for allocation buttons (only once)

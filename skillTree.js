@@ -1,4 +1,5 @@
 import { createDamageNumber } from './combat.js';
+import { handleSavedData } from './functions.js';
 import { game, hero } from './main.js';
 import { updateEnemyHealth } from './ui.js';
 
@@ -135,29 +136,94 @@ export default class SkillTree {
     this.activeSkillSlots = {};
     this.activeSkillStates = {}; // Tracks which skills are toggled on
 
-    if (savedData) {
-      this.skillPoints = savedData.skillPoints;
-      this.selectedPath = savedData.selectedPath;
-      this.unlockedSkills = savedData.unlockedSkills || {};
-      this.skillLevels = savedData.skillLevels || {};
-      this.skillEffects = savedData.skillEffects || {};
-      this.activeSkillSlots = savedData.activeSkillSlots || {};
-      this.activeSkillStates = savedData.activeSkillStates || {};
-    }
+    this.pathBonuses = {
+      damage: 0,
+      armor: 0,
+      strength: 0,
+      agility: 0,
+      vitality: 0,
+      wisdom: 0,
+      endurance: 0,
+      dexterity: 0,
+      critChance: 0,
+      critDamage: 0,
+      attackSpeed: 0,
+      maxHealth: 0,
+      blockChance: 0,
+      maxMana: 0,
+      manaRegen: 0,
+      lifeRegen: 0,
+      lifeSteal: 0,
+      fireDamage: 0,
+      coldDamage: 0,
+      lightningDamage: 0,
+      waterDamage: 0,
+      attackRatingPercent: 0,
+      damagePercent: 0,
+    };
+
+    this.skillBonuses = {
+      damage: 0,
+      armor: 0,
+      strength: 0,
+      agility: 0,
+      vitality: 0,
+      wisdom: 0,
+      endurance: 0,
+      dexterity: 0,
+      critChance: 0,
+      critDamage: 0,
+      attackSpeed: 0,
+      maxHealth: 0,
+      blockChance: 0,
+      lifeSteal: 0,
+      fireDamage: 0,
+      coldDamage: 0,
+      lightningDamage: 0,
+      waterDamage: 0,
+      attackRatingPercent: 0,
+      damagePercent: 0,
+    };
+
+    this.activeSkillBonuses = {
+      damage: 0,
+      armor: 0,
+      strength: 0,
+      agility: 0,
+      vitality: 0,
+      wisdom: 0,
+      endurance: 0,
+      dexterity: 0,
+      critChance: 0,
+      critDamage: 0,
+      attackSpeed: 0,
+      maxHealth: 0,
+      blockChance: 0,
+      lifeSteal: 0,
+      fireDamage: 0,
+      coldDamage: 0,
+      lightningDamage: 0,
+      waterDamage: 0,
+      attackRatingPercent: 0,
+      damagePercent: 0,
+    };
+
+    handleSavedData(savedData, this);
+
     this.updateActionBar();
   }
 
   updateSkillBonuses() {
     // Reset hero's skill bonuses
-    Object.keys(hero.skillBonuses).forEach((stat) => {
-      hero.skillBonuses[stat] = 0;
+    Object.keys(this.skillBonuses).forEach((stat) => {
+      this.skillBonuses[stat] = 0;
     });
 
     // Apply all active skill effects
     Object.entries(this.skillEffects).forEach(([skillId, effects]) => {
       Object.entries(effects).forEach(([stat, value]) => {
-        if (hero.skillBonuses[stat] !== undefined) {
-          hero.skillBonuses[stat] += value;
+        if (this.skillBonuses[stat] !== undefined) {
+          this.skillBonuses[stat] += value;
         }
       });
     });
@@ -185,7 +251,7 @@ export default class SkillTree {
     const baseStats = CLASS_PATHS[pathName].baseStats;
 
     Object.entries(baseStats).forEach(([stat, value]) => {
-      hero.pathBonuses[stat] += value;
+      this.pathBonuses[stat] += value;
     });
 
     hero.recalculateFromAttributes();
@@ -326,8 +392,8 @@ export default class SkillTree {
     if (hero.stats.currentMana >= skill.manaCost) {
       // Apply buff effects
       Object.entries(effects).forEach(([stat, value]) => {
-        if (hero.skillBonuses[stat] !== undefined) {
-          hero.skillBonuses[stat] += value;
+        if (this.skillBonuses[stat] !== undefined) {
+          this.skillBonuses[stat] += value;
         }
       });
 
@@ -338,8 +404,8 @@ export default class SkillTree {
       // Remove buff after duration
       setTimeout(() => {
         Object.entries(effects).forEach(([stat, value]) => {
-          if (hero.skillBonuses[stat] !== undefined) {
-            hero.skillBonuses[stat] -= value;
+          if (this.skillBonuses[stat] !== undefined) {
+            this.skillBonuses[stat] -= value;
           }
         });
         hero.recalculateFromAttributes();

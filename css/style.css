@@ -430,3 +430,20 @@ body {
   border-color: #ff4444;
 }
 /* END SKILLS */
+
+.attribute-description {
+  display: none;
+  position: fixed;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  white-space: pre-line;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.attribute-row:hover .attribute-description {
+  display: block;
+}

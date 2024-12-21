@@ -2,6 +2,7 @@ import { game, hero, shop } from './main.js';
 import { updateZoneUI, updateResources, updatePlayerHealth, updateStatsAndAttributesUI } from './ui.js';
 import Enemy from './enemy.js';
 import { showToast } from './ui.js';
+import { handleSavedData } from './functions.js';
 
 const CRYSTAL_UPGRADE_CONFIG = {
   startingZone: {
@@ -23,7 +24,15 @@ const CRYSTAL_UPGRADE_CONFIG = {
 };
 
 export default class Prestige {
-  constructor() {}
+  constructor(savedData = null) {
+    this.crystalUpgrades = {
+      startingZone: 0,
+      startingGold: 0,
+      continuousPlay: false,
+    };
+
+    handleSavedData(savedData, this);
+  }
 
   calculateSouls() {
     if (!game || typeof hero.highestZone !== 'number') {
@@ -44,9 +53,9 @@ export default class Prestige {
       startingZone: hero.startingZone,
       startingGold: hero.startingGold,
       crystalUpgrades: {
-        startingZone: hero.crystalUpgrades.startingZone,
-        startingGold: hero.crystalUpgrades.startingGold,
-        continuousPlay: hero.crystalUpgrades.continuousPlay,
+        startingZone: this.crystalUpgrades.startingZone,
+        startingGold: this.crystalUpgrades.startingGold,
+        continuousPlay: this.crystalUpgrades.continuousPlay,
       },
     };
 
@@ -64,9 +73,9 @@ export default class Prestige {
     hero.crystals = savedValues.crystals;
     hero.startingZone = savedValues.startingZone;
     hero.startingGold = savedValues.startingGold;
-    hero.crystalUpgrades.startingZone = savedValues.crystalUpgrades.startingZone;
-    hero.crystalUpgrades.startingGold = savedValues.crystalUpgrades.startingGold;
-    hero.crystalUpgrades.continuousPlay = savedValues.crystalUpgrades.continuousPlay;
+    this.crystalUpgrades.startingZone = savedValues.crystalUpgrades.startingZone;
+    this.crystalUpgrades.startingGold = savedValues.crystalUpgrades.startingGold;
+    this.crystalUpgrades.continuousPlay = savedValues.crystalUpgrades.continuousPlay;
 
     this.resetGame();
     hero.recalculateFromAttributes();
@@ -147,11 +156,11 @@ export default class Prestige {
 
   createCrystalUpgradeButton(stat, config) {
     const isOneTime = config.oneTime;
-    const alreadyPurchased = isOneTime && hero.crystalUpgrades[stat];
-    const level = isOneTime ? '' : `(Lvl ${hero.crystalUpgrades[stat] || 0})`;
-    const bonus = isOneTime ? config.bonus : `+${config.bonus * (hero.crystalUpgrades[stat] || 0)} ${config.label}`;
+    const alreadyPurchased = isOneTime && this.crystalUpgrades[stat];
+    const level = isOneTime ? '' : `(Lvl ${this.crystalUpgrades[stat] || 0})`;
+    const bonus = isOneTime ? config.bonus : `+${config.bonus * (this.crystalUpgrades[stat] || 0)} ${config.label}`;
 
-    const cost = isOneTime ? config.baseCost : config.baseCost * (hero.crystalUpgrades[stat] + 1);
+    const cost = isOneTime ? config.baseCost : config.baseCost * (this.crystalUpgrades[stat] + 1);
     return `
       <button class="crystal-upgrade-btn ${alreadyPurchased ? 'purchased' : ''}" data-stat="${stat}">
         <span class="upgrade-name">${config.label} ${level}</span>
@@ -173,9 +182,9 @@ export default class Prestige {
 
   buyCrystalUpgrade(stat) {
     const config = CRYSTAL_UPGRADE_CONFIG[stat];
-    const cost = config.oneTime ? config.baseCost : config.baseCost * (hero.crystalUpgrades[stat] + 1);
+    const cost = config.oneTime ? config.baseCost : config.baseCost * (this.crystalUpgrades[stat] + 1);
 
-    if (config.oneTime && hero.crystalUpgrades[stat]) {
+    if (config.oneTime && this.crystalUpgrades[stat]) {
       showToast('Already purchased!', 'info');
       return;
     }
@@ -183,15 +192,15 @@ export default class Prestige {
     if (hero.crystals >= cost) {
       hero.crystals -= cost;
       if (config.oneTime) {
-        hero.crystalUpgrades[stat] = true;
+        this.crystalUpgrades[stat] = true;
       } else {
-        hero.crystalUpgrades[stat] = (hero.crystalUpgrades[stat] || 0) + 1;
+        this.crystalUpgrades[stat] = (this.crystalUpgrades[stat] || 0) + 1;
       }
 
       if (stat === 'startingZone') {
-        hero.startingZone = 1 + hero.crystalUpgrades[stat];
+        hero.startingZone = 1 + this.crystalUpgrades[stat];
       } else if (stat === 'startingGold') {
-        hero.startingGold = hero.crystalUpgrades[stat] * 1000;
+        hero.startingGold = this.crystalUpgrades[stat] * 1000;
       }
 
       updateResources();

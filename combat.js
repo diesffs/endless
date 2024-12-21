@@ -7,7 +7,7 @@ import {
 } from './ui.js';
 import Enemy from './enemy.js';
 import { ITEM_RARITY } from './item.js';
-import { hero, game, inventory, skillTree } from './main.js';
+import { hero, game, inventory, skillTree, prestige } from './main.js';
 import { SKILL_TREES } from './skillTree.js';
 
 export function enemyAttack(game, currentTime) {
@@ -118,7 +118,7 @@ export function playerDeath(game) {
     return;
   }
 
-  const shouldContinue = hero.crystalUpgrades.continuousPlay;
+  const shouldContinue = prestige.crystalUpgrades.continuousPlay;
 
   if (!shouldContinue) {
     game.gameStarted = false;
@@ -169,7 +169,6 @@ function defeatEnemy() {
   hero.gainExp(expGained);
 
   const newPrestigeSouls = Math.floor(game.zone / 50);
-  hero.prestigeProgress = newPrestigeSouls;
 
   if (enemy.rollForDrop()) {
     const itemLevel = enemy.calculateItemLevel(game.zone);

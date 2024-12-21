@@ -1,6 +1,6 @@
 import { updatePlayerHealth, updateEnemyHealth, updateZoneUI, updateResources } from './ui.js';
 import { playerAttack, enemyAttack } from './combat.js';
-import { game, hero, inventory, prestige, skillTree } from './main.js';
+import { game, hero, inventory, prestige, shop, skillTree } from './main.js';
 import Enemy from './enemy.js';
 
 class Game {
@@ -88,6 +88,8 @@ class Game {
     const saveData = {
       hero: hero,
       skillTree: skillTree,
+      prestige: prestige,
+      shop: shop,
       inventory: inventory,
     };
 

@@ -1,9 +1,35 @@
+import { handleSavedData } from './functions.js';
 import Item, { ITEM_RARITY, RARITY_ORDER, SLOT_REQUIREMENTS } from './item.js';
 import { game, hero } from './main.js';
 import { showToast } from './ui.js';
 
 export default class Inventory {
   constructor(savedData = null) {
+    this.equipmentBonuses = {
+      damage: 0,
+      armor: 0,
+      strength: 0,
+      agility: 0,
+      vitality: 0,
+      wisdom: 0,
+      endurance: 0,
+      dexterity: 0,
+      critChance: 0,
+      critDamage: 0,
+      attackSpeed: 0,
+      maxHealth: 0,
+      blockChance: 0,
+      maxMana: 0,
+      manaRegen: 0,
+      lifeRegen: 0,
+      lifeSteal: 0,
+      fireDamage: 0,
+      coldDamage: 0,
+      lightningDamage: 0,
+      waterDamage: 0,
+      attackRatingPercent: 0,
+      damagePercent: 0,
+    };
     this.equippedItems = savedData?.equippedItems || {};
     this.inventoryItems = savedData?.inventoryItems || new Array(200).fill(null);
 
@@ -281,12 +307,11 @@ export default class Inventory {
 
     this.inventoryItems.forEach((item, index) => {
       const cell = document.querySelector(`.grid-cell:nth-child(${index + 1})`);
+      const html = String.raw;
       if (cell && item) {
-        cell.innerHTML = `
-          <div class="inventory-item rarity-${item.rarity.toLowerCase()}" 
-              draggable="true" 
-              data-item-id="${item.id}">
-              <div class="item-icon">${item.getIcon()}</div>
+        cell.innerHTML = html`
+          <div class="inventory-item rarity-${item.rarity.toLowerCase()}" draggable="true" data-item-id="${item.id}">
+            <div class="item-icon">${item.getIcon()}</div>
           </div>
         `;
       }
@@ -493,15 +518,15 @@ export default class Inventory {
 
   updateItemBonuses() {
     // Reset equipment bonuses
-    Object.keys(hero.equipmentBonuses).forEach((stat) => {
-      hero.equipmentBonuses[stat] = 0;
+    Object.keys(this.equipmentBonuses).forEach((stat) => {
+      this.equipmentBonuses[stat] = 0;
     });
 
     // Calculate bonuses from all equipped items
     Object.values(this.equippedItems).forEach((item) => {
       Object.entries(item.stats).forEach(([stat, value]) => {
-        if (hero.equipmentBonuses[stat] !== undefined) {
-          hero.equipmentBonuses[stat] += value;
+        if (this.equipmentBonuses[stat] !== undefined) {
+          this.equipmentBonuses[stat] += value;
         }
       });
     });

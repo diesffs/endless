@@ -1,55 +1,84 @@
-import { updateResources, updatePlayerHealth, updateStatsAndAttributesUI } from './ui.js';
-import {
-  ARMOR_ON_UPGRADE,
-  ATTACK_SPEED_ON_UPGRADE,
-  CRIT_CHANCE_ON_UPGRADE,
-  CRIT_DAMAGE_ON_UPGRADE,
-  DAMAGE_ON_UPGRADE,
-  HEALTH_ON_UPGRADE,
-  MANA_ON_UPGRADE,
-  BASE_UPGRADE_COSTS,
-  HEALTH_REGEN_ON_UPGRADE,
-  MANA_REGEN_ON_UPGRADE,
-} from './hero.js';
+import { updateResources, updateStatsAndAttributesUI } from './ui.js';
+
 import { showToast } from './ui.js';
 import { game, hero } from './main.js';
+import { handleSavedData } from './functions.js';
 
 const UPGRADE_CONFIG = {
-  damage: { label: 'Damage', bonus: DAMAGE_ON_UPGRADE },
+  damage: { label: 'Damage', bonus: 1 },
   attackSpeed: {
     label: 'Attack Speed',
-    bonus: ATTACK_SPEED_ON_UPGRADE,
+    bonus: 0.01,
     fixed: 2,
   },
-  health: { label: 'Health', bonus: HEALTH_ON_UPGRADE },
-  armor: { label: 'Armor', bonus: ARMOR_ON_UPGRADE },
+  health: { label: 'Health', bonus: 10 },
+  armor: { label: 'Armor', bonus: 1 },
   critChance: {
     label: 'Crit Chance',
-    bonus: CRIT_CHANCE_ON_UPGRADE,
+    bonus: 0.1,
     fixed: 2,
     suffix: '%',
   },
   critDamage: {
     label: 'Crit Damage',
-    bonus: CRIT_DAMAGE_ON_UPGRADE,
+    bonus: 0.01,
     fixed: 2,
     suffix: '%',
   },
-  mana: { label: 'Mana', bonus: MANA_ON_UPGRADE },
+  mana: { label: 'Mana', bonus: 5 },
   healthRegen: {
     label: 'Health Regen',
-    bonus: HEALTH_REGEN_ON_UPGRADE,
+    bonus: 0.1,
     fixed: 1,
   },
   manaRegen: {
     label: 'Mana Regen',
-    bonus: MANA_REGEN_ON_UPGRADE,
+    bonus: 0.1,
     fixed: 1,
   },
 };
 
+export const BASE_UPGRADE_COSTS = {
+  damage: 100,
+  attackSpeed: 200,
+  health: 150,
+  armor: 250,
+  critChance: 300,
+  critDamage: 400,
+  mana: 200,
+  healthRegen: 200,
+  manaRegen: 200,
+};
+
 export default class Shop {
-  constructor() {
+  constructor(savedData = null) {
+    this.upgradeCosts = { ...BASE_UPGRADE_COSTS };
+    this.upgradeLevels = {
+      damage: 0,
+      attackSpeed: 0,
+      health: 0,
+      armor: 0,
+      critChance: 0,
+      critDamage: 0,
+      mana: 0,
+      healthRegen: 0,
+      manaRegen: 0,
+    };
+
+    this.shopBonuses = {
+      damage: 0,
+      attackSpeed: 0,
+      health: 0,
+      armor: 0,
+      critChance: 0,
+      critDamage: 0,
+      mana: 0,
+      healthRegen: 0,
+      manaRegen: 0,
+    };
+
+    handleSavedData(savedData, this);
+
     this.initializeShopUI();
   }
 
@@ -118,8 +147,8 @@ export default class Shop {
   }
 
   createUpgradeButton(stat, config) {
-    const cost = hero.upgradeCosts[stat] || 0;
-    const level = hero.upgradeLevels[stat] || 0;
+    const cost = this.upgradeCosts[stat] || 0;
+    const level = this.upgradeLevels[stat] || 0;
     const bonus = this.getBonusText(config, level);
 
     return `
@@ -134,7 +163,7 @@ export default class Shop {
 
   buyUpgrade(stat) {
     const currency = 'gold';
-    const cost = hero.upgradeCosts[stat];
+    const cost = this.upgradeCosts[stat];
 
     // Check if player has enough currency
     if (hero[currency] < cost) {
@@ -144,8 +173,8 @@ export default class Shop {
 
     // Deduct cost and increase level
     hero[currency] -= cost;
-    hero.upgradeLevels[stat] = (hero.upgradeLevels[stat] || 0) + 1;
-    hero.upgradeCosts[stat] += BASE_UPGRADE_COSTS[stat];
+    this.upgradeLevels[stat] = (this.upgradeLevels[stat] || 0) + 1;
+    this.upgradeCosts[stat] += BASE_UPGRADE_COSTS[stat];
 
     // Update UI
     this.updateShopUI('gold-upgrades');
@@ -159,5 +188,19 @@ export default class Shop {
     const value = config.bonus * level;
     const formattedValue = config.fixed ? value.toFixed(config.fixed) : value;
     return `+${formattedValue}${config.suffix || ''} ${config.label}`;
+  }
+
+  updateShopBonuses() {
+    // Reset equipment bonuses
+    Object.keys(this.shopBonuses).forEach((stat) => {
+      this.shopBonuses[stat] = 0;
+    });
+
+    // Calculate bonuses from all equipped items
+    Object.keys(this.upgradeLevels).forEach((upg) => {
+      if (this.shopBonuses[upg] !== undefined) {
+        this.shopBonuses[upg] += this.upgradeLevels[upg] * UPGRADE_CONFIG[upg].bonus;
+      }
+    });
   }
 }
