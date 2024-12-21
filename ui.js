@@ -1,7 +1,7 @@
 import Enemy from './enemy.js';
 import { game, hero, prestige, skillTree } from './main.js';
 import { calculateHitChance } from './combat.js';
-import { CLASS_PATHS, SKILL_LEVEL_TIERS, SKILL_TREES } from './skillTree.js';
+import { CLASS_PATHS, REQ_LEVEL_FOR_SKILL_TREE, SKILL_LEVEL_TIERS, SKILL_TREES } from './skillTree.js';
 const html = String.raw;
 
 export function initializeUI() {
@@ -255,7 +255,7 @@ export function updateStatsAndAttributesUI() {
     document.getElementById('dexterity-value').textContent = hero.getStat('dexterity');
   }
 
-  if (hero.level >= 10) {
+  if (hero.level >= REQ_LEVEL_FOR_SKILL_TREE) {
     const skillTreeTab = document.querySelector('[data-tab="skilltree"]');
     skillTreeTab.classList.remove('hidden');
   }
@@ -361,6 +361,11 @@ function selectClassPath(pathId) {
 function showSkillTree() {
   const container = document.getElementById('skill-tree-container');
   container.innerHTML = '';
+
+  const skillPointsHeader = document.createElement('div');
+  skillPointsHeader.className = 'skill-points-header';
+  skillPointsHeader.innerHTML = `Available Skill Points: ${skillTree.skillPoints}`;
+  container.appendChild(skillPointsHeader);
 
   const skills = SKILL_TREES[skillTree.selectedPath];
   const levelGroups = SKILL_LEVEL_TIERS.reduce((acc, level) => {

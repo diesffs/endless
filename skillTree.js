@@ -66,7 +66,7 @@ export const CLASS_PATHS = {
   },
 };
 
-export const SKILL_LEVEL_TIERS = [10, 25, 50, 100, 200, 300, 400, 500];
+export const SKILL_LEVEL_TIERS = [1, 10, 25, 50, 100, 200, 300, 400, 500];
 
 export const SKILL_TREES = {
   WARRIOR: {
@@ -75,7 +75,7 @@ export const SKILL_TREES = {
       name: 'Bash',
       type: 'toggle',
       manaCost: 10, // Mana cost per attack
-      requiredLevel: 10,
+      requiredLevel: SKILL_LEVEL_TIERS[0],
       icon: 'war-axe',
       description: 'While active, increases damage but costs mana per attack',
       effect: (level) => ({
@@ -89,9 +89,9 @@ export const SKILL_TREES = {
       type: 'instant',
       manaCost: 25,
       cooldown: 5000,
-      requiredLevel: 15,
+      requiredLevel: SKILL_LEVEL_TIERS[0],
       icon: 'slam',
-      description: 'Deals instant area damage',
+      description: 'Deals instant damage',
       effect: (level) => ({
         damage: level * 10,
       }),
@@ -104,7 +104,7 @@ export const SKILL_TREES = {
       manaCost: 40,
       cooldown: 15000,
       duration: 5000,
-      requiredLevel: 20,
+      requiredLevel: SKILL_LEVEL_TIERS[0],
       icon: 'cry',
       description: 'Temporarily increases damage',
       effect: (level) => ({
@@ -116,7 +116,7 @@ export const SKILL_TREES = {
     toughness: {
       name: 'Toughness',
       type: 'passive',
-      requiredLevel: 10,
+      requiredLevel: SKILL_LEVEL_TIERS[0],
       icon: 'shield',
       description: 'Permanently increases armor',
       effect: (level) => ({
@@ -125,6 +125,8 @@ export const SKILL_TREES = {
     },
   },
 };
+
+export const REQ_LEVEL_FOR_SKILL_TREE = 1;
 
 export default class SkillTree {
   constructor(savedData = null) {
@@ -288,15 +290,14 @@ export default class SkillTree {
 
     const skill = SKILL_TREES[this.selectedPath][skillId];
     const currentLevel = this.skillLevels[skillId] || 0;
-    const requiredPoints = skill.row === 1 ? 1 : skill.row * 2;
 
-    if (skill.type === 'active') {
+    if (skill.type !== 'passive') {
       const nextSlot = Object.keys(this.activeSkillSlots).length + 1;
       this.activeSkillSlots[nextSlot] = skillId;
       this.updateActionBar();
     }
 
-    this.skillPoints -= requiredPoints;
+    this.skillPoints -= 1;
     this.skillLevels[skillId] = currentLevel + 1;
     this.unlockedSkills[skillId] = true;
 
@@ -312,6 +313,7 @@ export default class SkillTree {
     if (!skillSlotsContainer) return;
 
     skillSlotsContainer.innerHTML = '';
+    l(this.activeSkillSlots);
     Object.entries(this.activeSkillSlots).forEach(([slot, skillId]) => {
       const skillSlot = document.createElement('div');
       skillSlot.className = 'skill-slot';
@@ -319,6 +321,7 @@ export default class SkillTree {
       skillSlot.dataset.skillId = skillId;
 
       const skill = SKILL_TREES[this.selectedPath][skillId];
+      l(skill);
       if (skill && skill.type !== 'passive') {
         skillSlot.innerHTML = `<div class="skill-icon" style="background-image: url('assets/skills/${skill.icon}.png')"></div>`;
 

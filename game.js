@@ -43,8 +43,8 @@ class Game {
     if (!this.gameStarted) return;
 
     const currentTime = Date.now();
-    playerAttack(this, currentTime);
-    enemyAttack(this, currentTime);
+    playerAttack(currentTime);
+    enemyAttack(currentTime);
 
     // Regenerate health and mana every second
     if (currentTime - this.lastRegen >= 1000) {

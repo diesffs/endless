@@ -1,10 +1,15 @@
-import { game } from "./main.js";
+import { game } from './main.js';
 
 export const handleSavedData = (savedData, self) => {
   if (savedData) {
     Object.keys(self).forEach((key) => {
       if (savedData.hasOwnProperty(key)) {
-        if (typeof self[key] === 'object' && !Array.isArray(self[key]) && savedData[key] !== null) {
+        if (
+          typeof self[key] === 'object' &&
+          !Array.isArray(self[key]) &&
+          self[key] !== null &&
+          savedData[key] !== null
+        ) {
           self[key] = { ...self[key], ...savedData[key] };
         } else {
           self[key] = savedData[key];
@@ -13,7 +18,6 @@ export const handleSavedData = (savedData, self) => {
     });
   }
 };
-
 
 // Debugging
 
@@ -155,4 +159,3 @@ export function createDebugUI() {
   setInterval(updateDebugUI, 1000);
   setInterval(game.saveGame, 1000);
 }
-

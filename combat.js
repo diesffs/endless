@@ -10,7 +10,7 @@ import { ITEM_RARITY } from './item.js';
 import { hero, game, inventory, skillTree, prestige } from './main.js';
 import { SKILL_TREES } from './skillTree.js';
 
-export function enemyAttack(game, currentTime) {
+export function enemyAttack(currentTime) {
   if (!game || !hero || !game.currentEnemy) return;
   if (game.currentEnemy.canAttack(currentTime)) {
     // Check for block first
@@ -36,7 +36,7 @@ export function enemyAttack(game, currentTime) {
       updatePlayerHealth();
 
       // Handle player death if health drops to 0
-      if (hero.stats.currentHealth <= 0) playerDeath(game);
+      if (hero.stats.currentHealth <= 0) playerDeath();
     }
 
     // Record the enemy's last attack time
@@ -44,7 +44,7 @@ export function enemyAttack(game, currentTime) {
   }
 }
 
-export function playerAttack(game, currentTime) {
+export function playerAttack(currentTime) {
   if (!game || !game.currentEnemy) return;
   const timeBetweenAttacks = 1000 / hero.stats.attackSpeed;
 
@@ -59,8 +59,8 @@ export function playerAttack(game, currentTime) {
             // Apply toggle skill effects
             const effects = skill.effect(skillTree.skillLevels[skillId] || 0);
             Object.entries(effects).forEach(([stat, value]) => {
-              if (hero.skillBonuses[stat] !== undefined) {
-                hero.skillBonuses[stat] += value;
+              if (skillTree.skillBonuses[stat] !== undefined) {
+                skillTree.skillBonuses[stat] += value;
               }
             });
             hero.stats.currentMana -= skill.manaCost;
@@ -99,8 +99,8 @@ export function playerAttack(game, currentTime) {
           if (skill.type === 'toggle') {
             const effects = skill.effect(skillTree.skillLevels[skillId] || 0);
             Object.entries(effects).forEach(([stat, value]) => {
-              if (hero.skillBonuses[stat] !== undefined) {
-                hero.skillBonuses[stat] -= value;
+              if (skillTree.skillBonuses[stat] !== undefined) {
+                skillTree.skillBonuses[stat] -= value;
               }
             });
           }
@@ -112,12 +112,7 @@ export function playerAttack(game, currentTime) {
 }
 
 // Remove any duplicate definitions and keep this single version
-export function playerDeath(game) {
-  if (!game) {
-    console.error('Game is not properly initialized in playerDeath.');
-    return;
-  }
-
+export function playerDeath() {
   const shouldContinue = prestige.crystalUpgrades.continuousPlay;
 
   if (!shouldContinue) {
