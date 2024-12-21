@@ -118,6 +118,16 @@ function createDebugUI() {
           summary.style.cursor = 'pointer';
           summary.style.fontWeight = 'bold';
           summary.style.color = 'orange';
+          if (Array.isArray(value)) {
+            summary.textContent = key + '[]';
+            summary.style.color = 'yellow';
+          }
+
+          if (level === 0) {
+            summary.style.fontSize = '18px';
+            summary.style.color = '#00ff00';
+          }
+
           details.appendChild(summary);
 
           // Recursively render child objects
