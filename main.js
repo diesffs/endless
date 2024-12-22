@@ -15,7 +15,7 @@ import Inventory from './inventory.js';
 import SkillTree from './skillTree.js';
 import { createDebugUI } from './functions.js';
 
-window.l = console.log;
+window.q = console.log;
 
 export const game = new Game();
 const savedData = game.loadGame();

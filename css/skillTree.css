@@ -51,19 +51,6 @@
   flex-wrap: wrap;
 }
 
-.skill-description {
-  display: none;
-  position: fixed; /* Change from absolute to fixed */
-  background: rgba(0, 0, 0, 0.9);
-  padding: 10px;
-  border-radius: 5px;
-  width: 200px;
-  z-index: 100; /* Increased z-index to ensure visibility */
-  pointer-events: none; /* Prevents tooltip from interfering with clicks */
-  color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
 .skill-level {
   font-size: 0.8em;
   color: #aaa;
@@ -125,10 +112,6 @@
   border-color: #fff;
 }
 
-.skill-node:hover .skill-description {
-  display: block;
-}
-
 .skill-node.active {
   border-color: #ff4444;
 }
@@ -149,4 +132,22 @@
 .skill-slot.active {
   border: 2px solid #4caf50;
   box-shadow: 0 0 10px #4caf50;
+}
+
+.skill-description {
+  display: none;
+  position: fixed;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  white-space: pre-line;
+  z-index: 1000;
+  pointer-events: none;
+  top: 100%;
+}
+
+.skill-node:hover .skill-description {
+  display: block;
 }

@@ -7,8 +7,7 @@ import {
 } from './ui.js';
 import Enemy from './enemy.js';
 import { ITEM_RARITY } from './item.js';
-import { hero, game, inventory, skillTree, prestige } from './main.js';
-import { SKILL_TREES } from './skillTree.js';
+import { hero, game, inventory, prestige } from './main.js';
 
 export function enemyAttack(currentTime) {
   if (!game || !hero || !game.currentEnemy) return;
@@ -23,7 +22,7 @@ export function enemyAttack(currentTime) {
       // Calculate armor reduction
       const armor = hero.stats.armor;
       const damageReduction = armor / (100 + armor);
-      const effectiveDamage = game.currentEnemy.damage * (1 - damageReduction);
+      const effectiveDamage = Math.floor(game.currentEnemy.damage * (1 - damageReduction));
 
       // Apply reduced damage to player's health
       hero.stats.currentHealth -= effectiveDamage;
@@ -50,24 +49,6 @@ export function playerAttack(currentTime) {
 
   if (currentTime - game.lastPlayerAttack >= timeBetweenAttacks) {
     if (game.currentEnemy.currentHealth > 0) {
-      // Handle toggle skills during attack
-      Object.entries(skillTree.activeSkillStates).forEach(([skillId, isActive]) => {
-        if (isActive) {
-          console.log('active');
-          const skill = SKILL_TREES[skillTree.selectedPath][skillId];
-          if (skill.type === 'toggle' && hero.stats.currentMana >= skill.manaCost) {
-            // Apply toggle skill effects
-            const effects = skill.effect(skillTree.skillLevels[skillId] || 0);
-            Object.entries(effects).forEach(([stat, value]) => {
-              if (skillTree.skillBonuses[stat] !== undefined) {
-                skillTree.skillBonuses[stat] += value;
-              }
-            });
-            hero.stats.currentMana -= skill.manaCost;
-          }
-        }
-      });
-
       // Calculate if attack hits
       const hitChance = calculateHitChance(hero.stats.attackRating, game.zone);
       const roll = Math.random() * 100;
@@ -91,21 +72,6 @@ export function playerAttack(currentTime) {
       if (game.currentEnemy.currentHealth <= 0) {
         defeatEnemy();
       }
-
-      // Reset toggle skill effects after attack
-      Object.entries(skillTree.activeSkillStates).forEach(([skillId, isActive]) => {
-        if (isActive) {
-          const skill = SKILL_TREES[skillTree.selectedPath][skillId];
-          if (skill.type === 'toggle') {
-            const effects = skill.effect(skillTree.skillLevels[skillId] || 0);
-            Object.entries(effects).forEach(([stat, value]) => {
-              if (skillTree.skillBonuses[stat] !== undefined) {
-                skillTree.skillBonuses[stat] -= value;
-              }
-            });
-          }
-        }
-      });
     }
     game.lastPlayerAttack = currentTime;
   }

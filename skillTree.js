@@ -1,7 +1,6 @@
-import { createDamageNumber } from './combat.js';
 import { handleSavedData } from './functions.js';
 import { game, hero } from './main.js';
-import { updateEnemyHealth } from './ui.js';
+import { updateActionBar, updateSkillTreeValues } from './ui.js';
 
 export const CLASS_PATHS = {
   WARRIOR: {
@@ -67,6 +66,7 @@ export const CLASS_PATHS = {
 };
 
 export const SKILL_LEVEL_TIERS = [1, 10, 25, 50, 100, 200, 300, 400, 500];
+export const DEFAULT_MAX_SKILL_LEVEL = 100;
 
 export const SKILL_TREES = {
   WARRIOR: {
@@ -78,6 +78,7 @@ export const SKILL_TREES = {
       requiredLevel: SKILL_LEVEL_TIERS[0],
       icon: 'war-axe',
       description: 'While active, increases damage but costs mana per attack',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         damage: level * 3,
       }),
@@ -92,6 +93,7 @@ export const SKILL_TREES = {
       requiredLevel: SKILL_LEVEL_TIERS[0],
       icon: 'slam',
       description: 'Deals instant damage',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         damage: level * 10,
       }),
@@ -107,6 +109,7 @@ export const SKILL_TREES = {
       requiredLevel: SKILL_LEVEL_TIERS[0],
       icon: 'cry',
       description: 'Temporarily increases damage',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         damage: level * 5,
       }),
@@ -119,6 +122,7 @@ export const SKILL_TREES = {
       requiredLevel: SKILL_LEVEL_TIERS[0],
       icon: 'shield',
       description: 'Permanently increases armor',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         armor: level * 3,
       }),
@@ -132,132 +136,66 @@ export default class SkillTree {
   constructor(savedData = null) {
     this.skillPoints = 0;
     this.selectedPath = null;
-    this.unlockedSkills = {};
-    this.skillLevels = {};
-    this.skillEffects = {};
-    this.activeSkillSlots = {};
-    this.activeSkillStates = {}; // Tracks which skills are toggled on
-
-    this.pathBonuses = {
-      damage: 0,
-      armor: 0,
-      strength: 0,
-      agility: 0,
-      vitality: 0,
-      wisdom: 0,
-      endurance: 0,
-      dexterity: 0,
-      critChance: 0,
-      critDamage: 0,
-      attackSpeed: 0,
-      maxHealth: 0,
-      blockChance: 0,
-      maxMana: 0,
-      manaRegen: 0,
-      lifeRegen: 0,
-      lifeSteal: 0,
-      fireDamage: 0,
-      coldDamage: 0,
-      lightningDamage: 0,
-      waterDamage: 0,
-      attackRatingPercent: 0,
-      damagePercent: 0,
-    };
-
-    this.skillBonuses = {
-      damage: 0,
-      armor: 0,
-      strength: 0,
-      agility: 0,
-      vitality: 0,
-      wisdom: 0,
-      endurance: 0,
-      dexterity: 0,
-      critChance: 0,
-      critDamage: 0,
-      attackSpeed: 0,
-      maxHealth: 0,
-      blockChance: 0,
-      lifeSteal: 0,
-      fireDamage: 0,
-      coldDamage: 0,
-      lightningDamage: 0,
-      waterDamage: 0,
-      attackRatingPercent: 0,
-      damagePercent: 0,
-    };
-
-    this.activeSkillBonuses = {
-      damage: 0,
-      armor: 0,
-      strength: 0,
-      agility: 0,
-      vitality: 0,
-      wisdom: 0,
-      endurance: 0,
-      dexterity: 0,
-      critChance: 0,
-      critDamage: 0,
-      attackSpeed: 0,
-      maxHealth: 0,
-      blockChance: 0,
-      lifeSteal: 0,
-      fireDamage: 0,
-      coldDamage: 0,
-      lightningDamage: 0,
-      waterDamage: 0,
-      attackRatingPercent: 0,
-      damagePercent: 0,
-    };
+    this.skills = {};
 
     handleSavedData(savedData, this);
-
-    this.updateActionBar();
   }
 
-  updateSkillBonuses() {
-    // Reset hero's skill bonuses
-    Object.keys(this.skillBonuses).forEach((stat) => {
-      this.skillBonuses[stat] = 0;
-    });
-
-    // Apply all active skill effects
-    Object.entries(this.skillEffects).forEach(([skillId, effects]) => {
-      Object.entries(effects).forEach(([stat, value]) => {
-        if (this.skillBonuses[stat] !== undefined) {
-          this.skillBonuses[stat] += value;
-        }
-      });
-    });
+  getPathBonuses() {
+    return CLASS_PATHS[this.selectedPath?.name]?.baseStats || {};
   }
 
-  recalculateAllSkillEffects() {
-    this.skillEffects = {};
-    Object.entries(this.skillLevels).forEach(([skillId, level]) => {
-      if (level > 0) {
-        const skill = SKILL_TREES[this.selectedPath][skillId];
-        this.skillEffects[skillId] = skill.effect(level);
+  calculatePassiveBonuses() {
+    const bonuses = {};
+    // Add skill bonuses
+    Object.entries(this.skills).forEach(([skillId, skillData]) => {
+      const skill = SKILL_TREES[this.selectedPath?.name][skillId];
+      if (skill.type === 'passive') {
+        const effects = skill.effect(skillData.level);
+        Object.entries(effects).forEach(([stat, value]) => {
+          bonuses[stat] = (bonuses[stat] || 0) + value;
+        });
       }
     });
+
+    return bonuses;
+  }
+
+  calculateActiveSkillEffects() {
+    const effects = {};
+
+    Object.entries(this.skills).forEach(([skillId, skillData]) => {
+      const skill = SKILL_TREES[this.selectedPath?.name][skillId];
+      if (skill.type === 'toggle' && this.isSkillActive(skillId)) {
+        const skillEffects = skill.effect(skillData.level);
+        Object.entries(skillEffects).forEach(([stat, value]) => {
+          effects[stat] = (effects[stat] || 0) + value;
+        });
+      }
+    });
+
+    return effects;
+  }
+
+  isSkillActive(skillId) {
+    const skill = SKILL_TREES[this.selectedPath?.name][skillId];
+    return skill && (skill.type === 'toggle' || skill.type === 'buff') && this.skills[skillId]?.active;
   }
 
   addSkillPoints(points) {
     this.skillPoints += points;
+    updateSkillTreeValues();
   }
 
   selectPath(pathName) {
     if (this.selectedPath) return false;
     if (!CLASS_PATHS[pathName]) return false;
 
-    this.selectedPath = pathName;
-    const baseStats = CLASS_PATHS[pathName].baseStats;
-
-    Object.entries(baseStats).forEach(([stat, value]) => {
-      this.pathBonuses[stat] += value;
-    });
-
+    this.selectedPath = {
+      name: pathName,
+      baseStats: CLASS_PATHS[pathName].baseStats,
+    };
     hero.recalculateFromAttributes();
-
     game.saveGame();
     return true;
   }
@@ -269,10 +207,10 @@ export default class SkillTree {
   canUnlockSkill(skillId) {
     if (!this.selectedPath) return false;
 
-    const skill = SKILL_TREES[this.selectedPath][skillId];
+    const skill = SKILL_TREES[this.selectedPath?.name][skillId];
     if (!skill) return false;
 
-    const currentLevel = this.skillLevels[skillId] || 0;
+    const currentLevel = this.skills[skillId]?.level || 0;
     return this.skillPoints >= 1 && currentLevel < 10 && hero.level >= skill.requiredLevel;
   }
 
@@ -280,7 +218,7 @@ export default class SkillTree {
     if (skill.row === 1) return true;
 
     return skill.prerequisites.some((preReqId) => {
-      const preReqLevel = this.skillLevels[preReqId] || 0;
+      const preReqLevel = this.skills[preReqId]?.level || 0;
       return preReqLevel > 0;
     });
   }
@@ -288,131 +226,42 @@ export default class SkillTree {
   unlockSkill(skillId) {
     if (!this.canUnlockSkill(skillId)) return false;
 
-    const skill = SKILL_TREES[this.selectedPath][skillId];
-    const currentLevel = this.skillLevels[skillId] || 0;
+    const skill = SKILL_TREES[this.selectedPath?.name][skillId];
+    const currentLevel = this.skills[skillId]?.level || 0;
+    const nextLevel = currentLevel + 1;
 
-    if (skill.type !== 'passive') {
-      const nextSlot = Object.keys(this.activeSkillSlots).length + 1;
-      this.activeSkillSlots[nextSlot] = skillId;
-      this.updateActionBar();
-    }
+    this.skills[skillId] = {
+      ...skill,
+      level: nextLevel,
+      effect: skill.effect(nextLevel),
+      active: false,
+      slot: skill.type !== 'passive' ? Object.keys(this.skills).length + 1 : null,
+    };
 
     this.skillPoints -= 1;
-    this.skillLevels[skillId] = currentLevel + 1;
-    this.unlockedSkills[skillId] = true;
-
-    // Update skill effects
-    this.skillEffects[skillId] = skill.effect(currentLevel + 1);
     hero.recalculateFromAttributes();
+
+    if (skill.type !== 'passive') {
+      updateActionBar();
+    }
 
     return true;
   }
 
-  updateActionBar() {
-    const skillSlotsContainer = document.querySelector('.skill-slots');
-    if (!skillSlotsContainer) return;
-
-    skillSlotsContainer.innerHTML = '';
-    l(this.activeSkillSlots);
-    Object.entries(this.activeSkillSlots).forEach(([slot, skillId]) => {
-      const skillSlot = document.createElement('div');
-      skillSlot.className = 'skill-slot';
-      skillSlot.dataset.key = slot;
-      skillSlot.dataset.skillId = skillId;
-
-      const skill = SKILL_TREES[this.selectedPath][skillId];
-      l(skill);
-      if (skill && skill.type !== 'passive') {
-        skillSlot.innerHTML = `<div class="skill-icon" style="background-image: url('assets/skills/${skill.icon}.png')"></div>`;
-
-        // Add click handler for toggling
-        skillSlot.addEventListener('click', () => this.toggleSkill(skillId));
-
-        // Show active state if skill is toggled on
-        if (this.activeSkillStates[skillId]) {
-          skillSlot.classList.add('active');
-        }
-      }
-
-      skillSlotsContainer.appendChild(skillSlot);
-    });
-  }
-
   toggleSkill(skillId) {
-    if (!this.unlockedSkills[skillId]) return;
+    if (!this.skills[skillId]) return;
 
-    const skill = SKILL_TREES[this.selectedPath][skillId];
+    const skill = SKILL_TREES[this.selectedPath?.name][skillId];
     if (skill.type !== 'active' && skill.type !== 'toggle') return;
 
-    this.activeSkillStates[skillId] = !this.activeSkillStates[skillId];
+    this.skills[skillId].active = !this.skills[skillId].active;
 
-    // Update UI to show toggled state
     const skillSlot = document.querySelector(`.skill-slot[data-skill-id="${skillId}"]`);
     if (skillSlot) {
-      skillSlot.classList.toggle('active', this.activeSkillStates[skillId]);
+      skillSlot.classList.toggle('active', this.skills[skillId].active);
     }
-  }
 
-  activateSkill(skillId) {
-    const skill = SKILL_TREES[this.selectedPath][skillId];
-    const skillLevel = this.skillLevels[skillId] || 0;
-    const effects = skill.effect(skillLevel);
-
-    switch (skill.type) {
-      case 'instant':
-        this.handleInstantSkill(skillId, effects);
-        break;
-      case 'buff':
-        this.handleBuffSkill(skillId, effects);
-        break;
-      case 'toggle':
-        // Toggle skills are handled during combat
-        break;
-      case 'passive':
-        // Passive skills are applied automatically when learned
-        break;
-    }
-  }
-  handleInstantSkill(skillId, effects) {
-    if (hero.stats.currentMana >= SKILL_TREES[this.selectedPath][skillId].manaCost) {
-      // Apply instant effect (like damage)
-      Object.entries(effects).forEach(([stat, value]) => {
-        if (stat === 'damage') {
-          const damage = value * hero.calculateTotalDamage(false);
-          game.currentEnemy.currentHealth -= damage;
-          createDamageNumber(damage, false, false, false, false, true);
-          updateEnemyHealth();
-        }
-      });
-
-      hero.stats.currentMana -= SKILL_TREES[this.selectedPath][skillId].manaCost;
-      updatePlayerHealth();
-    }
-  }
-
-  handleBuffSkill(skillId, effects) {
-    const skill = SKILL_TREES[this.selectedPath][skillId];
-    if (hero.stats.currentMana >= skill.manaCost) {
-      // Apply buff effects
-      Object.entries(effects).forEach(([stat, value]) => {
-        if (this.skillBonuses[stat] !== undefined) {
-          this.skillBonuses[stat] += value;
-        }
-      });
-
-      hero.recalculateFromAttributes();
-      hero.stats.currentMana -= skill.manaCost;
-      updatePlayerHealth();
-
-      // Remove buff after duration
-      setTimeout(() => {
-        Object.entries(effects).forEach(([stat, value]) => {
-          if (this.skillBonuses[stat] !== undefined) {
-            this.skillBonuses[stat] -= value;
-          }
-        });
-        hero.recalculateFromAttributes();
-      }, skill.duration);
-    }
+    // Recalculate hero stats when toggling skills
+    hero.recalculateFromAttributes();
   }
 }

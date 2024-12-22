@@ -80,6 +80,10 @@ body {
   background-color: var(--accent);
 }
 
+.tab-content {
+  height: 100%;
+}
+
 .tab-panel {
   display: none;
   background-color: var(--bg-element);
@@ -418,12 +422,14 @@ body {
 }
 
 .skill-slot::after {
-  content: attr(data-key);
   position: absolute;
   top: 2px;
   left: 2px;
   font-size: 12px;
   color: var(--accent);
+  background: var(--bg-panel);
+  opacity: 0.8;
+  border-radius: 3px;
 }
 
 .skill-slot.active {

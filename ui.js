@@ -2,6 +2,8 @@ import Enemy from './enemy.js';
 import { game, hero, prestige, skillTree } from './main.js';
 import { calculateHitChance } from './combat.js';
 import { CLASS_PATHS, REQ_LEVEL_FOR_SKILL_TREE, SKILL_LEVEL_TIERS, SKILL_TREES } from './skillTree.js';
+import { ATTRIBUTES } from './hero.js';
+
 const html = String.raw;
 
 export function initializeUI() {
@@ -194,19 +196,6 @@ export function updateStatsAndAttributesUI() {
       hero.stats.blockChance.toFixed(1).replace(/\./g, ',') + '%';
   }
 
-  const ATTRIBUTE_TOOLTIPS = {
-    strength: 'Each point increases:\n• Damage by 2\n• Every 5 points adds 1% to total damage',
-    agility:
-      'Each point increases:\n• Attack Rating by 10\n• Every 5 points adds 1% to total attack rating\n• Every 25 points adds 1% attack speed',
-    vitality:
-      'Each point increases:\n• Health by 10\n• Every 5 points adds 1% to total health\n• Every 10 points adds 1% health regeneration',
-    wisdom:
-      'Each point increases:\n• Mana by 5\n• Every 5 points adds 1% to total mana\n• Every 10 points adds 1% mana regeneration',
-    endurance: 'Each point increases:\n• Armor by 1\n• Every 5 points adds 1% to total armor',
-    dexterity:
-      'Each point increases:\n• Every 25 points adds 1% critical strike chance\n• Every 10 points adds 1% critical strike damage',
-  };
-
   if (!attributesContainer) {
     attributesContainer = document.createElement('div');
     attributesContainer.className = 'attributes-container';
@@ -219,7 +208,7 @@ export function updateStatsAndAttributesUI() {
         <button class="allocate-btn" data-stat="${stat}">+</button>
         <strong>${stat.charAt(0).toUpperCase() + stat.slice(1)}:</strong>
         <span id="${stat}-value">${hero.getStat(stat)}</span>
-        <div class="attribute-description">${ATTRIBUTE_TOOLTIPS[stat]}</div>
+        <div class="attribute-description">${ATTRIBUTES[stat].tooltip}</div>
       </div>
     `
         )
@@ -303,7 +292,6 @@ export function showToast(message, type = 'normal', duration = 3000) {
 // ##########################################
 //  #########################################
 // ##########################################
-
 export function initializeSkillTreeUI() {
   const container = document.getElementById('skilltree');
   const classSelection = document.getElementById('class-selection');
@@ -318,6 +306,8 @@ export function initializeSkillTreeUI() {
     skillTreeContainer.classList.remove('hidden');
     showSkillTree();
   }
+
+  updateActionBar();
 }
 
 function showClassSelection() {
@@ -333,7 +323,6 @@ function showClassSelection() {
       <div class="base-stats">
         ${Object.entries(pathData.baseStats)
           .map(([stat, value]) => {
-            // Convert camelCase to Title Case
             const readableStat = stat.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
             return `<div>${readableStat}: +${value}</div>`;
           })
@@ -358,32 +347,28 @@ function selectClassPath(pathId) {
   }
 }
 
-function showSkillTree() {
+function initializeSkillTreeStructure() {
   const container = document.getElementById('skill-tree-container');
   container.innerHTML = '';
 
   const skillPointsHeader = document.createElement('div');
   skillPointsHeader.className = 'skill-points-header';
-  skillPointsHeader.innerHTML = `Available Skill Points: ${skillTree.skillPoints}`;
   container.appendChild(skillPointsHeader);
 
-  const skills = SKILL_TREES[skillTree.selectedPath];
+  const skills = SKILL_TREES[skillTree.selectedPath.name];
   const levelGroups = SKILL_LEVEL_TIERS.reduce((acc, level) => {
     if (level <= hero.level) {
-      acc[level] = [];
       acc[level] = [];
     }
     return acc;
   }, {});
 
-  // Group skills by required level
   Object.entries(skills).forEach(([skillId, skillData]) => {
     if (skillData.requiredLevel <= hero.level && levelGroups[skillData.requiredLevel]) {
       levelGroups[skillData.requiredLevel].push({ id: skillId, ...skillData });
     }
   });
 
-  // Create row elements for each level group
   Object.entries(levelGroups).forEach(([reqLevel, groupSkills]) => {
     if (groupSkills.length > 0) {
       const rowElement = document.createElement('div');
@@ -404,38 +389,94 @@ function showSkillTree() {
   });
 }
 
+export function updateSkillTreeValues() {
+  const container = document.getElementById('skill-tree-container');
+
+  const skillPointsHeader = container.querySelector('.skill-points-header');
+  skillPointsHeader.textContent = `Available Skill Points: ${skillTree.skillPoints}`;
+
+  container.querySelectorAll('.skill-node').forEach((node) => {
+    const skillId = node.dataset.skillId;
+    const currentLevel = skillTree.skills[skillId]?.level || 0;
+    const canUnlock = skillTree.canUnlockSkill(skillId);
+
+    const levelDisplay = node.querySelector('.skill-level');
+    const skill = SKILL_TREES[skillTree.selectedPath.name][skillId];
+    levelDisplay.textContent = `${currentLevel}/${skill.maxLevel}`;
+
+    node.classList.toggle('available', canUnlock);
+    node.classList.toggle('unlocked', !!skillTree.skills[skillId]);
+  });
+}
+
+function showSkillTree() {
+  const container = document.getElementById('skill-tree-container');
+  if (!container.children.length) {
+    initializeSkillTreeStructure();
+  }
+  updateSkillTreeValues();
+}
+
 function createSkillElement(skill) {
   const skillElement = document.createElement('div');
   skillElement.className = 'skill-node';
   skillElement.dataset.skillId = skill.id;
   skillElement.dataset.skillType = skill.type;
 
-  const currentLevel = skillTree.skillLevels[skill.id] || 0;
-  const isUnlocked = skillTree.unlockedSkills[skill.id];
+  const currentLevel = skillTree.skills[skill.id]?.level || 0;
   const canUnlock = skillTree.canUnlockSkill(skill.id);
 
   skillElement.innerHTML = html`
     <div class="skill-icon" style="background-image: url('assets/skills/${skill.icon}.png')"></div>
-    <div class="skill-level">${currentLevel}/10</div>
-    <div class="skill-description">[${skill.type.toUpperCase()}] ${skill.description}</div>
+    <div class="skill-level">${currentLevel}/${skill.maxLevel}</div>
+    <div class="skill-description">
+      ${skill.name} [${skill.type.toUpperCase()}]
+      <br />
+      ${skill.description}
+    </div>
   `;
 
   if (canUnlock) skillElement.classList.add('available');
-  if (isUnlocked) skillElement.classList.add('unlocked');
+  if (skillTree.skills[skill.id]) skillElement.classList.add('unlocked');
 
   skillElement.addEventListener('mousemove', (e) => {
     const tooltip = skillElement.querySelector('.skill-description');
-    tooltip.style.left = e.pageX + 10 + 'px';
-    tooltip.style.top = e.pageY + 10 + 'px';
+    const rect = skillElement.getBoundingClientRect();
+    tooltip.style.left = rect.left + 'px';
+    tooltip.style.top = rect.bottom + 10 + 'px';
   });
 
   skillElement.addEventListener('click', () => {
     if (skillTree.unlockSkill(skill.id)) {
-      showSkillTree();
+      updateSkillTreeValues();
     }
   });
 
   return skillElement;
+}
+
+export function updateActionBar() {
+  const skillSlotsContainer = document.querySelector('.skill-slots');
+  if (!skillSlotsContainer) return;
+
+  skillSlotsContainer.innerHTML = '';
+  Object.entries(skillTree.skills).forEach(([skillId, skill]) => {
+    const skillSlot = document.createElement('div');
+    skillSlot.className = 'skill-slot';
+    skillSlot.dataset.skillId = skillId;
+
+    if (skill && skill.type !== 'passive') {
+      skillSlot.innerHTML = `<div class="skill-icon" style="background-image: url('assets/skills/${skill.icon}.png')"></div>`;
+
+      skillSlot.addEventListener('click', () => skillTree.toggleSkill(skillId));
+
+      if (skillTree.skills[skillId]?.active) {
+        skillSlot.classList.add('active');
+      }
+
+      skillSlotsContainer.appendChild(skillSlot);
+    }
+  });
 }
 
 // ##########################################
