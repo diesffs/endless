@@ -48,16 +48,99 @@ export const ENEMY_RARITY = {
   },
 };
 
+const ELEMENTS = {
+  FIRE: {
+    id: 'fire',
+    icon: '🔥',
+  },
+  COLD: {
+    id: 'cold',
+    icon: '❄️',
+  },
+  LIGHTNING: {
+    id: 'lightning',
+    icon: '⚡',
+  },
+  WATER: {
+    id: 'water',
+    icon: '💧',
+  },
+};
+
+export const ELEMENT_OPPOSITES = {
+  [ELEMENTS.FIRE.id]: ELEMENTS.WATER.id,
+  [ELEMENTS.WATER.id]: ELEMENTS.FIRE.id,
+  [ELEMENTS.COLD.id]: ELEMENTS.LIGHTNING.id,
+  [ELEMENTS.LIGHTNING.id]: ELEMENTS.COLD.id,
+};
+
+const ENEMY_NAMES = [
+  'Shadowclaw',
+  'Dreadfang',
+  'Grimspike',
+  'Steelcrusher',
+  'Stormbringer',
+  'Frostbite',
+  'Bloodthorn',
+  'Nightshade',
+  'Ironhide',
+  'Thunderfist',
+  'Voidweaver',
+  'Darkspell',
+  'Flamereaper',
+  'Soulrender',
+  'Mistwalker',
+  'Doomhammer',
+  'Skullcrusher',
+  'Stormrage',
+  'Frostweaver',
+  'Shadowmend',
+  'Lightbane',
+  'Deathwhisper',
+  'Bloodseeker',
+  'Wraithborn',
+  'Cinderlord',
+  'Thornheart',
+  'Grimreaper',
+  'Steelborn',
+  'Frostfury',
+  'Stormlord',
+  'Netherbane',
+  'Darkweaver',
+  'Flamelord',
+  'Soulkeeper',
+  'Mistrunner',
+  'Dreadlord',
+  'Skullreaver',
+  'Stormcaller',
+  'Frostlord',
+  'Shadowkeeper',
+  'Lightslayer',
+  'Deathbringer',
+  'Bloodlord',
+  'Wraithkeeper',
+  'Cinderborn',
+  'Thornlord',
+  'Grimwalker',
+  'Steelfury',
+  'Frostborn',
+  'Stormkeeper',
+];
+
 class Enemy {
   constructor(zone) {
     this.rarity = this.generateRarity();
     this.color = this.getRarityColor(this.rarity);
     this.maxHealth = this.calculateHealth(zone, this.rarity);
     this.currentHealth = this.maxHealth;
-    this.name = `Enemy Lvl ${zone} (${this.rarity})`;
     this.damage = this.calculateDamage(zone, this.rarity);
     this.attackSpeed = this.calculateAttackSpeed(this.rarity);
     this.lastAttack = Date.now();
+    this.element = this.generateElement();
+    const randomName = ENEMY_NAMES[Math.floor(Math.random() * ENEMY_NAMES.length)];
+    const elementIcon = ELEMENTS[this.element].icon;
+    this.name = `${elementIcon} ${randomName}`;
+    this.setEnemyName();
 
     // Get enemy section element
     const enemySection = document.querySelector('.enemy-section');
@@ -73,6 +156,17 @@ class Enemy {
     // Add the new color class
     enemySection.classList.add(this.color);
   }
+
+  setEnemyName() {
+    const enemyNameElement = document.querySelector('.enemy-name');
+    enemyNameElement.textContent = this.name;
+  }
+
+  generateElement() {
+    // Return the element ID instead of the whole object
+    return Object.keys(ELEMENTS)[Math.floor(Math.random() * Object.keys(ELEMENTS).length)];
+  }
+
   generateRarity() {
     const random = Math.random() * 100;
     if (random < ENEMY_RARITY.NORMAL.threshold) return ENEMY_RARITY.NORMAL.type;

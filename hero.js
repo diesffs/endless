@@ -3,6 +3,7 @@ import { game, inventory, shop, skillTree } from './main.js';
 import { updatePlayerHealth } from './ui.js';
 import { createCombatText } from './combat.js';
 import { handleSavedData } from './functions.js';
+import { ELEMENT_OPPOSITES } from './enemy.js';
 
 // Keep all the constants at the top
 export const BASE_DAMAGE = 10;
@@ -214,164 +215,192 @@ export default class Hero {
   }
 
   getStat(stat) {
-    return this.primaryStats[stat] + inventory.equipmentBonuses[stat] + skillTree.getPathBonuses()[stat] || 0;
+    return this.primaryStats[stat] + inventory.equipmentBonuses[stat] + (skillTree.getPathBonuses()[stat] || 0);
   }
 
   recalculateFromAttributes() {
     inventory.updateItemBonuses();
     shop.updateShopBonuses();
 
-    // Strength
-    const strDamageFlat = this.getStat('strength') * ATTRIBUTES.strength.effects.damagePerPoint;
+    // Calculate all attribute-based effects first
+    const attributeEffects = {
+      // Strength
+      strDamageFlat: this.getStat('strength') * ATTRIBUTES.strength.effects.damagePerPoint,
+      strDamagePercent:
+        Math.floor(this.getStat('strength') / ATTRIBUTES.strength.effects.damagePercentPer.points) *
+        ATTRIBUTES.strength.effects.damagePercentPer.value,
 
-    const strDamagePercent =
-      Math.floor(this.getStat('strength') / ATTRIBUTES.strength.effects.damagePercentPer.points) *
-      ATTRIBUTES.strength.effects.damagePercentPer.value;
+      // Agility
+      agiAttackRatingFlat: this.getStat('agility') * ATTRIBUTES.agility.effects.attackRatingPerPoint,
+      agiAttackRatingPercent:
+        Math.floor(this.getStat('agility') / ATTRIBUTES.agility.effects.attackRatingPercentPer.points) *
+        ATTRIBUTES.agility.effects.attackRatingPercentPer.value,
+      agiAttackSpeed:
+        Math.floor(this.getStat('agility') / ATTRIBUTES.agility.effects.attackSpeedPer.points) *
+        ATTRIBUTES.agility.effects.attackSpeedPer.value,
 
-    // Agility
-    const agiAttackRatingFlat = this.getStat('agility') * ATTRIBUTES.agility.effects.attackRatingPerPoint;
+      // Vitality
+      vitHealthFlat: this.getStat('vitality') * ATTRIBUTES.vitality.effects.healthPerPoint,
+      vitHealthPercent:
+        Math.floor(this.getStat('vitality') / ATTRIBUTES.vitality.effects.healthPercentPer.points) *
+        ATTRIBUTES.vitality.effects.healthPercentPer.value,
+      vitRegenPercent:
+        Math.floor(this.getStat('vitality') / ATTRIBUTES.vitality.effects.regenPercentPer.points) *
+        ATTRIBUTES.vitality.effects.regenPercentPer.value,
 
-    const agiAttackRatingPercent =
-      Math.floor(this.getStat('agility') / ATTRIBUTES.agility.effects.attackRatingPercentPer.points) *
-      ATTRIBUTES.agility.effects.attackRatingPercentPer.value;
+      // Wisdom
+      wisManaFlat: this.getStat('wisdom') * ATTRIBUTES.wisdom.effects.manaPerPoint,
+      wisManaPercent:
+        Math.floor(this.getStat('wisdom') / ATTRIBUTES.wisdom.effects.manaPercentPer.points) *
+        ATTRIBUTES.wisdom.effects.manaPercentPer.value,
+      wisRegenPercent:
+        Math.floor(this.getStat('wisdom') / ATTRIBUTES.wisdom.effects.regenPercentPer.points) *
+        ATTRIBUTES.wisdom.effects.regenPercentPer.value,
 
-    const agiAttackSpeed =
-      Math.floor(this.getStat('agility') / ATTRIBUTES.agility.effects.attackSpeedPer.points) *
-      ATTRIBUTES.agility.effects.attackSpeedPer.value;
+      // Endurance
+      endArmorFlat: this.getStat('endurance') * ATTRIBUTES.endurance.effects.armorPerPoint,
+      endArmorPercent:
+        Math.floor(this.getStat('endurance') / ATTRIBUTES.endurance.effects.armorPercentPer.points) *
+        ATTRIBUTES.endurance.effects.armorPercentPer.value,
 
-    // Vitality
-    const vitHealthFlat = this.getStat('vitality') * ATTRIBUTES.vitality.effects.healthPerPoint;
+      // Dexterity
+      dexCritChance:
+        Math.floor(this.getStat('dexterity') / ATTRIBUTES.dexterity.effects.critChancePer.points) *
+        ATTRIBUTES.dexterity.effects.critChancePer.value,
+      dexCritDamage:
+        Math.floor(this.getStat('dexterity') / ATTRIBUTES.dexterity.effects.critDamagePer.points) *
+        ATTRIBUTES.dexterity.effects.critDamagePer.value,
+    };
 
-    const vitHealthPercent =
-      Math.floor(this.getStat('vitality') / ATTRIBUTES.vitality.effects.healthPercentPer.points) *
-      ATTRIBUTES.vitality.effects.healthPercentPer.value;
-
-    const vitRegenPercent =
-      Math.floor(this.getStat('vitality') / ATTRIBUTES.vitality.effects.regenPercentPer.points) *
-      ATTRIBUTES.vitality.effects.regenPercentPer.value;
-
-    // Wisdom
-    const wisManaFlat = this.getStat('wisdom') * ATTRIBUTES.wisdom.effects.manaPerPoint;
-
-    const wisManaPercent =
-      Math.floor(this.getStat('wisdom') / ATTRIBUTES.wisdom.effects.manaPercentPer.points) *
-      ATTRIBUTES.wisdom.effects.manaPercentPer.value;
-
-    const wisRegenPercent =
-      Math.floor(this.getStat('wisdom') / ATTRIBUTES.wisdom.effects.regenPercentPer.points) *
-      ATTRIBUTES.wisdom.effects.regenPercentPer.value;
-
-    // Endurance
-    const endArmorFlat = this.getStat('endurance') * ATTRIBUTES.endurance.effects.armorPerPoint;
-
-    const endArmorPercent =
-      Math.floor(this.getStat('endurance') / ATTRIBUTES.endurance.effects.armorPercentPer.points) *
-      ATTRIBUTES.endurance.effects.armorPercentPer.value;
-
-    // Dexterity
-    const dexCritChance =
-      Math.floor(this.getStat('dexterity') / ATTRIBUTES.dexterity.effects.critChancePer.points) *
-      ATTRIBUTES.dexterity.effects.critChancePer.value;
-
-    const dexCritDamage =
-      Math.floor(this.getStat('dexterity') / ATTRIBUTES.dexterity.effects.critDamagePer.points) *
-      ATTRIBUTES.dexterity.effects.critDamagePer.value;
-
-    // Damage
-    this.stats.damage =
-      (BASE_DAMAGE + strDamageFlat + DAMAGE_ON_LEVEL_UP * this.level - DAMAGE_ON_LEVEL_UP) * (1 + strDamagePercent);
-
-    // Attack Speed
-    this.stats.attackSpeed = BASE_ATTACK_SPEED + agiAttackSpeed;
-
-    // Attack Rating
-    this.stats.attackRating =
-      (BASE_ATTACK_RATING + agiAttackRatingFlat + ATTACK_RATING_ON_LEVEL_UP * this.level) *
-      (1 + agiAttackRatingPercent + this.stats.attackRatingPercent / 100);
-
-    // Max Health
-    this.stats.maxHealth =
-      (BASE_HEALTH + vitHealthFlat + HEALTH_ON_LEVEL_UP * this.level - HEALTH_ON_LEVEL_UP) * (1 + vitHealthPercent);
-
-    // Life Regen
-    this.stats.lifeRegen = (BASE_LIFE_REGEN + inventory.equipmentBonuses.lifeRegen) * (1 + vitRegenPercent);
-
-    // Max Mana
-    this.stats.maxMana =
-      (BASE_MANA + wisManaFlat + MANA_ON_LEVEL_UP * this.level - MANA_ON_LEVEL_UP) * (1 + wisManaPercent);
-
-    // Mana Regen
-    this.stats.manaRegen = (BASE_MANA_REGEN + inventory.equipmentBonuses.manaRegen) * (1 + wisRegenPercent);
-
-    // Armor
-    // TODO: add the percentige calc after flat
-    this.stats.armor = (BASE_ARMOR + endArmorFlat) * (1 + endArmorPercent);
-
-    // Crit Chance
-    this.stats.critChance = BASE_CRIT_CHANCE + dexCritChance * 100;
-
-    // Crit Damage
-    this.stats.critDamage = BASE_CRIT_DAMAGE + dexCritDamage;
-
-    this.stats.attackRatingPercent = BASE_ATTACK_RATING_PERCENT;
-    this.stats.damagePercent = BASE_DAMAGE_PERCENT;
-
-    this.stats.fireDamage = BASE_ELEMENTAL_DAMAGE.fire;
-    this.stats.coldDamage = BASE_ELEMENTAL_DAMAGE.cold;
-    this.stats.lightningDamage = BASE_ELEMENTAL_DAMAGE.lightning;
-    this.stats.waterDamage = BASE_ELEMENTAL_DAMAGE.water;
-
-    // Apply skill, equipment, and path bonuses
-    Object.entries(skillTree.calculatePassiveBonuses()).forEach(([stat, bonus]) => {
-      if (this.stats[stat] !== undefined) {
-        this.stats[stat] += bonus;
-      }
-    });
-
-    Object.entries(shop.shopBonuses).forEach(([stat, bonus]) => {
-      if (this.stats[stat] !== undefined) {
-        this.stats[stat] += bonus;
-      }
-    });
-
-    Object.entries(inventory.equipmentBonuses).forEach(([stat, bonus]) => {
-      if (this.stats[stat] !== undefined) {
-        this.stats[stat] += bonus;
-      }
-    });
-
-    Object.entries(skillTree.getPathBonuses()).forEach(([stat, bonus]) => {
-      if (this.stats[stat] !== undefined) {
-        this.stats[stat] += bonus;
-      }
-    });
-
+    // Get all bonus sources
+    const passiveBonuses = skillTree.calculatePassiveBonuses();
     const buffEffects = skillTree.getActiveBuffEffects();
-    Object.entries(buffEffects).forEach(([stat, value]) => {
-      if (this.stats[stat] !== undefined) {
-        this.stats[stat] += value;
-      }
-    });
+    const pathBonuses = skillTree.getPathBonuses();
 
-    // Add damage bonus from souls
+    // Calculate flat values first
+    const flatValues = {
+      fireDamage:
+        BASE_ELEMENTAL_DAMAGE.fire +
+        (passiveBonuses.fireDamage || 0) +
+        (shop.shopBonuses.fireDamage || 0) +
+        (inventory.equipmentBonuses.fireDamage || 0) +
+        (pathBonuses.fireDamage || 0) +
+        (buffEffects.fireDamage || 0),
+
+      coldDamage:
+        BASE_ELEMENTAL_DAMAGE.cold +
+        (passiveBonuses.coldDamage || 0) +
+        (shop.shopBonuses.coldDamage || 0) +
+        (inventory.equipmentBonuses.coldDamage || 0) +
+        (pathBonuses.coldDamage || 0) +
+        (buffEffects.coldDamage || 0),
+
+      lightningDamage:
+        BASE_ELEMENTAL_DAMAGE.lightning +
+        (passiveBonuses.lightningDamage || 0) +
+        (shop.shopBonuses.lightningDamage || 0) +
+        (inventory.equipmentBonuses.lightningDamage || 0) +
+        (pathBonuses.lightningDamage || 0) +
+        (buffEffects.lightningDamage || 0),
+
+      waterDamage:
+        BASE_ELEMENTAL_DAMAGE.water +
+        (passiveBonuses.waterDamage || 0) +
+        (shop.shopBonuses.waterDamage || 0) +
+        (inventory.equipmentBonuses.waterDamage || 0) +
+        (pathBonuses.waterDamage || 0) +
+        (buffEffects.waterDamage || 0),
+
+      damage:
+        BASE_DAMAGE +
+        attributeEffects.strDamageFlat +
+        DAMAGE_ON_LEVEL_UP * (this.level - 1) +
+        (passiveBonuses.damage || 0) +
+        (shop.shopBonuses.damage || 0) +
+        (inventory.equipmentBonuses.damage || 0) +
+        (pathBonuses.damage || 0) +
+        (buffEffects.damage || 0),
+
+      attackRating:
+        BASE_ATTACK_RATING +
+        attributeEffects.agiAttackRatingFlat +
+        ATTACK_RATING_ON_LEVEL_UP * (this.level - 1) +
+        (passiveBonuses.attackRating || 0) +
+        (shop.shopBonuses.attackRating || 0) +
+        (inventory.equipmentBonuses.attackRating || 0) +
+        (pathBonuses.attackRating || 0) +
+        (buffEffects.attackRating || 0),
+
+      maxHealth:
+        BASE_HEALTH +
+        attributeEffects.vitHealthFlat +
+        HEALTH_ON_LEVEL_UP * (this.level - 1) +
+        (passiveBonuses.maxHealth || 0) +
+        (shop.shopBonuses.maxHealth || 0) +
+        (inventory.equipmentBonuses.maxHealth || 0) +
+        (pathBonuses.maxHealth || 0) +
+        (buffEffects.maxHealth || 0),
+
+      maxMana:
+        BASE_MANA +
+        attributeEffects.wisManaFlat +
+        MANA_ON_LEVEL_UP * (this.level - 1) +
+        (passiveBonuses.maxMana || 0) +
+        (shop.shopBonuses.maxMana || 0) +
+        (inventory.equipmentBonuses.maxMana || 0) +
+        (pathBonuses.maxMana || 0) +
+        (buffEffects.maxMana || 0),
+
+      armor:
+        BASE_ARMOR +
+        attributeEffects.endArmorFlat +
+        (passiveBonuses.armor || 0) +
+        (shop.shopBonuses.armor || 0) +
+        (inventory.equipmentBonuses.armor || 0) +
+        (pathBonuses.armor || 0) +
+        (buffEffects.armor || 0),
+    };
+
+    // Calculate percentage bonuses
+    const percentBonuses = {
+      damage: attributeEffects.strDamagePercent + this.stats.damagePercent / 100 + this.souls * 0.01,
+      attackRating: attributeEffects.agiAttackRatingPercent + this.stats.attackRatingPercent / 100,
+      maxHealth: attributeEffects.vitHealthPercent,
+      armor: attributeEffects.endArmorPercent,
+    };
+
+    // Apply percentage bonuses to final values
+    this.stats.damage = Math.floor(flatValues.damage * (1 + percentBonuses.damage));
+    this.stats.attackRating = flatValues.attackRating * (1 + percentBonuses.attackRating);
+    this.stats.maxHealth = flatValues.maxHealth * (1 + percentBonuses.maxHealth);
+    this.stats.maxMana = flatValues.maxMana * (1 + attributeEffects.wisManaPercent);
+    this.stats.armor = flatValues.armor * (1 + percentBonuses.armor);
+
+    // Elemental damages
+    this.stats.fireDamage = flatValues.fireDamage;
+    this.stats.coldDamage = flatValues.coldDamage;
+    this.stats.lightningDamage = flatValues.lightningDamage;
+    this.stats.waterDamage = flatValues.waterDamage;
+
+    // Add souls damage bonus last
     const damageBonusFromSouls = Math.floor(this.stats.damage * (this.souls * 0.01));
     this.stats.damage += damageBonusFromSouls;
 
-    // Cap block chance at 75%
-    if (this.stats.blockChance > 75) {
-      this.stats.blockChance = 75;
-    }
+    // Set other stats that don't need percentage calculations
+    this.stats.attackSpeed = BASE_ATTACK_SPEED + attributeEffects.agiAttackSpeed;
+    this.stats.critChance = BASE_CRIT_CHANCE + attributeEffects.dexCritChance * 100;
+    this.stats.critDamage = BASE_CRIT_DAMAGE + attributeEffects.dexCritDamage;
+    this.stats.lifeRegen =
+      (BASE_LIFE_REGEN + inventory.equipmentBonuses.lifeRegen) * (1 + attributeEffects.vitRegenPercent);
+    this.stats.manaRegen =
+      (BASE_MANA_REGEN + inventory.equipmentBonuses.manaRegen) * (1 + attributeEffects.wisRegenPercent);
 
-    // Cap critical chance at 100%
-    if (this.stats.critChance > 100) {
-      this.stats.critChance = 100;
-    }
+    // Cap values
+    this.stats.blockChance = Math.min(this.stats.blockChance, 75);
+    this.stats.critChance = Math.min(this.stats.critChance, 100);
+    this.stats.attackSpeed = Math.min(this.stats.attackSpeed, 5);
 
-    // Cap attack speed
-    if (this.stats.attackSpeed > 5) {
-      this.stats.attackSpeed = 5;
-    }
-
+    // Update UI
     updatePlayerHealth();
     updateStatsAndAttributesUI();
   }
@@ -390,18 +419,40 @@ export default class Hero {
   }
 
   calculateTotalDamage(isCritical) {
-    let baseDamage = this.stats.damage * (1 + this.stats.damagePercent / 100);
-    if (isCritical) baseDamage *= this.stats.critDamage;
+    // Calculate physical damage
+    let physicalDamage = this.stats.damage * (1 + this.stats.damagePercent / 100);
 
-    // Add toggle skill effects
-    const toggleEffects = skillTree.applyToggleEffects('attack');
-    if (toggleEffects.damage) {
-      baseDamage += toggleEffects.damage;
-    }
+    // Calculate elemental damage with type effectiveness
+    let elementalDamage = 0;
+    const enemyElement = game.currentEnemy.element;
 
-    const elementalDamage =
-      this.stats.fireDamage + this.stats.coldDamage + this.stats.lightningDamage + this.stats.waterDamage;
+    // Calculate each element type
+    const elements = {
+      fire: this.stats.fireDamage,
+      cold: this.stats.coldDamage,
+      lightning: this.stats.lightningDamage,
+      water: this.stats.waterDamage,
+    };
 
-    return baseDamage + elementalDamage;
+    Object.entries(elements).forEach(([elementType, damage]) => {
+      if (damage > 0) {
+        if (ELEMENT_OPPOSITES[elementType] === enemyElement) {
+          // Double damage against opposite element
+          elementalDamage += damage * 2;
+        } else if (elementType === enemyElement) {
+          // No damage against same element
+          elementalDamage += 0;
+        } else {
+          // 25% damage against non-opposite elements
+          elementalDamage += damage * 0.25;
+        }
+      }
+    });
+
+    // Calculate total damage before crit
+    const totalDamage = physicalDamage + elementalDamage;
+
+    // Apply crit at the end to total damage
+    return isCritical ? totalDamage * this.stats.critDamage : totalDamage;
   }
 }

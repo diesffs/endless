@@ -226,11 +226,39 @@ export function updateStatsAndAttributesUI() {
     statsGrid.appendChild(attributesContainer);
 
     // Attach event listeners for allocation buttons (only once)
+    // Replace the existing button event listener with this:
     attributesContainer.querySelectorAll('.allocate-btn').forEach((btn) => {
       btn.addEventListener('mousedown', (e) => {
         const stat = e.target.dataset.stat;
         hero.allocateStat(stat);
         updateStatsAndAttributesUI();
+
+        let intervalId;
+        let holdingTimeout;
+
+        const startHolding = () => {
+          clearInterval(intervalId);
+          intervalId = setInterval(() => {
+            if (hero.statPoints > 0) {
+              hero.allocateStat(stat);
+              updateStatsAndAttributesUI();
+            } else {
+              stopHolding();
+            }
+          }, 100);
+        };
+
+        const stopHolding = () => {
+          clearTimeout(holdingTimeout);
+          clearInterval(intervalId);
+          document.removeEventListener('mouseup', stopHolding);
+          document.removeEventListener('mouseleave', stopHolding);
+        };
+
+        holdingTimeout = setTimeout(startHolding, 500);
+
+        document.addEventListener('mouseup', stopHolding);
+        document.addEventListener('mouseleave', stopHolding);
       });
     });
   } else {
@@ -390,6 +418,10 @@ function initializeSkillTreeStructure() {
 }
 
 export function updateSkillTreeValues() {
+  // no need to update if path not yet selected
+  if (!skillTree.selectedPath) {
+    return;
+  }
   const container = document.getElementById('skill-tree-container');
 
   const skillPointsHeader = container.querySelector('.skill-points-header');

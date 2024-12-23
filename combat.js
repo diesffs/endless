@@ -162,6 +162,14 @@ function showLootNotification(item) {
 }
 
 export function createDamageNumber(damage, isPlayer, isCritical = false, isBlocked = false, isMiss = false) {
+  // Add to existing function
+  const enemyElement = game.currentEnemy.element;
+  const elementClass = `element-${enemyElement}`;
+
+  // Add element class to enemy section
+  const enemySection = document.querySelector('.enemy-section');
+  enemySection.classList.add(elementClass);
+
   const target = isPlayer ? '.character-avatar' : '.enemy-avatar';
   const avatar = document.querySelector(target);
   const damageEl = document.createElement('div');

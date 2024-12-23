@@ -3,7 +3,6 @@ import { handleSavedData } from './functions.js';
 import { game, hero } from './main.js';
 import {
   showManaWarning,
-  showToast,
   updateActionBar,
   updateEnemyHealth,
   updatePlayerHealth,
