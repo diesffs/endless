@@ -1,4 +1,4 @@
-import { updatePlayerHealth, updateEnemyHealth, updateZoneUI, updateResources } from './ui.js';
+import { updatePlayerHealth, updateEnemyHealth, updateZoneUI, updateResources, updateBuffIndicators } from './ui.js';
 import { playerAttack, enemyAttack } from './combat.js';
 import { game, hero, inventory, prestige, shop, skillTree } from './main.js';
 import Enemy from './enemy.js';
@@ -42,6 +42,10 @@ class Game {
   gameLoop() {
     if (!this.gameStarted) return;
 
+    // Update buff timers and effects
+    skillTree.getActiveBuffEffects();
+    updateBuffIndicators();
+
     const currentTime = Date.now();
     playerAttack(currentTime);
     enemyAttack(currentTime);
@@ -72,6 +76,10 @@ class Game {
       this.resetAllHealth();
       updateResources(); // Pass game here
     } else {
+      // Stop all active buffs when combat ends
+      skillTree.stopAllBuffs();
+      updateBuffIndicators();
+
       this.zone = hero.startingZone; // Reset zone
       updateZoneUI();
       this.currentEnemy = new Enemy(this.zone);

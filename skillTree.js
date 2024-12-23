@@ -139,6 +139,8 @@ export default class SkillTree {
     this.skills = {};
 
     handleSavedData(savedData, this);
+    // always empty at start
+    this.activeBuffs = new Map();
   }
 
   getPathBonuses() {
@@ -252,16 +254,115 @@ export default class SkillTree {
     if (!this.skills[skillId]) return;
 
     const skill = SKILL_TREES[this.selectedPath?.name][skillId];
-    if (skill.type !== 'active' && skill.type !== 'toggle') return;
 
-    this.skills[skillId].active = !this.skills[skillId].active;
-
-    const skillSlot = document.querySelector(`.skill-slot[data-skill-id="${skillId}"]`);
-    if (skillSlot) {
-      skillSlot.classList.toggle('active', this.skills[skillId].active);
+    // Handle different skill types
+    switch (skill.type) {
+      case 'buff':
+        this.activateSkill(skillId);
+        break;
+      case 'toggle':
+        this.skills[skillId].active = !this.skills[skillId].active;
+        hero.recalculateFromAttributes();
+        break;
     }
 
-    // Recalculate hero stats when toggling skills
+    updateActionBar();
+  }
+
+  applyToggleEffects(type = 'attack') {
+    let effects = {};
+
+    Object.entries(this.skills).forEach(([skillId, skillData]) => {
+      const skill = SKILL_TREES[this.selectedPath?.name][skillId];
+      if (skill.type === 'toggle' && skillData.active) {
+        if (hero.stats.currentMana >= skill.manaCost) {
+          hero.stats.currentMana -= skill.manaCost;
+          effects = { ...effects, ...skill.effect(skillData.level) };
+        } else {
+          // Deactivate if not enough mana
+          skillData.active = false;
+          updateActionBar();
+        }
+      }
+    });
+
+    return effects;
+  }
+
+  activateSkill(skillId) {
+    if (!game.gameStarted) return false;
+
+    const skill = SKILL_TREES[this.selectedPath?.name][skillId];
+    const skillData = this.skills[skillId];
+
+    if (skill.type !== 'buff') return false;
+    if (hero.stats.currentMana < skill.manaCost) return false;
+
+    // Check if skill is on cooldown
+    if (skillData.cooldownEndTime && skillData.cooldownEndTime > Date.now()) return false;
+
+    // Apply buff
+    hero.stats.currentMana -= skill.manaCost;
+    const buffEndTime = Date.now() + skill.duration;
+    const cooldownEndTime = Date.now() + skill.cooldown;
+
+    // Store buff data
+    this.activeBuffs.set(skillId, {
+      endTime: buffEndTime,
+      effects: skill.effect(skillData.level),
+    });
+
+    // Set cooldown and active state
+    this.skills[skillId].cooldownEndTime = cooldownEndTime;
+    this.skills[skillId].active = true;
+
+    // Apply buff effects
     hero.recalculateFromAttributes();
+    updateActionBar();
+
+    return true;
+  }
+
+  deactivateSkill(skillId) {
+    if (this.activeBuffs.has(skillId)) {
+      this.activeBuffs.delete(skillId);
+      // Reset the active state when buff expires
+      if (this.skills[skillId]) {
+        this.skills[skillId].active = false;
+      }
+      hero.recalculateFromAttributes();
+      updateActionBar(); // Update UI to reflect deactivated state
+    }
+  }
+
+  getActiveBuffEffects() {
+    const effects = {};
+
+    qq(this.activeBuffs)
+
+    this.activeBuffs.forEach((buffData, skillId) => {
+      if (buffData.endTime <= Date.now()) {
+        this.deactivateSkill(skillId);
+        return;
+      }
+
+      Object.entries(buffData.effects).forEach(([stat, value]) => {
+        effects[stat] = (effects[stat] || 0) + value;
+      });
+    });
+
+    return effects;
+  }
+
+  stopAllBuffs() {
+    this.activeBuffs.clear();
+    Object.values(this.skills).forEach((skill) => {
+      if (skill.cooldownEndTime) {
+        skill.cooldownEndTime = 0;
+      }
+      skill.active = false; // Reset active state
+    });
+    hero.recalculateFromAttributes();
+    updateActionBar(); // Update UI to reset all visual states
   }
 }

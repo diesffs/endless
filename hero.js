@@ -346,6 +346,13 @@ export default class Hero {
       }
     });
 
+    const buffEffects = skillTree.getActiveBuffEffects();
+    Object.entries(buffEffects).forEach(([stat, value]) => {
+      if (this.stats[stat] !== undefined) {
+        this.stats[stat] += value;
+      }
+    });
+
     // Add damage bonus from souls
     const damageBonusFromSouls = Math.floor(this.stats.damage * (this.souls * 0.01));
     this.stats.damage += damageBonusFromSouls;
@@ -385,6 +392,12 @@ export default class Hero {
   calculateTotalDamage(isCritical) {
     let baseDamage = this.stats.damage * (1 + this.stats.damagePercent / 100);
     if (isCritical) baseDamage *= this.stats.critDamage;
+
+    // Add toggle skill effects
+    const toggleEffects = skillTree.applyToggleEffects('attack');
+    if (toggleEffects.damage) {
+      baseDamage += toggleEffects.damage;
+    }
 
     const elementalDamage =
       this.stats.fireDamage + this.stats.coldDamage + this.stats.lightningDamage + this.stats.waterDamage;

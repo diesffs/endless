@@ -63,6 +63,24 @@ export function createDebugUI() {
         const value = obj[key];
         const fullPath = `${path}.${key}`;
 
+        if (obj instanceof Map) {
+          // Convert Map to an object for display
+          const mapObject = {};
+          obj.forEach((value, key) => {
+            mapObject[key] = value;
+          });
+          renderObject(mapObject, parent, path, level);
+          return;
+        }
+
+        if (typeof obj !== 'object' || obj === null) {
+          const span = document.createElement('span');
+          span.style.marginLeft = `${level * indentPx}px`;
+          span.textContent = JSON.stringify(obj);
+          parent.appendChild(span);
+          return;
+        }
+
         if (typeof value === 'object' && value !== null) {
           // Create expandable details for objects and arrays
           const details = document.createElement('details');

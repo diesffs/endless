@@ -100,6 +100,7 @@
   justify-content: center;
   cursor: pointer;
   position: relative;
+  overflow: hidden;
   transition: all 0.2s;
 }
 
@@ -129,9 +130,25 @@
   margin: auto;
 }
 
+.skill-slot {
+  position: relative;
+  overflow: hidden;
+}
+
 .skill-slot.active {
   border: 2px solid #4caf50;
   box-shadow: 0 0 10px #4caf50;
+}
+
+.cooldown-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0%;
+  background: rgba(0, 0, 0, 0.7);
+  transition: height 0.1s linear;
+  pointer-events: none; /* Allow clicks to pass through */
 }
 
 .skill-description {

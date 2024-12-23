@@ -407,6 +407,24 @@ export function updateSkillTreeValues() {
     node.classList.toggle('available', canUnlock);
     node.classList.toggle('unlocked', !!skillTree.skills[skillId]);
   });
+
+  // Update buff indicators
+  container.querySelectorAll('.skill-node[data-skill-type="buff"]').forEach((node) => {
+    const skillId = node.dataset.skillId;
+    const skill = skillTree.skills[skillId];
+    const cooldownOverlay = node.querySelector('.cooldown-overlay');
+
+    if (skill?.cooldownEndTime) {
+      const remaining = skill.cooldownEndTime - Date.now();
+      if (remaining > 0) {
+        const percentage = (remaining / skill.cooldown) * 100;
+        cooldownOverlay.style.height = `${percentage}%`;
+        cooldownOverlay.classList.add('active');
+      } else {
+        cooldownOverlay.classList.remove('active');
+      }
+    }
+  });
 }
 
 function showSkillTree() {
@@ -452,6 +470,12 @@ function createSkillElement(skill) {
     }
   });
 
+  if (skill.type === 'buff') {
+    const cooldownOverlay = document.createElement('div');
+    cooldownOverlay.className = 'cooldown-overlay';
+    skillElement.appendChild(cooldownOverlay);
+  }
+
   return skillElement;
 }
 
@@ -461,20 +485,59 @@ export function updateActionBar() {
 
   skillSlotsContainer.innerHTML = '';
   Object.entries(skillTree.skills).forEach(([skillId, skill]) => {
+    if (skill.type === 'passive') return;
+
     const skillSlot = document.createElement('div');
     skillSlot.className = 'skill-slot';
     skillSlot.dataset.skillId = skillId;
 
-    if (skill && skill.type !== 'passive') {
-      skillSlot.innerHTML = `<div class="skill-icon" style="background-image: url('assets/skills/${skill.icon}.png')"></div>`;
+    // Add overlays for buff visualization
+    const cooldownOverlay = document.createElement('div');
+    cooldownOverlay.className = 'cooldown-overlay';
+    skillSlot.appendChild(cooldownOverlay);
 
-      skillSlot.addEventListener('click', () => skillTree.toggleSkill(skillId));
+    // Add skill icon
+    const iconDiv = document.createElement('div');
+    iconDiv.className = 'skill-icon';
+    iconDiv.style.backgroundImage = `url('assets/skills/${skill.icon}.png')`;
+    skillSlot.appendChild(iconDiv);
 
-      if (skillTree.skills[skillId]?.active) {
-        skillSlot.classList.add('active');
+    // Show active state
+    if (skillTree.activeBuffs.has(skillId)) {
+      skillSlot.classList.add('active');
+    }
+
+    skillSlot.addEventListener('click', () => skillTree.toggleSkill(skillId));
+    skillSlotsContainer.appendChild(skillSlot);
+  });
+
+  // Update buff/cooldown indicators
+  updateBuffIndicators();
+}
+
+export function updateBuffIndicators() {
+  document.querySelectorAll('.skill-slot').forEach((slot) => {
+    const skillId = slot.dataset.skillId;
+    const skill = skillTree.skills[skillId];
+    const cooldownOverlay = slot.querySelector('.cooldown-overlay');
+
+    // Handle both buff and toggle active states
+    const isActive =
+      (skill.type === 'buff' && skillTree.activeBuffs.has(skillId)) || (skill.type === 'toggle' && skill.active);
+
+    slot.classList.toggle('active', isActive);
+
+    // Only show cooldown for buff type skills
+    if (skill.type === 'buff' && skill?.cooldownEndTime) {
+      const remaining = skill.cooldownEndTime - Date.now();
+      if (remaining > 0) {
+        const percentage = (remaining / SKILL_TREES[skillTree.selectedPath.name][skillId].cooldown) * 100;
+        cooldownOverlay.style.height = `${percentage}%`;
+        slot.classList.add('on-cooldown');
+      } else {
+        cooldownOverlay.style.height = '0';
+        slot.classList.remove('on-cooldown');
       }
-
-      skillSlotsContainer.appendChild(skillSlot);
     }
   });
 }
