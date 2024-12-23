@@ -1,6 +1,14 @@
+import { createDamageNumber } from './combat.js';
 import { handleSavedData } from './functions.js';
 import { game, hero } from './main.js';
-import { updateActionBar, updateSkillTreeValues } from './ui.js';
+import {
+  showManaWarning,
+  showToast,
+  updateActionBar,
+  updateEnemyHealth,
+  updatePlayerHealth,
+  updateSkillTreeValues,
+} from './ui.js';
 
 export const CLASS_PATHS = {
   WARRIOR: {
@@ -72,6 +80,7 @@ export const SKILL_TREES = {
   WARRIOR: {
     // Toggle skill - costs mana per attack
     bash: {
+      id: 'bash',
       name: 'Bash',
       type: 'toggle',
       manaCost: 10, // Mana cost per attack
@@ -86,6 +95,7 @@ export const SKILL_TREES = {
 
     // Instant active skill with cooldown
     groundSlam: {
+      id: 'groundSlam',
       name: 'Ground Slam',
       type: 'instant',
       manaCost: 25,
@@ -101,6 +111,7 @@ export const SKILL_TREES = {
 
     // Buff skill with duration and cooldown
     battleCry: {
+      id: 'battleCry',
       name: 'Battle Cry',
       type: 'buff',
       manaCost: 40,
@@ -117,6 +128,7 @@ export const SKILL_TREES = {
 
     // Passive skill
     toughness: {
+      id: 'toughness',
       name: 'Toughness',
       type: 'passive',
       requiredLevel: SKILL_LEVEL_TIERS[0],
@@ -264,9 +276,50 @@ export default class SkillTree {
         this.skills[skillId].active = !this.skills[skillId].active;
         hero.recalculateFromAttributes();
         break;
+      case 'instant':
+        this.useInstantSkill(skillId);
+        break;
     }
 
     updateActionBar();
+  }
+
+  useInstantSkill(skillId) {
+    if (!game.gameStarted) return false;
+
+    const skill = SKILL_TREES[this.selectedPath?.name][skillId];
+    const skillData = this.skills[skillId];
+
+    if (hero.stats.currentMana < skill.manaCost) {
+      showManaWarning();
+      return false;
+    }
+
+    if (skillData.cooldownEndTime && skillData.cooldownEndTime > Date.now()) return false;
+
+    // Apply instant effect
+    hero.stats.currentMana -= skill.manaCost;
+    const damage = this.calculateInstantDamage(skillId);
+    game.currentEnemy.currentHealth -= damage;
+
+    // Set cooldown
+    skillData.cooldownEndTime = Date.now() + skill.cooldown;
+
+    // Update UI
+    updateEnemyHealth();
+    updatePlayerHealth();
+    createDamageNumber(damage, false, false, false, false, true); // Add parameter for instant skill visual
+
+    return true;
+  }
+
+  calculateInstantDamage(skillId) {
+    const skill = SKILL_TREES[this.selectedPath?.name][skillId];
+    const skillData = this.skills[skillId];
+    const baseEffect = skill.effect(skillData.level);
+
+    // Scale with hero's damage bonuses
+    return baseEffect.damage * (1 + hero.stats.damagePercent / 100);
   }
 
   applyToggleEffects(type = 'attack') {
@@ -279,6 +332,7 @@ export default class SkillTree {
           hero.stats.currentMana -= skill.manaCost;
           effects = { ...effects, ...skill.effect(skillData.level) };
         } else {
+          showManaWarning();
           // Deactivate if not enough mana
           skillData.active = false;
           updateActionBar();
@@ -296,7 +350,10 @@ export default class SkillTree {
     const skillData = this.skills[skillId];
 
     if (skill.type !== 'buff') return false;
-    if (hero.stats.currentMana < skill.manaCost) return false;
+    if (hero.stats.currentMana < skill.manaCost) {
+      showManaWarning();
+      return false;
+    }
 
     // Check if skill is on cooldown
     if (skillData.cooldownEndTime && skillData.cooldownEndTime > Date.now()) return false;
@@ -337,8 +394,6 @@ export default class SkillTree {
 
   getActiveBuffEffects() {
     const effects = {};
-
-    qq(this.activeBuffs)
 
     this.activeBuffs.forEach((buffData, skillId) => {
       if (buffData.endTime <= Date.now()) {

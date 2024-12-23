@@ -484,12 +484,20 @@ export function updateActionBar() {
   if (!skillSlotsContainer) return;
 
   skillSlotsContainer.innerHTML = '';
+  let slotNumber = 1;
+
   Object.entries(skillTree.skills).forEach(([skillId, skill]) => {
     if (skill.type === 'passive') return;
 
     const skillSlot = document.createElement('div');
     skillSlot.className = 'skill-slot';
     skillSlot.dataset.skillId = skillId;
+    skillSlot.dataset.key = slotNumber;
+
+    // Add key number indicator
+    const keyIndicator = document.createElement('div');
+    keyIndicator.className = 'key-indicator';
+    skillSlot.appendChild(keyIndicator);
 
     // Add overlays for buff visualization
     const cooldownOverlay = document.createElement('div');
@@ -507,12 +515,67 @@ export function updateActionBar() {
       skillSlot.classList.add('active');
     }
 
+    // Create tooltip
+    const tooltip = document.createElement('div');
+    tooltip.className = 'skill-tooltip';
+    tooltip.innerHTML = createSkillTooltip(skillId);
+    skillSlot.appendChild(tooltip);
+
     skillSlot.addEventListener('click', () => skillTree.toggleSkill(skillId));
     skillSlotsContainer.appendChild(skillSlot);
+    slotNumber++;
   });
 
   // Update buff/cooldown indicators
   updateBuffIndicators();
+  // Add keyboard listeners
+  setupKeyboardShortcuts();
+}
+
+function createSkillTooltip(skillId) {
+  const skill = SKILL_TREES[skillTree.selectedPath?.name][skillId];
+  const skillData = skillTree.skills[skillId];
+  const level = skillData?.level || 0;
+  const effects = skill.effect(level);
+
+  let tooltip = `
+      <div class="tooltip-header">${skill.name}</div>
+      <div class="tooltip-type">${skill.type.toUpperCase()}</div>
+      <div class="tooltip-level">Level: ${level}</div>
+      <div class="tooltip-mana">Mana Cost: ${skill.manaCost}</div>
+  `;
+
+  // Add effects
+  tooltip += '<div class="tooltip-effects">';
+  Object.entries(effects).forEach(([stat, value]) => {
+    tooltip += `<div>${stat}: +${value}</div>`;
+  });
+  tooltip += '</div>';
+
+  // Add cooldown/duration for applicable skills
+  if (skill.cooldown) {
+    tooltip += `<div class="tooltip-cooldown">Cooldown: ${skill.cooldown / 1000}s</div>`;
+  }
+  if (skill.duration) {
+    tooltip += `<div class="tooltip-duration">Duration: ${skill.duration / 1000}s</div>`;
+  }
+
+  return tooltip;
+}
+
+function setupKeyboardShortcuts() {
+  document.removeEventListener('keydown', handleKeyPress); // Remove existing listener
+  document.addEventListener('keydown', handleKeyPress);
+}
+
+function handleKeyPress(e) {
+  if (e.key >= '1' && e.key <= '9') {
+    const slot = document.querySelector(`.skill-slot[data-key="${e.key}"]`);
+    if (slot) {
+      const skillId = slot.dataset.skillId;
+      skillTree.toggleSkill(skillId);
+    }
+  }
 }
 
 export function updateBuffIndicators() {
@@ -521,14 +584,14 @@ export function updateBuffIndicators() {
     const skill = skillTree.skills[skillId];
     const cooldownOverlay = slot.querySelector('.cooldown-overlay');
 
-    // Handle both buff and toggle active states
+    // Handle active states for all skill types
     const isActive =
       (skill.type === 'buff' && skillTree.activeBuffs.has(skillId)) || (skill.type === 'toggle' && skill.active);
 
     slot.classList.toggle('active', isActive);
 
-    // Only show cooldown for buff type skills
-    if (skill.type === 'buff' && skill?.cooldownEndTime) {
+    // Show cooldown for both buff and instant skills
+    if ((skill.type === 'buff' || skill.type === 'instant') && skill?.cooldownEndTime) {
       const remaining = skill.cooldownEndTime - Date.now();
       if (remaining > 0) {
         const percentage = (remaining / SKILL_TREES[skillTree.selectedPath.name][skillId].cooldown) * 100;
@@ -540,6 +603,10 @@ export function updateBuffIndicators() {
       }
     }
   });
+}
+
+export function showManaWarning() {
+  showToast('Not enough mana!', 'warning', 1500);
 }
 
 // ##########################################
