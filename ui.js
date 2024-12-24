@@ -439,24 +439,6 @@ export function updateSkillTreeValues() {
     node.classList.toggle('available', canUnlock);
     node.classList.toggle('unlocked', !!skillTree.skills[skillId]);
   });
-
-  // Update buff indicators
-  container.querySelectorAll('.skill-node[data-skill-type="buff"]').forEach((node) => {
-    const skillId = node.dataset.skillId;
-    const skill = skillTree.skills[skillId];
-    const cooldownOverlay = node.querySelector('.cooldown-overlay');
-
-    if (skill?.cooldownEndTime) {
-      const remaining = skill.cooldownEndTime - Date.now();
-      if (remaining > 0) {
-        const percentage = (remaining / skill.cooldown) * 100;
-        cooldownOverlay.style.height = `${percentage}%`;
-        cooldownOverlay.classList.add('active');
-      } else {
-        cooldownOverlay.classList.remove('active');
-      }
-    }
-  });
 }
 
 function showSkillTree() {
@@ -476,14 +458,50 @@ function createSkillElement(skill) {
   const currentLevel = skillTree.skills[skill.id]?.level || 0;
   const canUnlock = skillTree.canUnlockSkill(skill.id);
 
+  // Calculate effects at current level
+  const effectsCurrent = skill.effect(currentLevel);
+  // Calculate effects at next level (if not maxed out)
+  const nextLevel = currentLevel < skill.maxLevel ? currentLevel + 1 : currentLevel;
+  const effectsNext = skill.effect(nextLevel);
+
+  let skillDescription = `
+    <strong>${skill.name} [${skill.type.toUpperCase()}]</strong><br />
+    ${skill.description}<br />
+    Level: ${currentLevel}/${skill.maxLevel}
+  `;
+
+  if (skill.manaCost) {
+    skillDescription += `<br />Mana Cost: ${skill.manaCost}`;
+  }
+  if (skill.cooldown) {
+    skillDescription += `<br />Cooldown: ${skill.cooldown / 1000}s`;
+  }
+  if (skill.duration) {
+    skillDescription += `<br />Duration: ${skill.duration / 1000}s`;
+  }
+
+  // Add current effects
+  if (effectsCurrent && Object.keys(effectsCurrent).length > 0) {
+    skillDescription += '<br /><u>Current Effects:</u><br />';
+    Object.entries(effectsCurrent).forEach(([stat, value]) => {
+      skillDescription += `${stat}: +${value}<br />`;
+    });
+  }
+
+  // If not at max level, show next level effects and the bonus
+  if (currentLevel < skill.maxLevel) {
+    skillDescription += '<br /><u>Next Level Effects:</u><br />';
+    Object.entries(effectsNext).forEach(([stat, value]) => {
+      const currentValue = effectsCurrent[stat] || 0;
+      const difference = value - currentValue;
+      skillDescription += `${stat}: +${value} <span class="bonus">(+${difference})</span><br />`;
+    });
+  }
+
   skillElement.innerHTML = html`
     <div class="skill-icon" style="background-image: url('assets/skills/${skill.icon}.png')"></div>
     <div class="skill-level">${currentLevel}/${skill.maxLevel}</div>
-    <div class="skill-description">
-      ${skill.name} [${skill.type.toUpperCase()}]
-      <br />
-      ${skill.description}
-    </div>
+    <div class="skill-description">${skillDescription}</div>
   `;
 
   if (canUnlock) skillElement.classList.add('available');
@@ -501,12 +519,6 @@ function createSkillElement(skill) {
       updateSkillTreeValues();
     }
   });
-
-  if (skill.type === 'buff') {
-    const cooldownOverlay = document.createElement('div');
-    cooldownOverlay.className = 'cooldown-overlay';
-    skillElement.appendChild(cooldownOverlay);
-  }
 
   return skillElement;
 }

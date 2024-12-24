@@ -4,6 +4,8 @@ import Enemy from './enemy.js';
 import { showToast } from './ui.js';
 import { handleSavedData } from './functions.js';
 
+const html = String.raw;
+
 const CRYSTAL_UPGRADE_CONFIG = {
   startingZone: {
     label: 'Starting Zone',
@@ -35,11 +37,6 @@ export default class Prestige {
   }
 
   calculateSouls() {
-    if (!game || typeof hero.highestZone !== 'number') {
-      console.warn('Game or highestZone is not properly initialized.');
-      return 0;
-    }
-
     const souls = Math.floor(hero.highestZone / 5); // Example: 1 soul per 5 zones
     return souls;
   }
@@ -126,15 +123,10 @@ export default class Prestige {
 
     // Update existing DOM values
     const damageDisplay = prestigeTab.querySelector('.damage-display .bonus');
-    const soulsDisplay = prestigeTab.querySelector('.earned-souls-display .bonus');
 
     if (damageDisplay) {
       const damageBonus = Math.floor(hero.souls * 1);
       damageDisplay.textContent = `+${damageBonus}%`;
-    }
-
-    if (soulsDisplay) {
-      soulsDisplay.textContent = `+${earnedSouls}`;
     }
 
     // Update crystal upgrades
@@ -210,23 +202,63 @@ export default class Prestige {
       showToast(`Need ${cost} crystals for this upgrade`, 'error');
     }
   }
-
   updateUI() {
-    const damageDisplay = document.querySelector('.damage-display .bonus');
+    const damageDisplay = document.querySelector('.damage-display');
     const soulsDisplay = document.querySelector('.earned-souls-display .bonus');
 
     if (damageDisplay) {
       const damageBonus = Math.floor(hero.souls * 1);
-      damageDisplay.textContent = `+${damageBonus}%`;
+      const bonusText = damageDisplay.querySelector('.bonus');
+      if (bonusText) {
+        bonusText.textContent = `+${damageBonus}%`;
+      }
+
+      // Add tooltip for damageDisplay
+      damageDisplay.addEventListener('mouseenter', () => {
+        const tooltip = this.createDamageTooltip(damageBonus);
+        this.showTooltip(damageDisplay, tooltip);
+      });
+
+      damageDisplay.addEventListener('mouseleave', () => {
+        this.hideTooltip();
+      });
     }
 
     if (soulsDisplay) {
-      soulsDisplay.textContent = `+${this.calculateSouls()}`;
+      soulsDisplay.textContent = `+${this.calculateSouls()} souls`;
     }
 
     const modalSoulsAmount = document.getElementById('modal-souls-amount');
     if (modalSoulsAmount) {
       modalSoulsAmount.textContent = `${this.calculateSouls()}`;
+    }
+  }
+
+  // to create the tooltip content
+  createDamageTooltip(damageBonus) {
+    return html`
+      <div class="tooltip-header">Damage Bonus</div>
+      <div class="tooltip-content">Each soul provides 1% total bonus damage.</div>
+    `;
+  }
+
+  // to show the tooltip
+  showTooltip(element, content) {
+    const tooltip = document.createElement('div');
+    tooltip.className = 'tooltip';
+    tooltip.innerHTML = content;
+    document.body.appendChild(tooltip);
+
+    const rect = element.getBoundingClientRect();
+    tooltip.style.left = `${rect.left + window.scrollX}px`;
+    tooltip.style.top = `${rect.bottom + window.scrollY}px`;
+  }
+
+  // to hide the tooltip
+  hideTooltip() {
+    const tooltip = document.querySelector('.tooltip');
+    if (tooltip) {
+      tooltip.remove();
     }
   }
 

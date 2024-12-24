@@ -453,3 +453,15 @@ body {
 .attribute-row:hover .attribute-description {
   display: block;
 }
+
+.tooltip {
+  position: absolute;
+  top: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 12px;
+  border-radius: 4px;
+  width: 200px;
+  pointer-events: none;
+  z-index: 1000;
+}

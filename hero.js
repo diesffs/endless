@@ -321,6 +321,33 @@ export default class Hero {
         (pathBonuses.damage || 0) +
         (buffEffects.damage || 0),
 
+      attackSpeed:
+        BASE_ATTACK_SPEED +
+        attributeEffects.agiAttackSpeed +
+        (passiveBonuses.attackSpeed || 0) +
+        (shop.shopBonuses.attackSpeed || 0) +
+        (inventory.equipmentBonuses.attackSpeed || 0) +
+        (pathBonuses.attackSpeed || 0) +
+        (buffEffects.attackSpeed || 0),
+
+      critChance:
+        BASE_CRIT_CHANCE +
+        attributeEffects.dexCritChance * 100 +
+        (passiveBonuses.critChance || 0) +
+        (shop.shopBonuses.critChance || 0) +
+        (inventory.equipmentBonuses.critChance || 0) +
+        (pathBonuses.critChance || 0) +
+        (buffEffects.critChance || 0),
+
+      critDamage:
+        BASE_CRIT_DAMAGE +
+        attributeEffects.dexCritDamage +
+        (passiveBonuses.critDamage || 0) +
+        (shop.shopBonuses.critDamage || 0) +
+        (inventory.equipmentBonuses.critDamage || 0) +
+        (pathBonuses.critDamage || 0) +
+        (buffEffects.critDamage || 0),
+
       attackRating:
         BASE_ATTACK_RATING +
         attributeEffects.agiAttackRatingFlat +
@@ -387,9 +414,9 @@ export default class Hero {
     this.stats.damage += damageBonusFromSouls;
 
     // Set other stats that don't need percentage calculations
-    this.stats.attackSpeed = BASE_ATTACK_SPEED + attributeEffects.agiAttackSpeed;
-    this.stats.critChance = BASE_CRIT_CHANCE + attributeEffects.dexCritChance * 100;
-    this.stats.critDamage = BASE_CRIT_DAMAGE + attributeEffects.dexCritDamage;
+    this.stats.attackSpeed = Number(flatValues.attackSpeed.toFixed(2));
+    this.stats.critChance = Number(flatValues.critChance.toFixed(2));
+    this.stats.critDamage = Number(flatValues.critDamage.toFixed(2));
     this.stats.lifeRegen =
       (BASE_LIFE_REGEN + inventory.equipmentBonuses.lifeRegen) * (1 + attributeEffects.vitRegenPercent);
     this.stats.manaRegen =
