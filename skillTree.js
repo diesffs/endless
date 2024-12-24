@@ -139,8 +139,169 @@ export const SKILL_TREES = {
       }),
     },
   },
+  ROGUE: {
+    // Example skills for Rogue
+    shadowStrike: {
+      id: 'shadowStrike',
+      name: 'Shadow Strike',
+      type: 'instant',
+      manaCost: 15,
+      cooldown: 4000,
+      requiredLevel: SKILL_LEVEL_TIERS[0],
+      icon: 'dagger',
+      description: 'A quick strike from the shadows, dealing extra damage',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
+      effect: (level) => ({
+        damage: level * 8,
+      }),
+    },
+    evasion: {
+      id: 'evasion',
+      name: 'Evasion',
+      type: 'buff',
+      manaCost: 20,
+      cooldown: 12000,
+      duration: 6000,
+      requiredLevel: SKILL_LEVEL_TIERS[0],
+      icon: 'dodge',
+      description: 'Increases dodge chance temporarily',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
+      effect: (level) => ({
+        dodgeChance: level * 2,
+      }),
+    },
+    // Add more Rogue skills...
+  },
+  VAMPIRE: {
+    // Example skills for Vampire
+    bloodSiphon: {
+      id: 'bloodSiphon',
+      name: 'Blood Siphon',
+      type: 'toggle',
+      manaCost: 5,
+      requiredLevel: SKILL_LEVEL_TIERS[0],
+      icon: 'blood',
+      description: 'Steal life from enemies with each attack',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
+      effect: (level) => ({
+        lifeSteal: level * 1.5,
+      }),
+    },
+    nightStalker: {
+      id: 'nightStalker',
+      name: 'Night Stalker',
+      type: 'passive',
+      requiredLevel: SKILL_LEVEL_TIERS[0],
+      icon: 'moon',
+      description: 'Increases damage at night',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
+      effect: (level) => ({
+        damage: level * 2,
+      }),
+    },
+    // Add more Vampire skills...
+  },
+  PALADIN: {
+    // Example skills for Paladin
+    holyShield: {
+      id: 'holyShield',
+      name: 'Holy Shield',
+      type: 'buff',
+      manaCost: 30,
+      cooldown: 10000,
+      duration: 5000,
+      requiredLevel: SKILL_LEVEL_TIERS[0],
+      icon: 'shield',
+      description: 'Increases armor and block chance',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
+      effect: (level) => ({
+        armor: level * 4,
+        blockChance: level * 1.5,
+      }),
+    },
+    smite: {
+      id: 'smite',
+      name: 'Smite',
+      type: 'instant',
+      manaCost: 20,
+      cooldown: 6000,
+      requiredLevel: SKILL_LEVEL_TIERS[0],
+      icon: 'hammer',
+      description: 'Deals holy damage to an enemy',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
+      effect: (level) => ({
+        damage: level * 12,
+      }),
+    },
+    // Add more Paladin skills...
+  },
+  BERSERKER: {
+    // Example skills for Berserker
+    frenzy: {
+      id: 'frenzy',
+      name: 'Frenzy',
+      type: 'toggle',
+      manaCost: 10,
+      requiredLevel: SKILL_LEVEL_TIERS[0],
+      icon: 'rage',
+      description: 'Increases attack speed and damage',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
+      effect: (level) => ({
+        attackSpeed: level * 0.05,
+        damage: level * 3,
+      }),
+    },
+    warCry: {
+      id: 'warCry',
+      name: 'War Cry',
+      type: 'buff',
+      manaCost: 25,
+      cooldown: 15000,
+      duration: 7000,
+      requiredLevel: SKILL_LEVEL_TIERS[0],
+      icon: 'shout',
+      description: 'Boosts morale, increasing damage for a short time',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
+      effect: (level) => ({
+        damage: level * 4,
+      }),
+    },
+    // Add more Berserker skills...
+  },
+  ELEMENTALIST: {
+    // Example skills for Elementalist
+    fireball: {
+      id: 'fireball',
+      name: 'Fireball',
+      type: 'instant',
+      manaCost: 20,
+      cooldown: 5000,
+      requiredLevel: SKILL_LEVEL_TIERS[0],
+      icon: 'fire',
+      description: 'Launches a fireball that deals fire damage',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
+      effect: (level) => ({
+        fireDamage: level * 10,
+      }),
+    },
+    iceArmor: {
+      id: 'iceArmor',
+      name: 'Ice Armor',
+      type: 'buff',
+      manaCost: 30,
+      cooldown: 12000,
+      duration: 8000,
+      requiredLevel: SKILL_LEVEL_TIERS[0],
+      icon: 'ice',
+      description: 'Encases the caster in ice, increasing armor',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
+      effect: (level) => ({
+        armor: level * 5,
+      }),
+    },
+    // Add more Elementalist skills...
+  },
 };
-
 export const REQ_LEVEL_FOR_SKILL_TREE = 1;
 
 export default class SkillTree {

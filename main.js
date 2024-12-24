@@ -19,7 +19,7 @@ window.qwe = console.log;
 window.qw = console.log;
 window.qq = console.log;
 
-export const dev = true;
+export const dev = false;
 
 export const game = new Game();
 const savedData = game.loadGame();
@@ -40,6 +40,7 @@ updateResources();
 hero.recalculateFromAttributes();
 hero.stats.currentHealth = hero.stats.maxHealth;
 hero.stats.currentMana = hero.stats.maxMana;
+
 updatePlayerHealth();
 updateStatsAndAttributesUI();
 updateZoneUI();
@@ -56,5 +57,9 @@ setInterval(() => {
   }
 }, 100);
 
-// Create debug UI
-createDebugUI();
+if (dev) {
+  hero.gold = 1000000;
+  updateResources();
+  // Create debug UI
+  createDebugUI();
+}

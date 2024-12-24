@@ -123,7 +123,7 @@ export default class Hero {
 
   setBaseStats(savedData = null) {
     this.level = 1;
-    this.gold = 123123012123;
+    this.gold = 0;
     this.crystals = 0;
     this.exp = 0;
     this.expToNextLevel = 20;
@@ -371,10 +371,10 @@ export default class Hero {
 
     // Apply percentage bonuses to final values
     this.stats.damage = Math.floor(flatValues.damage * (1 + percentBonuses.damage));
-    this.stats.attackRating = flatValues.attackRating * (1 + percentBonuses.attackRating);
-    this.stats.maxHealth = flatValues.maxHealth * (1 + percentBonuses.maxHealth);
-    this.stats.maxMana = flatValues.maxMana * (1 + attributeEffects.wisManaPercent);
-    this.stats.armor = flatValues.armor * (1 + percentBonuses.armor);
+    this.stats.attackRating = Math.floor(flatValues.attackRating * (1 + percentBonuses.attackRating));
+    this.stats.maxHealth = Math.floor(flatValues.maxHealth * (1 + percentBonuses.maxHealth));
+    this.stats.maxMana = Math.floor(flatValues.maxMana * (1 + attributeEffects.wisManaPercent));
+    this.stats.armor = Math.floor(flatValues.armor * (1 + percentBonuses.armor));
 
     // Elemental damages
     this.stats.fireDamage = flatValues.fireDamage;
