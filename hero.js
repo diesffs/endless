@@ -434,6 +434,12 @@ export default class Hero {
       water: this.stats.waterDamage,
     };
 
+    // Add toggle skill effects
+    const toggleEffects = skillTree.applyToggleEffects('attack');
+    if (toggleEffects.damage) {
+      physicalDamage += toggleEffects.damage;
+    }
+
     Object.entries(elements).forEach(([elementType, damage]) => {
       if (damage > 0) {
         if (ELEMENT_OPPOSITES[elementType] === enemyElement) {
