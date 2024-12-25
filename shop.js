@@ -82,6 +82,33 @@ export default class Shop {
     this.initializeShopUI();
   }
 
+  reset() {
+    this.upgradeCosts = { ...BASE_UPGRADE_COSTS };
+    this.upgradeLevels = {
+      damage: 0,
+      attackSpeed: 0,
+      health: 0,
+      armor: 0,
+      critChance: 0,
+      critDamage: 0,
+      mana: 0,
+      healthRegen: 0,
+      manaRegen: 0,
+    };
+
+    this.shopBonuses = {
+      damage: 0,
+      attackSpeed: 0,
+      health: 0,
+      armor: 0,
+      critChance: 0,
+      critDamage: 0,
+      mana: 0,
+      healthRegen: 0,
+      manaRegen: 0,
+    };
+  }
+
   initializeShopUI() {
     const shopGrid = document.querySelector('.shop-grid');
     if (!shopGrid) return;

@@ -1,4 +1,4 @@
-import { game, hero, shop } from './main.js';
+import { game, hero, shop, skillTree } from './main.js';
 import { updateZoneUI, updateResources, updatePlayerHealth, updateStatsAndAttributesUI } from './ui.js';
 import Enemy from './enemy.js';
 import { showToast } from './ui.js';
@@ -63,8 +63,10 @@ export default class Prestige {
     // Reset skill tree
     skillTree.skillPoints = 0;
     skillTree.selectedPath = null;
-    skillTree.unlockedSkills = {};
-    skillTree.skillLevels = {};
+    skillTree.skills = {};
+
+    // reset shop
+    shop.reset();
 
     // Restore crystal-related values
     hero.crystals = savedValues.crystals;
@@ -273,14 +275,19 @@ export default class Prestige {
       return;
     }
 
-    // Open modal on Prestige button click
+    // Open modal on Prestige button click with level check
     prestigeButton.onclick = () => {
-      const earnedSouls = this.calculateSouls(); // Recalculate to sync with UI
+      if (hero.level < 50) {
+        showToast('Level 50 required to prestige!', 'error');
+        return;
+      }
+
+      const earnedSouls = this.calculateSouls();
       const modalSoulsAmount = document.getElementById('modal-souls-amount');
       if (modalSoulsAmount) {
         modalSoulsAmount.textContent = `${earnedSouls}`;
       }
-      modal.style.display = 'block'; // Show the modal
+      modal.style.display = 'block';
     };
 
     // Confirm Prestige action
