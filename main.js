@@ -19,7 +19,7 @@ window.qwe = console.log;
 window.qw = console.log;
 window.qq = console.log;
 
-export const dev = true;
+export const dev = false;
 
 export const game = new Game();
 const savedData = game.loadGame();
