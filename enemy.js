@@ -57,21 +57,21 @@ const ELEMENTS = {
     id: 'cold',
     icon: '❄️',
   },
-  LIGHTNING: {
-    id: 'lightning',
+  AIR: {
+    id: 'air',
     icon: '⚡',
   },
-  WATER: {
-    id: 'water',
+  EARTH: {
+    id: 'earth',
     icon: '💧',
   },
 };
 
 export const ELEMENT_OPPOSITES = {
-  [ELEMENTS.FIRE.id]: ELEMENTS.WATER.id,
-  [ELEMENTS.WATER.id]: ELEMENTS.FIRE.id,
-  [ELEMENTS.COLD.id]: ELEMENTS.LIGHTNING.id,
-  [ELEMENTS.LIGHTNING.id]: ELEMENTS.COLD.id,
+  [ELEMENTS.FIRE.id]: ELEMENTS.AIR.id,
+  [ELEMENTS.EARTH.id]: ELEMENTS.COLD.id,
+  [ELEMENTS.COLD.id]: ELEMENTS.FIRE.id,
+  [ELEMENTS.AIR.id]: ELEMENTS.EARTH.id,
 };
 
 const ENEMY_NAMES = [

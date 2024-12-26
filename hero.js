@@ -28,8 +28,8 @@ export const BASE_LIFE_STEAL = 0;
 export const BASE_ELEMENTAL_DAMAGE = {
   fire: 0,
   cold: 0,
-  lightning: 0,
-  water: 0,
+  air: 0,
+  earth: 0,
 };
 export const BASE_ATTACK_RATING_PERCENT = 0;
 export const BASE_DAMAGE_PERCENT = 0;
@@ -162,8 +162,8 @@ export default class Hero {
       lifeSteal: BASE_LIFE_STEAL,
       fireDamage: BASE_ELEMENTAL_DAMAGE.fire,
       coldDamage: BASE_ELEMENTAL_DAMAGE.cold,
-      lightningDamage: BASE_ELEMENTAL_DAMAGE.lightning,
-      waterDamage: BASE_ELEMENTAL_DAMAGE.water,
+      airDamage: BASE_ELEMENTAL_DAMAGE.air,
+      earthDamage: BASE_ELEMENTAL_DAMAGE.earth,
       attackRatingPercent: BASE_ATTACK_RATING_PERCENT,
       damagePercent: BASE_DAMAGE_PERCENT,
     };
@@ -295,21 +295,21 @@ export default class Hero {
         (pathBonuses.coldDamage || 0) +
         (buffEffects.coldDamage || 0),
 
-      lightningDamage:
-        BASE_ELEMENTAL_DAMAGE.lightning +
-        (passiveBonuses.lightningDamage || 0) +
-        (shop.shopBonuses.lightningDamage || 0) +
-        (inventory.equipmentBonuses.lightningDamage || 0) +
-        (pathBonuses.lightningDamage || 0) +
-        (buffEffects.lightningDamage || 0),
+      airDamage:
+        BASE_ELEMENTAL_DAMAGE.air +
+        (passiveBonuses.airDamage || 0) +
+        (shop.shopBonuses.airDamage || 0) +
+        (inventory.equipmentBonuses.airDamage || 0) +
+        (pathBonuses.airDamage || 0) +
+        (buffEffects.airDamage || 0),
 
-      waterDamage:
-        BASE_ELEMENTAL_DAMAGE.water +
-        (passiveBonuses.waterDamage || 0) +
-        (shop.shopBonuses.waterDamage || 0) +
-        (inventory.equipmentBonuses.waterDamage || 0) +
-        (pathBonuses.waterDamage || 0) +
-        (buffEffects.waterDamage || 0),
+      earthDamage:
+        BASE_ELEMENTAL_DAMAGE.earth +
+        (passiveBonuses.earthDamage || 0) +
+        (shop.shopBonuses.earthDamage || 0) +
+        (inventory.equipmentBonuses.earthDamage || 0) +
+        (pathBonuses.earthDamage || 0) +
+        (buffEffects.earthDamage || 0),
 
       damage:
         BASE_DAMAGE +
@@ -406,8 +406,8 @@ export default class Hero {
     // Elemental damages
     this.stats.fireDamage = flatValues.fireDamage;
     this.stats.coldDamage = flatValues.coldDamage;
-    this.stats.lightningDamage = flatValues.lightningDamage;
-    this.stats.waterDamage = flatValues.waterDamage;
+    this.stats.airDamage = flatValues.airDamage;
+    this.stats.earthDamage = flatValues.earthDamage;
 
     // Add souls damage bonus last
     const damageBonusFromSouls = Math.floor(this.stats.damage * (this.souls * 0.01));
@@ -457,8 +457,8 @@ export default class Hero {
     const elements = {
       fire: this.stats.fireDamage,
       cold: this.stats.coldDamage,
-      lightning: this.stats.lightningDamage,
-      water: this.stats.waterDamage,
+      air: this.stats.airDamage,
+      earth: this.stats.earthDamage,
     };
 
     // Add toggle skill effects

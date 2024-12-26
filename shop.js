@@ -5,37 +5,25 @@ import { game, hero } from './main.js';
 import { handleSavedData } from './functions.js';
 
 const UPGRADE_CONFIG = {
+  // Existing stats
   damage: { label: 'Damage', bonus: 1 },
-  attackSpeed: {
-    label: 'Attack Speed',
-    bonus: 0.01,
-    fixed: 2,
-  },
+  attackSpeed: { label: 'Attack Speed', bonus: 0.01, fixed: 2 },
   health: { label: 'Health', bonus: 10 },
   armor: { label: 'Armor', bonus: 1 },
-  critChance: {
-    label: 'Crit Chance',
-    bonus: 0.1,
-    fixed: 2,
-    suffix: '%',
-  },
-  critDamage: {
-    label: 'Crit Damage',
-    bonus: 0.01,
-    fixed: 2,
-    suffix: '%',
-  },
+  critChance: { label: 'Crit Chance', bonus: 0.1, fixed: 2, suffix: '%' },
+  critDamage: { label: 'Crit Damage', bonus: 0.01, fixed: 2, suffix: '%' },
   mana: { label: 'Mana', bonus: 5 },
-  healthRegen: {
-    label: 'Health Regen',
-    bonus: 0.1,
-    fixed: 1,
-  },
-  manaRegen: {
-    label: 'Mana Regen',
-    bonus: 0.1,
-    fixed: 1,
-  },
+  healthRegen: { label: 'Health Regen', bonus: 0.1, fixed: 1 },
+  manaRegen: { label: 'Mana Regen', bonus: 0.1, fixed: 1 },
+
+  // New stats to add
+  blockChance: { label: 'Block Chance', bonus: 0.1, fixed: 2, suffix: '%' },
+  attackRating: { label: 'Attack Rating', bonus: 1 },
+  lifeSteal: { label: 'Life Steal', bonus: 0.1, fixed: 2, suffix: '%' },
+  fireDamage: { label: 'Fire Damage', bonus: 1 },
+  coldDamage: { label: 'Cold Damage', bonus: 1 },
+  airDamage: { label: 'Air Damage', bonus: 1 },
+  earthDamage: { label: 'Earth Damage', bonus: 1 },
 };
 
 export const BASE_UPGRADE_COSTS = {
@@ -48,6 +36,13 @@ export const BASE_UPGRADE_COSTS = {
   mana: 200,
   healthRegen: 200,
   manaRegen: 200,
+  blockChance: 300,
+  attackRating: 150,
+  lifeSteal: 400,
+  fireDamage: 250,
+  coldDamage: 250,
+  airDamage: 250,
+  earthDamage: 250,
 };
 
 export default class Shop {
@@ -63,18 +58,20 @@ export default class Shop {
       mana: 0,
       healthRegen: 0,
       manaRegen: 0,
+
+      blockChance: 0,
+      attackRating: 0,
+      lifeSteal: 0,
+      fireDamage: 0,
+      coldDamage: 0,
+      airDamage: 0,
+      earthDamage: 0,
+      attackRatingPercent: 0,
+      damagePercent: 0,
     };
 
     this.shopBonuses = {
-      damage: 0,
-      attackSpeed: 0,
-      health: 0,
-      armor: 0,
-      critChance: 0,
-      critDamage: 0,
-      mana: 0,
-      healthRegen: 0,
-      manaRegen: 0,
+      ...this.upgradeLevels,
     };
 
     handleSavedData(savedData, this);
@@ -94,18 +91,20 @@ export default class Shop {
       mana: 0,
       healthRegen: 0,
       manaRegen: 0,
+
+      blockChance: 0,
+      attackRating: 0,
+      lifeSteal: 0,
+      fireDamage: 0,
+      coldDamage: 0,
+      airDamage: 0,
+      earthDamage: 0,
+      attackRatingPercent: 0,
+      damagePercent: 0,
     };
 
     this.shopBonuses = {
-      damage: 0,
-      attackSpeed: 0,
-      health: 0,
-      armor: 0,
-      critChance: 0,
-      critDamage: 0,
-      mana: 0,
-      healthRegen: 0,
-      manaRegen: 0,
+      ...this.upgradeLevels,
     };
   }
 

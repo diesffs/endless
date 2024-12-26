@@ -64,7 +64,7 @@ export const CLASS_PATHS = {
     name: 'Elementalist',
     baseStats: {
       fireDamage: 8,
-      lightningDamage: 8,
+      airDamage: 8,
       coldDamage: 8,
       critChance: 3,
     },

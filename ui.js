@@ -139,9 +139,9 @@ export function updateStatsAndAttributesUI() {
         <div><strong>🔥 Fire Damage:</strong> <span id="fire-damage-value">${hero.stats.fireDamage}</span></div>
         <div><strong>❄️ Cold Damage:</strong> <span id="cold-damage-value">${hero.stats.coldDamage}</span></div>
         <div>
-          <strong>⚡ Lightning Damage:</strong> <span id="lightning-damage-value">${hero.stats.lightningDamage}</span>
+          <strong>☁️ Air Damage:</strong> <span id="air-damage-value">${hero.stats.airDamage}</span>
         </div>
-        <div><strong>💧 Water Damage:</strong> <span id="water-damage-value">${hero.stats.waterDamage}</span></div>
+        <div><strong>🌍 Earth Damage:</strong> <span id="earth-damage-value">${hero.stats.earthDamage}</span></div>
       </div>
 
       <!-- DEFENSE -->

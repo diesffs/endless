@@ -25,8 +25,8 @@ export default class Inventory {
       lifeSteal: 0,
       fireDamage: 0,
       coldDamage: 0,
-      lightningDamage: 0,
-      waterDamage: 0,
+      airDamage: 0,
+      earthDamage: 0,
       attackRatingPercent: 0,
       damagePercent: 0,
     };
