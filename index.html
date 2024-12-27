@@ -66,7 +66,12 @@
                       <span>You will earn:</span>
                       <div class="souls-amount">+<span id="modal-souls-amount">0</span> Souls</div>
                     </div>
-                    <div class="warning">You will lose your level, trainings and skill tree. <br/> <span style="color: rgb(79, 243, 79)">You will keep only inventory, souls and crystal upgrades.</span></div>
+                    <div class="warning">
+                      You will lose your level, trainings and skill tree. <br />
+                      <span style="color: rgb(79, 243, 79)"
+                        >You will keep only inventory, souls and crystal upgrades.</span
+                      >
+                    </div>
                     <div class="modal-buttons">
                       <button id="cancel-prestige" class="modal-btn cancel">Cancel</button>
                       <button id="confirm-prestige" class="modal-btn confirm">Prestige</button>
@@ -119,33 +124,25 @@
                 </div>
                 <div class="salvage-container">
                   <button id="sort-inventory" class="inventory-btn">Sort Items</button>
-                  <button id="salvage-normal" class="salvage-button normal" title="Salvage all Normal (white) items">
-                    Normal
+                  
+                <div class="salvage-dropdown">
+                  <button class="salvage-btn">
+                    Salvage
+                    <span class="dropdown-icon">▼</span>
                   </button>
-                  <button
-                    id="salvage-magic"
-                    class="salvage-button magic"
-                    title="Salvage all Magic (blue) items and below"
-                  >
-                    Magic
-                  </button>
-                  <button
-                    id="salvage-rare"
-                    class="salvage-button rare"
-                    title="Salvage all Rare (yellow) items and below"
-                  >
-                    Rare
-                  </button>
-                  <button
-                    id="salvage-unique"
-                    class="salvage-button unique"
-                    title="Salvage all Unique (orange) items and below"
-                  >
-                    Unique
-                  </button>
+                  <div class="salvage-options">
+                    <div data-rarity="NORMAL">Normal Items</div>
+                    <div data-rarity="MAGIC">Magic Items & Below</div>
+                    <div data-rarity="RARE">Rare Items & Below</div>
+                    <div data-rarity="UNIQUE">Unique Items & Below</div>
+                  </div>
+                </div>
                 </div>
               </div>
               <div class="inventory-grid">
+                <div class="persistent-inventory">
+                  <!-- 20 slots (5x4) grid will be generated here -->
+                </div>
                 <div class="grid-container"></div>
               </div>
             </div>

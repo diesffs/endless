@@ -24,7 +24,7 @@ class Game {
   }
 
   resetAllHealth() {
-    hero.stats.currentHealth = hero.stats.maxHealth;
+    hero.stats.currentHealth = hero.stats.health;
     hero.stats.currentMana = hero.stats.maxMana;
     updatePlayerHealth();
     this.currentEnemy.resetHealth();
@@ -84,7 +84,7 @@ class Game {
       updateZoneUI();
       this.currentEnemy = new Enemy(this.zone);
 
-      hero.stats.currentHealth = hero.stats.maxHealth; // Reset player health
+      hero.stats.currentHealth = hero.stats.health; // Reset player health
       hero.stats.currentMana = hero.stats.maxMana; // Reset player mana
       this.currentEnemy.resetHealth(); // Reset enemy health
       updatePlayerHealth();

@@ -131,8 +131,8 @@ class Enemy {
   constructor(zone) {
     this.rarity = this.generateRarity();
     this.color = this.getRarityColor(this.rarity);
-    this.maxHealth = this.calculateHealth(zone, this.rarity);
-    this.currentHealth = this.maxHealth;
+    this.health = this.calculateHealth(zone, this.rarity);
+    this.currentHealth = this.health;
     this.damage = this.calculateDamage(zone, this.rarity);
     this.attackSpeed = this.calculateAttackSpeed(this.rarity);
     this.lastAttack = Date.now();
@@ -230,7 +230,7 @@ class Enemy {
   }
 
   resetHealth() {
-    this.currentHealth = this.maxHealth;
+    this.currentHealth = this.health;
   }
 
   calculateDropChance() {

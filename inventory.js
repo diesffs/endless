@@ -17,7 +17,7 @@ export default class Inventory {
       critChance: 0,
       critDamage: 0,
       attackSpeed: 0,
-      maxHealth: 0,
+      health: 0,
       blockChance: 0,
       maxMana: 0,
       manaRegen: 0,
@@ -79,25 +79,16 @@ export default class Inventory {
 
     document.getElementById('sort-inventory').addEventListener('click', () => {
       this.sortInventory();
-
       showToast(`Sorted items by rarity, then level`, 'success');
     });
 
-    document.getElementById('salvage-normal').addEventListener('click', () => {
-      this.salvageItemsByRarity(ITEM_RARITY.NORMAL.name);
-      this.sortInventory();
-    });
-    document.getElementById('salvage-magic').addEventListener('click', () => {
-      this.salvageItemsByRarity(ITEM_RARITY.MAGIC.name);
-      this.sortInventory();
-    });
-    document.getElementById('salvage-rare').addEventListener('click', () => {
-      this.salvageItemsByRarity(ITEM_RARITY.RARE.name);
-      this.sortInventory();
-    });
-    document.getElementById('salvage-unique').addEventListener('click', () => {
-      this.salvageItemsByRarity(ITEM_RARITY.UNIQUE.name);
-      this.sortInventory();
+    // Add event listeners for salvage options
+    document.querySelectorAll('.salvage-options div').forEach((option) => {
+      option.addEventListener('click', () => {
+        const rarity = option.dataset.rarity;
+        this.salvageItemsByRarity(rarity);
+        this.sortInventory();
+      });
     });
   }
 

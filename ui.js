@@ -54,10 +54,10 @@ export function updateResources() {
 
 export function updatePlayerHealth() {
   const stats = hero.stats;
-  const healthPercentage = (stats.currentHealth / stats.maxHealth) * 100;
+  const healthPercentage = (stats.currentHealth / stats.health) * 100;
   document.getElementById('health-fill').style.width = `${healthPercentage}%`;
   document.getElementById('health-text').textContent = `${Math.max(0, Math.floor(stats.currentHealth))}/${Math.floor(
-    stats.maxHealth
+    stats.health
   )}`;
 
   const manaPercentage = (stats.currentMana / stats.maxMana) * 100;
@@ -69,12 +69,12 @@ export function updatePlayerHealth() {
 
 export function updateEnemyHealth() {
   const enemy = game.currentEnemy;
-  const healthPercentage = (enemy.currentHealth / enemy.maxHealth) * 100;
+  const healthPercentage = (enemy.currentHealth / enemy.health) * 100;
   document.getElementById('enemy-health-fill').style.width = `${healthPercentage}%`;
   document.getElementById('enemy-health-text').textContent = `${Math.max(
     0,
     Math.floor(enemy.currentHealth)
-  )}/${Math.floor(enemy.maxHealth)}`;
+  )}/${Math.floor(enemy.health)}`;
 }
 
 export function toggleGame() {
@@ -138,16 +138,14 @@ export function updateStatsAndAttributesUI() {
       <div class="elemental-damage">
         <div><strong>🔥 Fire Damage:</strong> <span id="fire-damage-value">${hero.stats.fireDamage}</span></div>
         <div><strong>❄️ Cold Damage:</strong> <span id="cold-damage-value">${hero.stats.coldDamage}</span></div>
-        <div>
-          <strong>☁️ Air Damage:</strong> <span id="air-damage-value">${hero.stats.airDamage}</span>
-        </div>
+        <div><strong>☁️ Air Damage:</strong> <span id="air-damage-value">${hero.stats.airDamage}</span></div>
         <div><strong>🌍 Earth Damage:</strong> <span id="earth-damage-value">${hero.stats.earthDamage}</span></div>
       </div>
 
       <!-- DEFENSE -->
       <hr style="margin: 5px 1px" />
 
-      <div><strong>Health:</strong> <span id="max-health-value">${hero.stats.maxHealth}</span></div>
+      <div><strong>Health:</strong> <span id="max-health-value">${hero.stats.health}</span></div>
       <div>
         <strong>Health Regen:</strong>
         <span id="health-regen-value">${hero.stats.lifeRegen.toFixed(1).replace(/\./g, ',')}</span>/s
@@ -185,7 +183,7 @@ export function updateStatsAndAttributesUI() {
       hero.stats.critChance.toFixed(1).replace(/\./g, ',') + '%';
     document.getElementById('crit-damage-value').textContent =
       hero.stats.critDamage.toFixed(2).replace(/\./g, ',') + 'x';
-    document.getElementById('max-health-value').textContent = hero.stats.maxHealth;
+    document.getElementById('max-health-value').textContent = hero.stats.health;
     document.getElementById('health-regen-value').textContent = hero.stats.lifeRegen.toFixed(1).replace(/\./g, ',');
     document.getElementById('max-mana-value').textContent = hero.stats.maxMana.toFixed(0);
     document.getElementById('mana-regen-value').textContent = hero.stats.manaRegen.toFixed(1).replace(/\./g, ',');
@@ -272,10 +270,8 @@ export function updateStatsAndAttributesUI() {
     document.getElementById('dexterity-value').textContent = hero.getStat('dexterity');
   }
 
-  if (hero.level >= REQ_LEVEL_FOR_SKILL_TREE) {
-    const skillTreeTab = document.querySelector('[data-tab="skilltree"]');
-    skillTreeTab.classList.remove('hidden');
-  }
+  const skillTreeTab = document.querySelector('[data-tab="skilltree"]');
+  skillTreeTab.classList.remove('hidden');
 }
 
 export function updateZoneUI() {
@@ -359,7 +355,9 @@ function showClassSelection() {
     `;
 
     const button = document.createElement('button');
-    button.textContent = 'Choose Path';
+    button.textContent =
+      hero.level < REQ_LEVEL_FOR_SKILL_TREE ? `Requires Level ${REQ_LEVEL_FOR_SKILL_TREE}` : 'Choose Path';
+    button.disabled = hero.level < REQ_LEVEL_FOR_SKILL_TREE;
     button.addEventListener('click', () => selectClassPath(pathId));
     pathElement.appendChild(button);
 

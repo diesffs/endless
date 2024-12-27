@@ -9,6 +9,10 @@ import {
   updateSkillTreeValues,
 } from './ui.js';
 
+export const SKILL_LEVEL_TIERS = [1, 10, 25, 50, 100, 200, 300, 400, 500];
+export const DEFAULT_MAX_SKILL_LEVEL = 100;
+export const REQ_LEVEL_FOR_SKILL_TREE = 10;
+
 export const CLASS_PATHS = {
   WARRIOR: {
     name: 'Warrior',
@@ -16,7 +20,7 @@ export const CLASS_PATHS = {
       strength: 5,
       vitality: 3,
       armor: 10,
-      maxHealth: 50,
+      health: 50,
     },
     description: 'A mighty warrior specializing in heavy armor and raw strength',
   },
@@ -46,7 +50,7 @@ export const CLASS_PATHS = {
       blockChance: 10,
       armor: 15,
       vitality: 4,
-      maxHealth: 40,
+      health: 40,
     },
     description: 'Holy warrior specializing in defense and vitality',
   },
@@ -63,17 +67,14 @@ export const CLASS_PATHS = {
   ELEMENTALIST: {
     name: 'Elementalist',
     baseStats: {
-      fireDamage: 8,
-      airDamage: 8,
-      coldDamage: 8,
-      critChance: 3,
+      fireDamage: 20,
+      airDamage: 20,
+      coldDamage: 20,
+      earthDamage: 20,
     },
     description: 'Master of elemental damage types',
   },
 };
-
-export const SKILL_LEVEL_TIERS = [1, 10, 25, 50, 100, 200, 300, 400, 500];
-export const DEFAULT_MAX_SKILL_LEVEL = 100;
 
 export const SKILL_TREES = {
   WARRIOR: {
@@ -302,7 +303,6 @@ export const SKILL_TREES = {
     // Add more Elementalist skills...
   },
 };
-export const REQ_LEVEL_FOR_SKILL_TREE = 1;
 
 export default class SkillTree {
   constructor(savedData = null) {
@@ -364,6 +364,10 @@ export default class SkillTree {
   selectPath(pathName) {
     if (this.selectedPath) return false;
     if (!CLASS_PATHS[pathName]) return false;
+    if (hero.level < REQ_LEVEL_FOR_SKILL_TREE) {
+      showToast(`Reach level ${REQ_LEVEL_FOR_SKILL_TREE} to select a class path!`, 'warning');
+      return false;
+    }
 
     this.selectedPath = {
       name: pathName,

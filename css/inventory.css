@@ -15,10 +15,8 @@
 }
 
 .equipment-container {
-  padding: 1rem;
   background: var(--bg-element);
   border-radius: 0.5rem;
-  margin-bottom: 1rem;
 }
 
 .equipment-layout {
@@ -174,7 +172,6 @@
   border-radius: 0.5rem;
   width: fit-content;
   overflow-y: auto;
-  margin-top: -30px;
 }
 
 .grid-cell {
@@ -275,41 +272,64 @@
 
 .salvage-container {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   margin: 10px 20px;
 }
 
-.salvage-button {
-  padding: 10px 20px;
-  margin: 5px;
-  border: none;
-  border-radius: 5px;
-  font-size: 14px;
+.salvage-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.salvage-btn {
+  padding: 8px 16px;
+  background: #2c3e50;
+  border: 1px solid #34495e;
+  color: white;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.salvage-button.normal {
-  background-color: white;
-  color: black;
+.salvage-options {
+  display: none;
+  position: absolute;
+  background: #2c3e50;
+  min-width: 160px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1;
 }
 
-.salvage-button.magic {
-  background-color: #4287f5; /* Blue */
-  color: white;
+.salvage-options div {
+  padding: 8px 16px;
+  cursor: pointer;
 }
 
-.salvage-button.rare {
-  background-color: #ffd700; /* Yellow */
-  color: black;
+.salvage-options div:hover {
+  background: #34495e;
 }
 
-.salvage-button.unique {
-  background-color: #ff8c00; /* Orange */
-  color: white;
+.salvage-dropdown:hover .salvage-options {
+  display: block;
 }
 
-.salvage-button:hover {
-  opacity: 0.8;
+.salvage-options div[data-rarity='NORMAL'] {
+  color: #ffffff;
+  border-left: 4px solid #ffffff;
+}
+
+.salvage-options div[data-rarity='MAGIC'] {
+  color: #4287f5;
+  border-left: 4px solid #4287f5;
+}
+
+.salvage-options div[data-rarity='RARE'] {
+  color: #ffd700;
+  border-left: 4px solid #ffd700;
+}
+
+.salvage-options div[data-rarity='UNIQUE'] {
+  color: #ff8c00;
+  border-left: 4px solid #ff8c00;
 }

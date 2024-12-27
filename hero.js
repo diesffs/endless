@@ -151,7 +151,7 @@ export default class Hero {
       critChance: BASE_CRIT_CHANCE,
       critDamage: BASE_CRIT_DAMAGE,
       currentHealth: BASE_HEALTH,
-      maxHealth: BASE_HEALTH,
+      health: BASE_HEALTH,
       armor: BASE_ARMOR,
       blockChance: BASE_BLOCK_CHANCE,
       attackRating: BASE_ATTACK_RATING,
@@ -188,7 +188,7 @@ export default class Hero {
     this.statPoints += STATS_ON_LEVEL_UP;
     this.expToNextLevel += this.level * 40 - 20;
     this.recalculateFromAttributes();
-    this.stats.currentHealth = this.stats.maxHealth; // Full heal on level up
+    this.stats.currentHealth = this.stats.health; // Full heal on level up
 
     // Add level up notification
     createCombatText(`LEVEL UP! (${this.level})`);
@@ -206,7 +206,7 @@ export default class Hero {
       this.statPoints--;
       this.recalculateFromAttributes();
       if (stat === 'vitality' && !game.gameStarted) {
-        this.stats.currentHealth = this.stats.maxHealth;
+        this.stats.currentHealth = this.stats.health;
       }
       game.saveGame();
       return true;
@@ -358,15 +358,15 @@ export default class Hero {
         (pathBonuses.attackRating || 0) +
         (buffEffects.attackRating || 0),
 
-      maxHealth:
+      health:
         BASE_HEALTH +
         attributeEffects.vitHealthFlat +
         HEALTH_ON_LEVEL_UP * (this.level - 1) +
-        (passiveBonuses.maxHealth || 0) +
-        (shop.shopBonuses.maxHealth || 0) +
-        (inventory.equipmentBonuses.maxHealth || 0) +
-        (pathBonuses.maxHealth || 0) +
-        (buffEffects.maxHealth || 0),
+        (passiveBonuses.health || 0) +
+        (shop.shopBonuses.health || 0) +
+        (inventory.equipmentBonuses.health || 0) +
+        (pathBonuses.health || 0) +
+        (buffEffects.health || 0),
 
       maxMana:
         BASE_MANA +
@@ -386,20 +386,28 @@ export default class Hero {
         (inventory.equipmentBonuses.armor || 0) +
         (pathBonuses.armor || 0) +
         (buffEffects.armor || 0),
+
+      lifeSteal:
+        BASE_LIFE_STEAL +
+        (passiveBonuses.lifeSteal || 0) +
+        (shop.shopBonuses.lifeSteal || 0) +
+        (inventory.equipmentBonuses.lifeSteal || 0) +
+        (pathBonuses.lifeSteal || 0) +
+        (buffEffects.lifeSteal || 0),
     };
 
     // Calculate percentage bonuses
     const percentBonuses = {
       damage: attributeEffects.strDamagePercent + this.stats.damagePercent / 100 + this.souls * 0.01,
       attackRating: attributeEffects.agiAttackRatingPercent + this.stats.attackRatingPercent / 100,
-      maxHealth: attributeEffects.vitHealthPercent,
+      health: attributeEffects.vitHealthPercent,
       armor: attributeEffects.endArmorPercent,
     };
 
     // Apply percentage bonuses to final values
     this.stats.damage = Math.floor(flatValues.damage * (1 + percentBonuses.damage));
     this.stats.attackRating = Math.floor(flatValues.attackRating * (1 + percentBonuses.attackRating));
-    this.stats.maxHealth = Math.floor(flatValues.maxHealth * (1 + percentBonuses.maxHealth));
+    this.stats.health = Math.floor(flatValues.health * (1 + percentBonuses.health));
     this.stats.maxMana = Math.floor(flatValues.maxMana * (1 + attributeEffects.wisManaPercent));
     this.stats.armor = Math.floor(flatValues.armor * (1 + percentBonuses.armor));
 
@@ -421,6 +429,7 @@ export default class Hero {
       (BASE_LIFE_REGEN + inventory.equipmentBonuses.lifeRegen) * (1 + attributeEffects.vitRegenPercent);
     this.stats.manaRegen =
       (BASE_MANA_REGEN + inventory.equipmentBonuses.manaRegen) * (1 + attributeEffects.wisRegenPercent);
+    this.stats.lifeSteal = Number(flatValues.lifeSteal.toFixed(2));
 
     // Cap values
     this.stats.blockChance = Math.min(this.stats.blockChance, 75);
@@ -440,7 +449,7 @@ export default class Hero {
   }
 
   regenerate() {
-    this.stats.currentHealth = Math.min(this.stats.maxHealth, this.stats.currentHealth + this.stats.lifeRegen);
+    this.stats.currentHealth = Math.min(this.stats.health, this.stats.currentHealth + this.stats.lifeRegen);
     this.stats.currentMana = Math.min(this.stats.maxMana, this.stats.currentMana + this.stats.manaRegen);
     updatePlayerHealth();
   }

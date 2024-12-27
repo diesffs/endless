@@ -18,8 +18,9 @@ import { createDebugUI } from './functions.js';
 window.qwe = console.log;
 window.qw = console.log;
 window.qq = console.log;
+window.q = console.log;
 
-export const dev = false;
+export const dev = true;
 
 export const game = new Game();
 const savedData = game.loadGame();
@@ -38,7 +39,7 @@ initializeSkillTreeUI();
 
 updateResources();
 hero.recalculateFromAttributes();
-hero.stats.currentHealth = hero.stats.maxHealth;
+hero.stats.currentHealth = hero.stats.health;
 hero.stats.currentMana = hero.stats.maxMana;
 
 updatePlayerHealth();

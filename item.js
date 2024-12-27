@@ -81,7 +81,7 @@ export const AVAILABLE_STATS = {
   critChance: { min: 0.5, max: 3, scaling: 'capped' },
   critDamage: { min: 0.02, max: 0.1, scaling: 'full' },
   attackSpeed: { min: 0.05, max: 0.2, scaling: 'capped' },
-  maxHealth: { min: 5, max: 25, scaling: 'full' },
+  health: { min: 5, max: 25, scaling: 'full' },
   blockChance: { min: 2, max: 8, scaling: 'capped' },
   attackRating: { min: 5, max: 20, scaling: 'full' },
   lifeSteal: { min: 1, max: 3, scaling: 'capped' },
@@ -96,23 +96,23 @@ export const AVAILABLE_STATS = {
 export const ITEM_STAT_POOLS = {
   HELMET: {
     mandatory: ['armor'],
-    possible: ['vitality', 'maxHealth', 'strength', 'agility', 'critChance', 'blockChance'],
+    possible: ['vitality', 'health', 'strength', 'agility', 'critChance', 'blockChance'],
   },
   ARMOR: {
     mandatory: ['armor'],
-    possible: ['vitality', 'maxHealth', 'strength', 'blockChance', 'critDamage'],
+    possible: ['vitality', 'health', 'strength', 'blockChance', 'critDamage'],
   },
   BELT: {
     mandatory: ['armor'],
-    possible: ['vitality', 'strength', 'maxHealth', 'agility', 'critChance'],
+    possible: ['vitality', 'strength', 'health', 'agility', 'critChance'],
   },
   PANTS: {
     mandatory: ['armor'],
-    possible: ['vitality', 'maxHealth', 'agility', 'strength', 'critDamage'],
+    possible: ['vitality', 'health', 'agility', 'strength', 'critDamage'],
   },
   BOOTS: {
     mandatory: ['armor'],
-    possible: ['agility', 'maxHealth', 'attackSpeed', 'strength', 'vitality'],
+    possible: ['agility', 'health', 'attackSpeed', 'strength', 'vitality'],
   },
   SWORD: {
     mandatory: ['damage'],
@@ -133,15 +133,15 @@ export const ITEM_STAT_POOLS = {
   },
   AXE: {
     mandatory: ['damage'],
-    possible: ['strength', 'critDamage', 'attackSpeed', 'vitality', 'maxHealth', 'attackRating', 'lifeSteal'],
+    possible: ['strength', 'critDamage', 'attackSpeed', 'vitality', 'health', 'attackRating', 'lifeSteal'],
   },
   MACE: {
     mandatory: ['damage'],
-    possible: ['strength', 'armor', 'critChance', 'maxHealth', 'vitality'],
+    possible: ['strength', 'armor', 'critChance', 'health', 'vitality'],
   },
   SHIELD: {
     mandatory: ['armor', 'blockChance'],
-    possible: ['vitality', 'maxHealth', 'strength', 'critChance', 'agility'],
+    possible: ['vitality', 'health', 'strength', 'critChance', 'agility'],
   },
   GLOVES: {
     mandatory: ['armor'],
@@ -154,7 +154,7 @@ export const ITEM_STAT_POOLS = {
       'agility',
       'vitality',
       'critChance',
-      'maxHealth',
+      'health',
       'critDamage',
       'attackRating',
       'fireDamage',

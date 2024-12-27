@@ -18,7 +18,7 @@ const UPGRADE_CONFIG = {
 
   // New stats to add
   blockChance: { label: 'Block Chance', bonus: 0.1, fixed: 2, suffix: '%' },
-  attackRating: { label: 'Attack Rating', bonus: 1 },
+  attackRating: { label: 'Attack Rating', bonus: 10},
   lifeSteal: { label: 'Life Steal', bonus: 0.1, fixed: 2, suffix: '%' },
   fireDamage: { label: 'Fire Damage', bonus: 1 },
   coldDamage: { label: 'Cold Damage', bonus: 1 },
@@ -66,8 +66,6 @@ export default class Shop {
       coldDamage: 0,
       airDamage: 0,
       earthDamage: 0,
-      attackRatingPercent: 0,
-      damagePercent: 0,
     };
 
     this.shopBonuses = {
@@ -99,8 +97,6 @@ export default class Shop {
       coldDamage: 0,
       airDamage: 0,
       earthDamage: 0,
-      attackRatingPercent: 0,
-      damagePercent: 0,
     };
 
     this.shopBonuses = {
