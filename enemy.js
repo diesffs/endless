@@ -49,29 +49,29 @@ export const ENEMY_RARITY = {
 };
 
 const ELEMENTS = {
-  FIRE: {
+  fire: {
     id: 'fire',
     icon: '🔥',
   },
-  COLD: {
+  cold: {
     id: 'cold',
     icon: '❄️',
   },
-  AIR: {
+  air: {
     id: 'air',
-    icon: '⚡',
+    icon: '☁️',
   },
-  EARTH: {
+  earth: {
     id: 'earth',
-    icon: '💧',
+    icon: '🌍',
   },
 };
 
 export const ELEMENT_OPPOSITES = {
-  [ELEMENTS.FIRE.id]: ELEMENTS.AIR.id,
-  [ELEMENTS.EARTH.id]: ELEMENTS.COLD.id,
-  [ELEMENTS.COLD.id]: ELEMENTS.FIRE.id,
-  [ELEMENTS.AIR.id]: ELEMENTS.EARTH.id,
+  [ELEMENTS.fire.id]: ELEMENTS.air.id,
+  [ELEMENTS.earth.id]: ELEMENTS.cold.id,
+  [ELEMENTS.cold.id]: ELEMENTS.fire.id,
+  [ELEMENTS.air.id]: ELEMENTS.earth.id,
 };
 
 const ENEMY_NAMES = [
