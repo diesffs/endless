@@ -5,6 +5,7 @@
   --accent: #3b82f6;
   --text: #ffffff;
   --health: #ef4444;
+  --persistent-storage-slot:rgb(57, 175, 230);
 }
 
 * {

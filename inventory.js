@@ -3,6 +3,8 @@ import Item, { ITEM_RARITY, RARITY_ORDER, SLOT_REQUIREMENTS } from './item.js';
 import { game, hero } from './main.js';
 import { showToast } from './ui.js';
 
+const PERSISTENT_SLOTS = 30;
+
 export default class Inventory {
   constructor(savedData = null) {
     this.equipmentBonuses = {
@@ -73,6 +75,9 @@ export default class Inventory {
     for (let i = 0; i < 200; i++) {
       const cell = document.createElement('div');
       cell.classList.add('grid-cell');
+      if (i < PERSISTENT_SLOTS) {
+        cell.classList.add('persistent');
+      }
       gridContainer.appendChild(cell);
     }
     this.updateInventoryGrid();
@@ -96,7 +101,9 @@ export default class Inventory {
     let salvagedItems = 0;
     const salvageRarities = RARITY_ORDER.slice(0, RARITY_ORDER.indexOf(rarity) + 1);
 
-    this.inventoryItems = this.inventoryItems.map((item) => {
+    // Skip first PERSISTENT_SLOTS slots when salvaging
+    this.inventoryItems = this.inventoryItems.map((item, index) => {
+      if (index < PERSISTENT_SLOTS) return item; // Preserve persistent slots
       if (item && salvageRarities.includes(item.rarity)) {
         salvagedItems++;
         return null;
@@ -278,7 +285,8 @@ export default class Inventory {
     if (specificPosition !== null && specificPosition < 200 && !this.inventoryItems[specificPosition]) {
       this.inventoryItems[specificPosition] = item;
     } else {
-      const emptySlot = this.inventoryItems.findIndex((slot) => slot === null);
+      // Find first empty slot after persistent slots (40)
+      const emptySlot = this.inventoryItems.findIndex((slot, index) => slot === null && index >= PERSISTENT_SLOTS);
       if (emptySlot !== -1) {
         this.inventoryItems[emptySlot] = item;
       }

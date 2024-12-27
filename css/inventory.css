@@ -333,3 +333,8 @@
   color: #ff8c00;
   border-left: 4px solid #ff8c00;
 }
+
+.grid-cell.persistent {
+  border: 1px solid var(--persistent-storage-slot);
+  background: rgba(255, 255, 255, 0.05);
+}
