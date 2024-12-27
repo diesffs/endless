@@ -21,7 +21,7 @@ export default class Inventory {
       attackSpeed: 0,
       health: 0,
       blockChance: 0,
-      maxMana: 0,
+      mana: 0,
       manaRegen: 0,
       lifeRegen: 0,
       lifeSteal: 0,

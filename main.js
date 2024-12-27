@@ -40,7 +40,7 @@ initializeSkillTreeUI();
 updateResources();
 hero.recalculateFromAttributes();
 hero.stats.currentHealth = hero.stats.health;
-hero.stats.currentMana = hero.stats.maxMana;
+hero.stats.currentMana = hero.stats.mana;
 
 updatePlayerHealth();
 updateStatsAndAttributesUI();

@@ -60,10 +60,10 @@ export function updatePlayerHealth() {
     stats.health
   )}`;
 
-  const manaPercentage = (stats.currentMana / stats.maxMana) * 100;
+  const manaPercentage = (stats.currentMana / stats.mana) * 100;
   document.getElementById('mana-fill').style.width = `${manaPercentage}%`;
   document.getElementById('mana-text').textContent = `${Math.max(0, Math.floor(stats.currentMana))}/${Math.floor(
-    stats.maxMana
+    stats.mana
   )}`;
 }
 
@@ -150,7 +150,7 @@ export function updateStatsAndAttributesUI() {
         <strong>Health Regen:</strong>
         <span id="health-regen-value">${hero.stats.lifeRegen.toFixed(1).replace(/\./g, ',')}</span>/s
       </div>
-      <div><strong>Mana:</strong> <span id="max-mana-value">${hero.stats.maxMana.toFixed(0)}</span></div>
+      <div><strong>Mana:</strong> <span id="max-mana-value">${hero.stats.mana.toFixed(0)}</span></div>
       <div>
         <strong>Mana Regen:</strong>
         <span id="mana-regen-value">${hero.stats.manaRegen.toFixed(1).replace(/\./g, ',')}</span>/s
@@ -185,7 +185,7 @@ export function updateStatsAndAttributesUI() {
       hero.stats.critDamage.toFixed(2).replace(/\./g, ',') + 'x';
     document.getElementById('max-health-value').textContent = hero.stats.health;
     document.getElementById('health-regen-value').textContent = hero.stats.lifeRegen.toFixed(1).replace(/\./g, ',');
-    document.getElementById('max-mana-value').textContent = hero.stats.maxMana.toFixed(0);
+    document.getElementById('max-mana-value').textContent = hero.stats.mana.toFixed(0);
     document.getElementById('mana-regen-value').textContent = hero.stats.manaRegen.toFixed(1).replace(/\./g, ',');
     document.getElementById('armor-value').textContent = hero.stats.armor || 0;
     document.getElementById('armor-reduction-value').textContent =
@@ -205,7 +205,7 @@ export function updateStatsAndAttributesUI() {
       <div class="attribute-row">
         <button class="allocate-btn" data-stat="${stat}">+</button>
         <strong>${stat.charAt(0).toUpperCase() + stat.slice(1)}:</strong>
-        <span id="${stat}-value">${hero.getStat(stat)}</span>
+        <span id="${stat}-value">${hero.stats[stat]}</span>
         <div class="attribute-description">${ATTRIBUTES[stat].tooltip}</div>
       </div>
     `
@@ -262,12 +262,12 @@ export function updateStatsAndAttributesUI() {
   } else {
     document.getElementById(`attributes`).textContent = `Attributes (+${hero.statPoints})`;
     // Update dynamic attribute values
-    document.getElementById('strength-value').textContent = hero.getStat('strength');
-    document.getElementById('agility-value').textContent = hero.getStat('agility');
-    document.getElementById('vitality-value').textContent = hero.getStat('vitality');
-    document.getElementById('wisdom-value').textContent = hero.getStat('wisdom');
-    document.getElementById('endurance-value').textContent = hero.getStat('endurance');
-    document.getElementById('dexterity-value').textContent = hero.getStat('dexterity');
+    document.getElementById('strength-value').textContent = hero.stats['strength'];
+    document.getElementById('agility-value').textContent = hero.stats['agility'];
+    document.getElementById('vitality-value').textContent = hero.stats['vitality'];
+    document.getElementById('wisdom-value').textContent = hero.stats['wisdom'];
+    document.getElementById('endurance-value').textContent = hero.stats['endurance'];
+    document.getElementById('dexterity-value').textContent = hero.stats['dexterity'];
   }
 
   const skillTreeTab = document.querySelector('[data-tab="skilltree"]');

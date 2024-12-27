@@ -9,7 +9,7 @@ import {
   updateSkillTreeValues,
 } from './ui.js';
 
-export const SKILL_LEVEL_TIERS = [1, 10, 25, 50, 100, 200, 300, 400, 500];
+export const SKILL_LEVEL_TIERS = [1, 10, 25, 50, 75, 100, 200];
 export const DEFAULT_MAX_SKILL_LEVEL = 100;
 export const REQ_LEVEL_FOR_SKILL_TREE = 10;
 
@@ -17,30 +17,30 @@ export const CLASS_PATHS = {
   WARRIOR: {
     name: 'Warrior',
     baseStats: {
-      strength: 5,
-      vitality: 3,
-      armor: 10,
-      health: 50,
+      strength: 15,
+      vitality: 10,
+      armor: 50,
+      health: 200,
     },
     description: 'A mighty warrior specializing in heavy armor and raw strength',
   },
   ROGUE: {
     name: 'Rogue',
     baseStats: {
-      agility: 5,
+      agility: 25,
       critChance: 5,
-      attackSpeed: 0.1,
-      damage: 5,
+      attackSpeed: 0.3,
+      damage: 30,
     },
     description: 'Swift and deadly, focusing on critical hits and attack speed',
   },
   VAMPIRE: {
     name: 'Vampire',
     baseStats: {
-      lifeSteal: 5,
-      critDamage: 0.3,
-      attackSpeed: 0.1,
-      damage: 8,
+      lifeSteal: 3,
+      critDamage: 0.5,
+      attackSpeed: 0.2,
+      damage: 25,
     },
     description: 'Master of life-stealing and critical strikes',
   },
@@ -48,29 +48,29 @@ export const CLASS_PATHS = {
     name: 'Paladin',
     baseStats: {
       blockChance: 10,
-      armor: 15,
-      vitality: 4,
-      health: 40,
+      armor: 100,
+      vitality: 30,
+      health: 300,
     },
     description: 'Holy warrior specializing in defense and vitality',
   },
   BERSERKER: {
     name: 'Berserker',
     baseStats: {
-      damage: 15,
-      attackSpeed: 0.2,
-      strength: 3,
-      critChance: 3,
+      damage: 45,
+      attackSpeed: 0.3,
+      strength: 15,
+      critChance: 5,
     },
     description: 'Frenzied fighter focusing on raw damage output',
   },
   ELEMENTALIST: {
     name: 'Elementalist',
     baseStats: {
-      fireDamage: 20,
-      airDamage: 20,
-      coldDamage: 20,
-      earthDamage: 20,
+      fireDamage: 40,
+      airDamage: 40,
+      coldDamage: 40,
+      earthDamage: 40,
     },
     description: 'Master of elemental damage types',
   },
@@ -78,12 +78,12 @@ export const CLASS_PATHS = {
 
 export const SKILL_TREES = {
   WARRIOR: {
-    // Toggle skill - costs mana per attack
+    // Level 1 Skills
     bash: {
       id: 'bash',
       name: 'Bash',
       type: 'toggle',
-      manaCost: 10, // Mana cost per attack
+      manaCost: 10,
       requiredLevel: SKILL_LEVEL_TIERS[0],
       icon: 'war-axe',
       description: 'While active, increases damage but costs mana per attack',
@@ -92,41 +92,6 @@ export const SKILL_TREES = {
         damage: level * 3,
       }),
     },
-
-    // Instant active skill with cooldown
-    groundSlam: {
-      id: 'groundSlam',
-      name: 'Ground Slam',
-      type: 'instant',
-      manaCost: 25,
-      cooldown: 5000,
-      requiredLevel: SKILL_LEVEL_TIERS[0],
-      icon: 'slam',
-      description: 'Deals instant damage',
-      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
-      effect: (level) => ({
-        damage: level * 10,
-      }),
-    },
-
-    // Buff skill with duration and cooldown
-    battleCry: {
-      id: 'battleCry',
-      name: 'Battle Cry',
-      type: 'buff',
-      manaCost: 40,
-      cooldown: 15000,
-      duration: 5000,
-      requiredLevel: SKILL_LEVEL_TIERS[0],
-      icon: 'cry',
-      description: 'Temporarily increases damage',
-      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
-      effect: (level) => ({
-        damage: level * 5,
-      }),
-    },
-
-    // Passive skill
     toughness: {
       id: 'toughness',
       name: 'Toughness',
@@ -137,6 +102,187 @@ export const SKILL_TREES = {
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         armor: level * 3,
+      }),
+    },
+
+    experienceBoost: {
+      id: 'experienceBoost',
+      name: 'Experience Boost',
+      type: 'passive',
+      requiredLevel: SKILL_LEVEL_TIERS[0],
+      icon: 'book',
+      description: 'Increases experience gained from battles',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
+      effect: (level) => ({
+        expBonus: level * 0.5,
+      }),
+    },
+
+    // Level 10 Skills
+    powerStrike: {
+      id: 'powerStrike',
+      name: 'Power Strike',
+      type: 'instant',
+      manaCost: 20,
+      cooldown: 6000,
+      requiredLevel: SKILL_LEVEL_TIERS[1],
+      icon: 'sword',
+      description: 'A powerful strike that deals increased damage',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
+      effect: (level) => ({
+        damage: level * 12,
+      }),
+    },
+    ironWill: {
+      id: 'ironWill',
+      name: 'Iron Will',
+      type: 'passive',
+      requiredLevel: SKILL_LEVEL_TIERS[1],
+      icon: 'helmet',
+      description: 'Increases resistance to damage',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
+      effect: (level) => ({
+        armor: level * 0.5,
+        vitality: level * 0.5,
+      }),
+    },
+
+    // Level 25 Skills
+    battleCry: {
+      id: 'battleCry',
+      name: 'Battle Cry',
+      type: 'buff',
+      manaCost: 40,
+      cooldown: 15000,
+      duration: 5000,
+      requiredLevel: SKILL_LEVEL_TIERS[2],
+      icon: 'cry',
+      description: 'Temporarily increases damage',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
+      effect: (level) => ({
+        damage: level * 5,
+      }),
+    },
+    fortitude: {
+      id: 'fortitude',
+      name: 'Fortitude',
+      type: 'passive',
+      requiredLevel: SKILL_LEVEL_TIERS[2],
+      icon: 'armor',
+      description: 'Increases health regeneration',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
+      effect: (level) => ({
+        healthRegen: level * 0.5,
+      }),
+    },
+
+    // Level 50 Skills
+    groundSlam: {
+      id: 'groundSlam',
+      name: 'Ground Slam',
+      type: 'instant',
+      manaCost: 25,
+      cooldown: 5000,
+      requiredLevel: SKILL_LEVEL_TIERS[3],
+      icon: 'slam',
+      description: 'Deals instant damage',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
+      effect: (level) => ({
+        damage: level * 10,
+      }),
+    },
+    goldRush: {
+      id: 'goldRush',
+      name: 'Gold Rush',
+      type: 'passive',
+      requiredLevel: SKILL_LEVEL_TIERS[3],
+      icon: 'coin',
+      description: 'Increases gold gained from battles',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
+      effect: (level) => ({
+        goldBonus: level * 0.5,
+      }),
+    },
+
+    // Level 75 Skills
+    shieldWall: {
+      id: 'shieldWall',
+      name: 'Shield Wall',
+      type: 'buff',
+      manaCost: 50,
+      cooldown: 20000,
+      duration: 8000,
+      requiredLevel: SKILL_LEVEL_TIERS[4],
+      icon: 'wall',
+      description: 'Increases armor and block chance temporarily',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
+      effect: (level) => ({
+        armor: level * 5,
+        blockChance: level * 2,
+      }),
+    },
+
+    // Level 100 Skills
+    berserk: {
+      id: 'berserk',
+      name: 'Berserk',
+      type: 'toggle',
+      manaCost: 30,
+      requiredLevel: SKILL_LEVEL_TIERS[5],
+      icon: 'rage',
+      description: 'Increases attack speed and damage at the cost of defense',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
+      effect: (level) => ({
+        attackSpeed: level * 0.05,
+        damage: level * 4,
+        defensePenalty: level * 1,
+      }),
+    },
+    indomitable: {
+      id: 'indomitable',
+      name: 'Indomitable',
+      type: 'passive',
+      requiredLevel: SKILL_LEVEL_TIERS[5],
+      icon: 'indomitable',
+      description: 'Reduces damage taken from all sources',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
+      effect: (level) => ({
+        damageReduction: level * 1,
+      }),
+    },
+
+    // Level 200 Skills
+    warlord: {
+      id: 'warlord',
+      name: 'Warlord',
+      type: 'passive',
+      requiredLevel: SKILL_LEVEL_TIERS[6],
+      icon: 'warlord',
+      description: 'Increases all attributes significantly',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
+      effect: (level) => ({
+        strength: level * 2,
+        vitality: level * 2,
+        agility: level * 2,
+        wisdom: level * 2,
+        endurance: level * 2,
+        dexterity: level * 2,
+      }),
+    },
+    lastStand: {
+      id: 'lastStand',
+      name: 'Last Stand',
+      type: 'buff',
+      manaCost: 100,
+      cooldown: 60000,
+      duration: 10000,
+      requiredLevel: SKILL_LEVEL_TIERS[6],
+      icon: 'last-stand',
+      description: 'Greatly increases damage and reduces damage taken for a short time',
+      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
+      effect: (level) => ({
+        damage: level * 10,
+        damageReduction: level * 5,
       }),
     },
   },
@@ -317,6 +463,31 @@ export default class SkillTree {
 
   getPathBonuses() {
     return CLASS_PATHS[this.selectedPath?.name]?.baseStats || {};
+  }
+
+  getAllSkillTreeBonuses() {
+    const pathBonuses = this.getPathBonuses();
+    const passiveBonuses = this.calculatePassiveBonuses();
+    const activeBuffEffects = this.getActiveBuffEffects();
+
+    const allBonuses = {};
+
+    // Combine path bonuses
+    Object.entries(pathBonuses).forEach(([stat, value]) => {
+      allBonuses[stat] = (allBonuses[stat] || 0) + value;
+    });
+
+    // Combine passive bonuses
+    Object.entries(passiveBonuses).forEach(([stat, value]) => {
+      allBonuses[stat] = (allBonuses[stat] || 0) + value;
+    });
+
+    // Combine active buff effects
+    Object.entries(activeBuffEffects).forEach(([stat, value]) => {
+      allBonuses[stat] = (allBonuses[stat] || 0) + value;
+    });
+
+    return allBonuses;
   }
 
   calculatePassiveBonuses() {

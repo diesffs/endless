@@ -156,7 +156,7 @@ export default class Hero {
       blockChance: BASE_BLOCK_CHANCE,
       attackRating: BASE_ATTACK_RATING,
       currentMana: BASE_MANA,
-      maxMana: BASE_MANA,
+      mana: BASE_MANA,
       manaRegen: BASE_MANA_REGEN,
       lifeRegen: BASE_LIFE_REGEN,
       lifeSteal: BASE_LIFE_STEAL,
@@ -166,6 +166,18 @@ export default class Hero {
       earthDamage: BASE_ELEMENTAL_DAMAGE.earth,
       attackRatingPercent: BASE_ATTACK_RATING_PERCENT,
       damagePercent: BASE_DAMAGE_PERCENT,
+      strength: 0,
+      agility: 0,
+      vitality: 0,
+      wisdom: 0,
+      endurance: 0,
+      dexterity: 0,
+      bonusGold: 0,
+      bonusExperience: 0,
+      healthPercent: 0,
+      manaPercent: 0,
+      armorPercent: 0,
+      elementalDamagePercent: 0,
     };
 
     handleSavedData(savedData, this);
@@ -214,214 +226,194 @@ export default class Hero {
     return false;
   }
 
-  getStat(stat) {
-    return this.primaryStats[stat] + inventory.equipmentBonuses[stat] + (skillTree.getPathBonuses()[stat] || 0);
-  }
-
   recalculateFromAttributes() {
     inventory.updateItemBonuses();
     shop.updateShopBonuses();
 
-    // Calculate all attribute-based effects first
-    const attributeEffects = {
-      // Strength
-      strDamageFlat: this.getStat('strength') * ATTRIBUTES.strength.effects.damagePerPoint,
-      strDamagePercent:
-        Math.floor(this.getStat('strength') / ATTRIBUTES.strength.effects.damagePercentPer.points) *
-        ATTRIBUTES.strength.effects.damagePercentPer.value,
+    const skillTreeBonuses = skillTree.getAllSkillTreeBonuses();
 
-      // Agility
-      agiAttackRatingFlat: this.getStat('agility') * ATTRIBUTES.agility.effects.attackRatingPerPoint,
+    this.calculatePrimaryStats(skillTreeBonuses);
+    const attributeEffects = this.calculateAttributeEffects();
+    const flatValues = this.calculateFlatValues(attributeEffects, skillTreeBonuses);
+    const percentBonuses = this.calculatePercentBonuses(attributeEffects, skillTreeBonuses);
+
+    this.applyFinalCalculations(flatValues, percentBonuses, attributeEffects);
+
+    updatePlayerHealth();
+    updateStatsAndAttributesUI();
+  }
+
+  calculatePrimaryStats(skillTreeBonuses) {
+    this.stats.strength =
+      this.primaryStats.strength + (inventory.equipmentBonuses.strength || 0) + (skillTreeBonuses.strength || 0);
+    this.stats.agility =
+      this.primaryStats.agility + (inventory.equipmentBonuses.agility || 0) + (skillTreeBonuses.agility || 0);
+    this.stats.vitality =
+      this.primaryStats.vitality + (inventory.equipmentBonuses.vitality || 0) + (skillTreeBonuses.vitality || 0);
+    this.stats.wisdom =
+      this.primaryStats.wisdom + (inventory.equipmentBonuses.wisdom || 0) + (skillTreeBonuses.wisdom || 0);
+    this.stats.endurance =
+      this.primaryStats.endurance + (inventory.equipmentBonuses.endurance || 0) + (skillTreeBonuses.endurance || 0);
+    this.stats.dexterity =
+      this.primaryStats.dexterity + (inventory.equipmentBonuses.dexterity || 0) + (skillTreeBonuses.dexterity || 0);
+  }
+
+  calculateAttributeEffects() {
+    return {
+      strDamageFlat: this.stats.strength * ATTRIBUTES.strength.effects.damagePerPoint,
+      strDamagePercent:
+        Math.floor(this.stats.strength / ATTRIBUTES.strength.effects.damagePercentPer.points) *
+        ATTRIBUTES.strength.effects.damagePercentPer.value,
+      agiAttackRatingFlat: this.stats.agility * ATTRIBUTES.agility.effects.attackRatingPerPoint,
       agiAttackRatingPercent:
-        Math.floor(this.getStat('agility') / ATTRIBUTES.agility.effects.attackRatingPercentPer.points) *
+        Math.floor(this.stats.agility / ATTRIBUTES.agility.effects.attackRatingPercentPer.points) *
         ATTRIBUTES.agility.effects.attackRatingPercentPer.value,
       agiAttackSpeed:
-        Math.floor(this.getStat('agility') / ATTRIBUTES.agility.effects.attackSpeedPer.points) *
+        Math.floor(this.stats.agility / ATTRIBUTES.agility.effects.attackSpeedPer.points) *
         ATTRIBUTES.agility.effects.attackSpeedPer.value,
-
-      // Vitality
-      vitHealthFlat: this.getStat('vitality') * ATTRIBUTES.vitality.effects.healthPerPoint,
+      vitHealthFlat: this.stats.vitality * ATTRIBUTES.vitality.effects.healthPerPoint,
       vitHealthPercent:
-        Math.floor(this.getStat('vitality') / ATTRIBUTES.vitality.effects.healthPercentPer.points) *
+        Math.floor(this.stats.vitality / ATTRIBUTES.vitality.effects.healthPercentPer.points) *
         ATTRIBUTES.vitality.effects.healthPercentPer.value,
       vitRegenPercent:
-        Math.floor(this.getStat('vitality') / ATTRIBUTES.vitality.effects.regenPercentPer.points) *
+        Math.floor(this.stats.vitality / ATTRIBUTES.vitality.effects.regenPercentPer.points) *
         ATTRIBUTES.vitality.effects.regenPercentPer.value,
-
-      // Wisdom
-      wisManaFlat: this.getStat('wisdom') * ATTRIBUTES.wisdom.effects.manaPerPoint,
+      wisManaFlat: this.stats.wisdom * ATTRIBUTES.wisdom.effects.manaPerPoint,
       wisManaPercent:
-        Math.floor(this.getStat('wisdom') / ATTRIBUTES.wisdom.effects.manaPercentPer.points) *
+        Math.floor(this.stats.wisdom / ATTRIBUTES.wisdom.effects.manaPercentPer.points) *
         ATTRIBUTES.wisdom.effects.manaPercentPer.value,
       wisRegenPercent:
-        Math.floor(this.getStat('wisdom') / ATTRIBUTES.wisdom.effects.regenPercentPer.points) *
+        Math.floor(this.stats.wisdom / ATTRIBUTES.wisdom.effects.regenPercentPer.points) *
         ATTRIBUTES.wisdom.effects.regenPercentPer.value,
-
-      // Endurance
-      endArmorFlat: this.getStat('endurance') * ATTRIBUTES.endurance.effects.armorPerPoint,
+      endArmorFlat: this.stats.endurance * ATTRIBUTES.endurance.effects.armorPerPoint,
       endArmorPercent:
-        Math.floor(this.getStat('endurance') / ATTRIBUTES.endurance.effects.armorPercentPer.points) *
+        Math.floor(this.stats.endurance / ATTRIBUTES.endurance.effects.armorPercentPer.points) *
         ATTRIBUTES.endurance.effects.armorPercentPer.value,
-
-      // Dexterity
       dexCritChance:
-        Math.floor(this.getStat('dexterity') / ATTRIBUTES.dexterity.effects.critChancePer.points) *
+        Math.floor(this.stats.dexterity / ATTRIBUTES.dexterity.effects.critChancePer.points) *
         ATTRIBUTES.dexterity.effects.critChancePer.value,
       dexCritDamage:
-        Math.floor(this.getStat('dexterity') / ATTRIBUTES.dexterity.effects.critDamagePer.points) *
+        Math.floor(this.stats.dexterity / ATTRIBUTES.dexterity.effects.critDamagePer.points) *
         ATTRIBUTES.dexterity.effects.critDamagePer.value,
     };
+  }
 
-    // Get all bonus sources
-    const passiveBonuses = skillTree.calculatePassiveBonuses();
-    const buffEffects = skillTree.getActiveBuffEffects();
-    const pathBonuses = skillTree.getPathBonuses();
-
-    // Calculate flat values first
-    const flatValues = {
+  calculateFlatValues(attributeEffects, skillTreeBonuses) {
+    return {
       fireDamage:
         BASE_ELEMENTAL_DAMAGE.fire +
-        (passiveBonuses.fireDamage || 0) +
         (shop.shopBonuses.fireDamage || 0) +
         (inventory.equipmentBonuses.fireDamage || 0) +
-        (pathBonuses.fireDamage || 0) +
-        (buffEffects.fireDamage || 0),
-
+        (skillTreeBonuses.fireDamage || 0),
       coldDamage:
         BASE_ELEMENTAL_DAMAGE.cold +
-        (passiveBonuses.coldDamage || 0) +
         (shop.shopBonuses.coldDamage || 0) +
         (inventory.equipmentBonuses.coldDamage || 0) +
-        (pathBonuses.coldDamage || 0) +
-        (buffEffects.coldDamage || 0),
-
+        (skillTreeBonuses.coldDamage || 0),
       airDamage:
         BASE_ELEMENTAL_DAMAGE.air +
-        (passiveBonuses.airDamage || 0) +
         (shop.shopBonuses.airDamage || 0) +
         (inventory.equipmentBonuses.airDamage || 0) +
-        (pathBonuses.airDamage || 0) +
-        (buffEffects.airDamage || 0),
-
+        (skillTreeBonuses.airDamage || 0),
       earthDamage:
         BASE_ELEMENTAL_DAMAGE.earth +
-        (passiveBonuses.earthDamage || 0) +
         (shop.shopBonuses.earthDamage || 0) +
         (inventory.equipmentBonuses.earthDamage || 0) +
-        (pathBonuses.earthDamage || 0) +
-        (buffEffects.earthDamage || 0),
-
+        (skillTreeBonuses.earthDamage || 0),
       damage:
         BASE_DAMAGE +
         attributeEffects.strDamageFlat +
         DAMAGE_ON_LEVEL_UP * (this.level - 1) +
-        (passiveBonuses.damage || 0) +
         (shop.shopBonuses.damage || 0) +
         (inventory.equipmentBonuses.damage || 0) +
-        (pathBonuses.damage || 0) +
-        (buffEffects.damage || 0),
-
+        (skillTreeBonuses.damage || 0),
       attackSpeed:
         BASE_ATTACK_SPEED +
         attributeEffects.agiAttackSpeed +
-        (passiveBonuses.attackSpeed || 0) +
         (shop.shopBonuses.attackSpeed || 0) +
         (inventory.equipmentBonuses.attackSpeed || 0) +
-        (pathBonuses.attackSpeed || 0) +
-        (buffEffects.attackSpeed || 0),
-
+        (skillTreeBonuses.attackSpeed || 0),
       critChance:
         BASE_CRIT_CHANCE +
         attributeEffects.dexCritChance * 100 +
-        (passiveBonuses.critChance || 0) +
         (shop.shopBonuses.critChance || 0) +
         (inventory.equipmentBonuses.critChance || 0) +
-        (pathBonuses.critChance || 0) +
-        (buffEffects.critChance || 0),
-
+        (skillTreeBonuses.critChance || 0),
       critDamage:
         BASE_CRIT_DAMAGE +
         attributeEffects.dexCritDamage +
-        (passiveBonuses.critDamage || 0) +
         (shop.shopBonuses.critDamage || 0) +
         (inventory.equipmentBonuses.critDamage || 0) +
-        (pathBonuses.critDamage || 0) +
-        (buffEffects.critDamage || 0),
-
+        (skillTreeBonuses.critDamage || 0),
       attackRating:
         BASE_ATTACK_RATING +
         attributeEffects.agiAttackRatingFlat +
         ATTACK_RATING_ON_LEVEL_UP * (this.level - 1) +
-        (passiveBonuses.attackRating || 0) +
         (shop.shopBonuses.attackRating || 0) +
         (inventory.equipmentBonuses.attackRating || 0) +
-        (pathBonuses.attackRating || 0) +
-        (buffEffects.attackRating || 0),
-
+        (skillTreeBonuses.attackRating || 0),
       health:
         BASE_HEALTH +
         attributeEffects.vitHealthFlat +
         HEALTH_ON_LEVEL_UP * (this.level - 1) +
-        (passiveBonuses.health || 0) +
         (shop.shopBonuses.health || 0) +
         (inventory.equipmentBonuses.health || 0) +
-        (pathBonuses.health || 0) +
-        (buffEffects.health || 0),
-
-      maxMana:
+        (skillTreeBonuses.health || 0),
+      mana:
         BASE_MANA +
         attributeEffects.wisManaFlat +
         MANA_ON_LEVEL_UP * (this.level - 1) +
-        (passiveBonuses.maxMana || 0) +
-        (shop.shopBonuses.maxMana || 0) +
-        (inventory.equipmentBonuses.maxMana || 0) +
-        (pathBonuses.maxMana || 0) +
-        (buffEffects.maxMana || 0),
-
+        (shop.shopBonuses.mana || 0) +
+        (inventory.equipmentBonuses.mana || 0) +
+        (skillTreeBonuses.mana || 0),
       armor:
         BASE_ARMOR +
         attributeEffects.endArmorFlat +
-        (passiveBonuses.armor || 0) +
         (shop.shopBonuses.armor || 0) +
         (inventory.equipmentBonuses.armor || 0) +
-        (pathBonuses.armor || 0) +
-        (buffEffects.armor || 0),
-
+        (skillTreeBonuses.armor || 0),
       lifeSteal:
         BASE_LIFE_STEAL +
-        (passiveBonuses.lifeSteal || 0) +
         (shop.shopBonuses.lifeSteal || 0) +
         (inventory.equipmentBonuses.lifeSteal || 0) +
-        (pathBonuses.lifeSteal || 0) +
-        (buffEffects.lifeSteal || 0),
+        (skillTreeBonuses.lifeSteal || 0),
     };
+  }
 
-    // Calculate percentage bonuses
-    const percentBonuses = {
-      damage: attributeEffects.strDamagePercent + this.stats.damagePercent / 100 + this.souls * 0.01,
-      attackRating: attributeEffects.agiAttackRatingPercent + this.stats.attackRatingPercent / 100,
-      health: attributeEffects.vitHealthPercent,
-      armor: attributeEffects.endArmorPercent,
-    };
+  calculatePercentBonuses(attributeEffects, skillTreeBonuses) {
+    const percentBonuses = {};
+    const statsWithPercentages = ['damage', 'attackRating', 'health', 'armor'];
 
-    // Apply percentage bonuses to final values
-    this.stats.damage = Math.floor(flatValues.damage * (1 + percentBonuses.damage));
+    statsWithPercentages.forEach((stat) => {
+      percentBonuses[stat] =
+        (attributeEffects[`${stat}Percent`] || 0) +
+        (this.stats[`${stat}Percent`] || 0) / 100 +
+        (skillTreeBonuses[`${stat}Percent`] || 0) / 100 +
+        (inventory.equipmentBonuses[`${stat}Percent`] || 0) / 100;
+    });
+
+    this.stats.elementalDamagePercent =
+      (skillTreeBonuses.elementalDamagePercent || 0) + (inventory.equipmentBonuses.elementalDamagePercent || 0);
+
+    return percentBonuses;
+  }
+
+  applyFinalCalculations(flatValues, percentBonuses, attributeEffects) {
+    this.stats.damage = Math.floor(flatValues.damage * (1 + percentBonuses.damage + this.souls * 0.01));
     this.stats.attackRating = Math.floor(flatValues.attackRating * (1 + percentBonuses.attackRating));
     this.stats.health = Math.floor(flatValues.health * (1 + percentBonuses.health));
-    this.stats.maxMana = Math.floor(flatValues.maxMana * (1 + attributeEffects.wisManaPercent));
+    this.stats.mana = Math.floor(flatValues.mana * (1 + attributeEffects.wisManaPercent));
     this.stats.armor = Math.floor(flatValues.armor * (1 + percentBonuses.armor));
 
-    // Elemental damages
-    this.stats.fireDamage = flatValues.fireDamage;
-    this.stats.coldDamage = flatValues.coldDamage;
-    this.stats.airDamage = flatValues.airDamage;
-    this.stats.earthDamage = flatValues.earthDamage;
+    // percentage calculations
+    this.stats.fireDamage = Math.floor(flatValues.fireDamage * (1 + this.stats.elementalDamagePercent / 100));
+    this.stats.coldDamage = Math.floor(flatValues.coldDamage * (1 + this.stats.elementalDamagePercent / 100));
+    this.stats.airDamage = Math.floor(flatValues.airDamage * (1 + this.stats.elementalDamagePercent / 100));
+    this.stats.earthDamage = Math.floor(flatValues.earthDamage * (1 + this.stats.elementalDamagePercent / 100));
 
-    // Add souls damage bonus last
     const damageBonusFromSouls = Math.floor(this.stats.damage * (this.souls * 0.01));
     this.stats.damage += damageBonusFromSouls;
 
-    // Set other stats that don't need percentage calculations
     this.stats.attackSpeed = Number(flatValues.attackSpeed.toFixed(2));
     this.stats.critChance = Number(flatValues.critChance.toFixed(2));
     this.stats.critDamage = Number(flatValues.critDamage.toFixed(2));
@@ -431,14 +423,9 @@ export default class Hero {
       (BASE_MANA_REGEN + inventory.equipmentBonuses.manaRegen) * (1 + attributeEffects.wisRegenPercent);
     this.stats.lifeSteal = Number(flatValues.lifeSteal.toFixed(2));
 
-    // Cap values
     this.stats.blockChance = Math.min(this.stats.blockChance, 75);
     this.stats.critChance = Math.min(this.stats.critChance, 100);
     this.stats.attackSpeed = Math.min(this.stats.attackSpeed, 5);
-
-    // Update UI
-    updatePlayerHealth();
-    updateStatsAndAttributesUI();
   }
 
   calculateArmorReduction() {
@@ -450,7 +437,7 @@ export default class Hero {
 
   regenerate() {
     this.stats.currentHealth = Math.min(this.stats.health, this.stats.currentHealth + this.stats.lifeRegen);
-    this.stats.currentMana = Math.min(this.stats.maxMana, this.stats.currentMana + this.stats.manaRegen);
+    this.stats.currentMana = Math.min(this.stats.mana, this.stats.currentMana + this.stats.manaRegen);
     updatePlayerHealth();
   }
 
