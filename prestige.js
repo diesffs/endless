@@ -1,5 +1,13 @@
 import { game, hero, shop, skillTree } from './main.js';
-import { updateZoneUI, updateResources, updatePlayerHealth, updateStatsAndAttributesUI } from './ui.js';
+import {
+  updateZoneUI,
+  updateResources,
+  updatePlayerHealth,
+  updateStatsAndAttributesUI,
+  positionTooltip,
+  showTooltip,
+  hideTooltip,
+} from './ui.js';
 import Enemy from './enemy.js';
 import { showToast } from './ui.js';
 import { handleSavedData } from './functions.js';
@@ -159,7 +167,7 @@ export default class Prestige {
       <button class="crystal-upgrade-btn ${alreadyPurchased ? 'purchased' : ''}" data-stat="${stat}">
         <span class="upgrade-name">${config.label} ${level}</span>
         <span class="upgrade-bonus">${bonus}</span>
-      <span class="upgrade-cost">${alreadyPurchased ? 'Purchased' : `${cost} Crystals`}</span>
+        <span class="upgrade-cost">${alreadyPurchased ? 'Purchased' : `${cost} Crystals`}</span>
       </button>
     `;
   }
@@ -168,7 +176,6 @@ export default class Prestige {
     const buttons = document.querySelectorAll('.crystal-upgrade-btn');
     buttons.forEach((button) => {
       button.addEventListener('click', () => {
-        const stat = button.dataset.stat;
         this.buyCrystalUpgrade(stat);
       });
     });
@@ -216,14 +223,12 @@ export default class Prestige {
       }
 
       // Add tooltip for damageDisplay
-      damageDisplay.addEventListener('mouseenter', () => {
-        const tooltip = this.createDamageTooltip(damageBonus);
-        this.showTooltip(damageDisplay, tooltip);
+      damageDisplay.addEventListener('mouseenter', (e) => {
+        const tooltipContent = this.createDamageTooltip(damageBonus);
+        showTooltip(tooltipContent, e);
       });
-
-      damageDisplay.addEventListener('mouseleave', () => {
-        this.hideTooltip();
-      });
+      damageDisplay.addEventListener('mousemove', positionTooltip);
+      damageDisplay.addEventListener('mouseleave', hideTooltip);
     }
 
     if (soulsDisplay) {
@@ -242,26 +247,6 @@ export default class Prestige {
       <div class="tooltip-header">Damage Bonus</div>
       <div class="tooltip-content">Each soul provides 1% total bonus damage.</div>
     `;
-  }
-
-  // to show the tooltip
-  showTooltip(element, content) {
-    const tooltip = document.createElement('div');
-    tooltip.className = 'tooltip';
-    tooltip.innerHTML = content;
-    document.body.appendChild(tooltip);
-
-    const rect = element.getBoundingClientRect();
-    tooltip.style.left = `${rect.left + window.scrollX}px`;
-    tooltip.style.top = `${rect.bottom + window.scrollY}px`;
-  }
-
-  // to hide the tooltip
-  hideTooltip() {
-    const tooltip = document.querySelector('.tooltip');
-    if (tooltip) {
-      tooltip.remove();
-    }
   }
 
   setupPrestigeButton() {

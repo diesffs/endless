@@ -34,9 +34,16 @@ export const BASE_ELEMENTAL_DAMAGE = {
 export const BASE_ATTACK_RATING_PERCENT = 0;
 export const BASE_DAMAGE_PERCENT = 0;
 
+const html = String.raw;
+
 export const ATTRIBUTES = {
   strength: {
-    tooltip: 'Each point increases:\n• Damage by 1\n• Every 5 points adds 1% to total damage',
+    tooltip: html`
+      <strong>Strength</strong><br />
+      Each point increases:<br />
+      • Damage by 1<br />
+      • Every 5 points adds 1% to total damage
+    `,
     effects: {
       damagePerPoint: 1,
       damagePercentPer: {
@@ -46,8 +53,13 @@ export const ATTRIBUTES = {
     },
   },
   agility: {
-    tooltip:
-      'Each point increases:\n• Attack Rating by 10\n• Every 5 points adds 1% to total attack rating\n• Every 25 points adds 1% attack speed',
+    tooltip: html`
+      <strong>Agility</strong><br />
+      Each point increases:<br />
+      • Attack Rating by 10<br />
+      • Every 5 points adds 1% to total attack rating<br />
+      • Every 25 points adds 1% attack speed
+    `,
     effects: {
       attackRatingPerPoint: 10,
       attackRatingPercentPer: {
@@ -61,8 +73,13 @@ export const ATTRIBUTES = {
     },
   },
   vitality: {
-    tooltip:
-      'Each point increases:\n• Health by 10\n• Every 5 points adds 1% to total health\n• Every 10 points adds 1% health regeneration',
+    tooltip: html`
+      <strong>Vitality</strong><br />
+      Each point increases:<br />
+      • Health by 10<br />
+      • Every 5 points adds 1% to total health<br />
+      • Every 10 points adds 1% health regeneration
+    `,
     effects: {
       healthPerPoint: 10,
       healthPercentPer: {
@@ -76,8 +93,13 @@ export const ATTRIBUTES = {
     },
   },
   wisdom: {
-    tooltip:
-      'Each point increases:\n• Mana by 5\n• Every 5 points adds 1% to total mana\n• Every 10 points adds 1% mana regeneration',
+    tooltip: html`
+      <strong>Wisdom</strong><br />
+      Each point increases:<br />
+      • Mana by 5<br />
+      • Every 5 points adds 1% to total mana<br />
+      • Every 10 points adds 1% mana regeneration
+    `,
     effects: {
       manaPerPoint: 5,
       manaPercentPer: {
@@ -91,7 +113,12 @@ export const ATTRIBUTES = {
     },
   },
   endurance: {
-    tooltip: 'Each point increases:\n• Armor by 1\n• Every 5 points adds 1% to total armor',
+    tooltip: html`
+      <strong>Endurance</strong><br />
+      Each point increases:<br />
+      • Armor by 1<br />
+      • Every 5 points adds 1% to total armor
+    `,
     effects: {
       armorPerPoint: 1,
       armorPercentPer: {
@@ -101,8 +128,12 @@ export const ATTRIBUTES = {
     },
   },
   dexterity: {
-    tooltip:
-      'Each point increases:\n• Every 25 points adds 1% critical strike chance\n• Every 10 points adds 1% critical strike damage',
+    tooltip: html`
+      <strong>Dexterity</strong><br />
+      Each point increases:<br />
+      • Every 25 points adds 1% critical strike chance<br />
+      • Every 10 points adds 1% critical strike damage
+    `,
     effects: {
       critChancePer: {
         points: 25,

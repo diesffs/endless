@@ -206,7 +206,6 @@ export function updateStatsAndAttributesUI() {
         <button class="allocate-btn" data-stat="${stat}">+</button>
         <strong>${stat.charAt(0).toUpperCase() + stat.slice(1)}:</strong>
         <span id="${stat}-value">${hero.stats[stat]}</span>
-        <div class="attribute-description">${ATTRIBUTES[stat].tooltip}</div>
       </div>
     `
         )
@@ -214,17 +213,15 @@ export function updateStatsAndAttributesUI() {
     `;
 
     attributesContainer.querySelectorAll('.attribute-row').forEach((row) => {
-      row.addEventListener('mousemove', (e) => {
-        const tooltip = row.querySelector('.attribute-description');
-        tooltip.style.left = e.pageX + 10 + 'px';
-        tooltip.style.top = e.pageY + 10 + 'px';
-      });
+      const stat = row.querySelector('button').dataset.stat;
+      row.addEventListener('mouseenter', (e) => showTooltip(ATTRIBUTES[stat].tooltip, e));
+      row.addEventListener('mousemove', positionTooltip);
+      row.addEventListener('mouseleave', hideTooltip);
     });
 
     statsGrid.appendChild(attributesContainer);
 
     // Attach event listeners for allocation buttons (only once)
-    // Replace the existing button event listener with this:
     attributesContainer.querySelectorAll('.allocate-btn').forEach((btn) => {
       btn.addEventListener('mousedown', (e) => {
         const stat = e.target.dataset.stat;
@@ -558,11 +555,10 @@ export function updateActionBar() {
       skillSlot.classList.add('active');
     }
 
-    // Create tooltip
-    const tooltip = document.createElement('div');
-    tooltip.className = 'skill-tooltip';
-    tooltip.innerHTML = createSkillTooltip(skillId);
-    skillSlot.appendChild(tooltip);
+    // Use the reusable tooltip
+    skillSlot.addEventListener('mouseenter', (e) => showTooltip(createSkillTooltip(skillId), e));
+    skillSlot.addEventListener('mousemove', positionTooltip);
+    skillSlot.addEventListener('mouseleave', hideTooltip);
 
     skillSlot.addEventListener('click', () => skillTree.toggleSkill(skillId));
     skillSlotsContainer.appendChild(skillSlot);
@@ -663,23 +659,22 @@ export function showManaWarning() {
 // ##########################################
 
 // Function to show the tooltip
-export function showTooltip(content, event) {
+export function showTooltip(content, event, classes = '') {
   const tooltip = document.getElementById('tooltip');
   tooltip.innerHTML = content;
-  tooltip.classList.remove('hidden');
-  tooltip.classList.add('show');
+  tooltip.className = `tooltip show ${classes}`; // Add custom classes here
   positionTooltip(event);
 }
 
 // Function to hide the tooltip
-function hideTooltip() {
+export function hideTooltip() {
   const tooltip = document.getElementById('tooltip');
   tooltip.classList.remove('show');
   tooltip.classList.add('hidden');
 }
 
 // Function to position the tooltip
-function positionTooltip(event) {
+export function positionTooltip(event) {
   const tooltip = document.getElementById('tooltip');
   const tooltipRect = tooltip.getBoundingClientRect();
   const offset = 10; // Offset from the mouse pointer

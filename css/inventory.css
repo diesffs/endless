@@ -134,6 +134,7 @@
 .item-tooltip {
   background: rgba(0, 0, 0, 0.9);
   padding: 10px;
+  margin: 5px;
   border-radius: 5px;
   pointer-events: none;
   z-index: 1000;
@@ -337,4 +338,11 @@
 .grid-cell.persistent {
   border: 1px solid var(--persistent-storage-slot);
   background: rgba(255, 255, 255, 0.05);
+}
+
+.flex-tooltip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: unset;
 }

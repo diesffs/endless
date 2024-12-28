@@ -1,7 +1,7 @@
 import { handleSavedData } from './functions.js';
 import Item, { ITEM_RARITY, RARITY_ORDER, SLOT_REQUIREMENTS } from './item.js';
 import { game, hero } from './main.js';
-import { showToast } from './ui.js';
+import { hideTooltip, positionTooltip, showToast, showTooltip } from './ui.js';
 
 const PERSISTENT_SLOTS = 30;
 
@@ -361,19 +361,18 @@ export default class Inventory {
 
   setupItemDragAndTooltip() {
     const items = document.querySelectorAll('.inventory-item');
-    let activeTooltip = null;
-
+  
     items.forEach((item) => {
       // Add double-click handler
       item.addEventListener('dblclick', (e) => {
         const itemData = this.getItemById(item.dataset.itemId);
         if (!itemData) return;
-
+  
         // Check if item is currently equipped
         const equippedSlot = Object.entries(this.equippedItems).find(
           ([slot, equippedItem]) => equippedItem?.id === itemData.id
         )?.[0];
-
+  
         if (equippedSlot) {
           // Unequip item
           const emptySlot = this.inventoryItems.findIndex((slot) => slot === null);
@@ -386,7 +385,7 @@ export default class Inventory {
           }
           return;
         }
-
+  
         // Existing equip logic for inventory items
         for (const [slot, requirements] of Object.entries(SLOT_REQUIREMENTS)) {
           if (requirements.includes(itemData.type)) {
@@ -399,73 +398,59 @@ export default class Inventory {
           }
         }
       });
-
+  
       // Add dragstart event listener
       item.addEventListener('dragstart', (e) => {
         e.target.classList.add('dragging');
         e.dataTransfer.setData('text/plain', item.dataset.itemId);
         this.cleanupTooltips(); // Also clean tooltips on drag start
       });
-
+  
       item.addEventListener('dragend', (e) => {
         e.target.classList.remove('dragging');
         document.querySelectorAll('.equipment-slot').forEach((slot) => {
           slot.classList.remove('valid-target', 'invalid-target');
         });
       });
-
+  
       // Tooltip events
       item.addEventListener('mouseenter', (e) => {
         if (item.classList.contains('dragging')) return;
-
-        this.removeTooltip();
-
+  
         const itemData = this.getItemById(item.dataset.itemId);
         if (!itemData) return;
-
-        const tooltipContainer = document.createElement('div');
-        tooltipContainer.className = 'item-tooltip';
-        tooltipContainer.style.position = 'absolute';
-        tooltipContainer.style.left = `${e.pageX + 10}px`;
-        tooltipContainer.style.top = `${e.pageY + 10}px`;
-        tooltipContainer.style.display = 'flex';
-        tooltipContainer.style.gap = '10px';
-        tooltipContainer.style.zIndex = '1000';
-
-        // Main item tooltip
-        const mainTooltip = document.createElement('div');
-        mainTooltip.innerHTML = itemData.getTooltipHTML();
-        tooltipContainer.appendChild(mainTooltip);
-
+  
+        // Create tooltip content
+        let tooltipContent = `<div>${itemData.getTooltipHTML()}</div>`;
+  
+        // Check if the item is in the inventory
+        const isInInventory = this.inventoryItems.some(inventoryItem => inventoryItem?.id === itemData.id);
+  
         // Find matching equipped items based on type
         const equippedItems = [];
         for (const [slot, equippedItem] of Object.entries(this.equippedItems)) {
-          if (SLOT_REQUIREMENTS[slot].includes(itemData.type)) {
+          if (SLOT_REQUIREMENTS[slot].includes(itemData.type) && isInInventory) {
             equippedItems.push(equippedItem);
           }
         }
-
+  
         // Add equipped items tooltips
         if (equippedItems.length > 0) {
           equippedItems.forEach((equippedItem) => {
             if (equippedItem && equippedItem.id !== itemData.id) {
-              const equippedTooltip = document.createElement('div');
-              equippedTooltip.innerHTML = equippedItem.getTooltipHTML(true);
-              tooltipContainer.appendChild(equippedTooltip);
+              tooltipContent += `<div>${equippedItem.getTooltipHTML(true)}</div>`;
             }
           });
         }
-
-        document.body.appendChild(tooltipContainer);
-        activeTooltip = tooltipContainer;
+  
+        showTooltip(tooltipContent, e, 'flex-tooltip');
       });
-
-      item.addEventListener('mouseleave', () => {
-        this.removeTooltip();
-        activeTooltip = null;
-      });
+  
+      item.addEventListener('mousemove', positionTooltip);
+      item.addEventListener('mouseleave', hideTooltip);
     });
   }
+  
 
   cleanupTooltips() {
     const tooltips = document.querySelectorAll('.item-tooltip');

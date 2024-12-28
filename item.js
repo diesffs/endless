@@ -241,7 +241,8 @@ export default class Item {
   }
 
   getTooltipHTML(isEquipped = false) {
-    return `
+    const html = String.raw;
+    return html`
       <div class="item-tooltip">
         <div class="item-name" style="color: ${ITEM_RARITY[this.rarity].color};">
           ${isEquipped ? '(Equipped) ' : ''}${this.getDisplayName()}
