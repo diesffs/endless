@@ -1,4 +1,5 @@
-import { game } from './main.js';
+import { game, hero, inventory, prestige, shop, skillTree } from './main.js';
+import { showToast, updatePlayerHealth, updateResources } from './ui.js';
 
 export const handleSavedData = (savedData, self) => {
   if (savedData) {
@@ -37,6 +38,7 @@ export function createDebugUI() {
   debugDiv.style.zIndex = '9999';
   debugDiv.style.fontFamily = 'monospace';
   debugDiv.style.fontSize = '12px';
+  debugDiv.classList.add('debug-ui');
   document.body.appendChild(debugDiv);
 
   // Load saved expanded states
@@ -176,4 +178,120 @@ export function createDebugUI() {
   updateDebugUI();
   setInterval(updateDebugUI, 1000);
   setInterval(game.saveGame, 1000);
+}
+
+export function createModifyUI() {
+  const modifyDiv = document.createElement('div');
+  modifyDiv.className = 'modify-panel modify-ui';
+  document.body.appendChild(modifyDiv);
+
+  // Example: Add buttons to modify hero stats
+  const heroSection = document.createElement('div');
+  heroSection.innerHTML = `<h3>Hero</h3>`;
+  modifyDiv.appendChild(heroSection);
+
+  // Button to give free attribute points
+  const giveStatsBtn = document.createElement('button');
+  giveStatsBtn.textContent = 'Give Free Attributes';
+  giveStatsBtn.addEventListener('click', () => {
+    const freePoints = 5; // Number of free attribute points to give
+    hero.statPoints += freePoints;
+    hero.recalculateFromAttributes();
+    showToast(`Gave ${freePoints} free attribute points!`);
+  });
+  heroSection.appendChild(giveStatsBtn);
+
+  // Button to give experience for level up
+  const giveExpBtn = document.createElement('button');
+  giveExpBtn.textContent = 'Give Experience for Level Up';
+  giveExpBtn.addEventListener('click', () => {
+    const expNeeded = hero.expToNextLevel - hero.exp;
+    hero.gainExp(expNeeded);
+    showToast(`Gave ${expNeeded} experience to level up!`);
+  });
+  heroSection.appendChild(giveExpBtn);
+
+  // Button to add gold
+  const addGoldBtn = document.createElement('button');
+  addGoldBtn.textContent = 'Add Gold';
+  addGoldBtn.addEventListener('click', () => {
+    const goldAmount = 100000000; // Amount of gold to add
+    hero.gold += goldAmount;
+    updateResources(); // Assuming there's a function to update the UI
+    showToast(`Added ${goldAmount} gold!`);
+  });
+  heroSection.appendChild(addGoldBtn);
+
+  // Button to add crystals
+  const addCrystalsBtn = document.createElement('button');
+  addCrystalsBtn.textContent = 'Add Crystals';
+  addCrystalsBtn.addEventListener('click', () => {
+    const crystalsAmount = 1000; // Amount of crystals to add
+    hero.crystals += crystalsAmount;
+    updateResources(); // Assuming there's a function to update the UI
+    showToast(`Added ${crystalsAmount} crystals!`);
+  });
+  heroSection.appendChild(addCrystalsBtn);
+
+  // Example: Add buttons to modify inventory
+  const inventorySection = document.createElement('div');
+  inventorySection.innerHTML = `<h3>Inventory</h3>`;
+  modifyDiv.appendChild(inventorySection);
+
+  const addItemBtn = document.createElement('button');
+  addItemBtn.textContent = 'Add Random Item';
+  addItemBtn.addEventListener('click', () => {
+    const itemType = game.currentEnemy.getRandomItemType();
+    const newItem = inventory.createItem(itemType, Math.floor(Math.random() * 101), 'RARE');
+    inventory.addItemToInventory(newItem);
+    showToast(`Added ${itemType} to inventory`);
+  });
+  inventorySection.appendChild(addItemBtn);
+
+  // Example: Add buttons to modify skill tree
+  const skillTreeSection = document.createElement('div');
+  skillTreeSection.innerHTML = `<h3>Skill Tree</h3>`;
+  modifyDiv.appendChild(skillTreeSection);
+
+  const addSkillPointBtn = document.createElement('button');
+  addSkillPointBtn.textContent = 'Add Skill Point';
+  addSkillPointBtn.addEventListener('click', () => {
+    skillTree.addSkillPoints(1);
+  });
+  skillTreeSection.appendChild(addSkillPointBtn);
+
+  // Example: Add buttons to modify shop
+  const shopSection = document.createElement('div');
+  shopSection.innerHTML = `<h3>Shop</h3>`;
+  modifyDiv.appendChild(shopSection);
+
+  const resetShopBtn = document.createElement('button');
+  resetShopBtn.textContent = 'Reset Shop';
+  resetShopBtn.addEventListener('click', () => {
+    shop.reset();
+    shop.updateShopUI('gold-upgrades');
+    shop.updateShopUI('crystal-upgrades');
+    hero.recalculateFromAttributes();
+    updatePlayerHealth();
+  });
+  shopSection.appendChild(resetShopBtn);
+
+  // Button to reset all progress
+  const resetProgressBtn = document.createElement('button');
+  resetProgressBtn.textContent = 'Reset All Progress';
+  resetProgressBtn.addEventListener('click', () => {
+    hero.highestZone = 1; // needed to reset souls
+    hero.souls = 0;
+    hero.crystals = 0;
+    // reset prestige upgrades
+    prestige.crystalUpgrades = {
+      startingZone: 0,
+      startingGold: 0,
+      continuousPlay: false,
+    };
+
+    prestige.performPrestige(); // Use the existing functionality to reset progress
+    showToast('All progress has been reset!');
+  });
+  modifyDiv.appendChild(resetProgressBtn);
 }

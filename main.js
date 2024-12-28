@@ -13,14 +13,14 @@ import {
 import Prestige from './prestige.js';
 import Inventory from './inventory.js';
 import SkillTree from './skillTree.js';
-import { createDebugUI } from './functions.js';
+import { createDebugUI, createModifyUI } from './functions.js';
 
 window.qwe = console.log;
 window.qw = console.log;
 window.qq = console.log;
 window.q = console.log;
 
-export const dev = false;
+export let dev = false;
 
 export const game = new Game();
 const savedData = game.loadGame();
@@ -59,8 +59,36 @@ setInterval(() => {
 }, 100);
 
 if (dev) {
-  hero.gold = 1000000;
-  updateResources();
-  // Create debug UI
-  createDebugUI();
+  document.addEventListener('DOMContentLoaded', () => {
+    // Create debug UI
+    createDebugUI();
+    createModifyUI();
+  });
 }
+
+let keySequence = [];
+const toggleSequence = ['e', 'd', 'e', 'v'];
+
+document.addEventListener('keydown', (event) => {
+  keySequence.push(event.key.toLowerCase());
+  if (keySequence.length > toggleSequence.length) {
+    keySequence.shift();
+  }
+  if (keySequence.join('') === toggleSequence.join('')) {
+    dev = !dev;
+    console.log(`Dev mode is now ${dev ? 'enabled' : 'disabled'}.`);
+    if (dev) {
+      createDebugUI();
+      createModifyUI();
+    } else {
+      const debugDiv = document.querySelector('.debug-ui');
+      const modifyUI = document.querySelector('.modify-ui');
+      if (debugDiv) {
+        debugDiv.remove();
+      }
+      if (modifyUI) {
+        modifyUI.remove();
+      }
+    }
+  }
+});

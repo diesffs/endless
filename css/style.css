@@ -461,3 +461,39 @@ body {
 .tooltip.hidden {
   display: none;
 }
+
+.modify-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: #1f2937;
+  color: white;
+  border: 1px solid black;
+  padding: 10px;
+  max-height: 100%;
+  max-width: 350px;
+  overflow-y: auto;
+  z-index: 9999;
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.modify-panel h3 {
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+.modify-panel button {
+  background-color: #374151;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.modify-panel button:hover {
+  background-color: #4b5563;
+}
