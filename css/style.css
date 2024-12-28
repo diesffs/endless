@@ -455,7 +455,7 @@ body {
   display: block;
 }
 
-.tooltip {
+/* .tooltip {
   position: absolute;
   top: 100%;
   background: rgba(0, 0, 0, 0.9);
@@ -465,4 +465,24 @@ body {
   width: 200px;
   pointer-events: none;
   z-index: 1000;
+} */
+
+.tooltip {
+  position: absolute;
+  background-color: #333;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 4px;
+  z-index: 1000;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  opacity: 0;
+}
+
+.tooltip.show {
+  opacity: 1;
+}
+
+.tooltip.hidden {
+  display: none;
 }

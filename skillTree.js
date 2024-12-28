@@ -114,7 +114,7 @@ export const SKILL_TREES = {
       description: 'Increases experience gained from battles',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        expBonus: level * 0.5,
+        expBonus: level * 5,
       }),
     },
 
@@ -197,10 +197,10 @@ export const SKILL_TREES = {
       type: 'passive',
       requiredLevel: SKILL_LEVEL_TIERS[3],
       icon: 'coin',
-      description: 'Increases gold gained from battles',
+      description: 'Increases gold gained from battles by %',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        goldBonus: level * 0.5,
+        goldBonus: level * 25,
       }),
     },
 
@@ -229,25 +229,28 @@ export const SKILL_TREES = {
       type: 'toggle',
       manaCost: 30,
       requiredLevel: SKILL_LEVEL_TIERS[5],
-      icon: 'rage',
+      icon: 'berserk',
       description: 'Increases attack speed and damage at the cost of defense',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         attackSpeed: level * 0.05,
         damage: level * 4,
-        defensePenalty: level * 1,
+        armor: -level * 1,
       }),
     },
-    indomitable: {
-      id: 'indomitable',
-      name: 'Indomitable',
+
+    lastStand: {
+      id: 'lastStand',
+      name: 'Last Stand',
       type: 'passive',
       requiredLevel: SKILL_LEVEL_TIERS[5],
-      icon: 'indomitable',
-      description: 'Reduces damage taken from all sources',
+      icon: 'last-stand',
+      description: 'Greatly increases damage, life steal, and attack speed',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damageReduction: level * 1,
+        damage: level * 10,
+        lifeSteal: level * 0.1,
+        attackSpeed: level * 0.1,
       }),
     },
 
@@ -261,31 +264,16 @@ export const SKILL_TREES = {
       description: 'Increases all attributes significantly',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        strength: level * 2,
-        vitality: level * 2,
-        agility: level * 2,
-        wisdom: level * 2,
-        endurance: level * 2,
-        dexterity: level * 2,
-      }),
-    },
-    lastStand: {
-      id: 'lastStand',
-      name: 'Last Stand',
-      type: 'buff',
-      manaCost: 100,
-      cooldown: 60000,
-      duration: 10000,
-      requiredLevel: SKILL_LEVEL_TIERS[6],
-      icon: 'last-stand',
-      description: 'Greatly increases damage and reduces damage taken for a short time',
-      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
-      effect: (level) => ({
-        damage: level * 10,
-        damageReduction: level * 5,
+        strength: level * 10,
+        vitality: level * 10,
+        agility: level * 10,
+        wisdom: level * 10,
+        endurance: level * 10,
+        dexterity: level * 10,
       }),
     },
   },
+
   ROGUE: {
     // Example skills for Rogue
     shadowStrike: {
@@ -593,6 +581,9 @@ export default class SkillTree {
     if (skill.type !== 'passive') {
       updateActionBar();
     }
+
+    // Trigger tooltip update
+    updateSkillTreeValues(); // Ensure this function updates the tooltip content
 
     return true;
   }

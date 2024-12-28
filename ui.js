@@ -60,10 +60,10 @@ export function updatePlayerHealth() {
     stats.health
   )}`;
 
-  const manaPercentage = (stats.currentMana / stats.mana) * 100;
+  const manaPercentage = (stats.currentMana / stats.maxMana) * 100;
   document.getElementById('mana-fill').style.width = `${manaPercentage}%`;
   document.getElementById('mana-text').textContent = `${Math.max(0, Math.floor(stats.currentMana))}/${Math.floor(
-    stats.mana
+    stats.maxMana
   )}`;
 }
 
@@ -150,7 +150,7 @@ export function updateStatsAndAttributesUI() {
         <strong>Health Regen:</strong>
         <span id="health-regen-value">${hero.stats.lifeRegen.toFixed(1).replace(/\./g, ',')}</span>/s
       </div>
-      <div><strong>Mana:</strong> <span id="max-mana-value">${hero.stats.mana.toFixed(0)}</span></div>
+      <div><strong>Mana:</strong> <span id="max-mana-value">${hero.stats.maxMana.toFixed(0)}</span></div>
       <div>
         <strong>Mana Regen:</strong>
         <span id="mana-regen-value">${hero.stats.manaRegen.toFixed(1).replace(/\./g, ',')}</span>/s
@@ -185,7 +185,7 @@ export function updateStatsAndAttributesUI() {
       hero.stats.critDamage.toFixed(2).replace(/\./g, ',') + 'x';
     document.getElementById('max-health-value').textContent = hero.stats.health;
     document.getElementById('health-regen-value').textContent = hero.stats.lifeRegen.toFixed(1).replace(/\./g, ',');
-    document.getElementById('max-mana-value').textContent = hero.stats.mana.toFixed(0);
+    document.getElementById('max-mana-value').textContent = hero.stats.maxMana.toFixed(0);
     document.getElementById('mana-regen-value').textContent = hero.stats.manaRegen.toFixed(1).replace(/\./g, ',');
     document.getElementById('armor-value').textContent = hero.stats.armor || 0;
     document.getElementById('armor-reduction-value').textContent =
@@ -381,16 +381,18 @@ function initializeSkillTreeStructure() {
   skillPointsHeader.className = 'skill-points-header';
   container.appendChild(skillPointsHeader);
 
+  const noLvlRestriction = false;
+
   const skills = SKILL_TREES[skillTree.selectedPath.name];
   const levelGroups = SKILL_LEVEL_TIERS.reduce((acc, level) => {
-    if (level <= hero.level) {
+    if (level <= hero.level || noLvlRestriction) {
       acc[level] = [];
     }
     return acc;
   }, {});
 
   Object.entries(skills).forEach(([skillId, skillData]) => {
-    if (skillData.requiredLevel <= hero.level && levelGroups[skillData.requiredLevel]) {
+    if (noLvlRestriction || (skillData.requiredLevel <= hero.level && levelGroups[skillData.requiredLevel])) {
       levelGroups[skillData.requiredLevel].push({ id: skillId, ...skillData });
     }
   });
@@ -453,68 +455,67 @@ function createSkillElement(skill) {
   skillElement.dataset.skillId = skill.id;
   skillElement.dataset.skillType = skill.type;
 
-  const currentLevel = skillTree.skills[skill.id]?.level || 0;
-  const canUnlock = skillTree.canUnlockSkill(skill.id);
+  const updateTooltipContent = () => {
+    const currentLevel = skillTree.skills[skill.id]?.level || 0;
+    const canUnlock = skillTree.canUnlockSkill(skill.id);
 
-  // Calculate effects at current level
-  const effectsCurrent = skill.effect(currentLevel);
-  // Calculate effects at next level (if not maxed out)
-  const nextLevel = currentLevel < skill.maxLevel ? currentLevel + 1 : currentLevel;
-  const effectsNext = skill.effect(nextLevel);
+    // Calculate effects at current level
+    const effectsCurrent = skill.effect(currentLevel);
+    // Calculate effects at next level (if not maxed out)
+    const nextLevel = currentLevel < skill.maxLevel ? currentLevel + 1 : currentLevel;
+    const effectsNext = skill.effect(nextLevel);
 
-  let skillDescription = `
-    <strong>${skill.name} [${skill.type.toUpperCase()}]</strong><br />
-    ${skill.description}<br />
-    Level: ${currentLevel}/${skill.maxLevel}
-  `;
+    let skillDescription = `
+          <strong>${skill.name} [${skill.type.toUpperCase()}]</strong><br />
+          ${skill.description}<br />
+          Level: ${currentLevel}/${skill.maxLevel}
+      `;
 
-  if (skill.manaCost) {
-    skillDescription += `<br />Mana Cost: ${skill.manaCost}`;
-  }
-  if (skill.cooldown) {
-    skillDescription += `<br />Cooldown: ${skill.cooldown / 1000}s`;
-  }
-  if (skill.duration) {
-    skillDescription += `<br />Duration: ${skill.duration / 1000}s`;
-  }
+    if (skill.manaCost) {
+      skillDescription += `<br />Mana Cost: ${skill.manaCost}`;
+    }
+    if (skill.cooldown) {
+      skillDescription += `<br />Cooldown: ${skill.cooldown / 1000}s`;
+    }
+    if (skill.duration) {
+      skillDescription += `<br />Duration: ${skill.duration / 1000}s`;
+    }
 
-  // Add current effects
-  if (effectsCurrent && Object.keys(effectsCurrent).length > 0) {
-    skillDescription += '<br /><u>Current Effects:</u><br />';
-    Object.entries(effectsCurrent).forEach(([stat, value]) => {
-      skillDescription += `${stat}: +${value}<br />`;
-    });
-  }
+    // Add current effects
+    if (effectsCurrent && Object.keys(effectsCurrent).length > 0) {
+      skillDescription += '<br /><u>Current Effects:</u><br />';
+      Object.entries(effectsCurrent).forEach(([stat, value]) => {
+        skillDescription += `${stat}: +${value}<br />`;
+      });
+    }
 
-  // If not at max level, show next level effects and the bonus
-  if (currentLevel < skill.maxLevel) {
-    skillDescription += '<br /><u>Next Level Effects:</u><br />';
-    Object.entries(effectsNext).forEach(([stat, value]) => {
-      const currentValue = effectsCurrent[stat] || 0;
-      const difference = value - currentValue;
-      skillDescription += `${stat}: +${value} <span class="bonus">(+${difference})</span><br />`;
-    });
-  }
+    // If not at max level, show next level effects and the bonus
+    if (currentLevel < skill.maxLevel) {
+      skillDescription += '<br /><u>Next Level Effects:</u><br />';
+      Object.entries(effectsNext).forEach(([stat, value]) => {
+        const currentValue = effectsCurrent[stat] || 0;
+        const difference = value - currentValue;
+        skillDescription += `${stat}: +${value} <span class="bonus">(+${difference})</span><br />`;
+      });
+    }
+
+    return skillDescription;
+  };
 
   skillElement.innerHTML = html`
     <div class="skill-icon" style="background-image: url('assets/skills/${skill.icon}.png')"></div>
-    <div class="skill-level">${currentLevel}/${skill.maxLevel}</div>
-    <div class="skill-description">${skillDescription}</div>
+    <div class="skill-level">${skillTree.skills[skill.id]?.level || 0}/${skill.maxLevel}</div>
   `;
 
-  if (canUnlock) skillElement.classList.add('available');
-  if (skillTree.skills[skill.id]) skillElement.classList.add('unlocked');
+  skillElement.addEventListener('mouseenter', (e) => showTooltip(updateTooltipContent(), e));
+  skillElement.addEventListener('mousemove', positionTooltip);
+  skillElement.addEventListener('mouseleave', hideTooltip);
 
-  skillElement.addEventListener('mousemove', (e) => {
-    const tooltip = skillElement.querySelector('.skill-description');
-    const rect = skillElement.getBoundingClientRect();
-    tooltip.style.left = rect.left + 'px';
-    tooltip.style.top = rect.bottom + 10 + 'px';
-  });
-
-  skillElement.addEventListener('click', () => {
+  skillElement.addEventListener('click', (e) => {
     if (skillTree.unlockSkill(skill.id)) {
       updateSkillTreeValues();
+      // Update tooltip content after skill upgrade
+      showTooltip(updateTooltipContent(), { clientX: e.clientX, clientY: e.clientY });
     }
   });
 
@@ -660,3 +661,47 @@ export function showManaWarning() {
 // ##########################################
 //  #########################################
 // ##########################################
+
+// Function to show the tooltip
+export function showTooltip(content, event) {
+  const tooltip = document.getElementById('tooltip');
+  tooltip.innerHTML = content;
+  tooltip.classList.remove('hidden');
+  tooltip.classList.add('show');
+  positionTooltip(event);
+}
+
+// Function to hide the tooltip
+function hideTooltip() {
+  const tooltip = document.getElementById('tooltip');
+  tooltip.classList.remove('show');
+  tooltip.classList.add('hidden');
+}
+
+// Function to position the tooltip
+function positionTooltip(event) {
+  const tooltip = document.getElementById('tooltip');
+  const tooltipRect = tooltip.getBoundingClientRect();
+  const offset = 10; // Offset from the mouse pointer
+
+  let top = event.clientY + offset;
+  let left = event.clientX + offset;
+
+  // Adjust position if tooltip goes off-screen
+  if (top + tooltipRect.height > window.innerHeight) {
+    top = event.clientY - tooltipRect.height - offset;
+  }
+  if (left + tooltipRect.width > window.innerWidth) {
+    left = event.clientX - tooltipRect.width - offset;
+  }
+
+  tooltip.style.top = `${top}px`;
+  tooltip.style.left = `${left}px`;
+}
+
+// Example usage: Attach event listeners to elements that need tooltips
+document.querySelectorAll('.tooltip-target').forEach((element) => {
+  element.addEventListener('mouseenter', (e) => showTooltip('Your tooltip content here', e));
+  element.addEventListener('mousemove', positionTooltip);
+  element.addEventListener('mouseleave', hideTooltip);
+});
