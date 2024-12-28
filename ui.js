@@ -354,7 +354,7 @@ function showClassSelection() {
     const button = document.createElement('button');
     button.textContent =
       hero.level < REQ_LEVEL_FOR_SKILL_TREE ? `Requires Level ${REQ_LEVEL_FOR_SKILL_TREE}` : 'Choose Path';
-    button.disabled = hero.level < REQ_LEVEL_FOR_SKILL_TREE;
+    // button.disabled = hero.level < REQ_LEVEL_FOR_SKILL_TREE;
     button.addEventListener('click', () => selectClassPath(pathId));
     pathElement.appendChild(button);
 

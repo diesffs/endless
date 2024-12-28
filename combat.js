@@ -123,13 +123,15 @@ function defeatEnemy() {
     return;
   }
 
-  const expGained = 20 + game.zone * 5;
-  const goldGained = 10 + game.zone * 5;
+  const baseExpGained = 20 + game.zone * 5;
+  const baseGoldGained = 10 + game.zone * 5;
+
+  // Apply bonus experience and gold
+  const expGained = baseExpGained * (1 + hero.stats.bonusExperience / 100);
+  const goldGained = baseGoldGained * (1 + hero.stats.bonusGold / 100);
 
   hero.gold += goldGained;
   hero.gainExp(expGained);
-
-  const newPrestigeSouls = Math.floor(game.zone / 50);
 
   if (enemy.rollForDrop()) {
     const itemLevel = enemy.calculateItemLevel(game.zone);

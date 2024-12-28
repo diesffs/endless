@@ -176,6 +176,7 @@ export default class Prestige {
     const buttons = document.querySelectorAll('.crystal-upgrade-btn');
     buttons.forEach((button) => {
       button.addEventListener('click', () => {
+        const stat = button.dataset.stat;
         this.buyCrystalUpgrade(stat);
       });
     });

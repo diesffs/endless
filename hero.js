@@ -408,6 +408,14 @@ export default class Hero {
         (shop.shopBonuses.lifeSteal || 0) +
         (inventory.equipmentBonuses.lifeSteal || 0) +
         (skillTreeBonuses.lifeSteal || 0),
+      bonusExperience:
+        (shop.shopBonuses.bonusExperience || 0) +
+        (inventory.equipmentBonuses.bonusExperience || 0) +
+        (skillTreeBonuses.expBonus || 0),
+      bonusGold:
+        (shop.shopBonuses.bonusGold || 0) +
+        (inventory.equipmentBonuses.bonusGold || 0) +
+        (skillTreeBonuses.goldBonus || 0),
     };
   }
 
