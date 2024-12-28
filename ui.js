@@ -60,10 +60,10 @@ export function updatePlayerHealth() {
     stats.health
   )}`;
 
-  const manaPercentage = (stats.currentMana / stats.maxMana) * 100;
+  const manaPercentage = (stats.currentMana / stats.mana) * 100;
   document.getElementById('mana-fill').style.width = `${manaPercentage}%`;
   document.getElementById('mana-text').textContent = `${Math.max(0, Math.floor(stats.currentMana))}/${Math.floor(
-    stats.maxMana
+    stats.mana
   )}`;
 }
 
@@ -150,7 +150,7 @@ export function updateStatsAndAttributesUI() {
         <strong>Health Regen:</strong>
         <span id="health-regen-value">${hero.stats.lifeRegen.toFixed(1).replace(/\./g, ',')}</span>/s
       </div>
-      <div><strong>Mana:</strong> <span id="max-mana-value">${hero.stats.maxMana.toFixed(0)}</span></div>
+      <div><strong>Mana:</strong> <span id="max-mana-value">${hero.stats.mana.toFixed(0)}</span></div>
       <div>
         <strong>Mana Regen:</strong>
         <span id="mana-regen-value">${hero.stats.manaRegen.toFixed(1).replace(/\./g, ',')}</span>/s
@@ -185,7 +185,7 @@ export function updateStatsAndAttributesUI() {
       hero.stats.critDamage.toFixed(2).replace(/\./g, ',') + 'x';
     document.getElementById('max-health-value').textContent = hero.stats.health;
     document.getElementById('health-regen-value').textContent = hero.stats.lifeRegen.toFixed(1).replace(/\./g, ',');
-    document.getElementById('max-mana-value').textContent = hero.stats.maxMana.toFixed(0);
+    document.getElementById('max-mana-value').textContent = hero.stats.mana.toFixed(0);
     document.getElementById('mana-regen-value').textContent = hero.stats.manaRegen.toFixed(1).replace(/\./g, ',');
     document.getElementById('armor-value').textContent = hero.stats.armor || 0;
     document.getElementById('armor-reduction-value').textContent =
