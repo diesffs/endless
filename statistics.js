@@ -42,11 +42,35 @@ export default class Statistics {
   // Add to the constructor or in a separate initUI method
   initializeStatisticsUI() {
     const resetButton = document.getElementById('reset-progress');
-    if (resetButton) {
-      resetButton.addEventListener('click', () => {
+    const modal = document.getElementById('reset-modal');
+    const confirmButton = document.getElementById('confirm-reset');
+    const cancelButton = document.getElementById('cancel-reset');
+
+    if (resetButton && modal && confirmButton && cancelButton) {
+      // Open modal on Reset button click
+      resetButton.onclick = () => {
+        modal.style.display = 'block';
+      };
+
+      // Confirm Reset action
+      confirmButton.onclick = () => {
+        modal.style.display = 'none';
         game.resetAllProgress();
-      });
+      };
+
+      // Cancel Reset action
+      cancelButton.onclick = () => {
+        modal.style.display = 'none';
+      };
+
+      // Close modal when clicking outside
+      modal.onclick = (e) => {
+        if (e.target === modal) {
+          modal.style.display = 'none';
+        }
+      };
     }
+
     this.updateStatisticsUI();
   }
 
