@@ -146,6 +146,11 @@ class Game {
     // skill tree reset
     skillTree.selectedPath = null;
 
+    // Reset inventory and equipped items
+    inventory.equippedItems = {};
+    inventory.inventoryItems = new Array(200).fill(null);
+    inventory.updateInventoryGrid();
+
     prestige.performPrestige(); // Use the existing functionality to reset progress
     statistics.resetStatistics();
     showToast('All progress has been reset!');
