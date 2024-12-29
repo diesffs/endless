@@ -289,6 +289,8 @@ export function createModifyUI() {
       startingGold: 0,
       continuousPlay: false,
     };
+    // skill tree reset
+    skillTree.selectedPath = null;
 
     prestige.performPrestige(); // Use the existing functionality to reset progress
     showToast('All progress has been reset!');
