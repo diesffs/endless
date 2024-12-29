@@ -1,4 +1,4 @@
-import { game, hero, shop, skillTree } from './main.js';
+import { game, hero, shop, skillTree, statistics } from './main.js';
 import {
   updateZoneUI,
   updateResources,
@@ -103,6 +103,7 @@ export default class Prestige {
 
     shop.updateShopUI('gold-upgrades');
     shop.updateShopUI('crystal-upgrades');
+    statistics.updateStatisticsUI();
   }
 
   resetGame() {

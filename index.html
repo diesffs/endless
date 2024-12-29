@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="css/prestige.css" />
     <link rel="stylesheet" href="css/inventory.css" />
     <link rel="stylesheet" href="css/skilltree.css" />
+    <link rel="stylesheet" href="css/statistics.css" />
   </head>
 
   <body>
@@ -26,6 +27,7 @@
         <button class="tab-btn" data-tab="prestige">Prestige</button>
         <button class="tab-btn" data-tab="inventory">Inventory</button>
         <button class="tab-btn hidden" data-tab="skilltree">Skill Tree</button>
+        <button class="tab-btn" data-tab="options">Options</button>
       </div>
 
       <div class="main-content">
@@ -124,19 +126,19 @@
                 </div>
                 <div class="salvage-container">
                   <button id="sort-inventory" class="inventory-btn">Sort Items</button>
-                  
-                <div class="salvage-dropdown">
-                  <button class="salvage-btn">
-                    Salvage
-                    <span class="dropdown-icon">▼</span>
-                  </button>
-                  <div class="salvage-options">
-                    <div data-rarity="NORMAL">Normal Items</div>
-                    <div data-rarity="MAGIC">Magic Items & Below</div>
-                    <div data-rarity="RARE">Rare Items & Below</div>
-                    <div data-rarity="UNIQUE">Unique Items & Below</div>
+
+                  <div class="salvage-dropdown">
+                    <button class="salvage-btn">
+                      Salvage
+                      <span class="dropdown-icon">▼</span>
+                    </button>
+                    <div class="salvage-options">
+                      <div data-rarity="NORMAL">Normal Items</div>
+                      <div data-rarity="MAGIC">Magic Items & Below</div>
+                      <div data-rarity="RARE">Rare Items & Below</div>
+                      <div data-rarity="UNIQUE">Unique Items & Below</div>
+                    </div>
                   </div>
-                </div>
                 </div>
               </div>
               <div class="inventory-grid">
@@ -153,6 +155,34 @@
               </div>
               <div id="skill-tree-container" class="skill-tree-container hidden">
                 <!-- Will show skill tree after class selection -->
+              </div>
+            </div>
+            <div id="options" class="tab-panel">
+              <div class="options-container">
+                <!-- <div class="options-section">
+                  <h3>Game Settings</h3>
+                  <div class="options-grid">
+                    <div class="option-item">
+                      <label for="showDamageNumbers">Show Damage Numbers</label>
+                      <input type="checkbox" id="showDamageNumbers" checked />
+                    </div>
+                  </div>
+                </div> -->
+
+                <button id="reset-progress" class="danger-button">Reset All Progress</button>
+
+                <div class="options-section">
+                  <h3>Statistics</h3>
+                  <div class="stats-display">
+                    <div id="stat-enemies-killed"></div>
+                    <!-- <div id="stat-highest-damage"></div>
+                    <div id="stat-total-gold"></div>
+                    <div id="stat-items-found"></div>
+                    <div id="stat-time-played"></div>
+                    <div id="stat-prestige-count"></div> -->
+                    <div id="stat-highest-zone"></div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

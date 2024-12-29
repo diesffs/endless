@@ -280,20 +280,7 @@ export function createModifyUI() {
   const resetProgressBtn = document.createElement('button');
   resetProgressBtn.textContent = 'Reset All Progress';
   resetProgressBtn.addEventListener('click', () => {
-    hero.highestZone = 1; // needed to reset souls
-    hero.souls = 0;
-    hero.crystals = 0;
-    // reset prestige upgrades
-    prestige.crystalUpgrades = {
-      startingZone: 0,
-      startingGold: 0,
-      continuousPlay: false,
-    };
-    // skill tree reset
-    skillTree.selectedPath = null;
-
-    prestige.performPrestige(); // Use the existing functionality to reset progress
-    showToast('All progress has been reset!');
+    game.resetAllProgress();
   });
   modifyDiv.appendChild(resetProgressBtn);
 }

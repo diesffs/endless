@@ -1,6 +1,13 @@
-import { updatePlayerHealth, updateEnemyHealth, updateZoneUI, updateResources, updateBuffIndicators } from './ui.js';
+import {
+  updatePlayerHealth,
+  updateEnemyHealth,
+  updateZoneUI,
+  updateResources,
+  updateBuffIndicators,
+  showToast,
+} from './ui.js';
 import { playerAttack, enemyAttack } from './combat.js';
-import { game, hero, inventory, prestige, shop, skillTree } from './main.js';
+import { game, hero, inventory, prestige, shop, skillTree, statistics } from './main.js';
 import Enemy from './enemy.js';
 
 class Game {
@@ -15,6 +22,9 @@ class Game {
   incrementZone() {
     this.zone += 1;
     if (this.zone > hero.highestZone) {
+      if (statistics.highestZoneReached < this.zone) {
+        statistics.increment('highestZoneReached', null, this.zone);
+      }
       hero.highestZone = this.zone;
       hero.crystals += 1; // Award 1 crystal for increasing highest zone
     }
@@ -93,12 +103,16 @@ class Game {
   }
 
   saveGame() {
+    // update statisticsa
+    statistics.updateStatisticsUI();
+
     const saveData = {
       hero: hero,
       skillTree: skillTree,
       prestige: prestige,
       shop: shop,
       inventory: inventory,
+      statistics: statistics,
     };
 
     localStorage.setItem('gameProgress', JSON.stringify(saveData));
@@ -115,6 +129,26 @@ class Game {
 
   clearSave() {
     localStorage.removeItem('gameProgress');
+  }
+
+  resetAllProgress() {
+    hero.highestZone = 1; // needed to reset souls
+    hero.souls = 0;
+    hero.crystals = 0;
+    hero.startingZone = 1;
+    hero.startingGold = 0;
+    // reset prestige upgrades
+    prestige.crystalUpgrades = {
+      startingZone: 0,
+      startingGold: 0,
+      continuousPlay: false,
+    };
+    // skill tree reset
+    skillTree.selectedPath = null;
+
+    prestige.performPrestige(); // Use the existing functionality to reset progress
+    statistics.resetStatistics();
+    showToast('All progress has been reset!');
   }
 }
 

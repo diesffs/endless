@@ -14,6 +14,7 @@ import Prestige from './prestige.js';
 import Inventory from './inventory.js';
 import SkillTree from './skillTree.js';
 import { createDebugUI, createModifyUI } from './functions.js';
+import Statistics from './statistics.js';
 
 window.qwe = console.log;
 window.qw = console.log;
@@ -30,11 +31,13 @@ export const inventory = new Inventory(savedData?.inventory);
 export const skillTree = new SkillTree(savedData?.skillTree);
 export const prestige = new Prestige(savedData?.prestige);
 export const shop = new Shop(savedData?.shop);
+export const statistics = new Statistics(savedData?.statistics);
 
 game.zone = hero?.startingZone || 1;
 
 initializeUI();
 prestige.initializePrestigeUI();
+statistics.initializeStatisticsUI();
 initializeSkillTreeUI();
 
 updateResources();

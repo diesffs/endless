@@ -7,7 +7,7 @@ import {
 } from './ui.js';
 import Enemy from './enemy.js';
 import { ITEM_RARITY } from './item.js';
-import { hero, game, inventory, prestige } from './main.js';
+import { hero, game, inventory, prestige, statistics } from './main.js';
 
 export function enemyAttack(currentTime) {
   if (!game || !hero || !game.currentEnemy) return;
@@ -145,6 +145,9 @@ function defeatEnemy() {
   game.incrementZone();
   game.currentEnemy = new Enemy(game.zone);
   game.currentEnemy.lastAttack = Date.now();
+
+  statistics.increment('enemiesKilled', 'total');
+  statistics.increment('enemiesKilled', enemy.rarity.toLowerCase());
 
   updateResources();
   updateEnemyHealth();

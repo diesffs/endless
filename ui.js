@@ -42,12 +42,6 @@ export function updateResources() {
   document.getElementById('souls').textContent = hero.souls || 0;
   document.getElementById('crystals').textContent = hero.crystals || 0;
 
-  // Update highest zone if displayed
-  const highestZoneElement = document.getElementById('highest-zone');
-  if (highestZoneElement) {
-    highestZoneElement.textContent = `Highest Zone: ${hero.highestZone || 1}`;
-  }
-
   // Update other stats
   document.getElementById('gold').textContent = hero.gold || 0;
 }
