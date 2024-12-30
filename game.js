@@ -5,6 +5,7 @@ import {
   updateResources,
   updateBuffIndicators,
   showToast,
+  initializeSkillTreeUI,
 } from './ui.js';
 import { playerAttack, enemyAttack } from './combat.js';
 import { game, hero, inventory, prestige, shop, skillTree, statistics } from './main.js';
@@ -153,6 +154,7 @@ class Game {
 
     prestige.performPrestige(); // Use the existing functionality to reset progress
     statistics.resetStatistics();
+    initializeSkillTreeUI(); // to show path selection
     showToast('All progress has been reset!');
   }
 }
