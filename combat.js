@@ -127,8 +127,8 @@ function defeatEnemy() {
   const baseGoldGained = 10 + game.zone * 5;
 
   // Apply bonus experience and gold
-  const expGained = baseExpGained * (1 + hero.stats.bonusExperience / 100);
-  const goldGained = baseGoldGained * (1 + hero.stats.bonusGold / 100);
+  const expGained = Math.floor(baseExpGained * (1 + hero.stats.bonusExperience / 100));
+  const goldGained = Math.floor(baseGoldGained * (1 + hero.stats.bonusGold / 100));
 
   hero.gold += goldGained;
   hero.gainExp(expGained);
@@ -218,7 +218,7 @@ export function createCombatText(text) {
 }
 
 export function calculateHitChance(attackRating, zone) {
-  const zoneScaling = Math.pow(1.05, zone - 1);
+  const zoneScaling = Math.pow(1.03, zone - 1);
   const baseChance = (attackRating / (attackRating + 15 * zoneScaling)) * 100; // Reduced from 50 to 15
   return Math.min(Math.max(baseChance, 5), 95);
 }

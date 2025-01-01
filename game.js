@@ -24,7 +24,7 @@ class Game {
     this.zone += 1;
     if (this.zone > hero.highestZone) {
       if (statistics.highestZoneReached < this.zone) {
-        statistics.increment('highestZoneReached', null, this.zone);
+        statistics.set('highestZoneReached', null, this.zone);
       }
       hero.highestZone = this.zone;
       hero.crystals += 1; // Award 1 crystal for increasing highest zone

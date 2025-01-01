@@ -877,6 +877,7 @@ export const SKILL_TREES = {
       }),
     },
   },
+
   BERSERKER: {
     // Level 1 Skills
     frenzy: {
@@ -1231,7 +1232,6 @@ export const SKILL_TREES = {
       description: 'Grants control over elemental forces, increasing all stats.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        
         fireDamage: level * 5,
         coldDamage: level * 5,
         airDamage: level * 5,
@@ -1245,7 +1245,7 @@ export const SKILL_TREES = {
       name: 'Avatar of the Elements',
       type: 'passive',
       requiredLevel: SKILL_LEVEL_TIERS[6],
-      icon: 'avatar',
+      icon: 'avatar-of-elements',
       description: 'Transforms the caster into a being of pure elemental power.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
@@ -1368,7 +1368,7 @@ export default class SkillTree {
     if (!skill) return false;
 
     const currentLevel = this.skills[skillId]?.level || 0;
-    return this.skillPoints >= 1 && currentLevel < 10 && hero.level >= skill.requiredLevel;
+    return this.skillPoints >= 1 && currentLevel < this.skills[skillId]?.maxLevel && hero.level >= skill.requiredLevel;
   }
 
   arePrerequisitesMet(skill) {

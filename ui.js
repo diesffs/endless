@@ -364,7 +364,7 @@ function selectClassPath(pathId) {
   }
 }
 
-function initializeSkillTreeStructure() {
+export function initializeSkillTreeStructure() {
   const container = document.getElementById('skill-tree-container');
   container.innerHTML = '';
 
@@ -406,6 +406,7 @@ function initializeSkillTreeStructure() {
       container.appendChild(rowElement);
     }
   });
+  updateSkillTreeValues();
 }
 
 export function updateSkillTreeValues() {
@@ -436,8 +437,9 @@ function showSkillTree() {
   const container = document.getElementById('skill-tree-container');
   if (!container.children.length) {
     initializeSkillTreeStructure();
+  } else {
+    updateSkillTreeValues();
   }
-  updateSkillTreeValues();
 }
 
 function createSkillElement(skill) {

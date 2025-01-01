@@ -18,7 +18,7 @@ const UPGRADE_CONFIG = {
 
   // New stats to add
   blockChance: { label: 'Block Chance', bonus: 0.1, fixed: 2, suffix: '%' },
-  attackRating: { label: 'Attack Rating', bonus: 10},
+  attackRating: { label: 'Attack Rating', bonus: 10 },
   lifeSteal: { label: 'Life Steal', bonus: 0.1, fixed: 2, suffix: '%' },
   fireDamage: { label: 'Fire Damage', bonus: 1 },
   coldDamage: { label: 'Cold Damage', bonus: 1 },
@@ -27,24 +27,23 @@ const UPGRADE_CONFIG = {
 };
 
 export const BASE_UPGRADE_COSTS = {
-  damage: 100,
+  damage: 50,
   attackSpeed: 200,
-  health: 150,
-  armor: 250,
-  critChance: 300,
-  critDamage: 400,
-  mana: 200,
-  healthRegen: 200,
-  manaRegen: 200,
-  blockChance: 300,
-  attackRating: 150,
-  lifeSteal: 400,
-  fireDamage: 250,
-  coldDamage: 250,
-  airDamage: 250,
-  earthDamage: 250,
+  health: 75,
+  armor: 125,
+  critChance: 150,
+  critDamage: 200,
+  mana: 100,
+  healthRegen: 50,
+  manaRegen: 50,
+  blockChance: 150,
+  attackRating: 50,
+  lifeSteal: 200,
+  fireDamage: 75,
+  coldDamage: 75,
+  airDamage: 75,
+  earthDamage: 75,
 };
-
 export default class Shop {
   constructor(savedData = null) {
     this.upgradeCosts = { ...BASE_UPGRADE_COSTS };

@@ -192,14 +192,25 @@ export function createModifyUI() {
 
   // Button to give free attribute points
   const giveStatsBtn = document.createElement('button');
-  giveStatsBtn.textContent = 'Give Free Attributes';
+  giveStatsBtn.textContent = 'Give 5 Attributes';
   giveStatsBtn.addEventListener('click', () => {
     const freePoints = 5; // Number of free attribute points to give
     hero.statPoints += freePoints;
     hero.recalculateFromAttributes();
-    showToast(`Gave ${freePoints} free attribute points!`);
+    showToast(`Gave ${freePoints} attribute points!`);
   });
   heroSection.appendChild(giveStatsBtn);
+
+  // Button to give 100 attribute points
+  const give100StatsBtn = document.createElement('button');
+  give100StatsBtn.textContent = 'Give 100 Attributes';
+  give100StatsBtn.addEventListener('click', () => {
+    const freePoints = 100;
+    hero.statPoints += freePoints;
+    hero.recalculateFromAttributes();
+    showToast(`Gave ${freePoints} attribute points!`);
+  });
+  heroSection.appendChild(give100StatsBtn);
 
   // Button to give experience for level up
   const giveExpBtn = document.createElement('button');
@@ -210,6 +221,30 @@ export function createModifyUI() {
     showToast(`Gave ${expNeeded} experience to level up!`);
   });
   heroSection.appendChild(giveExpBtn);
+
+  // Button to give experience for level up
+  const giveExp10Btn = document.createElement('button');
+  giveExp10Btn.textContent = 'Give Experience for 10 Level Ups';
+  giveExp10Btn.addEventListener('click', () => {
+    for (let i = 0; i < 10; i++) {
+      const expNeeded = hero.expToNextLevel - hero.exp;
+      hero.gainExp(expNeeded);
+    }
+    showToast(`Gave experience for 10 level ups!`);
+  });
+  heroSection.appendChild(giveExp10Btn);
+
+  // Button to give experience for 100 level ups
+  const giveExp100Btn = document.createElement('button');
+  giveExp100Btn.textContent = 'Give Experience for 100 Level Ups';
+  giveExp100Btn.addEventListener('click', () => {
+    for (let i = 0; i < 100; i++) {
+      const expNeeded = hero.expToNextLevel - hero.exp;
+      hero.gainExp(expNeeded);
+    }
+    showToast(`Gave experience for 100 level ups!`);
+  });
+  heroSection.appendChild(giveExp100Btn);
 
   // Button to add gold
   const addGoldBtn = document.createElement('button');

@@ -102,6 +102,16 @@ export default class Statistics {
     }
   }
 
+  set(category, subcategory = null, value) {
+    if (subcategory) {
+      if (this[category]) {
+        this[category][subcategory] = value;
+      }
+    } else {
+      this[category] = value;
+    }
+  }
+
   //TODO: use it
   update() {
     const now = Date.now();

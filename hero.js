@@ -1,4 +1,4 @@
-import { updateStatsAndAttributesUI } from './ui.js';
+import { initializeSkillTreeStructure, updateStatsAndAttributesUI } from './ui.js';
 import { game, inventory, shop, skillTree } from './main.js';
 import { updatePlayerHealth } from './ui.js';
 import { createCombatText } from './combat.js';
@@ -98,7 +98,7 @@ export const ATTRIBUTES = {
       Each point increases:<br />
       • Mana by 5<br />
       • Every 5 points adds 1% to total mana<br />
-      • Every 10 points adds 1% mana regeneration
+      • Every 10 points adds 10% mana regeneration
     `,
     effects: {
       manaPerPoint: 5,
@@ -108,7 +108,7 @@ export const ATTRIBUTES = {
       },
       regenPercentPer: {
         points: 10,
-        value: 0.01,
+        value: 0.1,
       },
     },
   },
@@ -232,6 +232,7 @@ export default class Hero {
     this.expToNextLevel += this.level * 40 - 20;
     this.recalculateFromAttributes();
     this.stats.currentHealth = this.stats.health; // Full heal on level up
+    this.stats.currentMana = this.stats.mana; // Full heal on level up
 
     // Add level up notification
     createCombatText(`LEVEL UP! (${this.level})`);
@@ -240,6 +241,7 @@ export default class Hero {
 
     updatePlayerHealth();
     updateStatsAndAttributesUI();
+    initializeSkillTreeStructure();
     game.saveGame();
   }
 
@@ -416,6 +418,16 @@ export default class Hero {
         (shop.shopBonuses.bonusGold || 0) +
         (inventory.equipmentBonuses.bonusGold || 0) +
         (skillTreeBonuses.goldBonus || 0),
+      lifeRegen:
+        BASE_LIFE_REGEN +
+        (shop.shopBonuses.lifeRegen || 0) +
+        (inventory.equipmentBonuses.lifeRegen || 0) +
+        (skillTreeBonuses.lifeRegen || 0),
+      manaRegen:
+        BASE_MANA_REGEN +
+        (shop.shopBonuses.manaRegen || 0) +
+        (inventory.equipmentBonuses.manaRegen || 0) +
+        (skillTreeBonuses.manaRegen || 0),
     };
   }
 
@@ -444,11 +456,18 @@ export default class Hero {
     this.stats.mana = Math.floor(flatValues.mana * (1 + attributeEffects.wisManaPercent));
     this.stats.armor = Math.floor(flatValues.armor * (1 + percentBonuses.armor));
 
+    this.stats.lifeRegen = Number((flatValues.lifeRegen * (1 + attributeEffects.vitRegenPercent)).toFixed(1));
+    this.stats.manaRegen = Number((flatValues.manaRegen * (1 + attributeEffects.wisRegenPercent)).toFixed(1));
+
     // percentage calculations
     this.stats.fireDamage = Math.floor(flatValues.fireDamage * (1 + this.stats.elementalDamagePercent / 100));
     this.stats.coldDamage = Math.floor(flatValues.coldDamage * (1 + this.stats.elementalDamagePercent / 100));
     this.stats.airDamage = Math.floor(flatValues.airDamage * (1 + this.stats.elementalDamagePercent / 100));
     this.stats.earthDamage = Math.floor(flatValues.earthDamage * (1 + this.stats.elementalDamagePercent / 100));
+
+    // gold & xp (they ARE % bonuses)
+    this.stats.bonusExperience = flatValues.bonusExperience;
+    this.stats.bonusGold = flatValues.bonusGold;
 
     const damageBonusFromSouls = Math.floor(this.stats.damage * (this.souls * 0.01));
     this.stats.damage += damageBonusFromSouls;
@@ -456,10 +475,6 @@ export default class Hero {
     this.stats.attackSpeed = Number(flatValues.attackSpeed.toFixed(2));
     this.stats.critChance = Number(flatValues.critChance.toFixed(2));
     this.stats.critDamage = Number(flatValues.critDamage.toFixed(2));
-    this.stats.lifeRegen =
-      (BASE_LIFE_REGEN + inventory.equipmentBonuses.lifeRegen) * (1 + attributeEffects.vitRegenPercent);
-    this.stats.manaRegen =
-      (BASE_MANA_REGEN + inventory.equipmentBonuses.manaRegen) * (1 + attributeEffects.wisRegenPercent);
     this.stats.lifeSteal = Number(flatValues.lifeSteal.toFixed(2));
 
     this.stats.blockChance = Math.min(this.stats.blockChance, 75);
