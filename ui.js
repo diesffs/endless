@@ -330,6 +330,7 @@ function showClassSelection() {
   classSelection.innerHTML = '';
 
   Object.entries(CLASS_PATHS).forEach(([pathId, pathData]) => {
+    if (!pathData.enabled) return;
     const pathElement = document.createElement('div');
     pathElement.className = 'class-path';
     pathElement.innerHTML = html`

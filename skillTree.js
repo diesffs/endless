@@ -17,16 +17,18 @@ export const REQ_LEVEL_FOR_SKILL_TREE = 10;
 export const CLASS_PATHS = {
   WARRIOR: {
     name: 'Warrior',
+    enabled: true,
     baseStats: {
-      strength: 15,
-      vitality: 10,
-      armor: 50,
-      health: 200,
+      strength: 20,
+      vitality: 20,
+      armor: 100,
+      health: 400,
     },
     description: 'A mighty warrior specializing in heavy armor and raw strength',
   },
   ROGUE: {
     name: 'Rogue',
+    enabled: true,
     baseStats: {
       agility: 25,
       critChance: 5,
@@ -37,6 +39,7 @@ export const CLASS_PATHS = {
   },
   VAMPIRE: {
     name: 'Vampire',
+    enabled: false,
     baseStats: {
       lifeSteal: 3,
       critDamage: 0.5,
@@ -47,6 +50,7 @@ export const CLASS_PATHS = {
   },
   PALADIN: {
     name: 'Paladin',
+    enabled: false,
     baseStats: {
       blockChance: 10,
       armor: 100,
@@ -57,6 +61,7 @@ export const CLASS_PATHS = {
   },
   BERSERKER: {
     name: 'Berserker',
+    enabled: false,
     baseStats: {
       damage: 45,
       attackSpeed: 0.3,
@@ -67,6 +72,7 @@ export const CLASS_PATHS = {
   },
   ELEMENTALIST: {
     name: 'Elementalist',
+    enabled: false,
     baseStats: {
       fireDamage: 40,
       airDamage: 40,
@@ -74,8 +80,9 @@ export const CLASS_PATHS = {
       earthDamage: 40,
     },
     description: 'Master of elemental damage types',
-  },
+  }
 };
+
 
 export const SKILL_TREES = {
   WARRIOR: {
@@ -1334,7 +1341,7 @@ export default class SkillTree {
 
   selectPath(pathName) {
     if (this.selectedPath) return false;
-    if (!CLASS_PATHS[pathName]) return false;
+    if (!CLASS_PATHS[pathName] || !CLASS_PATHS[pathName].enabled) return false;
     if (hero.level < REQ_LEVEL_FOR_SKILL_TREE) {
       showToast(`Reach level ${REQ_LEVEL_FOR_SKILL_TREE} to select a class path!`, 'warning');
       return false;
