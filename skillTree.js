@@ -1,4 +1,4 @@
-import { createDamageNumber } from './combat.js';
+import { createDamageNumber, defeatEnemy } from './combat.js';
 import { handleSavedData } from './functions.js';
 import { game, hero } from './main.js';
 import {
@@ -80,9 +80,8 @@ export const CLASS_PATHS = {
       earthDamage: 40,
     },
     description: 'Master of elemental damage types',
-  }
+  },
 };
-
 
 export const SKILL_TREES = {
   WARRIOR: {
@@ -1451,6 +1450,10 @@ export default class SkillTree {
     const damage = this.calculateInstantDamage(skillId);
     game.currentEnemy.currentHealth -= damage;
 
+    if (game.currentEnemy.currentHealth <= 0) {
+      defeatEnemy();
+    }
+
     // Set cooldown
     skillData.cooldownEndTime = Date.now() + skill.cooldown;
 
@@ -1468,7 +1471,7 @@ export default class SkillTree {
     const baseEffect = skill.effect(skillData.level);
 
     // Scale with hero's damage bonuses
-    return baseEffect.damage * (1 + hero.stats.damagePercent / 100);
+    return hero.stats.damage + baseEffect.damage;
   }
 
   applyToggleEffects(type = 'attack') {

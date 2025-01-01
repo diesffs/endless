@@ -113,7 +113,7 @@ export function playerDeath() {
   }
 }
 
-function defeatEnemy() {
+export function defeatEnemy() {
   const enemy = game.currentEnemy;
   // const droppedItem = dropLoot(enemy);
 
