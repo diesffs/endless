@@ -177,6 +177,13 @@ export function updateStatsAndAttributesUI() {
       hero.stats.critChance.toFixed(1).replace(/\./g, ',') + '%';
     document.getElementById('crit-damage-value').textContent =
       hero.stats.critDamage.toFixed(2).replace(/\./g, ',') + 'x';
+
+    document.getElementById('life-steal-value').textContent = hero.stats.lifeSteal.toFixed(2) + '%';
+    document.getElementById('fire-damage-value').textContent = hero.stats.fireDamage;
+    document.getElementById('cold-damage-value').textContent = hero.stats.coldDamage;
+    document.getElementById('air-damage-value').textContent = hero.stats.airDamage;
+    document.getElementById('earth-damage-value').textContent = hero.stats.earthDamage;
+
     document.getElementById('max-health-value').textContent = hero.stats.health;
     document.getElementById('health-regen-value').textContent = hero.stats.lifeRegen.toFixed(1).replace(/\./g, ',');
     document.getElementById('max-mana-value').textContent = hero.stats.mana.toFixed(0);

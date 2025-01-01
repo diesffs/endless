@@ -30,6 +30,7 @@ export default class Inventory {
       airDamage: 0,
       earthDamage: 0,
       attackRatingPercent: 0,
+      attackRating: 0,
       damagePercent: 0,
     };
     this.equippedItems = savedData?.equippedItems || {};
