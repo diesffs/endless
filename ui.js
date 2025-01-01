@@ -128,7 +128,7 @@ export function updateStatsAndAttributesUI() {
         <span id="crit-damage-value">${hero.stats.critDamage.toFixed(2).replace(/\./g, ',')}x</span>
       </div>
 
-      <div><strong>Life Steal:</strong> <span id="life-steal-value">${hero.stats.lifeSteal.toFixed(1)}%</span></div>
+      <div><strong>Life Steal:</strong> <span id="life-steal-value">${hero.stats.lifeSteal.toFixed(2)}%</span></div>
       <div class="elemental-damage">
         <div><strong>🔥 Fire Damage:</strong> <span id="fire-damage-value">${hero.stats.fireDamage}</span></div>
         <div><strong>❄️ Cold Damage:</strong> <span id="cold-damage-value">${hero.stats.coldDamage}</span></div>

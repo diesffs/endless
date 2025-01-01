@@ -84,7 +84,7 @@ export const AVAILABLE_STATS = {
   health: { min: 5, max: 25, scaling: 'full' },
   blockChance: { min: 2, max: 8, scaling: 'capped' },
   attackRating: { min: 5, max: 20, scaling: 'full' },
-  lifeSteal: { min: 1, max: 3, scaling: 'capped' },
+  lifeSteal: { min: 0.01, max: 0.1, scaling: 'capped' },
   fireDamage: { min: 3, max: 10, scaling: 'full' },
   coldDamage: { min: 3, max: 10, scaling: 'full' },
   airDamage: { min: 3, max: 10, scaling: 'full' },

@@ -19,7 +19,7 @@ const UPGRADE_CONFIG = {
   // New stats to add
   blockChance: { label: 'Block Chance', bonus: 0.1, fixed: 2, suffix: '%' },
   attackRating: { label: 'Attack Rating', bonus: 10 },
-  lifeSteal: { label: 'Life Steal', bonus: 0.1, fixed: 2, suffix: '%' },
+  lifeSteal: { label: 'Life Steal', bonus: 0.01, fixed: 2, suffix: '%' },
   fireDamage: { label: 'Fire Damage', bonus: 1 },
   coldDamage: { label: 'Cold Damage', bonus: 1 },
   airDamage: { label: 'Air Damage', bonus: 1 },
@@ -38,7 +38,7 @@ export const BASE_UPGRADE_COSTS = {
   manaRegen: 50,
   blockChance: 150,
   attackRating: 50,
-  lifeSteal: 200,
+  lifeSteal: 500,
   fireDamage: 75,
   coldDamage: 75,
   airDamage: 75,
