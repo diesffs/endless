@@ -84,13 +84,13 @@ export const SKILL_TREES = {
       id: 'bash',
       name: 'Bash',
       type: 'toggle',
-      manaCost: 10,
+      manaCost: 5,
       requiredLevel: SKILL_LEVEL_TIERS[0],
       icon: 'war-axe',
       description: 'While active, increases damage but costs mana per attack',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 3,
+        damage: level * 10,
       }),
     },
     toughness: {
@@ -102,7 +102,7 @@ export const SKILL_TREES = {
       description: 'Permanently increases armor',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        armor: level * 3,
+        armor: level * 25,
       }),
     },
 
@@ -131,7 +131,7 @@ export const SKILL_TREES = {
       description: 'A powerful strike that deals increased damage',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 12,
+        damage: level * 50,
       }),
     },
     ironWill: {
@@ -143,8 +143,8 @@ export const SKILL_TREES = {
       description: 'Increases resistance to damage',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        armor: level * 0.5,
-        vitality: level * 0.5,
+        armor: level * 10,
+        vitality: level * 5,
       }),
     },
 
@@ -154,14 +154,14 @@ export const SKILL_TREES = {
       name: 'Battle Cry',
       type: 'buff',
       manaCost: 40,
-      cooldown: 15000,
-      duration: 5000,
+      cooldown: 60000,
+      duration: 45000,
       requiredLevel: SKILL_LEVEL_TIERS[2],
       icon: 'cry',
       description: 'Temporarily increases damage',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 5,
+        damage: level * 30,
       }),
     },
     fortitude: {
@@ -173,7 +173,7 @@ export const SKILL_TREES = {
       description: 'Increases health regeneration',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        healthRegen: level * 0.5,
+        healthRegen: level * 10,
       }),
     },
 
@@ -189,7 +189,7 @@ export const SKILL_TREES = {
       description: 'Deals instant damage',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 10,
+        damage: level * 100,
       }),
     },
     goldRush: {
@@ -211,15 +211,15 @@ export const SKILL_TREES = {
       name: 'Shield Wall',
       type: 'buff',
       manaCost: 50,
-      cooldown: 20000,
-      duration: 8000,
+      cooldown: 60000,
+      duration: 50000,
       requiredLevel: SKILL_LEVEL_TIERS[4],
       icon: 'wall',
       description: 'Increases armor and block chance temporarily',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        armor: level * 5,
-        blockChance: level * 2,
+        armor: level * 100,
+        blockChance: level * 0.2,
       }),
     },
 
@@ -228,15 +228,14 @@ export const SKILL_TREES = {
       id: 'berserk',
       name: 'Berserk',
       type: 'toggle',
-      manaCost: 30,
+      manaCost: 25,
       requiredLevel: SKILL_LEVEL_TIERS[5],
       icon: 'berserk',
-      description: 'Increases attack speed and damage at the cost of defense',
+      description: 'Gives huge amounts of physical and fire damage',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        attackSpeed: level * 0.05,
-        damage: level * 4,
-        armor: -level * 1,
+        damage: level * 50,
+        fireDamage: level * 100,
       }),
     },
 
@@ -246,12 +245,13 @@ export const SKILL_TREES = {
       type: 'passive',
       requiredLevel: SKILL_LEVEL_TIERS[5],
       icon: 'last-stand',
-      description: 'Greatly increases damage, life steal, and attack speed',
+      description: 'Greatly increases offensive stats',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 10,
-        lifeSteal: level * 0.1,
-        attackSpeed: level * 0.1,
+        damage: level * 30,
+        lifeSteal: level * 0.02,
+        attackSpeed: level * 0.01,
+        attackRating: level * 300,
       }),
     },
 
@@ -265,12 +265,12 @@ export const SKILL_TREES = {
       description: 'Increases all attributes significantly',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        strength: level * 10,
-        vitality: level * 10,
-        agility: level * 10,
-        wisdom: level * 10,
-        endurance: level * 10,
-        dexterity: level * 10,
+        strength: level * 15,
+        vitality: level * 15,
+        agility: level * 15,
+        wisdom: level * 15,
+        endurance: level * 15,
+        dexterity: level * 15,
       }),
     },
   },
@@ -1368,7 +1368,11 @@ export default class SkillTree {
     if (!skill) return false;
 
     const currentLevel = this.skills[skillId]?.level || 0;
-    return this.skillPoints >= 1 && currentLevel < this.skills[skillId]?.maxLevel && hero.level >= skill.requiredLevel;
+    return (
+      this.skillPoints >= 1 &&
+      currentLevel < (skill.maxLevel || DEFAULT_MAX_SKILL_LEVEL) &&
+      hero.level >= skill.requiredLevel
+    );
   }
 
   arePrerequisitesMet(skill) {

@@ -20,8 +20,7 @@ export function enemyAttack(currentTime) {
       createDamageNumber('BLOCKED', true, false, true);
     } else {
       // Calculate armor reduction
-      const armor = hero.stats.armor;
-      const damageReduction = armor / (100 + armor);
+      const damageReduction = hero.calculateArmorReduction() / 100;
       const effectiveDamage = Math.floor(game.currentEnemy.damage * (1 - damageReduction));
 
       // Apply reduced damage to player's health
@@ -220,5 +219,5 @@ export function createCombatText(text) {
 export function calculateHitChance(attackRating, zone) {
   const zoneScaling = Math.pow(1.03, zone - 1);
   const baseChance = (attackRating / (attackRating + 15 * zoneScaling)) * 100; // Reduced from 50 to 15
-  return Math.min(Math.max(baseChance, 5), 95);
+  return Math.min(Math.max(baseChance, 10), 100);
 }

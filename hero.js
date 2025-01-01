@@ -293,39 +293,39 @@ export default class Hero {
 
   calculateAttributeEffects() {
     return {
-      strDamageFlat: this.stats.strength * ATTRIBUTES.strength.effects.damagePerPoint,
-      strDamagePercent:
+      damageFlat: this.stats.strength * ATTRIBUTES.strength.effects.damagePerPoint,
+      damagePercent:
         Math.floor(this.stats.strength / ATTRIBUTES.strength.effects.damagePercentPer.points) *
         ATTRIBUTES.strength.effects.damagePercentPer.value,
-      agiAttackRatingFlat: this.stats.agility * ATTRIBUTES.agility.effects.attackRatingPerPoint,
-      agiAttackRatingPercent:
+      attackRatingFlat: this.stats.agility * ATTRIBUTES.agility.effects.attackRatingPerPoint,
+      attackRatingPercent:
         Math.floor(this.stats.agility / ATTRIBUTES.agility.effects.attackRatingPercentPer.points) *
         ATTRIBUTES.agility.effects.attackRatingPercentPer.value,
-      agiAttackSpeed:
+      attackSpeed:
         Math.floor(this.stats.agility / ATTRIBUTES.agility.effects.attackSpeedPer.points) *
         ATTRIBUTES.agility.effects.attackSpeedPer.value,
-      vitHealthFlat: this.stats.vitality * ATTRIBUTES.vitality.effects.healthPerPoint,
-      vitHealthPercent:
+      healthFlat: this.stats.vitality * ATTRIBUTES.vitality.effects.healthPerPoint,
+      healthPercent:
         Math.floor(this.stats.vitality / ATTRIBUTES.vitality.effects.healthPercentPer.points) *
         ATTRIBUTES.vitality.effects.healthPercentPer.value,
-      vitRegenPercent:
+      regenPercent:
         Math.floor(this.stats.vitality / ATTRIBUTES.vitality.effects.regenPercentPer.points) *
         ATTRIBUTES.vitality.effects.regenPercentPer.value,
-      wisManaFlat: this.stats.wisdom * ATTRIBUTES.wisdom.effects.manaPerPoint,
-      wisManaPercent:
+      manaFlat: this.stats.wisdom * ATTRIBUTES.wisdom.effects.manaPerPoint,
+      manaPercent:
         Math.floor(this.stats.wisdom / ATTRIBUTES.wisdom.effects.manaPercentPer.points) *
         ATTRIBUTES.wisdom.effects.manaPercentPer.value,
-      wisRegenPercent:
+      manaRegenPercent:
         Math.floor(this.stats.wisdom / ATTRIBUTES.wisdom.effects.regenPercentPer.points) *
         ATTRIBUTES.wisdom.effects.regenPercentPer.value,
-      endArmorFlat: this.stats.endurance * ATTRIBUTES.endurance.effects.armorPerPoint,
-      endArmorPercent:
+      armorFlat: this.stats.endurance * ATTRIBUTES.endurance.effects.armorPerPoint,
+      armorPercent:
         Math.floor(this.stats.endurance / ATTRIBUTES.endurance.effects.armorPercentPer.points) *
         ATTRIBUTES.endurance.effects.armorPercentPer.value,
-      dexCritChance:
+      critChance:
         Math.floor(this.stats.dexterity / ATTRIBUTES.dexterity.effects.critChancePer.points) *
         ATTRIBUTES.dexterity.effects.critChancePer.value,
-      dexCritDamage:
+      critDamage:
         Math.floor(this.stats.dexterity / ATTRIBUTES.dexterity.effects.critDamagePer.points) *
         ATTRIBUTES.dexterity.effects.critDamagePer.value,
     };
@@ -355,53 +355,53 @@ export default class Hero {
         (skillTreeBonuses.earthDamage || 0),
       damage:
         BASE_DAMAGE +
-        attributeEffects.strDamageFlat +
+        attributeEffects.damageFlat +
         DAMAGE_ON_LEVEL_UP * (this.level - 1) +
         (shop.shopBonuses.damage || 0) +
         (inventory.equipmentBonuses.damage || 0) +
         (skillTreeBonuses.damage || 0),
       attackSpeed:
         BASE_ATTACK_SPEED +
-        attributeEffects.agiAttackSpeed +
+        attributeEffects.attackSpeed +
         (shop.shopBonuses.attackSpeed || 0) +
         (inventory.equipmentBonuses.attackSpeed || 0) +
         (skillTreeBonuses.attackSpeed || 0),
       critChance:
         BASE_CRIT_CHANCE +
-        attributeEffects.dexCritChance * 100 +
+        attributeEffects.critChance * 100 +
         (shop.shopBonuses.critChance || 0) +
         (inventory.equipmentBonuses.critChance || 0) +
         (skillTreeBonuses.critChance || 0),
       critDamage:
         BASE_CRIT_DAMAGE +
-        attributeEffects.dexCritDamage +
+        attributeEffects.critDamage +
         (shop.shopBonuses.critDamage || 0) +
         (inventory.equipmentBonuses.critDamage || 0) +
         (skillTreeBonuses.critDamage || 0),
       attackRating:
         BASE_ATTACK_RATING +
-        attributeEffects.agiAttackRatingFlat +
+        attributeEffects.attackRatingFlat +
         ATTACK_RATING_ON_LEVEL_UP * (this.level - 1) +
         (shop.shopBonuses.attackRating || 0) +
         (inventory.equipmentBonuses.attackRating || 0) +
         (skillTreeBonuses.attackRating || 0),
       health:
         BASE_HEALTH +
-        attributeEffects.vitHealthFlat +
+        attributeEffects.healthFlat +
         HEALTH_ON_LEVEL_UP * (this.level - 1) +
         (shop.shopBonuses.health || 0) +
         (inventory.equipmentBonuses.health || 0) +
         (skillTreeBonuses.health || 0),
       mana:
         BASE_MANA +
-        attributeEffects.wisManaFlat +
+        attributeEffects.manaFlat +
         MANA_ON_LEVEL_UP * (this.level - 1) +
         (shop.shopBonuses.mana || 0) +
         (inventory.equipmentBonuses.mana || 0) +
         (skillTreeBonuses.mana || 0),
       armor:
         BASE_ARMOR +
-        attributeEffects.endArmorFlat +
+        attributeEffects.armorFlat +
         (shop.shopBonuses.armor || 0) +
         (inventory.equipmentBonuses.armor || 0) +
         (skillTreeBonuses.armor || 0),
@@ -453,11 +453,11 @@ export default class Hero {
     this.stats.damage = Math.floor(flatValues.damage * (1 + percentBonuses.damage + this.souls * 0.01));
     this.stats.attackRating = Math.floor(flatValues.attackRating * (1 + percentBonuses.attackRating));
     this.stats.health = Math.floor(flatValues.health * (1 + percentBonuses.health));
-    this.stats.mana = Math.floor(flatValues.mana * (1 + attributeEffects.wisManaPercent));
+    this.stats.mana = Math.floor(flatValues.mana * (1 + attributeEffects.manaPercent));
     this.stats.armor = Math.floor(flatValues.armor * (1 + percentBonuses.armor));
 
-    this.stats.lifeRegen = Number((flatValues.lifeRegen * (1 + attributeEffects.vitRegenPercent)).toFixed(1));
-    this.stats.manaRegen = Number((flatValues.manaRegen * (1 + attributeEffects.wisRegenPercent)).toFixed(1));
+    this.stats.lifeRegen = Number((flatValues.lifeRegen * (1 + attributeEffects.regenPercent)).toFixed(1));
+    this.stats.manaRegen = Number((flatValues.manaRegen * (1 + attributeEffects.regenPercent)).toFixed(1));
 
     // percentage calculations
     this.stats.fireDamage = Math.floor(flatValues.fireDamage * (1 + this.stats.elementalDamagePercent / 100));
@@ -468,9 +468,6 @@ export default class Hero {
     // gold & xp (they ARE % bonuses)
     this.stats.bonusExperience = flatValues.bonusExperience;
     this.stats.bonusGold = flatValues.bonusGold;
-
-    const damageBonusFromSouls = Math.floor(this.stats.damage * (this.souls * 0.01));
-    this.stats.damage += damageBonusFromSouls;
 
     this.stats.attackSpeed = Number(flatValues.attackSpeed.toFixed(2));
     this.stats.critChance = Number(flatValues.critChance.toFixed(2));

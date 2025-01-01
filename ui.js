@@ -365,6 +365,7 @@ function selectClassPath(pathId) {
 }
 
 export function initializeSkillTreeStructure() {
+  if (!skillTree.selectedPath) return;
   const container = document.getElementById('skill-tree-container');
   container.innerHTML = '';
 
