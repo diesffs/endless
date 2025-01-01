@@ -179,7 +179,7 @@ export const SKILL_TREES = {
       description: 'Increases health regeneration',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        healthRegen: level * 10,
+        lifeRegen: level * 10,
       }),
     },
 
@@ -1042,7 +1042,7 @@ export const SKILL_TREES = {
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         survivalChance: level * 3,
-        healthRegen: level * 2,
+        lifeRegen: level * 2,
       }),
     },
 

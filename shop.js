@@ -13,7 +13,7 @@ const UPGRADE_CONFIG = {
   critChance: { label: 'Crit Chance', bonus: 0.1, fixed: 2, suffix: '%' },
   critDamage: { label: 'Crit Damage', bonus: 0.01, fixed: 2, suffix: '%' },
   mana: { label: 'Mana', bonus: 5 },
-  healthRegen: { label: 'Health Regen', bonus: 0.1, fixed: 1 },
+  lifeRegen: { label: 'Health Regen', bonus: 0.1, fixed: 1 },
   manaRegen: { label: 'Mana Regen', bonus: 0.1, fixed: 1 },
 
   // New stats to add
@@ -34,7 +34,7 @@ export const BASE_UPGRADE_COSTS = {
   critChance: 150,
   critDamage: 200,
   mana: 100,
-  healthRegen: 50,
+  lifeRegen: 50,
   manaRegen: 50,
   blockChance: 150,
   attackRating: 50,
@@ -55,7 +55,7 @@ export default class Shop {
       critChance: 0,
       critDamage: 0,
       mana: 0,
-      healthRegen: 0,
+      lifeRegen: 0,
       manaRegen: 0,
 
       blockChance: 0,
@@ -86,7 +86,7 @@ export default class Shop {
       critChance: 0,
       critDamage: 0,
       mana: 0,
-      healthRegen: 0,
+      lifeRegen: 0,
       manaRegen: 0,
 
       blockChance: 0,
