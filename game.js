@@ -61,8 +61,8 @@ class Game {
     playerAttack(currentTime);
     enemyAttack(currentTime);
 
-    // Regenerate health and mana every second
-    if (currentTime - this.lastRegen >= 1000) {
+    // Regenerate health and mana every 100 ms
+    if (currentTime - this.lastRegen >= 100) {
       hero.regenerate();
       this.lastRegen = currentTime;
     }

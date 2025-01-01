@@ -457,7 +457,7 @@ export default class Hero {
     this.stats.armor = Math.floor(flatValues.armor * (1 + percentBonuses.armor));
 
     this.stats.lifeRegen = Number((flatValues.lifeRegen * (1 + attributeEffects.regenPercent)).toFixed(1));
-    this.stats.manaRegen = Number((flatValues.manaRegen * (1 + attributeEffects.regenPercent)).toFixed(1));
+    this.stats.manaRegen = Number((flatValues.manaRegen * (1 + attributeEffects.manaRegenPercent)).toFixed(1));
 
     // percentage calculations
     this.stats.fireDamage = Math.floor(flatValues.fireDamage * (1 + this.stats.elementalDamagePercent / 100));
@@ -487,8 +487,8 @@ export default class Hero {
   }
 
   regenerate() {
-    this.stats.currentHealth = Math.min(this.stats.health, this.stats.currentHealth + this.stats.lifeRegen);
-    this.stats.currentMana = Math.min(this.stats.mana, this.stats.currentMana + this.stats.manaRegen);
+    this.stats.currentHealth = Math.min(this.stats.health, this.stats.currentHealth + this.stats.lifeRegen / 10);
+    this.stats.currentMana = Math.min(this.stats.mana, this.stats.currentMana + this.stats.manaRegen / 10);
     updatePlayerHealth();
   }
 

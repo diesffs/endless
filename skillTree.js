@@ -201,7 +201,7 @@ export const SKILL_TREES = {
       description: 'Increases gold gained from battles by %',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        goldBonus: level * 25,
+        bonusGold: level * 20,
       }),
     },
 
@@ -277,19 +277,17 @@ export const SKILL_TREES = {
 
   ROGUE: {
     // Level 1 Skills
-    shadowStrike: {
-      id: 'shadowStrike',
-      name: 'Shadow Strike',
-      type: 'instant',
-      manaCost: 15,
-      cooldown: 4000,
+    shadowDance: {
+      id: 'shadowDance',
+      name: 'Shadow Dance',
+      type: 'passive',
       requiredLevel: SKILL_LEVEL_TIERS[0],
       icon: 'dagger',
-      description: 'A quick strike from the shadows, dealing extra damage.',
+      description: 'A quick dance from the shadows, increasing your damage.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         damage: level * 8,
-        critChance: level * 0.5,
+        critChance: level * 0.1,
       }),
     },
     evasion: {
@@ -297,15 +295,15 @@ export const SKILL_TREES = {
       name: 'Evasion',
       type: 'buff',
       manaCost: 20,
-      cooldown: 12000,
-      duration: 6000,
+      cooldown: 60000,
+      duration: 45000,
       requiredLevel: SKILL_LEVEL_TIERS[0],
       icon: 'dodge',
-      description: 'Increases dodge chance temporarily.',
+      description: 'Increases block chance temporarily.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        dodgeChance: level * 2,
-        armorPercent: level * 1,
+        blockChance: level * 0.5,
+        armor: level * 4,
       }),
     },
     quickLearner: {
@@ -326,30 +324,27 @@ export const SKILL_TREES = {
       id: 'poisonDagger',
       name: 'Poison Dagger',
       type: 'toggle',
-      manaCost: 10,
+      manaCost: 7,
       requiredLevel: SKILL_LEVEL_TIERS[1],
       icon: 'poison',
-      description: 'Applies poison damage to your attacks.',
+      description: 'Applies physical damage to your attacks.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 2,
-        poisonDamage: level * 5,
+        damage: level * 25,
       }),
     },
     stealth: {
       id: 'stealth',
       name: 'Stealth',
-      type: 'buff',
-      manaCost: 30,
-      cooldown: 20000,
-      duration: 5000,
+      type: 'passive',
       requiredLevel: SKILL_LEVEL_TIERS[1],
       icon: 'stealth',
-      description: 'Become invisible, increasing crit chance temporarily.',
+      description: 'Become invisible, increasing crit chance and damage.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        critChance: level * 2,
-        critDamage: level * 10,
+        critChance: level * 0.2,
+        critDamage: level * 0.1,
+        dexterity: level * 2,
       }),
     },
 
@@ -365,21 +360,19 @@ export const SKILL_TREES = {
       description: 'Unleash a series of rapid attacks, dealing bonus damage.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 6,
-        attackSpeed: level * 0.1,
+        damage: level * 50,
       }),
     },
-    greaterEvasion: {
-      id: 'greaterEvasion',
-      name: 'Greater Evasion',
+    precision: {
+      id: 'precision',
+      name: 'Precision',
       type: 'passive',
       requiredLevel: SKILL_LEVEL_TIERS[2],
       icon: 'agility',
-      description: 'Significantly increases dodge chance and agility.',
+      description: 'Significantly increases agility.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        dodgeChance: level * 3,
-        agility: level * 5,
+        agility: level * 10,
       }),
     },
 
@@ -389,14 +382,13 @@ export const SKILL_TREES = {
       name: 'Backstab',
       type: 'instant',
       manaCost: 40,
-      cooldown: 8000,
+      cooldown: 6000,
       requiredLevel: SKILL_LEVEL_TIERS[3],
       icon: 'backstab',
       description: 'A devastating attack from behind, dealing massive damage.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 15,
-        critDamage: level * 20,
+        damage: level * 200,
       }),
     },
     goldRush: {
@@ -413,20 +405,19 @@ export const SKILL_TREES = {
     },
 
     // Level 75 Skills
-    precision: {
-      id: 'precision',
-      name: 'Precision',
+    darkPact: {
+      id: 'darkPact',
+      name: 'Dark Pact',
       type: 'buff',
       manaCost: 50,
-      cooldown: 15000,
-      duration: 7000,
+      cooldown: 66000,
+      duration: 40000,
       requiredLevel: SKILL_LEVEL_TIERS[4],
-      icon: 'precision',
-      description: 'Increases crit chance and crit damage temporarily.',
+      icon: 'dark-pact',
+      description: 'Massively increases crit damage temporarily.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        critChance: level * 3,
-        critDamage: level * 15,
+        critDamage: level * 0.5,
       }),
     },
 
@@ -438,12 +429,10 @@ export const SKILL_TREES = {
       manaCost: 30,
       requiredLevel: SKILL_LEVEL_TIERS[5],
       icon: 'assassination',
-      description: 'Greatly increases damage and crit chance but drains mana.',
+      description: 'Greatly increases damage per hit.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 10,
-        critChance: level * 5,
-        mana: -level * 1,
+        damage: level * 150,
       }),
     },
 
@@ -456,8 +445,9 @@ export const SKILL_TREES = {
       description: 'Permanently increases crit chance and crit damage.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        critChance: level * 3,
-        critDamage: level * 10,
+        critDamage: level * 0.1,
+        attackRating: level * 100,
+        attackRatingPercent: level * 5,
       }),
     },
 
@@ -468,13 +458,15 @@ export const SKILL_TREES = {
       type: 'passive',
       requiredLevel: SKILL_LEVEL_TIERS[6],
       icon: 'master',
-      description: 'Greatly increases all attributes and gold gains.',
+      description: 'Greatly increases all attributes, gold and experience gains.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         agility: level * 10,
-        strength: level * 5,
-        wisdom: level * 5,
+        dexterity: level * 10,
+        strength: level * 10,
+        wisdom: level * 10,
         bonusGold: level * 50,
+        bonusExperience: level * 10,
       }),
     },
   },
