@@ -362,18 +362,18 @@ export default class Inventory {
 
   setupItemDragAndTooltip() {
     const items = document.querySelectorAll('.inventory-item');
-  
+
     items.forEach((item) => {
       // Add double-click handler
       item.addEventListener('dblclick', (e) => {
         const itemData = this.getItemById(item.dataset.itemId);
         if (!itemData) return;
-  
+
         // Check if item is currently equipped
         const equippedSlot = Object.entries(this.equippedItems).find(
           ([slot, equippedItem]) => equippedItem?.id === itemData.id
         )?.[0];
-  
+
         if (equippedSlot) {
           // Unequip item
           const emptySlot = this.inventoryItems.findIndex((slot) => slot === null);
@@ -386,7 +386,7 @@ export default class Inventory {
           }
           return;
         }
-  
+
         // Existing equip logic for inventory items
         for (const [slot, requirements] of Object.entries(SLOT_REQUIREMENTS)) {
           if (requirements.includes(itemData.type)) {
@@ -399,34 +399,34 @@ export default class Inventory {
           }
         }
       });
-  
+
       // Add dragstart event listener
       item.addEventListener('dragstart', (e) => {
         e.target.classList.add('dragging');
         e.dataTransfer.setData('text/plain', item.dataset.itemId);
         this.cleanupTooltips(); // Also clean tooltips on drag start
       });
-  
+
       item.addEventListener('dragend', (e) => {
         e.target.classList.remove('dragging');
         document.querySelectorAll('.equipment-slot').forEach((slot) => {
           slot.classList.remove('valid-target', 'invalid-target');
         });
       });
-  
+
       // Tooltip events
       item.addEventListener('mouseenter', (e) => {
         if (item.classList.contains('dragging')) return;
-  
+
         const itemData = this.getItemById(item.dataset.itemId);
         if (!itemData) return;
-  
+
         // Create tooltip content
         let tooltipContent = `<div>${itemData.getTooltipHTML()}</div>`;
-  
+
         // Check if the item is in the inventory
-        const isInInventory = this.inventoryItems.some(inventoryItem => inventoryItem?.id === itemData.id);
-  
+        const isInInventory = this.inventoryItems.some((inventoryItem) => inventoryItem?.id === itemData.id);
+
         // Find matching equipped items based on type
         const equippedItems = [];
         for (const [slot, equippedItem] of Object.entries(this.equippedItems)) {
@@ -434,7 +434,7 @@ export default class Inventory {
             equippedItems.push(equippedItem);
           }
         }
-  
+
         // Add equipped items tooltips
         if (equippedItems.length > 0) {
           equippedItems.forEach((equippedItem) => {
@@ -443,15 +443,14 @@ export default class Inventory {
             }
           });
         }
-  
+
         showTooltip(tooltipContent, e, 'flex-tooltip');
       });
-  
+
       item.addEventListener('mousemove', positionTooltip);
       item.addEventListener('mouseleave', hideTooltip);
     });
   }
-  
 
   cleanupTooltips() {
     const tooltips = document.querySelectorAll('.item-tooltip');
@@ -518,26 +517,27 @@ export default class Inventory {
   }
 
   sortInventory() {
-    // Filter out null values and sort items
-    const items = this.inventoryItems.filter((item) => item !== null);
+    // Separate persistent and non-persistent items
+    const persistentItems = this.inventoryItems.slice(0, PERSISTENT_SLOTS);
+    const nonPersistentItems = this.inventoryItems.slice(PERSISTENT_SLOTS).filter((item) => item !== null);
 
-    // Sort by rarity (UNIQUE -> NORMAL) and then by level
-    items.sort((a, b) => {
-      // Compare rarity first
+    // Sort only non-persistent items by rarity and level
+    nonPersistentItems.sort((a, b) => {
       const rarityA = RARITY_ORDER.indexOf(a.rarity);
       const rarityB = RARITY_ORDER.indexOf(b.rarity);
 
       if (rarityA !== rarityB) {
-        // Higher rarity (lower index) comes first
         return -(rarityA - rarityB);
       }
-
-      // If same rarity, sort by level (higher level first)
       return b.level - a.level;
     });
 
-    // Fill sorted items back into inventory, with nulls at the end
-    this.inventoryItems = [...items, ...new Array(200 - items.length).fill(null)];
+    // Combine persistent items with sorted non-persistent items and remaining nulls
+    this.inventoryItems = [
+      ...persistentItems,
+      ...nonPersistentItems,
+      ...new Array(200 - PERSISTENT_SLOTS - nonPersistentItems.length).fill(null),
+    ];
 
     // Update the UI
     this.updateInventoryGrid();
