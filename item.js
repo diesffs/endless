@@ -128,15 +128,15 @@ const DEFENSIVE_STATS = [
   'manaRegen',
   'manaPercent',
   'healthPercent',
+  'strength',
+  'agility',
+  'dexterity',
 ];
 
 const OFFENSIVE_STATS = [
-  'strength',
   'critChance',
   'critDamage',
   'attackSpeed',
-  'agility',
-  'dexteterity',
   'attackRating',
   'damagePercent',
   'attackRatingPercent',
@@ -149,7 +149,7 @@ const JEWELRY_STATS = [...OFFENSIVE_STATS, ...DEFENSIVE_STATS, ...ELEMENTAL_STAT
 
 export const ITEM_STAT_POOLS = {
   HELMET: {
-    mandatory: ['armor'],
+    mandatory: [],
     possible: [...DEFENSIVE_STATS, 'blockChance'],
   },
   ARMOR: {
@@ -157,7 +157,7 @@ export const ITEM_STAT_POOLS = {
     possible: [...DEFENSIVE_STATS],
   },
   BELT: {
-    mandatory: ['armor'],
+    mandatory: [],
     possible: [...DEFENSIVE_STATS],
   },
   PANTS: {
@@ -165,7 +165,7 @@ export const ITEM_STAT_POOLS = {
     possible: [...DEFENSIVE_STATS],
   },
   BOOTS: {
-    mandatory: ['armor'],
+    mandatory: [],
     possible: [...DEFENSIVE_STATS, 'attackSpeed', 'agility'],
   },
   SWORD: {
@@ -185,8 +185,8 @@ export const ITEM_STAT_POOLS = {
     possible: [...DEFENSIVE_STATS],
   },
   GLOVES: {
-    mandatory: ['armor'],
-    possible: [...OFFENSIVE_STATS, ...ELEMENTAL_STATS],
+    mandatory: [],
+    possible: [...OFFENSIVE_STATS, ...DEFENSIVE_STATS, ...ELEMENTAL_STATS],
   },
   AMULET: {
     mandatory: [],
@@ -240,6 +240,8 @@ export default class Item {
       const randomIndex = Math.floor(Math.random() * availableStats.length);
       const stat = availableStats.splice(randomIndex, 1)[0];
       const range = AVAILABLE_STATS[stat];
+      console.log(range);
+      console.log(stat);
       const baseValue = Math.random() * (range.max - range.min) + range.min;
       stats[stat] = calculateStatValue(stat, baseValue);
     }
