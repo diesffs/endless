@@ -7,6 +7,7 @@ import {
   positionTooltip,
   showTooltip,
   hideTooltip,
+  initializeSkillTreeUI,
 } from './ui.js';
 import Enemy from './enemy.js';
 import { showToast } from './ui.js';
