@@ -179,7 +179,7 @@ export const SKILL_TREES = {
       description: 'Increases health regeneration',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        lifeRegen: level * 10,
+        lifeRegen: level * 4,
       }),
     },
 
@@ -309,7 +309,7 @@ export const SKILL_TREES = {
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         blockChance: level * 0.5,
-        armor: level * 4,
+        armor: level * 15,
       }),
     },
     quickLearner: {
@@ -330,13 +330,13 @@ export const SKILL_TREES = {
       id: 'poisonDagger',
       name: 'Poison Dagger',
       type: 'toggle',
-      manaCost: 7,
+      manaCost: 3,
       requiredLevel: SKILL_LEVEL_TIERS[1],
       icon: 'poison',
       description: 'Applies physical damage to your attacks.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 25,
+        damage: level * 40,
       }),
     },
     stealth: {
@@ -350,7 +350,8 @@ export const SKILL_TREES = {
       effect: (level) => ({
         critChance: level * 0.2,
         critDamage: level * 0.1,
-        dexterity: level * 2,
+        lifeSteal: level * 0.01,
+        dexterity: level * 5,
       }),
     },
 
@@ -360,13 +361,13 @@ export const SKILL_TREES = {
       name: 'Flurry',
       type: 'instant',
       manaCost: 25,
-      cooldown: 6000,
+      cooldown: 3000,
       requiredLevel: SKILL_LEVEL_TIERS[2],
       icon: 'flurry',
       description: 'Unleash a series of rapid attacks, dealing bonus damage.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 50,
+        damage: level * 150,
       }),
     },
     precision: {
@@ -378,7 +379,7 @@ export const SKILL_TREES = {
       description: 'Significantly increases agility.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        agility: level * 10,
+        agility: level * 40,
       }),
     },
 
@@ -394,7 +395,7 @@ export const SKILL_TREES = {
       description: 'A devastating attack from behind, dealing massive damage.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 200,
+        damage: level * 400,
       }),
     },
     goldRush: {

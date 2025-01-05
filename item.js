@@ -73,7 +73,7 @@ export const RARITY_ORDER = [
 export const DECIMAL_STATS = ['critDamage', 'attackSpeed', 'critChance'];
 
 export const AVAILABLE_STATS = {
-  damage: { min: 5, max: 15, scaling: 'full' },
+  damage: { min: 3, max: 10, scaling: 'full' },
   armor: { min: 3, max: 10, scaling: 'full' },
   strength: { min: 1, max: 5, scaling: 'full' },
   agility: { min: 1, max: 5, scaling: 'full' },
@@ -81,106 +81,114 @@ export const AVAILABLE_STATS = {
   critChance: { min: 0.5, max: 3, scaling: 'capped' },
   critDamage: { min: 0.02, max: 0.1, scaling: 'full' },
   attackSpeed: { min: 0.05, max: 0.2, scaling: 'capped' },
-  health: { min: 5, max: 25, scaling: 'full' },
+  health: { min: 30, max: 75, scaling: 'full' },
   blockChance: { min: 2, max: 6, scaling: 'capped' },
-  attackRating: { min: 50, max: 300, scaling: 'full' },
+  attackRating: { min: 50, max: 150, scaling: 'full' },
   lifeSteal: { min: 0.01, max: 0.1, scaling: 'capped' },
-  fireDamage: { min: 3, max: 10, scaling: 'full' },
-  coldDamage: { min: 3, max: 10, scaling: 'full' },
-  airDamage: { min: 3, max: 10, scaling: 'full' },
-  earthDamage: { min: 3, max: 10, scaling: 'full' },
+  fireDamage: { min: 10, max: 30, scaling: 'full' },
+  coldDamage: { min: 10, max: 30, scaling: 'full' },
+  airDamage: { min: 10, max: 30, scaling: 'full' },
+  earthDamage: { min: 10, max: 30, scaling: 'full' },
   attackRatingPercent: { min: 5, max: 15, scaling: 'capped' },
   damagePercent: { min: 2, max: 8, scaling: 'capped' },
+
+  wisdom: { min: 1, max: 5, scaling: 'full' },
+  endurance: { min: 1, max: 5, scaling: 'full' },
+  dexterity: { min: 1, max: 5, scaling: 'full' },
+  mana: { min: 10, max: 30, scaling: 'full' },
+  manaRegen: { min: 1, max: 3, scaling: 'full' },
+  lifeRegen: { min: 2, max: 5, scaling: 'full' },
+  healthPercent: { min: 2, max: 8, scaling: 'capped' },
+  manaPercent: { min: 2, max: 5, scaling: 'capped' },
+  armorPercent: { min: 3, max: 8, scaling: 'capped' },
+  elementalDamagePercent: { min: 5, max: 10, scaling: 'capped' },
+  bonusGold: { min: 5, max: 15, scaling: 'full' },
+  bonusExperience: { min: 5, max: 15, scaling: 'full' },
 };
+
+const DEFENSIVE_STATS = [
+  'armor',
+  'strength',
+  'agility',
+  'vitality',
+  'wisdom',
+  'endurance',
+  'dexterity',
+  'health',
+  'lifeRegen',
+  'endurance',
+  'armorPercent',
+  'mana',
+  'manaRegen',
+  'manaPercent',
+  'healthPercent',
+];
+
+const OFFENSIVE_STATS = [
+  'strength',
+  'critChance',
+  'critDamage',
+  'attackSpeed',
+  'agility',
+  'dexteterity',
+  'attackRating',
+  'damagePercent',
+  'attackRatingPercent',
+  'lifeSteal',
+];
+
+const ELEMENTAL_STATS = ['fireDamage', 'coldDamage', 'airDamage', 'earthDamage', 'elementalDamagePercent'];
+
+const JEWELRY_STATS = [...OFFENSIVE_STATS, ...DEFENSIVE_STATS, ...ELEMENTAL_STATS, 'bonusGold', 'bonusExperience'];
 
 export const ITEM_STAT_POOLS = {
   HELMET: {
     mandatory: ['armor'],
-    possible: ['vitality', 'health', 'strength', 'agility', 'critChance', 'blockChance'],
+    possible: [...DEFENSIVE_STATS, 'blockChance'],
   },
   ARMOR: {
     mandatory: ['armor'],
-    possible: ['vitality', 'health', 'strength', 'blockChance', 'critDamage'],
+    possible: [...DEFENSIVE_STATS],
   },
   BELT: {
     mandatory: ['armor'],
-    possible: ['vitality', 'strength', 'health', 'agility', 'critChance'],
+    possible: [...DEFENSIVE_STATS],
   },
   PANTS: {
     mandatory: ['armor'],
-    possible: ['vitality', 'health', 'agility', 'strength', 'critDamage'],
+    possible: [...DEFENSIVE_STATS],
   },
   BOOTS: {
     mandatory: ['armor'],
-    possible: ['agility', 'health', 'attackSpeed', 'strength', 'vitality'],
+    possible: [...DEFENSIVE_STATS, 'attackSpeed', 'agility'],
   },
   SWORD: {
     mandatory: ['damage'],
-    possible: [
-      'strength',
-      'critChance',
-      'critDamage',
-      'attackSpeed',
-      'agility',
-      'attackRating',
-      'damagePercent',
-      'attackRatingPercent',
-      'fireDamage',
-      'coldDamage',
-      'airDamage',
-      'earthDamage',
-    ],
+    possible: [...OFFENSIVE_STATS, ...ELEMENTAL_STATS],
   },
   AXE: {
-    mandatory: ['damage'],
-    possible: ['strength', 'critDamage', 'attackSpeed', 'vitality', 'health', 'attackRating', 'lifeSteal'],
+    mandatory: ['damage', 'damagePercent'],
+    possible: [...OFFENSIVE_STATS],
   },
   MACE: {
-    mandatory: ['damage'],
-    possible: ['strength', 'armor', 'critChance', 'health', 'vitality'],
+    mandatory: ['damage', 'strength'],
+    possible: [...OFFENSIVE_STATS],
   },
   SHIELD: {
     mandatory: ['armor', 'blockChance'],
-    possible: ['vitality', 'health', 'strength', 'critChance', 'agility'],
+    possible: [...DEFENSIVE_STATS],
   },
   GLOVES: {
     mandatory: ['armor'],
-    possible: ['attackSpeed', 'critChance', 'strength', 'agility', 'critDamage', 'attackRating', 'lifeSteal'],
+    possible: [...OFFENSIVE_STATS, ...ELEMENTAL_STATS],
   },
   AMULET: {
     mandatory: [],
-    possible: [
-      'strength',
-      'agility',
-      'vitality',
-      'critChance',
-      'health',
-      'critDamage',
-      'attackRating',
-      'fireDamage',
-      'coldDamage',
-      'airDamage',
-      'earthDamage',
-      'attackRatingPercent',
-    ],
+    possible: [...JEWELRY_STATS],
   },
   RING: {
     mandatory: [],
-    possible: [
-      'critChance',
-      'critDamage',
-      'attackSpeed',
-      'strength',
-      'agility',
-      'vitality',
-      'attackRating',
-      'fireDamage',
-      'coldDamage',
-      'airDamage',
-      'earthDamage',
-      'damagePercent',
-      'attackRatingPercent',
-    ],
+    possible: [...JEWELRY_STATS],
   },
 };
 

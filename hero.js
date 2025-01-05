@@ -428,6 +428,11 @@ export default class Hero {
         (shop.shopBonuses.manaRegen || 0) +
         (inventory.equipmentBonuses.manaRegen || 0) +
         (skillTreeBonuses.manaRegen || 0),
+      blockChance:
+        BASE_BLOCK_CHANCE +
+        (shop.shopBonuses.blockChance || 0) +
+        (inventory.equipmentBonuses.blockChance || 0) +
+        (skillTreeBonuses.blockChance || 0),
     };
   }
 
@@ -473,6 +478,7 @@ export default class Hero {
     this.stats.critChance = Number(flatValues.critChance.toFixed(2));
     this.stats.critDamage = Number(flatValues.critDamage.toFixed(2));
     this.stats.lifeSteal = Number(flatValues.lifeSteal.toFixed(2));
+    this.stats.blockChance = Number(flatValues.blockChance.toFixed(1));
 
     this.stats.blockChance = Math.min(this.stats.blockChance, 75);
     this.stats.critChance = Math.min(this.stats.critChance, 100);
