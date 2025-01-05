@@ -10,7 +10,7 @@ import {
   updateSkillTreeValues,
 } from './ui.js';
 
-export const SKILL_LEVEL_TIERS = [1, 10, 25, 50, 75, 100, 200];
+export const SKILL_LEVEL_TIERS = [10, 20, 30, 50, 75, 100, 150];
 export const DEFAULT_MAX_SKILL_LEVEL = 100;
 export const REQ_LEVEL_FOR_SKILL_TREE = 10;
 
@@ -85,7 +85,7 @@ export const CLASS_PATHS = {
 
 export const SKILL_TREES = {
   WARRIOR: {
-    // Level 1 Skills
+    // Tier 0 Skills
     bash: {
       id: 'bash',
       name: 'Bash',
@@ -96,7 +96,7 @@ export const SKILL_TREES = {
       description: 'While active, increases damage but costs mana per attack',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 10,
+        damage: level * 15,
       }),
     },
     toughness: {
@@ -125,7 +125,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 10 Skills
+    // Tier 1 Skills
     powerStrike: {
       id: 'powerStrike',
       name: 'Power Strike',
@@ -151,10 +151,11 @@ export const SKILL_TREES = {
       effect: (level) => ({
         armor: level * 10,
         vitality: level * 5,
+        lifeRegen: level * 1,
       }),
     },
 
-    // Level 25 Skills
+    // Tier 2 Skills
     battleCry: {
       id: 'battleCry',
       name: 'Battle Cry',
@@ -179,11 +180,11 @@ export const SKILL_TREES = {
       description: 'Increases health regeneration',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        lifeRegen: level * 4,
+        lifeRegen: level * 5,
       }),
     },
 
-    // Level 50 Skills
+    // Tier 3 Skills
     groundSlam: {
       id: 'groundSlam',
       name: 'Ground Slam',
@@ -211,7 +212,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 75 Skills
+    // Tier 4 Skills
     shieldWall: {
       id: 'shieldWall',
       name: 'Shield Wall',
@@ -229,7 +230,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 100 Skills
+    // Tier 5 Skills
     berserk: {
       id: 'berserk',
       name: 'Berserk',
@@ -240,8 +241,8 @@ export const SKILL_TREES = {
       description: 'Gives huge amounts of physical and fire damage',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 50,
-        fireDamage: level * 100,
+        damage: level * 75,
+        fireDamage: level * 300,
       }),
     },
 
@@ -261,7 +262,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 200 Skills
+    // Tier 6 Skills
     warlord: {
       id: 'warlord',
       name: 'Warlord',
@@ -282,7 +283,7 @@ export const SKILL_TREES = {
   },
 
   ROGUE: {
-    // Level 1 Skills
+    // Tier 0 Skills
     shadowDance: {
       id: 'shadowDance',
       name: 'Shadow Dance',
@@ -325,7 +326,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 10 Skills
+    // Tier 1 Skills
     poisonDagger: {
       id: 'poisonDagger',
       name: 'Poison Dagger',
@@ -355,7 +356,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 25 Skills
+    // Tier 2 Skills
     flurry: {
       id: 'flurry',
       name: 'Flurry',
@@ -383,7 +384,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 50 Skills
+    // Tier 3 Skills
     backstab: {
       id: 'backstab',
       name: 'Backstab',
@@ -411,7 +412,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 75 Skills
+    // Tier 4 Skills
     darkPact: {
       id: 'darkPact',
       name: 'Dark Pact',
@@ -428,7 +429,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 100 Skills
+    // Tier 5 Skills
     assassination: {
       id: 'assassination',
       name: 'Assassination',
@@ -452,13 +453,13 @@ export const SKILL_TREES = {
       description: 'Permanently increases crit chance and crit damage.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        critDamage: level * 0.1,
+        critDamage: level * 0.3,
         attackRating: level * 100,
         attackRatingPercent: level * 5,
       }),
     },
 
-    // Level 200 Skills
+    // Tier 6 Skills
     masterThief: {
       id: 'masterThief',
       name: 'Master Thief',
@@ -479,7 +480,7 @@ export const SKILL_TREES = {
   },
 
   VAMPIRE: {
-    // Level 1 Skills
+    // Tier 1 Skills
     bloodSiphon: {
       id: 'bloodSiphon',
       name: 'Blood Siphon',
@@ -520,7 +521,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 10 Skills
+    // Tier 10 Skills
     vampiricStrike: {
       id: 'vampiricStrike',
       name: 'Vampiric Strike',
@@ -553,7 +554,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 25 Skills
+    // Tier 25 Skills
     drainingTouch: {
       id: 'drainingTouch',
       name: 'Draining Touch',
@@ -583,7 +584,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 50 Skills
+    // Tier 50 Skills
     crimsonBurst: {
       id: 'crimsonBurst',
       name: 'Crimson Burst',
@@ -612,7 +613,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 75 Skills
+    // Tier 75 Skills
     bloodPact: {
       id: 'bloodPact',
       name: 'Blood Pact',
@@ -630,7 +631,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 100 Skills
+    // Tier 100 Skills
     eternalThirst: {
       id: 'eternalThirst',
       name: 'Eternal Thirst',
@@ -661,7 +662,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 200 Skills
+    // Tier 200 Skills
     lordOfNight: {
       id: 'lordOfNight',
       name: 'Lord of Night',
@@ -680,7 +681,7 @@ export const SKILL_TREES = {
   },
 
   PALADIN: {
-    // Level 1 Skills
+    // Tier 1 Skills
     holyLight: {
       id: 'holyLight',
       name: 'Holy Light',
@@ -725,7 +726,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 10 Skills
+    // Tier 10 Skills
     consecration: {
       id: 'consecration',
       name: 'Consecration',
@@ -756,7 +757,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 25 Skills
+    // Tier 25 Skills
     divineShield: {
       id: 'divineShield',
       name: 'Divine Shield',
@@ -786,7 +787,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 50 Skills
+    // Tier 50 Skills
     wrathOfTheHeavens: {
       id: 'wrathOfTheHeavens',
       name: 'Wrath of the Heavens',
@@ -814,7 +815,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 75 Skills
+    // Tier 75 Skills
     holyBarrier: {
       id: 'holyBarrier',
       name: 'Holy Barrier',
@@ -832,7 +833,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 100 Skills
+    // Tier 100 Skills
     divineWrath: {
       id: 'divineWrath',
       name: 'Divine Wrath',
@@ -860,7 +861,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 200 Skills
+    // Tier 200 Skills
     ascension: {
       id: 'ascension',
       name: 'Ascension',
@@ -878,7 +879,7 @@ export const SKILL_TREES = {
   },
 
   BERSERKER: {
-    // Level 1 Skills
+    // Tier 1 Skills
     frenzy: {
       id: 'frenzy',
       name: 'Frenzy',
@@ -907,7 +908,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 10 Skills
+    // Tier 10 Skills
     recklessSwing: {
       id: 'recklessSwing',
       name: 'Reckless Swing',
@@ -940,7 +941,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 25 Skills
+    // Tier 25 Skills
     berserkersRage: {
       id: 'berserkersRage',
       name: `Berserker's Rage`,
@@ -969,7 +970,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 50 Skills
+    // Tier 50 Skills
     earthquake: {
       id: 'earthquake',
       name: 'Earthquake',
@@ -999,7 +1000,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 75 Skills
+    // Tier 75 Skills
     bloodLust: {
       id: 'bloodLust',
       name: 'Blood Lust',
@@ -1017,7 +1018,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 100 Skills
+    // Tier 100 Skills
     unbridledFury: {
       id: 'unbridledFury',
       name: 'Unbridled Fury',
@@ -1047,7 +1048,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 200 Skills
+    // Tier 200 Skills
     warlord: {
       id: 'warlord',
       name: 'Warlord',
@@ -1066,7 +1067,7 @@ export const SKILL_TREES = {
   },
 
   ELEMENTALIST: {
-    // Level 1 Skills
+    // Tier 1 Skills
     fireball: {
       id: 'fireball',
       name: 'Fireball',
@@ -1098,7 +1099,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 10 Skills
+    // Tier 10 Skills
     lightningStrike: {
       id: 'lightningStrike',
       name: 'Lightning Strike',
@@ -1126,7 +1127,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 25 Skills
+    // Tier 25 Skills
     blizzard: {
       id: 'blizzard',
       name: 'Blizzard',
@@ -1157,7 +1158,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 50 Skills
+    // Tier 50 Skills
     elementalStorm: {
       id: 'elementalStorm',
       name: 'Elemental Storm',
@@ -1189,7 +1190,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 75 Skills
+    // Tier 75 Skills
     arcanePulse: {
       id: 'arcanePulse',
       name: 'Arcane Pulse',
@@ -1207,7 +1208,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 100 Skills
+    // Tier 100 Skills
     elementalOverload: {
       id: 'elementalOverload',
       name: 'Elemental Overload',
@@ -1238,7 +1239,7 @@ export const SKILL_TREES = {
       }),
     },
 
-    // Level 200 Skills
+    // Tier 200 Skills
     avatarOfTheElements: {
       id: 'avatarOfTheElements',
       name: 'Avatar of the Elements',
@@ -1475,7 +1476,7 @@ export default class SkillTree {
     return hero.stats.damage + baseEffect.damage;
   }
 
-  applyToggleEffects(type = 'attack') {
+  applyToggleEffects() {
     let effects = {};
 
     Object.entries(this.skills).forEach(([skillId, skillData]) => {

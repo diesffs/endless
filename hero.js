@@ -544,10 +544,15 @@ export default class Hero {
     };
 
     // Add toggle skill effects
-    const toggleEffects = skillTree.applyToggleEffects('attack');
+    const toggleEffects = skillTree.applyToggleEffects();
     if (toggleEffects.damage) {
       physicalDamage += toggleEffects.damage;
     }
+    // Add toggle elemental effects before the element calculations
+    if (toggleEffects.fireDamage) elements.fire += toggleEffects.fireDamage;
+    if (toggleEffects.coldDamage) elements.cold += toggleEffects.coldDamage;
+    if (toggleEffects.airDamage) elements.air += toggleEffects.airDamage;
+    if (toggleEffects.earthDamage) elements.earth += toggleEffects.earthDamage;
 
     Object.entries(elements).forEach(([elementType, damage]) => {
       if (damage > 0) {
