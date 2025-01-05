@@ -122,7 +122,7 @@ export function defeatEnemy() {
     return;
   }
 
-  const baseExpGained = 20 + game.zone * 5;
+  const baseExpGained = game.zone * 5;
   const baseGoldGained = 10 + game.zone * 5;
 
   // Apply bonus experience and gold

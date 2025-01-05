@@ -108,7 +108,7 @@ export const SKILL_TREES = {
       description: 'Permanently increases armor',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        armor: level * 25,
+        armor: level * 30,
       }),
     },
 
@@ -149,7 +149,7 @@ export const SKILL_TREES = {
       description: 'Increases resistance to damage',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        armor: level * 10,
+        armor: level * 15,
         vitality: level * 5,
         lifeRegen: level * 1,
       }),
@@ -293,7 +293,7 @@ export const SKILL_TREES = {
       description: 'A quick dance from the shadows, increasing your damage.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 8,
+        damage: level * 12,
         critChance: level * 0.1,
       }),
     },
@@ -349,7 +349,7 @@ export const SKILL_TREES = {
       description: 'Become invisible, increasing crit chance and damage.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        critChance: level * 0.2,
+        critChance: level * 0.1,
         critDamage: level * 0.1,
         lifeSteal: level * 0.01,
         dexterity: level * 5,
