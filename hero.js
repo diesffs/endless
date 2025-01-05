@@ -137,11 +137,11 @@ export const ATTRIBUTES = {
     tooltip: html`
       <strong>Endurance</strong><br />
       Each point increases:<br />
-      • Armor by 1<br />
+      • Armor by 3<br />
       • Every 5 points adds 1% to total armor
     `,
     effects: {
-      armorPerPoint: 1,
+      armorPerPoint: 3,
       armorPercentPer: {
         points: 5,
         value: 0.01,
@@ -152,10 +152,12 @@ export const ATTRIBUTES = {
     tooltip: html`
       <strong>Dexterity</strong><br />
       Each point increases:<br />
+      • Damage by 1<br />
       • Every 25 points adds 1% critical strike chance<br />
       • Every 10 points adds 1% critical strike damage
     `,
     effects: {
+      damagePerPoint: 1,
       critChancePer: {
         points: 25,
         value: 0.01,
@@ -314,7 +316,9 @@ export default class Hero {
 
   calculateAttributeEffects() {
     return {
-      damageFlat: this.stats.strength * ATTRIBUTES.strength.effects.damagePerPoint,
+      damageFlat:
+        this.stats.strength * ATTRIBUTES.strength.effects.damagePerPoint +
+        this.stats.dexterity * ATTRIBUTES.dexterity.effects.damagePerPoint,
       damagePercent:
         Math.floor(this.stats.strength / ATTRIBUTES.strength.effects.damagePercentPer.points) *
         ATTRIBUTES.strength.effects.damagePercentPer.value,
@@ -459,7 +463,7 @@ export default class Hero {
 
   calculatePercentBonuses(attributeEffects, skillTreeBonuses) {
     const percentBonuses = {};
-    const statsWithPercentages = ['damage', 'attackRating', 'health', 'armor'];
+    const statsWithPercentages = ['damage', 'attackRating', 'health', 'armor', 'mana'];
 
     statsWithPercentages.forEach((stat) => {
       percentBonuses[stat] =
@@ -479,7 +483,7 @@ export default class Hero {
     this.stats.damage = Math.floor(flatValues.damage * (1 + percentBonuses.damage + this.souls * 0.01));
     this.stats.attackRating = Math.floor(flatValues.attackRating * (1 + percentBonuses.attackRating));
     this.stats.health = Math.floor(flatValues.health * (1 + percentBonuses.health));
-    this.stats.mana = Math.floor(flatValues.mana * (1 + attributeEffects.manaPercent));
+    this.stats.mana = Math.floor(flatValues.mana * (1 + percentBonuses.mana));
     this.stats.armor = Math.floor(flatValues.armor * (1 + percentBonuses.armor));
 
     this.stats.lifeRegen = Number(

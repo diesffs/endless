@@ -32,7 +32,14 @@ export default class Inventory {
       attackRatingPercent: 0,
       attackRating: 0,
       damagePercent: 0,
+      bonusGold: 0,
+      bonusExperience: 0,
+      healthPercent: 0,
+      manaPercent: 0,
+      armorPercent: 0,
+      elementalDamagePercent: 0,
     };
+
     this.equippedItems = savedData?.equippedItems || {};
     this.inventoryItems = savedData?.inventoryItems || new Array(200).fill(null);
 
