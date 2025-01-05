@@ -3,23 +3,24 @@ import { updateResources, updateStatsAndAttributesUI } from './ui.js';
 import { showToast } from './ui.js';
 import { game, hero } from './main.js';
 import { handleSavedData } from './functions.js';
+import { STAT_DECIMAL_PLACES } from './hero.js';
 
 const UPGRADE_CONFIG = {
   // Existing stats
   damage: { label: 'Damage', bonus: 1 },
-  attackSpeed: { label: 'Attack Speed', bonus: 0.01, fixed: 2 },
+  attackSpeed: { label: 'Attack Speed', bonus: 0.01, suffix: '' },
   health: { label: 'Health', bonus: 10 },
   armor: { label: 'Armor', bonus: 1 },
-  critChance: { label: 'Crit Chance', bonus: 0.1, fixed: 2, suffix: '%' },
-  critDamage: { label: 'Crit Damage', bonus: 0.01, fixed: 2, suffix: '%' },
+  critChance: { label: 'Crit Chance', bonus: 0.1, suffix: '%' },
+  critDamage: { label: 'Crit Damage', bonus: 0.01, suffix: '%' },
   mana: { label: 'Mana', bonus: 5 },
-  lifeRegen: { label: 'Health Regen', bonus: 0.1, fixed: 1 },
-  manaRegen: { label: 'Mana Regen', bonus: 0.1, fixed: 1 },
+  lifeRegen: { label: 'Health Regen', bonus: 0.1 },
+  manaRegen: { label: 'Mana Regen', bonus: 0.1 },
 
   // New stats to add
-  blockChance: { label: 'Block Chance', bonus: 0.1, fixed: 2, suffix: '%' },
+  blockChance: { label: 'Block Chance', bonus: 0.1, suffix: '%' },
   attackRating: { label: 'Attack Rating', bonus: 10 },
-  lifeSteal: { label: 'Life Steal', bonus: 0.01, fixed: 2, suffix: '%' },
+  lifeSteal: { label: 'Life Steal', bonus: 0.01, suffix: '%' },
   fireDamage: { label: 'Fire Damage', bonus: 1 },
   coldDamage: { label: 'Cold Damage', bonus: 1 },
   airDamage: { label: 'Air Damage', bonus: 1 },
@@ -170,7 +171,7 @@ export default class Shop {
   createUpgradeButton(stat, config) {
     const cost = this.upgradeCosts[stat] || 0;
     const level = this.upgradeLevels[stat] || 0;
-    const bonus = this.getBonusText(config, level);
+    const bonus = this.getBonusText(stat, config, level);
 
     return `
       <button data-stat="${stat}">
@@ -205,9 +206,10 @@ export default class Shop {
     game.saveGame();
   }
 
-  getBonusText(config, level) {
+  getBonusText(stat, config, level) {
     const value = config.bonus * level;
-    const formattedValue = config.fixed ? value.toFixed(config.fixed) : value;
+    const decimals = STAT_DECIMAL_PLACES[stat] || 0;
+    const formattedValue = value.toFixed(decimals);
     return `+${formattedValue}${config.suffix || ''} ${config.label}`;
   }
 

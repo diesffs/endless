@@ -5,6 +5,8 @@ import { createCombatText } from './combat.js';
 import { handleSavedData } from './functions.js';
 import { ELEMENT_OPPOSITES } from './enemy.js';
 
+const html = String.raw;
+
 // Keep all the constants at the top
 export const BASE_DAMAGE = 10;
 export const BASE_HEALTH = 100;
@@ -34,7 +36,26 @@ export const BASE_ELEMENTAL_DAMAGE = {
 export const BASE_ATTACK_RATING_PERCENT = 0;
 export const BASE_DAMAGE_PERCENT = 0;
 
-const html = String.raw;
+export const STAT_DECIMAL_PLACES = {
+  damage: 0,
+  attackSpeed: 2,
+  critChance: 2,
+  critDamage: 2,
+  health: 0,
+  armor: 0,
+  blockChance: 1,
+  attackRating: 0,
+  lifeSteal: 2,
+  mana: 0,
+  manaRegen: 1,
+  lifeRegen: 1,
+  fireDamage: 0,
+  coldDamage: 0,
+  airDamage: 0,
+  earthDamage: 0,
+  bonusGold: 0,
+  bonusExperience: 0,
+};
 
 export const ATTRIBUTES = {
   strength: {
@@ -308,7 +329,7 @@ export default class Hero {
       healthPercent:
         Math.floor(this.stats.vitality / ATTRIBUTES.vitality.effects.healthPercentPer.points) *
         ATTRIBUTES.vitality.effects.healthPercentPer.value,
-      regenPercent:
+      lifeRegenPercent:
         Math.floor(this.stats.vitality / ATTRIBUTES.vitality.effects.regenPercentPer.points) *
         ATTRIBUTES.vitality.effects.regenPercentPer.value,
       manaFlat: this.stats.wisdom * ATTRIBUTES.wisdom.effects.manaPerPoint,
@@ -461,8 +482,12 @@ export default class Hero {
     this.stats.mana = Math.floor(flatValues.mana * (1 + attributeEffects.manaPercent));
     this.stats.armor = Math.floor(flatValues.armor * (1 + percentBonuses.armor));
 
-    this.stats.lifeRegen = Number((flatValues.lifeRegen * (1 + attributeEffects.regenPercent)).toFixed(1));
-    this.stats.manaRegen = Number((flatValues.manaRegen * (1 + attributeEffects.manaRegenPercent)).toFixed(1));
+    this.stats.lifeRegen = Number(
+      (flatValues.lifeRegen * (1 + attributeEffects.lifeRegenPercent)).toFixed(STAT_DECIMAL_PLACES.lifeRegen)
+    );
+    this.stats.manaRegen = Number(
+      (flatValues.manaRegen * (1 + attributeEffects.manaRegenPercent)).toFixed(STAT_DECIMAL_PLACES.manaRegen)
+    );
 
     // percentage calculations
     this.stats.fireDamage = Math.floor(flatValues.fireDamage * (1 + this.stats.elementalDamagePercent / 100));
@@ -474,11 +499,11 @@ export default class Hero {
     this.stats.bonusExperience = flatValues.bonusExperience;
     this.stats.bonusGold = flatValues.bonusGold;
 
-    this.stats.attackSpeed = Number(flatValues.attackSpeed.toFixed(2));
-    this.stats.critChance = Number(flatValues.critChance.toFixed(2));
-    this.stats.critDamage = Number(flatValues.critDamage.toFixed(2));
-    this.stats.lifeSteal = Number(flatValues.lifeSteal.toFixed(2));
-    this.stats.blockChance = Number(flatValues.blockChance.toFixed(1));
+    this.stats.attackSpeed = Number(flatValues.attackSpeed.toFixed(STAT_DECIMAL_PLACES.attackSpeed));
+    this.stats.critChance = Number(flatValues.critChance.toFixed(STAT_DECIMAL_PLACES.critChance));
+    this.stats.critDamage = Number(flatValues.critDamage.toFixed(STAT_DECIMAL_PLACES.critDamage));
+    this.stats.lifeSteal = Number(flatValues.lifeSteal.toFixed(STAT_DECIMAL_PLACES.lifeSteal));
+    this.stats.blockChance = Number(flatValues.blockChance.toFixed(STAT_DECIMAL_PLACES.blockChance));
 
     this.stats.blockChance = Math.min(this.stats.blockChance, 75);
     this.stats.critChance = Math.min(this.stats.critChance, 100);

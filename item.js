@@ -1,3 +1,5 @@
+import { STAT_DECIMAL_PLACES } from './hero.js';
+
 export const EQUIPMENT_SLOTS = {
   HEAD: 'head',
   CHEST: 'chest',
@@ -215,7 +217,8 @@ export default class Item {
           ? baseValue * multiplier * Math.min(1 + this.level * 0.01, 2)
           : baseValue * multiplier * (1 + this.level * 0.1);
 
-      return DECIMAL_STATS.includes(stat) ? Number(value.toFixed(2)) : Math.round(value);
+      const decimals = STAT_DECIMAL_PLACES[stat] || 0;
+      return Number(value.toFixed(decimals));
     };
 
     // Add mandatory stats first
@@ -259,8 +262,8 @@ export default class Item {
         <div class="item-stats">
           ${Object.entries(this.stats)
             .map(([stat, value]) => {
-              const formattedValue = DECIMAL_STATS.includes(stat) ? value.toFixed(2) : value;
-              return `<div>${stat}: ${formattedValue}</div>`;
+              const decimals = STAT_DECIMAL_PLACES[stat] || 0;
+              return `<div>${stat}: ${value.toFixed(decimals)}</div>`;
             })
             .join('')}
         </div>

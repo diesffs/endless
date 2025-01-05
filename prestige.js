@@ -84,6 +84,12 @@ export default class Prestige {
     this.crystalUpgrades.startingGold = savedValues.crystalUpgrades.startingGold;
     this.crystalUpgrades.continuousPlay = savedValues.crystalUpgrades.continuousPlay;
 
+    // Reset skill tree
+    skillTree.skillPoints = 0;
+    skillTree.selectedPath = null;
+    skillTree.skills = {};
+    initializeSkillTreeUI(); // to show path selection
+
     this.resetGame();
     hero.recalculateFromAttributes();
     updateStatsAndAttributesUI(); // Update stats and attributes UI

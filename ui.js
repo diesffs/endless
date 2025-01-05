@@ -2,7 +2,7 @@ import Enemy from './enemy.js';
 import { game, hero, prestige, skillTree } from './main.js';
 import { calculateHitChance } from './combat.js';
 import { CLASS_PATHS, REQ_LEVEL_FOR_SKILL_TREE, SKILL_LEVEL_TIERS, SKILL_TREES } from './skillTree.js';
-import { ATTRIBUTES } from './hero.js';
+import { ATTRIBUTES, STAT_DECIMAL_PLACES } from './hero.js';
 
 const html = String.raw;
 
@@ -104,31 +104,41 @@ export function updateStatsAndAttributesUI() {
       <!-- OFFENSE -->
 
       <hr style="margin: 5px 1px" />
-      <div><strong>Damage:</strong> <span id="damage-value">${hero.stats.damage.toFixed(0)}</span></div>
+      <div><strong>Damage:</strong> <span id="damage-value">${hero.stats.damage}</span></div>
 
       <div>
         <strong>Attack Speed:</strong>
-        <span id="attack-speed-value">${hero.stats.attackSpeed.toFixed(2).replace(/\./g, ',')}</span> attacks/sec
+        <span id="attack-speed-value"
+          >${hero.stats.attackSpeed.toFixed(STAT_DECIMAL_PLACES.attackSpeed).replace(/\./g, ',')}</span
+        >
+        attacks/sec
       </div>
 
       <div>
         <strong>Attack Rating:</strong>
-        <span id="attack-rating-value">${hero.stats.attackRating.toFixed(0)}</span> (<span id="hit-chance-value">
-          ${calculateHitChance(hero.stats.attackRating, game.zone).toFixed(1)}%</span
+        <span id="attack-rating-value">${hero.stats.attackRating}</span> (<span id="hit-chance-value">
+          ${calculateHitChance(hero.stats.attackRating, game.zone).toFixed(2)}%</span
         >)
       </div>
 
       <div>
         <strong>Crit Chance:</strong>
-        <span id="crit-chance-value">${hero.stats.critChance.toFixed(1).replace(/\./g, ',')}%</span>
+        <span id="crit-chance-value"
+          >${hero.stats.critChance.toFixed(STAT_DECIMAL_PLACES.critChance).replace(/\./g, ',')}%</span
+        >
       </div>
 
       <div>
         <strong>Crit Damage:</strong>
-        <span id="crit-damage-value">${hero.stats.critDamage.toFixed(2).replace(/\./g, ',')}x</span>
+        <span id="crit-damage-value"
+          >${hero.stats.critDamage.toFixed(STAT_DECIMAL_PLACES.critDamage).replace(/\./g, ',')}x</span
+        >
       </div>
 
-      <div><strong>Life Steal:</strong> <span id="life-steal-value">${hero.stats.lifeSteal.toFixed(2)}%</span></div>
+      <div>
+        <strong>Life Steal:</strong>
+        <span id="life-steal-value">${hero.stats.lifeSteal.toFixed(STAT_DECIMAL_PLACES.lifeSteal)}%</span>
+      </div>
       <div class="elemental-damage">
         <div><strong>🔥 Fire Damage:</strong> <span id="fire-damage-value">${hero.stats.fireDamage}</span></div>
         <div><strong>❄️ Cold Damage:</strong> <span id="cold-damage-value">${hero.stats.coldDamage}</span></div>
@@ -142,12 +152,16 @@ export function updateStatsAndAttributesUI() {
       <div><strong>Health:</strong> <span id="max-health-value">${hero.stats.health}</span></div>
       <div>
         <strong>Health Regen:</strong>
-        <span id="health-regen-value">${hero.stats.lifeRegen.toFixed(1).replace(/\./g, ',')}</span>/s
+        <span id="health-regen-value"
+          >${hero.stats.lifeRegen.toFixed(STAT_DECIMAL_PLACES.lifeRegen).replace(/\./g, ',')}</span
+        >/s
       </div>
-      <div><strong>Mana:</strong> <span id="max-mana-value">${hero.stats.mana.toFixed(0)}</span></div>
+      <div><strong>Mana:</strong> <span id="max-mana-value">${hero.stats.mana}</span></div>
       <div>
         <strong>Mana Regen:</strong>
-        <span id="mana-regen-value">${hero.stats.manaRegen.toFixed(1).replace(/\./g, ',')}</span>/s
+        <span id="mana-regen-value"
+          >${hero.stats.manaRegen.toFixed(STAT_DECIMAL_PLACES.manaRegen).replace(/\./g, ',')}</span
+        >/s
       </div>
 
       <div>
@@ -158,7 +172,9 @@ export function updateStatsAndAttributesUI() {
 
       <div>
         <strong>Block Chance:</strong>
-        <span id="block-chance-value">${hero.stats.blockChance.toFixed(1).replace(/\./g, ',')}%</span>
+        <span id="block-chance-value"
+          >${hero.stats.blockChance.toFixed(STAT_DECIMAL_PLACES.blockChance).replace(/\./g, ',')}%</span
+        >
       </div>
     `;
     statsGrid.appendChild(statsContainer);
@@ -168,31 +184,38 @@ export function updateStatsAndAttributesUI() {
     document.getElementById('exp-value').textContent = hero.exp || 0;
     document.getElementById('exp-to-next-level-value').textContent = hero.expToNextLevel || 100;
     document.getElementById('highest-zone-value').textContent = hero.highestZone;
-    document.getElementById('damage-value').textContent = hero.stats.damage.toFixed(0);
-    document.getElementById('attack-speed-value').textContent = hero.stats.attackSpeed.toFixed(2).replace(/\./g, ',');
-    document.getElementById('attack-rating-value').textContent = hero.stats.attackRating.toFixed(0);
+    document.getElementById('damage-value').textContent = hero.stats.damage;
+    document.getElementById('attack-speed-value').textContent = hero.stats.attackSpeed
+      .toFixed(STAT_DECIMAL_PLACES.attackSpeed)
+      .replace(/\./g, ',');
+    document.getElementById('attack-rating-value').textContent = hero.stats.attackRating;
     document.getElementById('hit-chance-value').textContent =
-      calculateHitChance(hero.stats.attackRating, game.zone).toFixed(1) + '%';
+      calculateHitChance(hero.stats.attackRating, game.zone).toFixed(2) + '%';
     document.getElementById('crit-chance-value').textContent =
-      hero.stats.critChance.toFixed(1).replace(/\./g, ',') + '%';
+      hero.stats.critChance.toFixed(STAT_DECIMAL_PLACES.critChance).replace(/\./g, ',') + '%';
     document.getElementById('crit-damage-value').textContent =
-      hero.stats.critDamage.toFixed(2).replace(/\./g, ',') + 'x';
+      hero.stats.critDamage.toFixed(STAT_DECIMAL_PLACES.critDamage).replace(/\./g, ',') + 'x';
 
-    document.getElementById('life-steal-value').textContent = hero.stats.lifeSteal.toFixed(2) + '%';
+    document.getElementById('life-steal-value').textContent =
+      hero.stats.lifeSteal.toFixed(STAT_DECIMAL_PLACES.lifeSteal) + '%';
     document.getElementById('fire-damage-value').textContent = hero.stats.fireDamage;
     document.getElementById('cold-damage-value').textContent = hero.stats.coldDamage;
     document.getElementById('air-damage-value').textContent = hero.stats.airDamage;
     document.getElementById('earth-damage-value').textContent = hero.stats.earthDamage;
 
     document.getElementById('max-health-value').textContent = hero.stats.health;
-    document.getElementById('health-regen-value').textContent = hero.stats.lifeRegen.toFixed(1).replace(/\./g, ',');
-    document.getElementById('max-mana-value').textContent = hero.stats.mana.toFixed(0);
-    document.getElementById('mana-regen-value').textContent = hero.stats.manaRegen.toFixed(1).replace(/\./g, ',');
+    document.getElementById('health-regen-value').textContent = hero.stats.lifeRegen
+      .toFixed(STAT_DECIMAL_PLACES.lifeRegen)
+      .replace(/\./g, ',');
+    document.getElementById('max-mana-value').textContent = hero.stats.mana;
+    document.getElementById('mana-regen-value').textContent = hero.stats.manaRegen
+      .toFixed(STAT_DECIMAL_PLACES.manaRegen)
+      .replace(/\./g, ',');
     document.getElementById('armor-value').textContent = hero.stats.armor || 0;
     document.getElementById('armor-reduction-value').textContent =
       hero.calculateArmorReduction().toFixed(2).replace(/\./g, ',') + '%';
     document.getElementById('block-chance-value').textContent =
-      hero.stats.blockChance.toFixed(1).replace(/\./g, ',') + '%';
+      hero.stats.blockChance.toFixed(STAT_DECIMAL_PLACES.blockChance).replace(/\./g, ',') + '%';
   }
 
   if (!attributesContainer) {
@@ -483,11 +506,13 @@ function createSkillElement(skill) {
       skillDescription += `<br />Duration: ${skill.duration / 1000}s`;
     }
 
-    // Add current effects
+    // Calculate effects at current level
     if (effectsCurrent && Object.keys(effectsCurrent).length > 0) {
       skillDescription += '<br /><u>Current Effects:</u><br />';
       Object.entries(effectsCurrent).forEach(([stat, value]) => {
-        skillDescription += `${stat}: +${value}<br />`;
+        const decimals = STAT_DECIMAL_PLACES[stat] || 0;
+        const formattedValue = value.toFixed(decimals);
+        skillDescription += `${stat}: +${formattedValue}<br />`;
       });
     }
 
@@ -495,9 +520,12 @@ function createSkillElement(skill) {
     if (currentLevel < skill.maxLevel) {
       skillDescription += '<br /><u>Next Level Effects:</u><br />';
       Object.entries(effectsNext).forEach(([stat, value]) => {
+        const decimals = STAT_DECIMAL_PLACES[stat] || 0;
         const currentValue = effectsCurrent[stat] || 0;
         const difference = value - currentValue;
-        skillDescription += `${stat}: +${value} <span class="bonus">(+${difference})</span><br />`;
+        skillDescription += `${stat}: +${value.toFixed(decimals)} <span class="bonus">(+${difference.toFixed(
+          decimals
+        )})</span><br />`;
       });
     }
 
@@ -592,7 +620,9 @@ function createSkillTooltip(skillId) {
   // Add effects
   tooltip += '<div class="tooltip-effects">';
   Object.entries(effects).forEach(([stat, value]) => {
-    tooltip += `<div>${stat}: +${value}</div>`;
+    const decimals = STAT_DECIMAL_PLACES[stat] || 0;
+    const formattedValue = value.toFixed(decimals);
+    tooltip += `<div>${stat}: +${formattedValue}</div>`;
   });
   tooltip += '</div>';
 
