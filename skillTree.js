@@ -33,7 +33,7 @@ export const CLASS_PATHS = {
       agility: 25,
       critChance: 5,
       attackSpeed: 0.3,
-      damage: 30,
+      damage: 80,
     },
     description: 'Swift and deadly, focusing on critical hits and attack speed',
   },
