@@ -330,7 +330,7 @@ export const SKILL_TREES = {
       id: 'poisonDagger',
       name: 'Poison Dagger',
       type: 'toggle',
-      manaCost: 3,
+      manaCost: 5,
       requiredLevel: SKILL_LEVEL_TIERS[1],
       icon: 'poison',
       description: 'Applies physical damage to your attacks.',

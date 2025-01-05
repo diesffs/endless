@@ -270,6 +270,12 @@
 .rarity-unique {
   border-color: #ff8c00;
 }
+.rarity-legendary {
+  border-color: #e65a27;
+}
+.rarity-mythic {
+  border-color: #ff0033;
+}
 
 .salvage-container {
   display: flex;
@@ -333,6 +339,16 @@
 .salvage-options div[data-rarity='UNIQUE'] {
   color: #ff8c00;
   border-left: 4px solid #ff8c00;
+}
+
+.salvage-options div[data-rarity='LEGENDARY'] {
+  color: #e65a27;
+  border-left: 4px solid #e65a27;
+}
+
+.salvage-options div[data-rarity='MYTHIC'] {
+  color: #ff0033;
+  border-left: 4px solid #ff0033;
 }
 
 .grid-cell.persistent {

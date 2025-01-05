@@ -59,10 +59,12 @@ export const ITEM_ICONS = {
 };
 
 export const ITEM_RARITY = {
-  NORMAL: { name: 'NORMAL', color: '#ffffff', chance: 70, statMultiplier: 1, totalStats: 3 },
+  NORMAL: { name: 'NORMAL', color: '#ffffff', chance: 66.5, statMultiplier: 1, totalStats: 3 },
   MAGIC: { name: 'MAGIC', color: '#4287f5', chance: 20, statMultiplier: 1.5, totalStats: 3 },
   RARE: { name: 'RARE', color: '#ffd700', chance: 9, statMultiplier: 2, totalStats: 4 },
-  UNIQUE: { name: 'UNIQUE', color: '#ff8c00', chance: 1, statMultiplier: 3, totalStats: 5 },
+  UNIQUE: { name: 'UNIQUE', color: '#ff8c00', chance: 3, statMultiplier: 3, totalStats: 5 },
+  LEGENDARY: { name: 'LEGENDARY', color: '#e65a27', chance: 1, statMultiplier: 3.5, totalStats: 6 },
+  MYTHIC: { name: 'MYTHIC', color: '#ff0033', chance: 0.5, statMultiplier: 4, totalStats: 7 },
 };
 
 export const RARITY_ORDER = [
@@ -70,6 +72,8 @@ export const RARITY_ORDER = [
   ITEM_RARITY.MAGIC.name,
   ITEM_RARITY.RARE.name,
   ITEM_RARITY.UNIQUE.name,
+  ITEM_RARITY.LEGENDARY.name,
+  ITEM_RARITY.MYTHIC.name,
 ];
 
 export const DECIMAL_STATS = ['critDamage', 'attackSpeed', 'critChance'];
