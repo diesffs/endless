@@ -218,6 +218,6 @@ export function createCombatText(text) {
 
 export function calculateHitChance(attackRating, zone) {
   const zoneScaling = 1 + (zone - 1) * 0.1; // Linear 10% increase per zone
-  const baseChance = (attackRating / (attackRating + 15 * zoneScaling)) * 100;
+  const baseChance = (attackRating / (attackRating + 25 * zoneScaling)) * 100;
   return Math.min(Math.max(baseChance, 10), 100);
 }

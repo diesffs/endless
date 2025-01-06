@@ -516,9 +516,10 @@ export default class Hero {
 
   calculateArmorReduction() {
     const armor = this.stats.armor;
-    const constant = 100 + this.level * 10;
+    const zoneScaling = 1 + (game.zone - 1) * 0.1; // Linear 10% increase per zone, matching attack rating
+    const constant = 100 * zoneScaling;
     const reduction = (armor / (armor + constant)) * 100;
-    return Math.min(reduction, 95); // Changed cap to 95%
+    return Math.min(reduction, 95); // Keep the 95% cap
   }
 
   regenerate() {
