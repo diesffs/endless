@@ -117,13 +117,8 @@ export function defeatEnemy() {
   const enemy = game.currentEnemy;
   // const droppedItem = dropLoot(enemy);
 
-  if (!game) {
-    console.error('Game is undefined in defeatEnemy');
-    return;
-  }
-
   const baseExpGained = game.zone * 5;
-  const baseGoldGained = 10 + game.zone * 5;
+  const baseGoldGained = 10 + game.zone * 8;
 
   // Apply bonus experience and gold
   const expGained = Math.floor(baseExpGained * (1 + hero.stats.bonusExperience / 100));

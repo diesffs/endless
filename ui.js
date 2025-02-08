@@ -2,7 +2,7 @@ import Enemy from './enemy.js';
 import { game, hero, prestige, skillTree } from './main.js';
 import { calculateHitChance } from './combat.js';
 import { CLASS_PATHS, REQ_LEVEL_FOR_SKILL_TREE, SKILL_LEVEL_TIERS, SKILL_TREES } from './skillTree.js';
-import { ATTRIBUTES, STAT_DECIMAL_PLACES } from './hero.js';
+import { ATTRIBUTE_TOOLTIPS, STAT_DECIMAL_PLACES } from './hero.js';
 
 const html = String.raw;
 
@@ -238,7 +238,9 @@ export function updateStatsAndAttributesUI() {
 
     attributesContainer.querySelectorAll('.attribute-row').forEach((row) => {
       const stat = row.querySelector('button').dataset.stat;
-      row.addEventListener('mouseenter', (e) => showTooltip(ATTRIBUTES[stat].tooltip, e));
+      row.addEventListener('mouseenter', (e) =>
+        showTooltip(ATTRIBUTE_TOOLTIPS[`get${stat.charAt(0).toUpperCase() + stat.slice(1)}Tooltip`](), e)
+      );
       row.addEventListener('mousemove', positionTooltip);
       row.addEventListener('mouseleave', hideTooltip);
     });

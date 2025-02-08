@@ -196,7 +196,7 @@ export default class Shop {
     // Deduct cost and increase level
     hero[currency] -= cost;
     this.upgradeLevels[stat] = (this.upgradeLevels[stat] || 0) + 1;
-    this.upgradeCosts[stat] += BASE_UPGRADE_COSTS[stat];
+    this.upgradeCosts[stat] += BASE_UPGRADE_COSTS[stat] / 2;
 
     // Update UI
     this.updateShopUI('gold-upgrades');

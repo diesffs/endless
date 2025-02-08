@@ -101,15 +101,15 @@ export const AVAILABLE_STATS = {
   wisdom: { min: 1, max: 5, scaling: 'full' },
   endurance: { min: 1, max: 5, scaling: 'full' },
   dexterity: { min: 1, max: 5, scaling: 'full' },
-  mana: { min: 10, max: 30, scaling: 'full' },
+  mana: { min: 5, max: 15, scaling: 'full' },
   manaRegen: { min: 1, max: 3, scaling: 'full' },
   lifeRegen: { min: 2, max: 5, scaling: 'full' },
   healthPercent: { min: 2, max: 8, scaling: 'capped' },
   manaPercent: { min: 2, max: 5, scaling: 'capped' },
   armorPercent: { min: 3, max: 8, scaling: 'capped' },
   elementalDamagePercent: { min: 5, max: 10, scaling: 'capped' },
-  bonusGold: { min: 5, max: 15, scaling: 'full' },
-  bonusExperience: { min: 5, max: 15, scaling: 'full' },
+  bonusGold: { min: 5, max: 15, scaling: 'capped' },
+  bonusExperience: { min: 5, max: 15, scaling: 'capped' },
 };
 
 const DEFENSIVE_STATS = [
@@ -218,8 +218,8 @@ export default class Item {
       const scaling = AVAILABLE_STATS[stat].scaling;
       const value =
         scaling === 'capped'
-          ? baseValue * multiplier * Math.min(1 + this.level * 0.01, 2)
-          : baseValue * multiplier * (1 + this.level * 0.1);
+          ? baseValue * multiplier * Math.min(1 + this.level * (1/200), 2)
+          : baseValue * multiplier * (1 + this.level * 0.03);
 
       const decimals = STAT_DECIMAL_PLACES[stat] || 0;
       return Number(value.toFixed(decimals));
@@ -240,8 +240,6 @@ export default class Item {
       const randomIndex = Math.floor(Math.random() * availableStats.length);
       const stat = availableStats.splice(randomIndex, 1)[0];
       const range = AVAILABLE_STATS[stat];
-      console.log(range);
-      console.log(stat);
       const baseValue = Math.random() * (range.max - range.min) + range.min;
       stats[stat] = calculateStatValue(stat, baseValue);
     }
