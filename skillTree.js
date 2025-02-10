@@ -1305,6 +1305,12 @@ export default class SkillTree {
     // Add skill bonuses
     Object.entries(this.skills).forEach(([skillId, skillData]) => {
       const skill = SKILL_TREES[this.selectedPath?.name][skillId];
+
+      if (!skill) {
+        console.error('contact support. skill not found: ', skillId);
+        return;
+      }
+
       if (skill.type === 'passive') {
         const effects = skill.effect(skillData.level);
         Object.entries(effects).forEach(([stat, value]) => {
