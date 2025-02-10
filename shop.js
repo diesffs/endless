@@ -28,22 +28,22 @@ const UPGRADE_CONFIG = {
 };
 
 export const BASE_UPGRADE_COSTS = {
-  damage: 50,
+  damage: 60,
   attackSpeed: 200,
-  health: 75,
-  armor: 125,
-  critChance: 150,
+  health: 80,
+  armor: 120,
+  critChance: 140,
   critDamage: 200,
   mana: 100,
-  lifeRegen: 50,
-  manaRegen: 50,
+  lifeRegen: 60,
+  manaRegen: 60,
   blockChance: 150,
-  attackRating: 50,
+  attackRating: 60,
   lifeSteal: 500,
-  fireDamage: 75,
-  coldDamage: 75,
-  airDamage: 75,
-  earthDamage: 75,
+  fireDamage: 40,
+  coldDamage: 40,
+  airDamage: 40,
+  earthDamage: 40,
 };
 export default class Shop {
   constructor(savedData = null) {
@@ -196,7 +196,7 @@ export default class Shop {
     // Deduct cost and increase level
     hero[currency] -= cost;
     this.upgradeLevels[stat] = (this.upgradeLevels[stat] || 0) + 1;
-    this.upgradeCosts[stat] += BASE_UPGRADE_COSTS[stat] / 2;
+    this.upgradeCosts[stat] += BASE_UPGRADE_COSTS[stat];
 
     // Update UI
     this.updateShopUI('gold-upgrades');

@@ -98,7 +98,9 @@ export function updateStatsAndAttributesUI() {
       <div>
         <strong>EXP:</strong> <span id="exp-value">${hero.exp || 0}</span> /
         <span id="exp-to-next-level-value">${hero.expToNextLevel || 100}</span>
+        (<span id="exp-progress">${((hero.exp / hero.expToNextLevel) * 100).toFixed(1)}%</span>)
       </div>
+
       <div><strong>Highest Zone:</strong><span id="highest-zone-value">${hero.highestZone}</span></div>
 
       <!-- OFFENSE -->
@@ -177,6 +179,71 @@ export function updateStatsAndAttributesUI() {
         >
       </div>
     `;
+
+    const addTooltipToElement = (element, tooltipFunction) => {
+      element.addEventListener('mouseenter', (e) => showTooltip(tooltipFunction(), e));
+      element.addEventListener('mousemove', positionTooltip);
+      element.addEventListener('mouseleave', hideTooltip);
+    };
+
+    // Combat stats
+    addTooltipToElement(
+      statsContainer.querySelector('#damage-value').previousElementSibling,
+      ATTRIBUTE_TOOLTIPS.getDamageTooltip
+    );
+    addTooltipToElement(
+      statsContainer.querySelector('#attack-speed-value').previousElementSibling,
+      ATTRIBUTE_TOOLTIPS.getAttackSpeedTooltip
+    );
+    addTooltipToElement(
+      statsContainer.querySelector('#attack-rating-value').previousElementSibling,
+      ATTRIBUTE_TOOLTIPS.getAttackRatingTooltip
+    );
+    addTooltipToElement(
+      statsContainer.querySelector('#crit-chance-value').previousElementSibling,
+      ATTRIBUTE_TOOLTIPS.getCritChanceTooltip
+    );
+    addTooltipToElement(
+      statsContainer.querySelector('#crit-damage-value').previousElementSibling,
+      ATTRIBUTE_TOOLTIPS.getCritDamageTooltip
+    );
+    addTooltipToElement(
+      statsContainer.querySelector('#life-steal-value').previousElementSibling,
+      ATTRIBUTE_TOOLTIPS.getLifeStealTooltip
+    );
+
+    // Elemental damage section
+    addTooltipToElement(
+      statsContainer.querySelector('.elemental-damage'),
+      ATTRIBUTE_TOOLTIPS.getElementalDamageTooltip
+    );
+
+    // Defense stats
+    addTooltipToElement(
+      statsContainer.querySelector('#max-health-value').previousElementSibling,
+      ATTRIBUTE_TOOLTIPS.getMaxHealthTooltip
+    );
+    addTooltipToElement(
+      statsContainer.querySelector('#health-regen-value').previousElementSibling,
+      ATTRIBUTE_TOOLTIPS.getHealthRegenTooltip
+    );
+    addTooltipToElement(
+      statsContainer.querySelector('#max-mana-value').previousElementSibling,
+      ATTRIBUTE_TOOLTIPS.getMaxManaTooltip
+    );
+    addTooltipToElement(
+      statsContainer.querySelector('#mana-regen-value').previousElementSibling,
+      ATTRIBUTE_TOOLTIPS.getManaRegenTooltip
+    );
+    addTooltipToElement(
+      statsContainer.querySelector('#armor-value').previousElementSibling,
+      ATTRIBUTE_TOOLTIPS.getArmorTooltip
+    );
+    addTooltipToElement(
+      statsContainer.querySelector('#block-chance-value').previousElementSibling,
+      ATTRIBUTE_TOOLTIPS.getBlockChanceTooltip
+    );
+
     statsGrid.appendChild(statsContainer);
   } else {
     // Update dynamic stats values
@@ -444,7 +511,6 @@ export function initializeSkillTreeStructure() {
 }
 
 export function updateSkillTreeValues() {
-  // no need to update if path not yet selected
   if (!skillTree.selectedPath) {
     return;
   }
@@ -460,7 +526,7 @@ export function updateSkillTreeValues() {
 
     const levelDisplay = node.querySelector('.skill-level');
     const skill = SKILL_TREES[skillTree.selectedPath.name][skillId];
-    levelDisplay.textContent = `${currentLevel}/${skill.maxLevel}`;
+    levelDisplay.textContent = skill.maxLevel === Infinity ? `${currentLevel}` : `${currentLevel}/${skill.maxLevel}`;
 
     node.classList.toggle('available', canUnlock);
     node.classList.toggle('unlocked', !!skillTree.skills[skillId]);
@@ -493,10 +559,15 @@ function createSkillElement(skill) {
     const effectsNext = skill.effect(nextLevel);
 
     let skillDescription = `
-          <strong>${skill.name} [${skill.type.toUpperCase()}]</strong><br />
-          ${skill.description}<br />
-          Level: ${currentLevel}/${skill.maxLevel}
-      `;
+    <strong>${skill.name} [${skill.type.toUpperCase()}]</strong><br>
+    ${skill.description
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line)
+      .join('<br>')}
+    <br>
+    Level: ${currentLevel}${skill.maxLevel !== Infinity ? `/${skill.maxLevel}` : ''}
+  `;
 
     if (skill.manaCost) {
       skillDescription += `<br />Mana Cost: ${skill.manaCost}`;
@@ -519,7 +590,7 @@ function createSkillElement(skill) {
     }
 
     // If not at max level, show next level effects and the bonus
-    if (currentLevel < skill.maxLevel) {
+    if (currentLevel < skill.maxLevel || skill.maxLevel === Infinity) {
       skillDescription += '<br /><u>Next Level Effects:</u><br />';
       Object.entries(effectsNext).forEach(([stat, value]) => {
         const decimals = STAT_DECIMAL_PLACES[stat] || 0;
@@ -536,7 +607,9 @@ function createSkillElement(skill) {
 
   skillElement.innerHTML = html`
     <div class="skill-icon" style="background-image: url('assets/skills/${skill.icon}.png')"></div>
-    <div class="skill-level">${skillTree.skills[skill.id]?.level || 0}/${skill.maxLevel}</div>
+    <div class="skill-level">
+      ${skillTree.skills[skill.id]?.level || 0}${skill.maxLevel !== Infinity ? `/${skill.maxLevel}` : ''}
+    </div>
   `;
 
   skillElement.addEventListener('mouseenter', (e) => showTooltip(updateTooltipContent(), e));

@@ -84,7 +84,7 @@ export const AVAILABLE_STATS = {
   strength: { min: 1, max: 5, scaling: 'full' },
   agility: { min: 1, max: 5, scaling: 'full' },
   vitality: { min: 1, max: 5, scaling: 'full' },
-  critChance: { min: 0.5, max: 3, scaling: 'capped' },
+  critChance: { min: 0.5, max: 1.5, scaling: 'capped' },
   critDamage: { min: 0.02, max: 0.1, scaling: 'full' },
   attackSpeed: { min: 0.05, max: 0.2, scaling: 'capped' },
   health: { min: 30, max: 75, scaling: 'full' },
@@ -101,9 +101,9 @@ export const AVAILABLE_STATS = {
   wisdom: { min: 1, max: 5, scaling: 'full' },
   endurance: { min: 1, max: 5, scaling: 'full' },
   dexterity: { min: 1, max: 5, scaling: 'full' },
-  mana: { min: 5, max: 15, scaling: 'full' },
-  manaRegen: { min: 1, max: 3, scaling: 'full' },
-  lifeRegen: { min: 2, max: 5, scaling: 'full' },
+  mana: { min: 5, max: 15, scaling: 'capped' },
+  manaRegen: { min: 0.5, max: 2, scaling: 'capped' },
+  lifeRegen: { min: 0.5, max: 1.5, scaling: 'full' },
   healthPercent: { min: 2, max: 8, scaling: 'capped' },
   manaPercent: { min: 2, max: 5, scaling: 'capped' },
   armorPercent: { min: 3, max: 8, scaling: 'capped' },
@@ -218,7 +218,7 @@ export default class Item {
       const scaling = AVAILABLE_STATS[stat].scaling;
       const value =
         scaling === 'capped'
-          ? baseValue * multiplier * Math.min(1 + this.level * (1/200), 2)
+          ? baseValue * multiplier * Math.min(1 + this.level * (1 / 200), 2)
           : baseValue * multiplier * (1 + this.level * 0.03);
 
       const decimals = STAT_DECIMAL_PLACES[stat] || 0;
@@ -257,6 +257,38 @@ export default class Item {
 
   getTooltipHTML(isEquipped = false) {
     const html = String.raw;
+
+    // Helper function to convert camelCase to Title Case with spaces
+    const formatStatName = (stat) => {
+      // Handle special cases first
+      if (stat === 'critChance') return 'Crit Chance';
+      if (stat === 'critDamage') return 'Crit Damage';
+      if (stat === 'lifeSteal') return 'Life Steal';
+      if (stat === 'attackSpeed') return 'Attack Speed';
+      if (stat === 'attackRating') return 'Attack Rating';
+      if (stat === 'attackRatingPercent') return 'Attack Rating';
+      if (stat === 'damagePercent') return 'Damage';
+      if (stat === 'healthPercent') return 'Health';
+      if (stat === 'manaPercent') return 'Mana';
+      if (stat === 'armorPercent') return 'Armor';
+      if (stat === 'elementalDamagePercent') return 'Elemental Damage';
+      if (stat === 'lifeRegen') return 'Life Regeneration';
+      if (stat === 'manaRegen') return 'Mana Regeneration';
+      if (stat === 'bonusGold') return 'Bonus Gold';
+      if (stat === 'bonusExperience') return 'Bonus Experience';
+      if (stat === 'blockChance') return 'Block Chance';
+      if (stat === 'fireDamage') return 'Fire Damage';
+      if (stat === 'coldDamage') return 'Cold Damage';
+      if (stat === 'airDamage') return 'Air Damage';
+      if (stat === 'earthDamage') return 'Earth Damage';
+
+      return stat.charAt(0).toUpperCase() + stat.slice(1);
+    };
+
+    const isPercentStat = (stat) => {
+      return stat.endsWith('Percent') || stat === 'critChance' || stat === 'blockChance' || stat === 'lifeSteal';
+    };
+
     return html`
       <div class="item-tooltip">
         <div class="item-name" style="color: ${ITEM_RARITY[this.rarity].color};">
@@ -267,7 +299,8 @@ export default class Item {
           ${Object.entries(this.stats)
             .map(([stat, value]) => {
               const decimals = STAT_DECIMAL_PLACES[stat] || 0;
-              return `<div>${stat}: ${value.toFixed(decimals)}</div>`;
+              const formattedValue = value.toFixed(decimals);
+              return `<div>${formatStatName(stat)}: ${formattedValue}${isPercentStat(stat) ? '%' : ''}</div>`;
             })
             .join('')}
         </div>

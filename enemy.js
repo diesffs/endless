@@ -3,7 +3,7 @@ import { ITEM_TYPES } from './item.js';
 export const ENEMY_RARITY = {
   NORMAL: {
     type: 'NORMAL',
-    itemDropChance: 5,
+    itemDropChance: 2,
     color: 'gray',
     threshold: 80,
     healthBonus: 1,
@@ -12,7 +12,7 @@ export const ENEMY_RARITY = {
   },
   RARE: {
     type: 'RARE',
-    itemDropChance: 2,
+    itemDropChance: 1,
     color: 'blue',
     threshold: 90,
     healthBonus: 1.2,
@@ -21,7 +21,7 @@ export const ENEMY_RARITY = {
   },
   EPIC: {
     type: 'EPIC',
-    itemDropChance: 3,
+    itemDropChance: 2,
     color: 'purple',
     threshold: 96,
     healthBonus: 1.5,
@@ -30,7 +30,7 @@ export const ENEMY_RARITY = {
   },
   LEGENDARY: {
     type: 'LEGENDARY',
-    itemDropChance: 5,
+    itemDropChance: 2,
     color: 'orange',
     threshold: 99,
     healthBonus: 2,
@@ -39,7 +39,7 @@ export const ENEMY_RARITY = {
   },
   MYTHIC: {
     type: 'MYTHIC',
-    itemDropChance: 10,
+    itemDropChance: 3,
     color: 'red',
     threshold: 100,
     healthBonus: 3,

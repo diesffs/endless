@@ -16,8 +16,14 @@ export function enemyAttack(currentTime) {
     const isBlocked = Math.random() * 100 < hero.stats.blockChance;
 
     if (isBlocked) {
+      // Calculate and apply block healing
+      const healAmount = hero.calculateBlockHealing();
+
       // Show "BLOCKED" text instead of damage number
       createDamageNumber('BLOCKED', true, false, true);
+      if (healAmount > 0) {
+        createDamageNumber(`+${Math.floor(healAmount)}`, true, false, false, false, true);
+      }
     } else {
       // Calculate armor reduction
       const damageReduction = hero.calculateArmorReduction() / 100;

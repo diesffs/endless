@@ -21,8 +21,8 @@ export const CLASS_PATHS = {
     baseStats: {
       strength: 20,
       vitality: 20,
-      armor: 100,
-      health: 400,
+      armor: 60,
+      health: 200,
     },
     description: 'A mighty warrior specializing in heavy armor and raw strength',
   },
@@ -30,10 +30,10 @@ export const CLASS_PATHS = {
     name: 'Rogue',
     enabled: true,
     baseStats: {
-      agility: 25,
+      agility: 40,
       critChance: 5,
       attackSpeed: 0.3,
-      damage: 80,
+      damage: 50,
     },
     description: 'Swift and deadly, focusing on critical hits and attack speed',
   },
@@ -131,13 +131,13 @@ export const SKILL_TREES = {
       name: 'Power Strike',
       type: 'instant',
       manaCost: 20,
-      cooldown: 6000,
+      cooldown: 4000,
       requiredLevel: SKILL_LEVEL_TIERS[1],
       icon: 'sword',
       description: 'A powerful strike that deals increased damage',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 50,
+        damage: level * 80,
       }),
     },
     ironWill: {
@@ -196,7 +196,7 @@ export const SKILL_TREES = {
       description: 'Deals instant damage',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 100,
+        damage: level * 180,
       }),
     },
     goldRush: {
@@ -206,9 +206,9 @@ export const SKILL_TREES = {
       requiredLevel: SKILL_LEVEL_TIERS[3],
       icon: 'coin',
       description: 'Increases gold gained from battles by %',
-      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
+      maxLevel: Infinity,
       effect: (level) => ({
-        bonusGold: level * 20,
+        bonusGold: level * 10,
       }),
     },
 
@@ -241,8 +241,8 @@ export const SKILL_TREES = {
       description: 'Gives huge amounts of physical and fire damage',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 75,
-        fireDamage: level * 300,
+        damage: level * 40,
+        fireDamage: level * 160,
       }),
     },
 
@@ -255,10 +255,10 @@ export const SKILL_TREES = {
       description: 'Greatly increases offensive stats',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 30,
+        damage: level * 10,
         lifeSteal: level * 0.02,
         attackSpeed: level * 0.01,
-        attackRating: level * 300,
+        attackRating: level * 200,
       }),
     },
 
@@ -272,12 +272,12 @@ export const SKILL_TREES = {
       description: 'Increases all attributes significantly',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        strength: level * 15,
-        vitality: level * 15,
-        agility: level * 15,
-        wisdom: level * 15,
-        endurance: level * 15,
-        dexterity: level * 15,
+        strength: level * 8,
+        vitality: level * 8,
+        agility: level * 8,
+        wisdom: level * 8,
+        endurance: level * 8,
+        dexterity: level * 8,
       }),
     },
   },
@@ -293,24 +293,25 @@ export const SKILL_TREES = {
       description: 'A quick dance from the shadows, increasing your damage.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 12,
+        damage: level * 5,
         critChance: level * 0.1,
+        agility: level * 3,
       }),
     },
     evasion: {
       id: 'evasion',
       name: 'Evasion',
-      type: 'buff',
-      manaCost: 20,
-      cooldown: 60000,
-      duration: 45000,
+      type: 'passive',
       requiredLevel: SKILL_LEVEL_TIERS[0],
       icon: 'dodge',
-      description: 'Increases block chance temporarily.',
+      description: `
+        Increases armor and block chance. 
+        Additionally, when blocking, you also recover health equal to 5% of your maximum health.
+        `,
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        blockChance: level * 0.5,
-        armor: level * 15,
+        blockChance: level * 0.2,
+        armor: level * 10,
       }),
     },
     quickLearner: {
@@ -337,22 +338,24 @@ export const SKILL_TREES = {
       description: 'Applies physical damage to your attacks.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 40,
+        damage: level * 25,
       }),
     },
-    stealth: {
-      id: 'stealth',
-      name: 'Stealth',
-      type: 'passive',
+    shadowForm: {
+      id: 'shadowForm',
+      name: 'Shadow Form',
+      type: 'buff',
+      manaCost: 20,
+      cooldown: 60000,
+      duration: 45000,
       requiredLevel: SKILL_LEVEL_TIERS[1],
       icon: 'stealth',
-      description: 'Become invisible, increasing crit chance and damage.',
+      description: 'Shadow form increases crit chance, life steal and dexterity (crit damage).',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         critChance: level * 0.1,
-        critDamage: level * 0.1,
-        lifeSteal: level * 0.01,
-        dexterity: level * 5,
+        lifeSteal: level * 0.02,
+        dexterity: level * 10,
       }),
     },
 
@@ -406,9 +409,9 @@ export const SKILL_TREES = {
       requiredLevel: SKILL_LEVEL_TIERS[3],
       icon: 'coin',
       description: 'Increases gold gained from battles.',
-      maxLevel: DEFAULT_MAX_SKILL_LEVEL,
+      maxLevel: Infinity,
       effect: (level) => ({
-        bonusGold: level * 20,
+        bonusGold: level * 10,
       }),
     },
 
@@ -466,15 +469,14 @@ export const SKILL_TREES = {
       type: 'passive',
       requiredLevel: SKILL_LEVEL_TIERS[6],
       icon: 'master',
-      description: 'Greatly increases all attributes, gold and experience gains.',
+      description: 'Greatly increases attributes and gold gains.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        agility: level * 10,
+        agility: level * 15,
         dexterity: level * 10,
         strength: level * 10,
-        wisdom: level * 10,
-        bonusGold: level * 50,
-        bonusExperience: level * 10,
+        wisdom: level * 5,
+        bonusGold: level * 25,
       }),
     },
   },

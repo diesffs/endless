@@ -226,8 +226,89 @@ export const ATTRIBUTE_TOOLTIPS = {
         }% critical strike damage`
       : ''}
   `,
-};
 
+  getElementalDamageTooltip: () => html`
+    <strong>Elemental Damage</strong><br />
+    Effectiveness against enemy elements:<br />
+    • 200% damage vs opposite element<br />
+    • 0% damage vs same element<br />
+    • 25% damage vs other elements<br /><br />
+    Element Strengths:<br />
+    🔥 Fire → ☁️ Air<br />
+    🌍 Earth → ❄️ Cold<br />
+    ❄️ Cold → 🔥 Fire<br />
+    ☁️ Air → 🌍 Earth
+  `,
+
+  getDamageTooltip: () => html`
+    <strong>Damage</strong><br />
+    Base physical damage dealt to enemies.<br />
+    Increased by Strength and equipment.
+  `,
+
+  getAttackSpeedTooltip: () => html`
+    <strong>Attack Speed</strong><br />
+    Number of attacks per second.<br />
+    Maximum: 5 attacks/second
+  `,
+
+  getAttackRatingTooltip: () => html`
+    <strong>Attack Rating</strong><br />
+    Determines hit chance against enemies.<br />
+    Higher zones require more Attack Rating.
+  `,
+
+  getCritChanceTooltip: () => html`
+    <strong>Critical Strike Chance</strong><br />
+    Chance to deal critical damage.<br />
+    Maximum: 100%
+  `,
+
+  getCritDamageTooltip: () => html`
+    <strong>Critical Strike Damage</strong><br />
+    Damage multiplier on critical hits.<br />
+    Base: 1.5x damage
+  `,
+
+  getLifeStealTooltip: () => html`
+    <strong>Life Steal</strong><br />
+    Percentage of damage dealt recovered as health.
+  `,
+
+  getMaxHealthTooltip: () => html`
+    <strong>Health</strong><br />
+    Maximum health points.<br />
+    Increased by Vitality and level ups.
+  `,
+
+  getHealthRegenTooltip: () => html`
+    <strong>Health Regeneration</strong><br />
+    Amount of health recovered per second.
+  `,
+
+  getMaxManaTooltip: () => html`
+    <strong>Mana</strong><br />
+    Maximum mana points.<br />
+    Increased by Wisdom and level ups.
+  `,
+
+  getManaRegenTooltip: () => html`
+    <strong>Mana Regeneration</strong><br />
+    Amount of mana recovered per second.
+  `,
+
+  getArmorTooltip: () => html`
+    <strong>Armor</strong><br />
+    Reduces incoming damage.<br />
+    Effectiveness decreases in higher zones.
+  `,
+
+  getBlockChanceTooltip: () => html`
+    <strong>Block Chance</strong><br />
+    Chance to block incoming attacks.<br />
+    Maximum: 75%
+  `,
+};
 export default class Hero {
   constructor(savedData = null) {
     this.setBaseStats(savedData);
@@ -510,7 +591,7 @@ export default class Hero {
       bonusGold:
         (shop.shopBonuses.bonusGold || 0) +
         (inventory.equipmentBonuses.bonusGold || 0) +
-        (skillTreeBonuses.goldBonus || 0),
+        (skillTreeBonuses.bonusGold || 0),
       lifeRegen:
         BASE_LIFE_REGEN +
         (shop.shopBonuses.lifeRegen || 0) +
@@ -643,5 +724,17 @@ export default class Hero {
 
     // Apply crit at the end to total damage
     return isCritical ? totalDamage * this.stats.critDamage : totalDamage;
+  }
+
+  calculateBlockHealing() {
+    // Get evasion skill level if it exists
+    const evasionSkill = skillTree.skills['evasion'];
+    if (evasionSkill) {
+      // Heal 5% of max health when blocking
+      const healAmount = this.stats.health * 0.05;
+      this.stats.currentHealth = Math.min(this.stats.health, this.stats.currentHealth + healAmount);
+      return healAmount;
+    }
+    return 0;
   }
 }
