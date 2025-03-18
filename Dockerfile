@@ -4,7 +4,7 @@ FROM nginx:alpine
 RUN rm -rf /usr/share/nginx/html/*
 
 # Copy your pre-built static files directly to nginx html folder
-COPY ./dist /usr/share/nginx/html
+COPY . /usr/share/nginx/html
 
 # Copy nginx configuration file
 COPY nginx.conf /etc/nginx/conf.d/default.conf
