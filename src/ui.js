@@ -606,7 +606,7 @@ function createSkillElement(skill) {
   };
 
   skillElement.innerHTML = html`
-    <div class="skill-icon" style="background-image: url('assets/skills/${skill.icon}.png')"></div>
+    <div class="skill-icon" style="background-image: url('${import.meta.env.BASE_URL}skills/${skill.icon}.png')"></div>
     <div class="skill-level">
       ${skillTree.skills[skill.id]?.level || 0}${skill.maxLevel !== Infinity ? `/${skill.maxLevel}` : ''}
     </div>
@@ -655,7 +655,7 @@ export function updateActionBar() {
     // Add skill icon
     const iconDiv = document.createElement('div');
     iconDiv.className = 'skill-icon';
-    iconDiv.style.backgroundImage = `url('assets/skills/${skill.icon}.png')`;
+    iconDiv.style.backgroundImage = `url('${import.meta.env.BASE_URL}skills/${skill.icon}.png')`;
     skillSlot.appendChild(iconDiv);
 
     // Show active state

@@ -4,10 +4,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export default defineConfig({
-  root: 'src',
   base: process.env.VITE_BASE_PATH || '/',
   build: {
-    outDir: '../dist',
+    outDir: 'dist',
     emptyOutDir: true,
   },
   server: {
