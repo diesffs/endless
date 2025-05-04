@@ -1,5 +1,6 @@
 // Set your actual API URL here
 const apiUrl = import.meta.env.VITE_API_URL;
+const gameName = import.meta.env.VITE_GAME_NAME || 'endless';
 
 import crypt from './encrypt.js';
 
@@ -41,7 +42,7 @@ export async function saveGameData(userId, data, token) {
 
 // Cloud Load: Load game data from the server
 export async function loadGameData(userId, token, premium = 'no') {
-  const response = await apiFetch(`game-data/${userId}?premium=${premium}`, {
+  const response = await apiFetch(`game-data/${userId}?premium=${premium}&gameName=${gameName}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
