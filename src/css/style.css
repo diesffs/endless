@@ -5,7 +5,7 @@
   --accent: #3b82f6;
   --text: #ffffff;
   --health: #ef4444;
-  --persistent-storage-slot:rgb(57, 175, 230);
+  --persistent-storage-slot: rgb(57, 175, 230);
 }
 
 * {
@@ -30,7 +30,7 @@ body {
 
 .resource-bar {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: minmax(90px, 120px) minmax(90px, 120px) minmax(90px, 120px) 1fr;
   gap: 1rem;
   margin-bottom: 1rem;
   user-select: none;
@@ -496,4 +496,129 @@ body {
 
 .modify-panel button:hover {
   background-color: #4b5563;
+}
+
+.login-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3b82f6;
+  text-decoration: none;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: #e0e7ef;
+  transition: background 0.2s, color 0.2s;
+}
+.login-link:hover {
+  background: #3b82f6;
+  color: #fff;
+  text-decoration: none;
+}
+
+.cloud-save-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #232b3a;
+  border-radius: 6px;
+  padding: 0.4em 1em;
+  margin-top: 0.2em;
+  margin-bottom: 0.2em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+}
+
+#cloud-save-status {
+  font-size: 1.08em;
+  color: #10b981;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+#cloud-save-status.not-logged-in {
+  color: #ef4444;
+}
+#cloud-save-status.saving {
+  color: #f59e42;
+}
+#cloud-save-status.failed {
+  color: #ef4444;
+}
+
+#cloud-save-btn,
+#cloud-load-btn {
+  background: linear-gradient(90deg, #3b82f6 60%, #2563eb 100%);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 0.45em 1.2em;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.08);
+  transition: background 0.2s, opacity 0.2s;
+}
+#cloud-save-btn:disabled {
+  background: #a1a1aa;
+  color: #e5e7eb;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.login-status {
+  color: #ef4444;
+}
+
+#custom-confirm-dialog {
+  position: fixed;
+  left: 0; top: 0; right: 0; bottom: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  font-family: inherit;
+}
+#custom-confirm-dialog.show { display: flex; }
+#custom-confirm-dialog .confirm-backdrop {
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+}
+#custom-confirm-dialog .confirm-content {
+  position: relative;
+  background: #222;
+  color: #fff;
+  border-radius: 8px;
+  padding: 24px 32px;
+  min-width: 300px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  z-index: 1;
+  text-align: center;
+  animation: popin 0.2s;
+}
+#custom-confirm-dialog .confirm-message {
+  margin-bottom: 18px;
+  font-size: 1.1em;
+  line-height: 1.5;
+}
+#custom-confirm-dialog .confirm-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+#custom-confirm-dialog .confirm-btn {
+  padding: 8px 24px;
+  border: none;
+  border-radius: 4px;
+  font-size: 1em;
+  cursor: pointer;
+  background: #059669;
+  color: #fff;
+  transition: background 0.2s;
+}
+#custom-confirm-dialog .confirm-btn.confirm-no {
+  background: #DC2626;
+}
+#custom-confirm-dialog .confirm-btn:hover {
+  filter: brightness(1.1);
+}
+@keyframes popin {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }

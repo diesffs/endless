@@ -810,3 +810,120 @@ document.querySelectorAll('.tooltip-target').forEach((element) => {
   element.addEventListener('mousemove', positionTooltip);
   element.addEventListener('mouseleave', hideTooltip);
 });
+
+// ###########################
+// Custom Confirm Dialog
+// ###########################
+
+export function showConfirmDialog(message, options = {}) {
+  return new Promise((resolve) => {
+    let dialog = document.getElementById('custom-confirm-dialog');
+    if (!dialog) {
+      dialog = document.createElement('div');
+      dialog.id = 'custom-confirm-dialog';
+      dialog.innerHTML = `
+        <div class="confirm-backdrop"></div>
+        <div class="confirm-content">
+          <div class="confirm-message"></div>
+          <div class="confirm-actions">
+            <button class="confirm-btn confirm-yes">Yes</button>
+            <button class="confirm-btn confirm-no">No</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(dialog);
+    }
+    dialog.querySelector('.confirm-message').innerHTML = message.replace(/\n/g, '<br>');
+    dialog.style.display = 'flex';
+    dialog.classList.add('show');
+
+    const yesBtn = dialog.querySelector('.confirm-yes');
+    const noBtn = dialog.querySelector('.confirm-no');
+    const cleanup = () => {
+      dialog.classList.remove('show');
+      setTimeout(() => {
+        dialog.style.display = 'none';
+      }, 200);
+      yesBtn.removeEventListener('click', onYes);
+      noBtn.removeEventListener('click', onNo);
+      dialog.querySelector('.confirm-backdrop').removeEventListener('click', onNo);
+    };
+    const onYes = () => {
+      cleanup();
+      resolve(true);
+    };
+    const onNo = () => {
+      cleanup();
+      resolve(false);
+    };
+    yesBtn.addEventListener('click', onYes);
+    noBtn.addEventListener('click', onNo);
+    dialog.querySelector('.confirm-backdrop').addEventListener('click', onNo);
+  });
+}
+
+// Add some basic styles for the dialog if not present
+if (!document.getElementById('custom-confirm-dialog-style')) {
+  const style = document.createElement('style');
+  style.id = 'custom-confirm-dialog-style';
+  style.textContent = `
+    #custom-confirm-dialog {
+      position: fixed;
+      left: 0; top: 0; right: 0; bottom: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      font-family: inherit;
+    }
+    #custom-confirm-dialog.show { display: flex; }
+    #custom-confirm-dialog .confirm-backdrop {
+      position: absolute;
+      left: 0; top: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4);
+    }
+    #custom-confirm-dialog .confirm-content {
+      position: relative;
+      background: #222;
+      color: #fff;
+      border-radius: 8px;
+      padding: 24px 32px;
+      min-width: 300px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+      z-index: 1;
+      text-align: center;
+      animation: popin 0.2s;
+    }
+    #custom-confirm-dialog .confirm-message {
+      margin-bottom: 18px;
+      font-size: 1.1em;
+      line-height: 1.5;
+    }
+    #custom-confirm-dialog .confirm-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+    #custom-confirm-dialog .confirm-btn {
+      padding: 8px 24px;
+      border: none;
+      border-radius: 4px;
+      font-size: 1em;
+      cursor: pointer;
+      background: #059669;
+      color: #fff;
+      transition: background 0.2s;
+    }
+    #custom-confirm-dialog .confirm-btn.confirm-no {
+      background: #DC2626;
+    }
+    #custom-confirm-dialog .confirm-btn:hover {
+      filter: brightness(1.1);
+    }
+    @keyframes popin {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+  `;
+  document.head.appendChild(style);
+}

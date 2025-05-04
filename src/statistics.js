@@ -37,6 +37,7 @@ export default class Statistics {
     this.timePlayedInSeconds = 0;
     this.prestigeCount = 0;
     this.highestZoneReached = 0;
+    this.updateStatisticsUI();
   }
 
   // Add to the constructor or in a separate initUI method

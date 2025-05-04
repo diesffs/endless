@@ -10,6 +10,7 @@ import {
 import { playerAttack, enemyAttack } from './combat.js';
 import { game, hero, inventory, prestige, shop, skillTree, statistics } from './globals.js';
 import Enemy from './enemy.js';
+import { loadGameData } from './api.js';
 
 class Game {
   constructor() {
@@ -104,9 +105,7 @@ class Game {
   }
 
   saveGame() {
-    // update statisticsa
     statistics.updateStatisticsUI();
-
     const saveData = {
       hero: hero,
       skillTree: skillTree,
@@ -115,10 +114,15 @@ class Game {
       inventory: inventory,
       statistics: statistics,
     };
-
     localStorage.setItem('gameProgress', JSON.stringify(saveData));
   }
 
+  /**
+   * Loads the latest game data from localStorage.
+   * The cloud save/load logic is now handled manually in main.js.
+   * This function is no longer used for cloud sync and only loads from localStorage.
+   * @returns {object|null} The latest save data
+   */
   loadGame() {
     const savedData = localStorage.getItem('gameProgress');
     if (savedData) {
