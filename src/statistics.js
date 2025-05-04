@@ -1,5 +1,5 @@
 import { handleSavedData } from './functions.js';
-import { game, hero } from './main.js';
+import { game, hero } from './globals.js';
 
 export default class Statistics {
   constructor(savedData = null) {

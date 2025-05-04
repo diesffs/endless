@@ -1,7 +1,7 @@
 import { updateResources, updateStatsAndAttributesUI } from './ui.js';
 
 import { showToast } from './ui.js';
-import { game, hero } from './main.js';
+import { game, hero } from './globals.js';
 import { handleSavedData } from './functions.js';
 import { STAT_DECIMAL_PLACES } from './hero.js';
 

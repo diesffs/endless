@@ -1,4 +1,4 @@
-import { game, hero, shop, skillTree, statistics } from './main.js';
+import { game, hero, shop, skillTree, statistics } from './globals.js';
 import {
   updateZoneUI,
   updateResources,

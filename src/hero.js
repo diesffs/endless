@@ -1,5 +1,5 @@
 import { initializeSkillTreeStructure, updateStatsAndAttributesUI } from './ui.js';
-import { game, inventory, shop, skillTree } from './main.js';
+import { game, inventory, shop, skillTree } from './globals.js';
 import { updatePlayerHealth } from './ui.js';
 import { createCombatText } from './combat.js';
 import { handleSavedData } from './functions.js';

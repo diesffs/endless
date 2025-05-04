@@ -1,4 +1,4 @@
-import { game, hero, inventory, prestige, shop, skillTree } from './main.js';
+import { game, hero, inventory, prestige, shop, skillTree } from './globals.js';
 import { showToast, updatePlayerHealth, updateResources } from './ui.js';
 
 export const handleSavedData = (savedData, self) => {

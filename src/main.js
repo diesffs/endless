@@ -15,6 +15,8 @@ import Inventory from './inventory.js';
 import SkillTree from './skillTree.js';
 import { createDebugUI, createModifyUI } from './functions.js';
 import Statistics from './statistics.js';
+import { apiFetch, saveGameData } from './api.js';
+import { game, hero, inventory, shop, skillTree, prestige, statistics, setGlobals } from './globals.js';
 
 window.qwe = console.log;
 window.qw = console.log;
@@ -23,15 +25,25 @@ window.q = console.log;
 
 export let dev = false;
 
-export const game = new Game();
-const savedData = game.loadGame();
+// After creating all instances:
+const _game = new Game();
+const savedData = _game.loadGame();
+const _hero = new Hero(savedData?.hero);
+const _inventory = new Inventory(savedData?.inventory);
+const _skillTree = new SkillTree(savedData?.skillTree);
+const _prestige = new Prestige(savedData?.prestige);
+const _shop = new Shop(savedData?.shop);
+const _statistics = new Statistics(savedData?.statistics);
 
-export const hero = new Hero(savedData?.hero);
-export const inventory = new Inventory(savedData?.inventory);
-export const skillTree = new SkillTree(savedData?.skillTree);
-export const prestige = new Prestige(savedData?.prestige);
-export const shop = new Shop(savedData?.shop);
-export const statistics = new Statistics(savedData?.statistics);
+setGlobals({
+  game: _game,
+  hero: _hero,
+  inventory: _inventory,
+  shop: _shop,
+  skillTree: _skillTree,
+  prestige: _prestige,
+  statistics: _statistics,
+});
 
 game.zone = hero?.startingZone || 1;
 
@@ -95,3 +107,58 @@ document.addEventListener('keydown', (event) => {
     }
   }
 });
+
+// Cloud Save UI logic
+const cloudSaveStatus = document.getElementById('cloud-save-status');
+const cloudSaveBtn = document.getElementById('cloud-save-btn');
+let lastCloudSave = null;
+let userSession = null;
+
+async function checkSession() {
+  try {
+    const res = await apiFetch(`user/session`, { credentials: 'include' });
+    if (!res.ok) throw new Error('Not logged in');
+    userSession = await res.json();
+    cloudSaveStatus.textContent = lastCloudSave
+      ? `Last cloud save: ${new Date(lastCloudSave).toLocaleTimeString()}`
+      : 'Ready to save to cloud';
+    cloudSaveBtn.disabled = false;
+    cloudSaveBtn.classList.remove('disabled');
+  } catch (error) {
+    userSession = null;
+    cloudSaveStatus.textContent = 'Not logged in';
+    cloudSaveBtn.disabled = true;
+    cloudSaveBtn.classList.add('disabled');
+  }
+}
+
+cloudSaveBtn.addEventListener('click', async () => {
+  if (!userSession) return;
+  cloudSaveBtn.disabled = true;
+  cloudSaveStatus.textContent = 'Saving...';
+  try {
+    // Save local game data to cloud
+    await saveGameData(
+      userSession.userId,
+      {
+        hero,
+        skillTree,
+        prestige,
+        shop,
+        inventory,
+        statistics,
+      },
+      userSession.token
+    );
+    lastCloudSave = Date.now();
+    cloudSaveStatus.textContent = `Last cloud save: ${new Date(lastCloudSave).toLocaleTimeString()}`;
+  } catch (e) {
+    cloudSaveStatus.textContent = 'Cloud save failed';
+  } finally {
+    cloudSaveBtn.disabled = !userSession;
+  }
+});
+
+// Check session on load and every 60s
+checkSession();
+setInterval(checkSession, 60000);

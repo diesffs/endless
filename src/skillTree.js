@@ -1,6 +1,6 @@
 import { createDamageNumber, defeatEnemy } from './combat.js';
 import { handleSavedData } from './functions.js';
-import { game, hero } from './main.js';
+import { game, hero } from './globals.js';
 import {
   showManaWarning,
   showToast,

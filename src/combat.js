@@ -7,7 +7,7 @@ import {
 } from './ui.js';
 import Enemy from './enemy.js';
 import { ITEM_RARITY } from './item.js';
-import { hero, game, inventory, prestige, statistics } from './main.js';
+import { hero, game, inventory, prestige, statistics } from './globals.js';
 
 export function enemyAttack(currentTime) {
   if (!game || !hero || !game.currentEnemy) return;

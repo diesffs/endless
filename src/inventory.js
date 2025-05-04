@@ -1,6 +1,6 @@
 import { handleSavedData } from './functions.js';
 import Item, { ITEM_RARITY, RARITY_ORDER, SLOT_REQUIREMENTS } from './item.js';
-import { game, hero } from './main.js';
+import { game, hero } from './globals.js';
 import { hideTooltip, positionTooltip, showToast, showTooltip } from './ui.js';
 
 const PERSISTENT_SLOTS = 30;
