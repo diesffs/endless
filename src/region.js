@@ -28,8 +28,8 @@ export const REGIONS = [
     unlockLevel: 1, // Always unlocked
     enemyHealthMultiplier: 1.0,
     enemyDamageMultiplier: 1.0,
-    xpMultiplier: 0.7,
-    goldMultiplier: 1.0,
+    xpMultiplier: 1.0,
+    goldMultiplier: 1.3,
     itemDropMultiplier: 1.0,
   },
   {
@@ -47,11 +47,11 @@ export const REGIONS = [
       'Stormlord',
       'Grimreaper',
     ],
-    unlockLevel: 20, // Unlocked at hero level 20
-    enemyHealthMultiplier: 1.3,
+    unlockLevel: 25, // Unlocked at hero level 20
+    enemyHealthMultiplier: 1.4,
     enemyDamageMultiplier: 1.2,
-    xpMultiplier: 1.2,
-    goldMultiplier: 1.15,
+    xpMultiplier: 1.5,
+    goldMultiplier: 1.3,
     itemDropMultiplier: 1.1,
   },
   {
@@ -70,11 +70,11 @@ export const REGIONS = [
       'Stormcaller',
     ],
     unlockLevel: 50, // Unlocked at hero level 50
-    enemyHealthMultiplier: 1.5,
+    enemyHealthMultiplier: 1.7,
     enemyDamageMultiplier: 1.3,
-    xpMultiplier: 1.3,
-    goldMultiplier: 1.2,
-    itemDropMultiplier: 1.15,
+    xpMultiplier: 1,
+    goldMultiplier: 1,
+    itemDropMultiplier: 2,
   },
   {
     id: 'desert',
@@ -91,12 +91,12 @@ export const REGIONS = [
       'Ashcaller',
       'Inferno',
     ],
-    unlockLevel: 35, // Unlocked at hero level 35
-    enemyHealthMultiplier: 1.2,
-    enemyDamageMultiplier: 1.15,
-    xpMultiplier: 1.1,
-    goldMultiplier: 1.1,
-    itemDropMultiplier: 1.05,
+    unlockLevel: 90, // Unlocked at hero level 35
+    enemyHealthMultiplier: 2.2,
+    enemyDamageMultiplier: 1.5,
+    xpMultiplier: 1.8,
+    goldMultiplier: 1.8,
+    itemDropMultiplier: 2.5,
   },
   {
     id: 'swamp',
@@ -113,12 +113,12 @@ export const REGIONS = [
       'Mudreaper',
       'Poisonfang',
     ],
-    unlockLevel: 10, // Unlocked at hero level 10
-    enemyHealthMultiplier: 1.1,
-    enemyDamageMultiplier: 1.05,
-    xpMultiplier: 1.05,
-    goldMultiplier: 1.05,
-    itemDropMultiplier: 1.02,
+    unlockLevel: 150, // Unlocked at hero level 10
+    enemyHealthMultiplier: 2,
+    enemyDamageMultiplier: 1.8,
+    xpMultiplier: 4,
+    goldMultiplier: 1.5,
+    itemDropMultiplier: 1,
   },
   {
     id: 'skyrealm',
@@ -135,12 +135,12 @@ export const REGIONS = [
       'Tempestlord',
       'Aetherborn',
     ],
-    unlockLevel: 60, // Unlocked at hero level 60
-    enemyHealthMultiplier: 1.7,
-    enemyDamageMultiplier: 1.4,
-    xpMultiplier: 1.5,
-    goldMultiplier: 1.3,
-    itemDropMultiplier: 1.2,
+    unlockLevel: 250, // Unlocked at hero level 60
+    enemyHealthMultiplier: 4,
+    enemyDamageMultiplier: 1.5,
+    xpMultiplier: 2,
+    goldMultiplier: 11,
+    itemDropMultiplier: 1,
   },
 ];
 
