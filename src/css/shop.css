@@ -1,5 +1,3 @@
-
-
 .shop-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -12,10 +10,9 @@
   background-color: var(--bg-element);
   color: var(--text);
   border: 2px solid var(--accent);
-  padding: 1rem;
+  padding: 1rem 0.3rem;
   border-radius: 0.5rem;
   cursor: pointer;
-  font-size: 1rem;
   transition: all 0.3s ease;
   min-height: 80px;
   display: flex;
@@ -23,7 +20,6 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  line-height: 1.4;
 }
 
 .shop-grid button:hover {
@@ -52,4 +48,9 @@
 .shop-grid .upgrade-cost {
   font-size: 0.9rem;
   color: #fcd34d;
+}
+
+.upgrade-bonus {
+  color: #4caf50;
+  margin: 2px 0;
 }

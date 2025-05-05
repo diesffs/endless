@@ -216,9 +216,8 @@ export let dev = false;
     cloudLoadBtn.disabled = true;
     cloudLoadBtn.textContent = 'Loading...';
     try {
-      const { data: cloudData } = await import('./api.js').then((m) =>
-        m.loadGameData(userSession.id, userSession.token)
-      );
+      const { data: cloudData } = await loadGameData(userSession.id, userSession.token);
+
       if (!cloudData) throw new Error('No cloud save found');
       // Extract info for confirmation
       const info = cloudData.hero || {};

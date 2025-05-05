@@ -1416,6 +1416,7 @@ export default class SkillTree {
 
     // Trigger tooltip update
     updateSkillTreeValues(); // Ensure this function updates the tooltip content
+    game.saveGame();
 
     return true;
   }
