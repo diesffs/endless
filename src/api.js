@@ -26,7 +26,7 @@ export async function saveGameData(userId, data, token) {
     data_json: crypt.encrypt(JSON.stringify(data.data_json)),
     game_name: data.game_name,
   };
-  const response = await apiFetch(`game-data/${userId}`, {
+  const response = await apiFetch(`/game-data/${userId}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ export async function saveGameData(userId, data, token) {
 
 // Cloud Load: Load game data from the server
 export async function loadGameData(userId, token, premium = 'no') {
-  const response = await apiFetch(`game-data/${userId}?premium=${premium}&gameName=${gameName}`, {
+  const response = await apiFetch(`/game-data/${userId}?premium=${premium}&gameName=${gameName}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

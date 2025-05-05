@@ -255,7 +255,7 @@ export const ATTRIBUTE_TOOLTIPS = {
   getAttackRatingTooltip: () => html`
     <strong>Attack Rating</strong><br />
     Determines hit chance against enemies.<br />
-    Higher zones require more Attack Rating.
+    Higher stages require more Attack Rating.
   `,
 
   getCritChanceTooltip: () => html`
@@ -300,7 +300,7 @@ export const ATTRIBUTE_TOOLTIPS = {
   getArmorTooltip: () => html`
     <strong>Armor</strong><br />
     Reduces incoming damage.<br />
-    Effectiveness decreases in higher zones.
+    Effectiveness decreases in higher stages.
   `,
 
   getBlockChanceTooltip: () => html`
@@ -323,9 +323,9 @@ export default class Hero {
 
     this.statPoints = 0;
     this.souls = 0;
-    this.highestZone = 1;
+    this.highestStage = 1;
 
-    this.startingZone = 1;
+    this.startingStage = 1;
     this.startingGold = 0;
 
     this.primaryStats = {
@@ -665,8 +665,8 @@ export default class Hero {
 
   calculateArmorReduction() {
     const armor = this.stats.armor;
-    const zoneScaling = 1 + (game.zone - 1) * 0.1; // Linear 10% increase per zone, matching attack rating
-    const constant = 100 * zoneScaling;
+    const stageScaling = 1 + (game.stage - 1) * 0.1; // Linear 10% increase per stage, matching attack rating
+    const constant = 100 * stageScaling;
     const reduction = (armor / (armor + constant)) * 100;
     return Math.min(reduction, 95); // Keep the 95% cap
   }

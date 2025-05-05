@@ -1,7 +1,7 @@
 import {
   updatePlayerHealth,
   updateEnemyHealth,
-  updateZoneUI,
+  updateStageUI,
   updateResources,
   updateBuffIndicators,
   showToast,
@@ -16,22 +16,22 @@ class Game {
   constructor() {
     this.gameStarted = false;
     this.currentEnemy = null;
-    this.zone = 1;
+    this.stage = 1;
     this.lastPlayerAttack = Date.now();
     this.lastRegen = Date.now();
   }
 
-  incrementZone() {
-    this.zone += 1;
-    if (this.zone > hero.highestZone) {
-      if (statistics.highestZoneReached < this.zone) {
-        statistics.set('highestZoneReached', null, this.zone);
+  incrementStage() {
+    this.stage += 1;
+    if (this.stage > hero.highestStage) {
+      if (statistics.highestStageReached < this.stage) {
+        statistics.set('highestStageReached', null, this.stage);
       }
-      hero.highestZone = this.zone;
-      hero.crystals += 1; // Award 1 crystal for increasing highest zone
+      hero.highestStage = this.stage;
+      hero.crystals += 1; // Award 1 crystal for increasing highest stage
     }
 
-    updateZoneUI();
+    updateStageUI();
     updateResources(); // Update resources to reflect new crystal count
   }
 
@@ -68,9 +68,9 @@ class Game {
       this.lastRegen = currentTime;
     }
 
-    // Only update Prestige UI after zone progression
-    if (this.zoneChanged) {
-      this.zoneChanged = false; // Reset flag
+    // Only update Prestige UI after stage progression
+    if (this.stageChanged) {
+      this.stageChanged = false; // Reset flag
       prestige.initializePrestigeUI(); // Update Prestige UI
     }
 
@@ -92,9 +92,9 @@ class Game {
       skillTree.stopAllBuffs();
       updateBuffIndicators();
 
-      this.zone = hero.startingZone; // Reset zone
-      updateZoneUI();
-      this.currentEnemy = new Enemy(this.zone);
+      this.stage = hero.startingStage; // Reset stage
+      updateStageUI();
+      this.currentEnemy = new Enemy(this.stage);
 
       hero.stats.currentHealth = hero.stats.health; // Reset player health
       hero.stats.currentMana = hero.stats.mana; // Reset player mana
@@ -137,14 +137,14 @@ class Game {
   }
 
   resetAllProgress() {
-    hero.highestZone = 1; // needed to reset souls
+    hero.highestStage = 1; // needed to reset souls
     hero.souls = 0;
     hero.crystals = 0;
-    hero.startingZone = 1;
+    hero.startingStage = 1;
     hero.startingGold = 0;
     // reset prestige upgrades
     prestige.crystalUpgrades = {
-      startingZone: 0,
+      startingStage: 0,
       startingGold: 0,
       continuousPlay: false,
     };

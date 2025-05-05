@@ -16,7 +16,7 @@ export default class Statistics {
     this.totalItemsFound = 0;
     this.timePlayedInSeconds = 0;
     this.prestigeCount = 0;
-    this.highestZoneReached = 0;
+    this.highestStageReached = 0;
 
     handleSavedData(savedData, this);
     this.lastUpdate = Date.now();
@@ -36,7 +36,7 @@ export default class Statistics {
     this.totalItemsFound = 0;
     this.timePlayedInSeconds = 0;
     this.prestigeCount = 0;
-    this.highestZoneReached = 0;
+    this.highestStageReached = 0;
     this.updateStatisticsUI();
   }
 
@@ -82,10 +82,10 @@ export default class Statistics {
       enemiesKilled.textContent = `Total Enemies killed: ${this.enemiesKilled.total || 0}`;
     }
 
-    // Update highest zone if displayed
-    const highestZone = document.getElementById('stat-highest-zone');
-    if (highestZone) {
-      highestZone.textContent = `Highest Zone Reached: ${this.highestZoneReached || 1}`;
+    // Update highest stage if displayed
+    const highestStage = document.getElementById('stat-highest-stage');
+    if (highestStage) {
+      highestStage.textContent = `Highest Stage Reached: ${this.highestStageReached || 1}`;
     }
   }
 

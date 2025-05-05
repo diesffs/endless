@@ -1,6 +1,6 @@
 import { game, hero, shop, skillTree, statistics } from './globals.js';
 import {
-  updateZoneUI,
+  updateStageUI,
   updateResources,
   updatePlayerHealth,
   updateStatsAndAttributesUI,
@@ -16,8 +16,8 @@ import { handleSavedData } from './functions.js';
 const html = String.raw;
 
 const CRYSTAL_UPGRADE_CONFIG = {
-  startingZone: {
-    label: 'Starting Zone',
+  startingStage: {
+    label: 'Starting Stage',
     bonus: 1,
     baseCost: 2,
   },
@@ -37,7 +37,7 @@ const CRYSTAL_UPGRADE_CONFIG = {
 export default class Prestige {
   constructor(savedData = null) {
     this.crystalUpgrades = {
-      startingZone: 0,
+      startingStage: 0,
       startingGold: 0,
       continuousPlay: false,
     };
@@ -46,7 +46,7 @@ export default class Prestige {
   }
 
   calculateSouls() {
-    const souls = Math.floor(hero.highestZone / 5); // Example: 1 soul per 5 zones
+    const souls = Math.floor(hero.highestStage / 5); // Example: 1 soul per 5 stages
     return souls;
   }
 
@@ -56,10 +56,10 @@ export default class Prestige {
     // Store crystal-related values before reset
     const savedValues = {
       crystals: hero.crystals,
-      startingZone: hero.startingZone,
+      startingStage: hero.startingStage,
       startingGold: hero.startingGold,
       crystalUpgrades: {
-        startingZone: this.crystalUpgrades.startingZone,
+        startingStage: this.crystalUpgrades.startingStage,
         startingGold: this.crystalUpgrades.startingGold,
         continuousPlay: this.crystalUpgrades.continuousPlay,
       },
@@ -79,9 +79,9 @@ export default class Prestige {
 
     // Restore crystal-related values
     hero.crystals = savedValues.crystals;
-    hero.startingZone = savedValues.startingZone;
+    hero.startingStage = savedValues.startingStage;
     hero.startingGold = savedValues.startingGold;
-    this.crystalUpgrades.startingZone = savedValues.crystalUpgrades.startingZone;
+    this.crystalUpgrades.startingStage = savedValues.crystalUpgrades.startingStage;
     this.crystalUpgrades.startingGold = savedValues.crystalUpgrades.startingGold;
     this.crystalUpgrades.continuousPlay = savedValues.crystalUpgrades.continuousPlay;
 
@@ -114,16 +114,16 @@ export default class Prestige {
   }
 
   resetGame() {
-    if (!game || typeof game.zone !== 'number') {
+    if (!game || typeof game.stage !== 'number') {
       console.error('Game is not properly initialized in resetGame:', game);
       return;
     }
 
-    game.zone = hero.startingZone;
+    game.stage = hero.startingStage;
     hero.gold = hero.startingGold;
     game.gameStarted = false;
-    game.currentEnemy = new Enemy(game.zone);
-    updateZoneUI();
+    game.currentEnemy = new Enemy(game.stage);
+    updateStageUI();
 
     // RARITY_ORDER.forEach((rarity) => inventory.salvageItemsByRarity(rarity));
 
@@ -207,8 +207,8 @@ export default class Prestige {
         this.crystalUpgrades[stat] = (this.crystalUpgrades[stat] || 0) + 1;
       }
 
-      if (stat === 'startingZone') {
-        hero.startingZone = 1 + this.crystalUpgrades[stat];
+      if (stat === 'startingStage') {
+        hero.startingStage = 1 + this.crystalUpgrades[stat];
       } else if (stat === 'startingGold') {
         hero.startingGold = this.crystalUpgrades[stat] * 1000;
       }

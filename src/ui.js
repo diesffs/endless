@@ -7,14 +7,14 @@ import { ATTRIBUTE_TOOLTIPS, STAT_DECIMAL_PLACES } from './hero.js';
 const html = String.raw;
 
 export function initializeUI() {
-  game.currentEnemy = new Enemy(game.zone);
+  game.currentEnemy = new Enemy(game.stage);
   game.activeTab = 'inventory';
   document.querySelectorAll('.tab-btn').forEach((btn) => {
     btn.addEventListener('click', () => switchTab(game, btn.dataset.tab));
   });
   document.getElementById('start-btn').addEventListener('click', () => toggleGame());
 
-  updateZoneUI();
+  updateStageUI();
 }
 
 export function switchTab(game, tabName) {
@@ -31,7 +31,7 @@ export function switchTab(game, tabName) {
 }
 
 export function updateResources() {
-  if (!game || typeof game.zone !== 'number') {
+  if (!game || typeof game.stage !== 'number') {
     console.error('Game is not initialized properly:', game);
     return;
   }
@@ -93,7 +93,7 @@ export function updateStatsAndAttributesUI() {
     statsContainer = document.createElement('div');
     statsContainer.className = 'stats-container';
     statsContainer.innerHTML = html`
-      <!-- xp, lvl, zone -->
+      <!-- xp, lvl, stage -->
       <div><strong>Level:</strong> <span id="level-value">${hero.level || 1}</span></div>
       <div>
         <strong>EXP:</strong> <span id="exp-value">${hero.exp || 0}</span> /
@@ -101,7 +101,7 @@ export function updateStatsAndAttributesUI() {
         (<span id="exp-progress">${((hero.exp / hero.expToNextLevel) * 100).toFixed(1)}%</span>)
       </div>
 
-      <div><strong>Highest Zone:</strong><span id="highest-zone-value">${hero.highestZone}</span></div>
+      <div><strong>Highest Stage:</strong><span id="highest-stage-value">${hero.highestStage}</span></div>
 
       <!-- OFFENSE -->
 
@@ -119,7 +119,7 @@ export function updateStatsAndAttributesUI() {
       <div>
         <strong>Attack Rating:</strong>
         <span id="attack-rating-value">${hero.stats.attackRating}</span> (<span id="hit-chance-value">
-          ${calculateHitChance(hero.stats.attackRating, game.zone).toFixed(2)}%</span
+          ${calculateHitChance(hero.stats.attackRating, game.stage).toFixed(2)}%</span
         >)
       </div>
 
@@ -250,14 +250,14 @@ export function updateStatsAndAttributesUI() {
     document.getElementById('level-value').textContent = hero.level || 1;
     document.getElementById('exp-value').textContent = hero.exp || 0;
     document.getElementById('exp-to-next-level-value').textContent = hero.expToNextLevel || 100;
-    document.getElementById('highest-zone-value').textContent = hero.highestZone;
+    document.getElementById('highest-stage-value').textContent = hero.highestStage;
     document.getElementById('damage-value').textContent = hero.stats.damage;
     document.getElementById('attack-speed-value').textContent = hero.stats.attackSpeed
       .toFixed(STAT_DECIMAL_PLACES.attackSpeed)
       .replace(/\./g, ',');
     document.getElementById('attack-rating-value').textContent = hero.stats.attackRating;
     document.getElementById('hit-chance-value').textContent =
-      calculateHitChance(hero.stats.attackRating, game.zone).toFixed(2) + '%';
+      calculateHitChance(hero.stats.attackRating, game.stage).toFixed(2) + '%';
     document.getElementById('crit-chance-value').textContent =
       hero.stats.critChance.toFixed(STAT_DECIMAL_PLACES.critChance).replace(/\./g, ',') + '%';
     document.getElementById('crit-damage-value').textContent =
@@ -364,11 +364,11 @@ export function updateStatsAndAttributesUI() {
   skillTreeTab.classList.remove('hidden');
 }
 
-export function updateZoneUI() {
-  const zone = game.zone;
-  const zoneDisplay = document.getElementById('zone-display');
-  if (zoneDisplay) {
-    zoneDisplay.textContent = `Zone: ${zone}`;
+export function updateStageUI() {
+  const stage = game.stage;
+  const stageDisplay = document.getElementById('stage-display');
+  if (stageDisplay) {
+    stageDisplay.textContent = `Stage: ${stage}`;
   }
 }
 

@@ -2,7 +2,7 @@ import {
   updatePlayerHealth,
   updateEnemyHealth,
   updateResources,
-  updateZoneUI,
+  updateStageUI,
   updateStatsAndAttributesUI,
 } from './ui.js';
 import Enemy from './enemy.js';
@@ -55,7 +55,7 @@ export function playerAttack(currentTime) {
   if (currentTime - game.lastPlayerAttack >= timeBetweenAttacks) {
     if (game.currentEnemy.currentHealth > 0) {
       // Calculate if attack hits
-      const hitChance = calculateHitChance(hero.stats.attackRating, game.zone);
+      const hitChance = calculateHitChance(hero.stats.attackRating, game.stage);
       const roll = Math.random() * 100;
 
       if (roll > hitChance) {
@@ -96,9 +96,9 @@ export function playerDeath() {
   }
 
   // Reset everything regardless of continue state
-  game.zone = hero.startingZone;
-  updateZoneUI();
-  game.currentEnemy = new Enemy(game.zone);
+  game.stage = hero.startingStage;
+  updateStageUI();
+  game.currentEnemy = new Enemy(game.stage);
   game.resetAllHealth();
 
   // Update all UI elements
@@ -123,8 +123,8 @@ export function defeatEnemy() {
   const enemy = game.currentEnemy;
   // const droppedItem = dropLoot(enemy);
 
-  const baseExpGained = game.zone * 5;
-  const baseGoldGained = 10 + game.zone * 8;
+  const baseExpGained = game.stage * 5;
+  const baseGoldGained = 10 + game.stage * 8;
 
   // Apply bonus experience and gold
   const expGained = Math.floor(baseExpGained * (1 + hero.stats.bonusExperience / 100));
@@ -134,7 +134,7 @@ export function defeatEnemy() {
   hero.gainExp(expGained);
 
   if (enemy.rollForDrop()) {
-    const itemLevel = enemy.calculateItemLevel(game.zone);
+    const itemLevel = enemy.calculateItemLevel(game.stage);
     const itemType = enemy.getRandomItemType();
     const newItem = inventory.createItem(itemType, itemLevel);
     inventory.addItemToInventory(newItem);
@@ -142,8 +142,8 @@ export function defeatEnemy() {
     showLootNotification(newItem);
   }
 
-  game.incrementZone();
-  game.currentEnemy = new Enemy(game.zone);
+  game.incrementStage();
+  game.currentEnemy = new Enemy(game.stage);
   game.currentEnemy.lastAttack = Date.now();
 
   statistics.increment('enemiesKilled', 'total');
@@ -217,8 +217,8 @@ export function createCombatText(text) {
   setTimeout(() => textEl.remove(), 1000);
 }
 
-export function calculateHitChance(attackRating, zone) {
-  const zoneScaling = 1 + (zone - 1) * 0.1; // Linear 10% increase per zone
-  const baseChance = (attackRating / (attackRating + 25 * zoneScaling)) * 100;
+export function calculateHitChance(attackRating, stage) {
+  const stageScaling = 1 + (stage - 1) * 0.1; // Linear 10% increase per stage
+  const baseChance = (attackRating / (attackRating + 25 * stageScaling)) * 100;
   return Math.min(Math.max(baseChance, 10), 100);
 }

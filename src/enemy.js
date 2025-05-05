@@ -128,12 +128,12 @@ const ENEMY_NAMES = [
 ];
 
 class Enemy {
-  constructor(zone) {
+  constructor(stage) {
     this.rarity = this.generateRarity();
     this.color = this.getRarityColor(this.rarity);
-    this.health = this.calculateHealth(zone, this.rarity);
+    this.health = this.calculateHealth(stage, this.rarity);
     this.currentHealth = this.health;
-    this.damage = this.calculateDamage(zone, this.rarity);
+    this.damage = this.calculateDamage(stage, this.rarity);
     this.attackSpeed = this.calculateAttackSpeed(this.rarity);
     this.lastAttack = Date.now();
     this.element = this.generateElement();
@@ -187,8 +187,8 @@ class Enemy {
     return rarityMap[rarity] || 'white';
   }
 
-  calculateHealth(zone, rarity) {
-    const baseHealth = 49 + Math.pow(zone, 1.75);
+  calculateHealth(stage, rarity) {
+    const baseHealth = 49 + Math.pow(stage, 1.75);
     const rarityMap = {
       [ENEMY_RARITY.NORMAL.type]: ENEMY_RARITY.NORMAL.healthBonus,
       [ENEMY_RARITY.RARE.type]: ENEMY_RARITY.RARE.healthBonus,
@@ -200,8 +200,8 @@ class Enemy {
     return baseHealth * (rarityMap[rarity] || ENEMY_RARITY.NORMAL.healthBonus);
   }
 
-  calculateDamage(zone, rarity) {
-    const baseDamage = 4 + Math.pow(zone, 1.15);
+  calculateDamage(stage, rarity) {
+    const baseDamage = 4 + Math.pow(stage, 1.15);
     const rarityMap = {
       [ENEMY_RARITY.NORMAL.type]: ENEMY_RARITY.NORMAL.bonusDamage,
       [ENEMY_RARITY.RARE.type]: ENEMY_RARITY.RARE.bonusDamage,
@@ -238,8 +238,8 @@ class Enemy {
     return enemyConst.itemDropChance;
   }
 
-  calculateItemLevel(zone) {
-    return Math.max(1, Math.floor(zone * 0.7));
+  calculateItemLevel(stage) {
+    return Math.max(1, Math.floor(stage * 0.7));
   }
 
   rollForDrop() {

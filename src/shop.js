@@ -5,6 +5,8 @@ import { game, hero } from './globals.js';
 import { handleSavedData } from './functions.js';
 import { STAT_DECIMAL_PLACES } from './hero.js';
 
+const html = String.raw;
+
 const UPGRADE_CONFIG = {
   // Existing stats
   damage: { label: 'Damage', bonus: 1 },
@@ -31,7 +33,7 @@ export const BASE_UPGRADE_COSTS = {
   damage: 60,
   attackSpeed: 200,
   health: 80,
-  armor: 120,
+  armor: 60,
   critChance: 140,
   critDamage: 200,
   mana: 100,
@@ -173,11 +175,10 @@ export default class Shop {
     const level = this.upgradeLevels[stat] || 0;
     const bonus = this.getBonusText(stat, config, level);
 
-    return `
+    return html`
       <button data-stat="${stat}">
         <span class="upgrade-name">${config.label} (Lvl ${level})</span>
-        <span class="upgrade-bonus"> ${bonus}
-        </span>
+        <span class="upgrade-bonus"> ${bonus} </span>
         <span class="upgrade-cost">${cost} ${'Gold'}</span>
       </button>
     `;

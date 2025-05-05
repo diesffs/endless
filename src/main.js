@@ -8,7 +8,7 @@ import {
   updatePlayerHealth,
   updateResources,
   updateStatsAndAttributesUI,
-  updateZoneUI,
+  updateStageUI,
   showConfirmDialog,
 } from './ui.js';
 import Prestige from './prestige.js';
@@ -49,7 +49,7 @@ export let dev = false;
     statistics: _statistics,
   });
 
-  game.zone = hero?.startingZone || 1;
+  game.stage = hero?.startingStage || 1;
 
   initializeUI();
   prestige.initializePrestigeUI();
@@ -63,7 +63,7 @@ export let dev = false;
 
   updatePlayerHealth();
   updateStatsAndAttributesUI();
-  updateZoneUI();
+  updateStageUI();
   updateEnemyHealth();
 
   game.saveGame();
@@ -123,7 +123,7 @@ export let dev = false;
 
   async function checkSession() {
     try {
-      const res = await apiFetch(`user/session`, { credentials: 'include' });
+      const res = await apiFetch(`/user/session`, { credentials: 'include' });
       if (!res.ok) throw new Error('Not logged in');
       userSession = (await res.json()).user;
 
