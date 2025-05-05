@@ -173,7 +173,7 @@ export function getUnlockedRegions(hero) {
 }
 
 export function loadRegionSelection() {
-  currentRegionId = localStorage.getItem('selectedRegion') || REGIONS[0].id;
+  currentRegionId = REGIONS[0].id;
 }
 
 // Helper to get emoji for element

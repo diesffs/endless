@@ -412,6 +412,39 @@ export function initializeSkillTreeUI() {
   const classSelection = document.getElementById('class-selection');
   const skillTreeContainer = document.getElementById('skill-tree-container');
 
+  // --- Only show Reset Skill Tree button if a path is selected ---
+  let resetBtn = document.getElementById('reset-skill-tree-btn');
+  if (skillTree.selectedPath) {
+    if (!resetBtn) {
+      resetBtn = document.createElement('button');
+      resetBtn.id = 'reset-skill-tree-btn';
+      resetBtn.className = 'danger-btn';
+      resetBtn.style.margin = '12px auto 16px auto';
+      resetBtn.style.display = 'block';
+      resetBtn.textContent = 'Reset Skill Tree (Cost: 10 💎)';
+      resetBtn.onclick = async () => {
+        if (hero.crystals < 10) {
+          showToast('Not enough crystals to reset skill tree!', 'warning');
+          return;
+        }
+        const confirmed = await showConfirmDialog(
+          'Are you sure you want to reset your skill path and refund all skill points?<br>This will cost <strong>10 crystals</strong> and cannot be undone.'
+        );
+        if (confirmed) {
+          hero.crystals -= 10;
+          skillTree.resetSkillTree();
+          initializeSkillTreeUI();
+          updateResources();
+          showToast('Skill tree has been reset and all points refunded.', 'success');
+        }
+      };
+      container.insertBefore(resetBtn, container.firstChild);
+    }
+    resetBtn.style.display = 'block';
+  } else if (resetBtn) {
+    resetBtn.style.display = 'none';
+  }
+
   if (!skillTree.selectedPath) {
     classSelection.classList.remove('hidden');
     skillTreeContainer.classList.add('hidden');
@@ -462,6 +495,7 @@ function selectClassPath(pathId) {
     document.getElementById('class-selection').classList.add('hidden');
     document.getElementById('skill-tree-container').classList.remove('hidden');
     showSkillTree();
+    initializeSkillTreeUI();
   }
 }
 
@@ -527,7 +561,8 @@ export function updateSkillTreeValues() {
 
     const levelDisplay = node.querySelector('.skill-level');
     const skill = SKILL_TREES[skillTree.selectedPath.name][skillId];
-    levelDisplay.textContent = skill.maxLevel === Infinity ? `${currentLevel}` : `${currentLevel}/${skill.maxLevel}`;
+
+    levelDisplay.textContent = skill.maxLevel == Infinity ? `${currentLevel}` : `${currentLevel}/${skill.maxLevel}`;
 
     node.classList.toggle('available', canUnlock);
     node.classList.toggle('unlocked', !!skillTree.skills[skillId]);

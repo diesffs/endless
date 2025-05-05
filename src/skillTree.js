@@ -39,7 +39,7 @@ export const CLASS_PATHS = {
   },
   VAMPIRE: {
     name: 'Vampire',
-    enabled: false,
+    enabled: true,
     baseStats: {
       lifeSteal: 3,
       critDamage: 0.5,
@@ -50,7 +50,7 @@ export const CLASS_PATHS = {
   },
   PALADIN: {
     name: 'Paladin',
-    enabled: false,
+    enabled: true,
     baseStats: {
       blockChance: 10,
       armor: 100,
@@ -61,7 +61,7 @@ export const CLASS_PATHS = {
   },
   BERSERKER: {
     name: 'Berserker',
-    enabled: false,
+    enabled: true,
     baseStats: {
       damage: 45,
       attackSpeed: 0.3,
@@ -72,7 +72,7 @@ export const CLASS_PATHS = {
   },
   ELEMENTALIST: {
     name: 'Elementalist',
-    enabled: false,
+    enabled: true,
     baseStats: {
       fireDamage: 40,
       airDamage: 40,
@@ -1582,5 +1582,26 @@ export default class SkillTree {
     });
     hero.recalculateFromAttributes();
     updateActionBar(); // Update UI to reset all visual states
+  }
+
+  // --- Add this method for resetting the skill tree ---
+  resetSkillTree() {
+    // Clear the skill tree UI container
+    const container = document.getElementById('skill-tree-container');
+    if (container) container.innerHTML = '';
+
+    // Refund all spent skill points
+    let spentPoints = 0;
+    Object.values(this.skills).forEach((skill) => {
+      spentPoints += skill.level || 0;
+    });
+    this.skillPoints += spentPoints;
+    this.selectedPath = null;
+    this.skills = {};
+    this.activeBuffs.clear();
+    hero.recalculateFromAttributes();
+    updateActionBar();
+    updateSkillTreeValues();
+    game.saveGame();
   }
 }
