@@ -1,0 +1,40 @@
+#region-selector {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 16px;
+  margin-top: 8px;
+}
+.region-btn {
+  background: linear-gradient(90deg, #232b38 60%, #1a202c 100%);
+  color: #fff;
+  border: 2px solid #3b4a5a;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-weight: 600;
+  box-shadow: 0 2px 8px 0 #0002;
+  cursor: pointer;
+  transition: background 0.2s, border 0.2s, color 0.2s, box-shadow 0.2s;
+  outline: none;
+  position: relative;
+}
+.region-btn.selected {
+  background: linear-gradient(90deg, #059669 60%, #047857 100%);
+  color: #fff;
+  border-color: #059669;
+  box-shadow: 0 4px 16px 0 #05966944;
+  z-index: 1;
+}
+.region-btn:disabled {
+  background: #232b38;
+  color: #888;
+  border-color: #444;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.region-btn:not(:disabled):hover {
+  background: linear-gradient(90deg, #2563eb 60%, #1e40af 100%);
+  color: #fff;
+  border-color: #2563eb;
+}

@@ -126,9 +126,9 @@ export function defeatEnemy() {
   const baseExpGained = game.stage * 5;
   const baseGoldGained = 10 + game.stage * 8;
 
-  // Apply bonus experience and gold
-  const expGained = Math.floor(baseExpGained * (1 + hero.stats.bonusExperience / 100));
-  const goldGained = Math.floor(baseGoldGained * (1 + hero.stats.bonusGold / 100));
+  // Apply bonus experience and gold (include region multipliers)
+  const expGained = Math.floor(baseExpGained * (1 + hero.stats.bonusExperience / 100) * (enemy.xpMultiplier || 1));
+  const goldGained = Math.floor(baseGoldGained * (1 + hero.stats.bonusGold / 100) * (enemy.goldMultiplier || 1));
 
   hero.gold += goldGained;
   hero.gainExp(expGained);

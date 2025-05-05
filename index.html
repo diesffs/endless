@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/src/css/inventory.css" />
     <link rel="stylesheet" href="/src/css/skillTree.css" />
     <link rel="stylesheet" href="/src/css/statistics.css" />
+    <link rel="stylesheet" href="/src/css/region.css" />
   </head>
 
   <body>
@@ -218,9 +219,22 @@
             <div id="stage-display">Stage: 1</div>
           </div>
 
+          <!-- REGION SELECTOR -->
+          <div id="region-selector"></div>
+
           <div class="enemy-section">
-            <h3 class="enemy-name"></h3>
-            <div class="enemy-avatar">⚔️</div>
+            <div class="enemy-info-left">
+              <h3 class="enemy-name"></h3>
+              <div class="enemy-avatar">⚔️</div>
+            </div>
+            <div class="enemy-info-right">
+              <div class="enemy-stats">
+                <div class="enemy-damage">
+                  <span class="stat-label">Damage:</span> <span class="stat-value" id="enemy-damage-value">0</span>
+                </div>
+                <!-- More stats can be added here in the future -->
+              </div>
+            </div>
             <div class="enemy-health-bar">
               <div id="enemy-health-fill" style="width: 100%"></div>
               <div id="enemy-health-text" class="health-text">50/50</div>

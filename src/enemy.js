@@ -1,4 +1,5 @@
 import { ITEM_TYPES } from './item.js';
+import { getCurrentRegion } from './region.js';
 
 export const ENEMY_RARITY = {
   NORMAL: {
@@ -129,18 +130,28 @@ const ENEMY_NAMES = [
 
 class Enemy {
   constructor(stage) {
+    // REGION-AWARE ENEMY GENERATION
+    const region = getCurrentRegion();
     this.rarity = this.generateRarity();
     this.color = this.getRarityColor(this.rarity);
-    this.health = this.calculateHealth(stage, this.rarity);
+    // Use region multipliers for health and damage
+    this.health = this.calculateHealth(stage, this.rarity) * (region.enemyHealthMultiplier || 1);
     this.currentHealth = this.health;
-    this.damage = this.calculateDamage(stage, this.rarity);
+    this.damage = this.calculateDamage(stage, this.rarity) * (region.enemyDamageMultiplier || 1);
     this.attackSpeed = this.calculateAttackSpeed(this.rarity);
     this.lastAttack = Date.now();
-    this.element = this.generateElement();
-    const randomName = ENEMY_NAMES[Math.floor(Math.random() * ENEMY_NAMES.length)];
+    // Pick element and name from region
+    this.element = this.generateElement(region.allowedElements);
+    const randomName = region.enemyNames[Math.floor(Math.random() * region.enemyNames.length)];
     const elementIcon = ELEMENTS[this.element].icon;
     this.name = `${elementIcon} ${randomName}`;
     this.setEnemyName();
+    this.updateEnemyStats();
+
+    // Store region drop/reward multipliers
+    this.xpMultiplier = region.xpMultiplier || 1.0;
+    this.goldMultiplier = region.goldMultiplier || 1.0;
+    this.itemDropMultiplier = region.itemDropMultiplier || 1.0;
 
     // Get enemy section element
     const enemySection = document.querySelector('.enemy-section');
@@ -160,11 +171,22 @@ class Enemy {
   setEnemyName() {
     const enemyNameElement = document.querySelector('.enemy-name');
     enemyNameElement.textContent = this.name;
+    // Also update the avatar icon (left of name)
+    const avatar = document.querySelector('.enemy-avatar');
+    if (avatar) avatar.textContent = this.name.split(' ')[0];
   }
 
-  generateElement() {
-    // Return the element ID instead of the whole object
-    return Object.keys(ELEMENTS)[Math.floor(Math.random() * Object.keys(ELEMENTS).length)];
+  updateEnemyStats() {
+    // Update the right-side stats (damage, extensible)
+    const dmg = document.getElementById('enemy-damage-value');
+    if (dmg) dmg.textContent = Math.round(this.damage);
+    // Add more stats here as needed
+  }
+
+  generateElement(allowedElements) {
+    // Use region's allowed elements
+    const elements = allowedElements || Object.keys(ELEMENTS);
+    return elements[Math.floor(Math.random() * elements.length)];
   }
 
   generateRarity() {
@@ -235,7 +257,8 @@ class Enemy {
 
   calculateDropChance() {
     const enemyConst = ENEMY_RARITY[this.rarity];
-    return enemyConst.itemDropChance;
+    // Apply region item drop multiplier
+    return enemyConst.itemDropChance * this.itemDropMultiplier;
   }
 
   calculateItemLevel(stage) {

@@ -4,6 +4,7 @@ import { updatePlayerHealth } from './ui.js';
 import { createCombatText } from './combat.js';
 import { handleSavedData } from './functions.js';
 import { ELEMENT_OPPOSITES } from './enemy.js';
+import { updateRegionUI } from './region.js';
 
 const html = String.raw;
 
@@ -125,7 +126,7 @@ export const ATTRIBUTES = {
   },
   dexterity: {
     effects: {
-      critDamagePerPoint: 0.005,
+      critDamagePerPoint: 0.01,
       critChancePer: {
         enabled: false,
         points: 25,
@@ -405,6 +406,7 @@ export default class Hero {
     updateStatsAndAttributesUI();
     initializeSkillTreeStructure();
     game.saveGame();
+    updateRegionUI(); // Update region UI to unlock new regions if level requirement is met
   }
 
   allocateStat(stat) {

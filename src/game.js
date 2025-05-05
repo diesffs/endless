@@ -160,6 +160,7 @@ class Game {
     statistics.resetStatistics();
     initializeSkillTreeUI(); // to show path selection
     showToast('All progress has been reset!');
+    this.saveGame(); // Save the reset progress
   }
 }
 

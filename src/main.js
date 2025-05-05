@@ -19,6 +19,8 @@ import Statistics from './statistics.js';
 import { apiFetch, loadGameData, saveGameData } from './api.js';
 import { game, hero, inventory, shop, skillTree, prestige, statistics, setGlobals } from './globals.js';
 import crypt from './encrypt.js';
+import './region.js';
+import { initializeRegionSystem, updateRegionUI } from './region.js';
 
 window.qwe = console.log;
 window.qw = console.log;
@@ -65,6 +67,11 @@ export let dev = false;
   updateStatsAndAttributesUI();
   updateStageUI();
   updateEnemyHealth();
+
+  window.addEventListener('DOMContentLoaded', () => {
+    initializeRegionSystem();
+    updateRegionUI();
+  });
 
   game.saveGame();
 

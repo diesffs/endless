@@ -249,6 +249,7 @@ export function updateStatsAndAttributesUI() {
     // Update dynamic stats values
     document.getElementById('level-value').textContent = hero.level || 1;
     document.getElementById('exp-value').textContent = hero.exp || 0;
+    document.getElementById('exp-progress').textContent = ((hero.exp / hero.expToNextLevel) * 100).toFixed(1) + '%';
     document.getElementById('exp-to-next-level-value').textContent = hero.expToNextLevel || 100;
     document.getElementById('highest-stage-value').textContent = hero.highestStage;
     document.getElementById('damage-value').textContent = hero.stats.damage;

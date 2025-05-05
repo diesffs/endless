@@ -96,6 +96,7 @@ export default class Prestige {
     updateStatsAndAttributesUI(); // Update stats and attributes UI
     updateResources(); // Update resources UI
     updatePlayerHealth(); // Update health bar dynamically
+    updateRegionUI();
     game.resetAllHealth();
 
     const startBtn = document.getElementById('start-btn');
