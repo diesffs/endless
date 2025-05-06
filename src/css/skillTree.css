@@ -227,3 +227,9 @@
   color: #64b5f6;
   font-size: 0.9em;
 }
+
+.skill-path-name {
+  font-size: 1.5em;
+  color: var(--accent);
+  margin-right: 40px;
+}

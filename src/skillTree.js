@@ -22,7 +22,7 @@ export const CLASS_PATHS = {
       strength: 20,
       vitality: 20,
       armor: 60,
-      health: 200,
+      healthPercent: 50,
     },
     description: 'A mighty warrior specializing in heavy armor and raw strength',
   },
@@ -547,7 +547,7 @@ export const SKILL_TREES = {
       cooldown: 10000,
       duration: 6000,
       requiredLevel: SKILL_LEVEL_TIERS[1],
-      icon: 'aura',
+      icon: 'blood-aura',
       description: 'Increases life steal and damage temporarily.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({

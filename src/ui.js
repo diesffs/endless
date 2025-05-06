@@ -14,6 +14,43 @@ export function initializeUI() {
   });
   document.getElementById('start-btn').addEventListener('click', () => toggleGame());
 
+  // Add tooltips to resource icons
+  const resourceTooltips = [
+    {
+      selector: '.resource-gold',
+      tooltip: () => `
+        <div class="tooltip-header">Gold <span class="icon">💰</span></div>
+        <div class="tooltip-desc">Used to buy upgrades and items.</div>
+        <div class="tooltip-note">Earned from defeating enemies and selling items.</div>
+      `,
+    },
+    {
+      selector: '.resource-crystal',
+      tooltip: () => `
+        <div class="tooltip-header">Crystals <span class="icon">💎</span></div>
+        <div class="tooltip-desc">Rare currency for powerful upgrades and skill resets.</div>
+        <div class="tooltip-note">Obtained by reaching a new highest stage.</div>
+      `,
+    },
+    {
+      selector: '.resource-souls',
+      tooltip: () => `
+        <div class="tooltip-header">Souls <span class="icon">👻</span></div>
+        <div class="tooltip-desc">Earned from prestige, used for permanent upgrades.</div>
+        <div class="tooltip-note">Prestige to collect more souls and unlock new bonuses.</div>
+      `,
+    },
+  ];
+  resourceTooltips.forEach(({ selector, tooltip }) => {
+    const el = document.querySelector(selector);
+    if (el) {
+      el.classList.add('tooltip-target');
+      el.addEventListener('mouseenter', (e) => showTooltip(tooltip(), e));
+      el.addEventListener('mousemove', positionTooltip);
+      el.addEventListener('mouseleave', hideTooltip);
+    }
+  });
+
   updateStageUI();
 }
 
@@ -472,8 +509,13 @@ function showClassSelection() {
       <div class="base-stats">
         ${Object.entries(pathData.baseStats)
           .map(([stat, value]) => {
-            const readableStat = stat.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
-            return `<div>${readableStat}: +${value}</div>`;
+            let readableStat = stat.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
+            let displayValue = value;
+            if (stat.endsWith('Percent')) {
+              readableStat = readableStat.replace(/ Percent$/, '');
+              displayValue = `${value}%`;
+            }
+            return `<div>${readableStat}: +${displayValue}</div>`;
           })
           .join('')}
       </div>
@@ -552,7 +594,10 @@ export function updateSkillTreeValues() {
   const container = document.getElementById('skill-tree-container');
 
   const skillPointsHeader = container.querySelector('.skill-points-header');
-  skillPointsHeader.textContent = `Available Skill Points: ${skillTree.skillPoints}`;
+  skillPointsHeader.innerHTML = `
+    <span class="skill-path-name">${
+      skillTree.selectedPath.name.charAt(0).toUpperCase() + skillTree.selectedPath.name.slice(1).toLowerCase()
+    }</span> Available Skill Points: ${skillTree.skillPoints}`;
 
   container.querySelectorAll('.skill-node').forEach((node) => {
     const skillId = node.dataset.skillId;
