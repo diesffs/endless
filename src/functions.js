@@ -1,5 +1,6 @@
 import { game, hero, inventory, prestige, shop, skillTree } from './globals.js';
 import { showToast, updatePlayerHealth, updateResources } from './ui.js';
+import { MATERIALS, getRandomMaterial } from './material.js';
 
 export const handleSavedData = (savedData, self) => {
   if (savedData) {
@@ -282,6 +283,61 @@ export function createModifyUI() {
     showToast(`Added ${itemType} to inventory`);
   });
   inventorySection.appendChild(addItemBtn);
+
+  // --- Add Material Buttons ---
+  // Add Random Material
+  const addRandomMaterialBtn = document.createElement('button');
+  addRandomMaterialBtn.textContent = 'Add Random Material';
+  addRandomMaterialBtn.addEventListener('click', () => {
+    const mat = getRandomMaterial();
+    inventory.addMaterial({ id: mat.id, icon: mat.icon, qty: 1 });
+    showToast(`Added 1 ${mat.name} to materials`);
+  });
+  inventorySection.appendChild(addRandomMaterialBtn);
+
+  // Add Material by Dropdown
+  const addMaterialByIdDiv = document.createElement('div');
+  addMaterialByIdDiv.style.marginTop = '8px';
+
+  // Create dropdown for all materials
+  const materialSelect = document.createElement('select');
+  materialSelect.id = 'material-id-select';
+  Object.values(MATERIALS).forEach((mat) => {
+    const option = document.createElement('option');
+    option.value = mat.id;
+    option.textContent = `${mat.icon} ${mat.name}`;
+    materialSelect.appendChild(option);
+  });
+
+  // Quantity input
+  const qtyInput = document.createElement('input');
+  qtyInput.id = 'material-qty-input';
+  qtyInput.type = 'number';
+  qtyInput.min = '1';
+  qtyInput.value = '1';
+  qtyInput.style.width = '50px';
+
+  // Add button
+  const addBtn = document.createElement('button');
+  addBtn.id = 'add-material-by-id-btn';
+  addBtn.textContent = 'Add Material';
+
+  addMaterialByIdDiv.appendChild(materialSelect);
+  addMaterialByIdDiv.appendChild(qtyInput);
+  addMaterialByIdDiv.appendChild(addBtn);
+  inventorySection.appendChild(addMaterialByIdDiv);
+
+  addBtn.onclick = () => {
+    const id = materialSelect.value;
+    const qty = parseInt(qtyInput.value, 10) || 1;
+    const matDef = Object.values(MATERIALS).find((m) => m.id === id);
+    if (matDef) {
+      inventory.addMaterial({ id: matDef.id, icon: matDef.icon, qty });
+      showToast(`Added ${qty} ${matDef.name}${qty > 1 ? 's' : ''} to materials`);
+    } else {
+      showToast('Invalid material ID', 'error');
+    }
+  };
 
   // Example: Add buttons to modify skill tree
   const skillTreeSection = document.createElement('div');

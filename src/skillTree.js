@@ -768,7 +768,7 @@ export const SKILL_TREES = {
       cooldown: 15000,
       duration: 5000,
       requiredLevel: SKILL_LEVEL_TIERS[2],
-      icon: 'shield',
+      icon: 'holy-shield',
       description: 'Creates a shield that absorbs damage.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
@@ -780,7 +780,7 @@ export const SKILL_TREES = {
       name: 'Aura of Light',
       type: 'passive',
       requiredLevel: SKILL_LEVEL_TIERS[2],
-      icon: 'aura',
+      icon: 'holy-aura',
       description: 'Increases healing effects and reduces damage taken.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
@@ -888,7 +888,7 @@ export const SKILL_TREES = {
       type: 'toggle',
       manaCost: 10,
       requiredLevel: SKILL_LEVEL_TIERS[0],
-      icon: 'rage',
+      icon: 'frenzy',
       description: 'Increases attack speed and damage while active.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
@@ -901,7 +901,7 @@ export const SKILL_TREES = {
       name: 'Tough Skin',
       type: 'passive',
       requiredLevel: SKILL_LEVEL_TIERS[0],
-      icon: 'armor',
+      icon: 'tough-skin',
       description: 'Increases armor and reduces damage taken.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
@@ -934,7 +934,7 @@ export const SKILL_TREES = {
       cooldown: 12000,
       duration: 6000,
       requiredLevel: SKILL_LEVEL_TIERS[1],
-      icon: 'cry',
+      icon: 'battle-cry',
       description: 'Boosts damage and attack speed temporarily.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
@@ -950,7 +950,7 @@ export const SKILL_TREES = {
       type: 'toggle',
       manaCost: 30,
       requiredLevel: SKILL_LEVEL_TIERS[2],
-      icon: 'rage',
+      icon: 'berserker-rage',
       description: 'Greatly increases damage but lowers defense.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
@@ -1121,7 +1121,7 @@ export const SKILL_TREES = {
       name: 'Elemental Mastery',
       type: 'passive',
       requiredLevel: SKILL_LEVEL_TIERS[1],
-      icon: 'mastery',
+      icon: 'elemental-mastery',
       description: 'Increases all elemental damage.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({

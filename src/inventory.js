@@ -1,7 +1,8 @@
 import { handleSavedData } from './functions.js';
 import Item, { ITEM_RARITY, RARITY_ORDER, SLOT_REQUIREMENTS } from './item.js';
 import { game, hero } from './globals.js';
-import { hideTooltip, positionTooltip, showToast, showTooltip } from './ui.js';
+import { hideTooltip, positionTooltip, showToast, showTooltip, updateResources } from './ui.js';
+import { MATERIALS } from './material.js';
 
 const ITEM_SLOTS = 200;
 const PERSISTENT_SLOTS = 30;
@@ -162,10 +163,16 @@ export default class Inventory {
   }
 
   sortMaterials() {
-    // Sort by quantity descending, then by id ascending
+    // Sort by quantity descending, then by sort prop ascending, then by id ascending
     const nonNullMaterials = this.materials.filter((mat) => mat !== null);
     nonNullMaterials.sort((a, b) => {
       if (b.qty !== a.qty) return b.qty - a.qty;
+      // Get sort prop from MATERIALS definition
+      const aDef = Object.values(MATERIALS).find((m) => m.id === a.id);
+      const bDef = Object.values(MATERIALS).find((m) => m.id === b.id);
+      const aSort = aDef?.sort ?? 9999;
+      const bSort = bDef?.sort ?? 9999;
+      if (aSort !== bSort) return aSort - bSort;
       return a.id.localeCompare(b.id);
     });
     // Fill up to MATERIALS_SLOTS with nulls
@@ -183,9 +190,30 @@ export default class Inventory {
       const cell = document.createElement('div');
       cell.classList.add('materials-cell');
       if (mat) {
-        cell.innerHTML = `<div class="material-item">${mat.icon || '🔹'}<span class="mat-qty">${
-          mat.qty || 1
-        }</span></div>`;
+        // Get full material definition for tooltip
+        const matDef = Object.values(MATERIALS).find((m) => m.id === mat.id) || {};
+        // Show only first 2 digits, and "9+" if >9
+        let qtyDisplay = mat.qty > 9 ? '+' : String(mat.qty).padStart(2, ' ');
+        cell.innerHTML = `<div class="material-item" data-mat-id="${mat.id}" title="${matDef.name || mat.name || ''}">
+          ${mat.icon || '🔹'}
+          <span class="mat-qty">${qtyDisplay}</span>
+        </div>`;
+        const materialItem = cell.querySelector('.material-item');
+        // Tooltip on hover (show name and amount)
+        materialItem.addEventListener('mouseenter', (e) => {
+          let tooltipContent = `<div class="item-tooltip"><b>${matDef.icon || mat.icon || '🔹'} ${
+            matDef.name || mat.name || ''
+          } &times; ${mat.qty}</b>`;
+          if (matDef.description) tooltipContent += `<div style="margin-top:4px;">${matDef.description}</div>`;
+          tooltipContent += `</div>`;
+          showTooltip(tooltipContent, e, 'flex-tooltip');
+        });
+        materialItem.addEventListener('mousemove', positionTooltip);
+        materialItem.addEventListener('mouseleave', hideTooltip);
+        // Click to use
+        materialItem.addEventListener('click', () => {
+          this.openMaterialDialog(mat);
+        });
       }
       materialsContainer.appendChild(cell);
     }
@@ -199,11 +227,80 @@ export default class Inventory {
     } else {
       slot = this.materials.findIndex((m) => m === null);
       if (slot !== -1) {
-        this.materials[slot] = { ...material };
+        // Default to qty or 1
+        this.materials[slot] = { ...material, qty: material.qty || 1 };
       }
     }
     this.updateMaterialsGrid();
     game.saveGame();
+  }
+
+  openMaterialDialog(mat) {
+    // Remove any existing dialog
+    let dialog = document.getElementById('material-use-dialog');
+    if (dialog) dialog.remove();
+
+    // Always get the full definition from MATERIALS
+    const matDef = Object.values(MATERIALS).find((m) => m.id === mat.id) || {};
+
+    dialog = document.createElement('div');
+    dialog.id = 'material-use-dialog';
+    dialog.style.position = 'fixed';
+    dialog.style.left = '50%';
+    dialog.style.top = '50%';
+    dialog.style.transform = 'translate(-50%, -50%)';
+    dialog.style.background = '#222';
+    dialog.style.color = '#fff';
+    dialog.style.padding = '24px 32px';
+    dialog.style.borderRadius = '10px';
+    dialog.style.zIndex = 10000;
+    dialog.style.boxShadow = '0 4px 32px #000a';
+
+    dialog.innerHTML = `
+      <div style="font-size:2em;text-align:center;">${matDef.icon || mat.icon || '🔹'}</div>
+      <div style="font-size:1.2em;margin-bottom:8px;text-align:center;">${matDef.name || mat.name || ''}</div>
+      <div style="margin-bottom:8px;text-align:center;">${matDef.description || ''}</div>
+      <div style="margin-bottom:8px;text-align:center;">You have <b>${mat.qty}</b></div>
+      <input id="material-use-qty" type="number" min="1" max="${mat.qty}" value="${
+      mat.qty
+    }" style="width:60px;text-align:center;">
+      <button id="material-use-btn" style="margin-left:10px;">Use</button>
+      <button id="material-use-cancel" style="margin-left:10px;">Cancel</button>
+    `;
+
+    document.body.appendChild(dialog);
+
+    // Focus input
+    const qtyInput = dialog.querySelector('#material-use-qty');
+    qtyInput.focus();
+    qtyInput.select();
+
+    // Use button
+    dialog.querySelector('#material-use-btn').onclick = () => {
+      let useQty = parseInt(qtyInput.value, 10);
+      if (isNaN(useQty) || useQty < 1) useQty = 1;
+      if (useQty > mat.qty) useQty = mat.qty;
+
+      if (matDef && typeof matDef.onUse === 'function') {
+        matDef.onUse(hero, useQty);
+      }
+      mat.qty -= useQty;
+      if (mat.qty <= 0) {
+        // Remove from inventory
+        const idx = this.materials.findIndex((m) => m && m.id === mat.id);
+        if (idx !== -1) this.materials[idx] = null;
+      }
+      this.updateMaterialsGrid();
+      game.saveGame();
+      updateResources(); // <-- update the UI after using a material
+      dialog.remove();
+      showToast(`Used ${useQty} ${matDef.name || mat.name || ''}${useQty > 1 ? 's' : ''}`, 'success');
+    };
+
+    // Cancel button
+    dialog.querySelector('#material-use-cancel').onclick = () => {
+      dialog.remove();
+    };
   }
 
   salvageItemsByRarity(rarity) {
@@ -236,6 +333,8 @@ export default class Inventory {
       if (crystalsGained > 0) msg += `, gained ${crystalsGained} crystal${crystalsGained > 1 ? 's' : ''}`;
       showToast(msg, 'success');
       this.updateInventoryGrid();
+      this.updateMaterialsGrid();
+      updateResources(); // <-- update the UI after using a material
       game.saveGame();
     } else {
       showToast(`No ${rarity.toLowerCase()} or lower items to salvage`, 'info');
@@ -250,6 +349,69 @@ export default class Inventory {
     this.setupGridCells();
     this.setupEquipmentSlots();
     this.setupItemDragAndTooltip();
+
+    // Add trash drop logic
+    const trash = document.querySelector('.inventory-trash');
+    if (trash) {
+      trash.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        trash.classList.add('drag-over');
+      });
+      trash.addEventListener('dragleave', () => {
+        trash.classList.remove('drag-over');
+      });
+      trash.addEventListener('drop', (e) => {
+        e.preventDefault();
+        trash.classList.remove('drag-over');
+        const itemId = e.dataTransfer.getData('text/plain');
+        const item = this.getItemById(itemId);
+        if (!item) return;
+        // Only allow inventory/equipped items, not materials
+        let removed = false;
+        const invIdx = this.inventoryItems.findIndex((i) => i && i.id === item.id);
+        if (invIdx !== -1) {
+          this.inventoryItems[invIdx] = null;
+          removed = true;
+        } else {
+          for (const [slot, equippedItem] of Object.entries(this.equippedItems)) {
+            if (equippedItem && equippedItem.id === item.id) {
+              delete this.equippedItems[slot];
+              removed = true;
+              break;
+            }
+          }
+        }
+        if (removed) {
+          // Salvage logic (reuse your salvage reward logic)
+          let goldGained = 10 * (item.level + 1) * (RARITY_ORDER.indexOf(item.rarity) + 1);
+          let crystalsGained = item.rarity === 'MYTHIC' ? 1 : 0;
+          if (goldGained > 0) hero.gold = (hero.gold || 0) + goldGained;
+          if (crystalsGained > 0) hero.crystals = (hero.crystals || 0) + crystalsGained;
+          let msg = `Salvaged 1 ${item.rarity.toLowerCase()} item`;
+          if (goldGained > 0) msg += `, gained ${goldGained} gold`;
+          if (crystalsGained > 0) msg += `, gained ${crystalsGained} crystal${crystalsGained > 1 ? 's' : ''}`;
+          showToast(msg, 'success');
+          this.updateInventoryGrid();
+          game.saveGame();
+        }
+      });
+
+      // --- ADVANCED TOOLTIP LOGIC ---
+      trash.addEventListener('mouseenter', (e) => {
+        const tooltipContent = `
+      <div class="item-tooltip" style="text-align:center;">
+        <div style="font-size:2em;">🗑️</div>
+        <b>Salvage Item</b>
+        <div style="margin-top:4px;font-size:0.95em;">
+          Drag and drop an item here to salvage it.
+        </div>
+      </div>
+    `;
+        showTooltip(tooltipContent, e, 'flex-tooltip');
+      });
+      trash.addEventListener('mousemove', positionTooltip);
+      trash.addEventListener('mouseleave', hideTooltip);
+    }
   }
 
   setupGridCells() {

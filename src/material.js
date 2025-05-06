@@ -4,28 +4,85 @@ export const MATERIALS = {
     id: 'experience_potion',
     name: 'Experience Potion',
     icon: '🧪',
-    description: 'Grants experience when used.',
+    description: 'Grants 100 experience when used.',
     dropChance: 5,
+    sort: 10,
     onUse: (hero, qty = 1) => {
       hero.gainExp(100 * qty);
     },
   },
-  GOLD_COINS: {
-    id: 'gold_coins',
-    name: 'Gold Coins',
+  TINY_GOLD_COINS: {
+    id: 'tiny_gold_coins',
+    name: 'Tiny Gold Coins',
     icon: '🪙',
-    description: 'Adds gold to your total.',
-    dropChance: 5,
+    get description() {
+      return `Adds ${100} gold per coin to your total.`;
+    },
+    dropChance: 100,
+    sort: 20,
     onUse: (hero, qty = 1) => {
       hero.gold += 100 * qty;
+    },
+  },
+  SMALL_GOLD_COINS: {
+    id: 'small_gold_coins',
+    name: 'Small Gold Coins',
+    icon: '🪙',
+    get description() {
+      return `Adds ${500} gold per coin to your total.`;
+    },
+    dropChance: 50,
+    sort: 30,
+    onUse: (hero, qty = 1) => {
+      hero.gold += 500 * qty;
+    },
+  },
+  MEDIUM_GOLD_COINS: {
+    id: 'medium_gold_coins',
+    name: 'Medium Gold Coins',
+    icon: '🪙',
+    get description() {
+      return `Adds ${1000} gold per coin to your total.`;
+    },
+    dropChance: 20,
+    sort: 40,
+    onUse: (hero, qty = 1) => {
+      hero.gold += 1000 * qty;
+    },
+  },
+  LARGE_GOLD_COINS: {
+    id: 'large_gold_coins',
+    name: 'Large Gold Coins',
+    icon: '🪙',
+    get description() {
+      return `Adds ${5000} gold per coin to your total.`;
+    },
+    dropChance: 10,
+    sort: 50,
+    onUse: (hero, qty = 1) => {
+      hero.gold += 5000 * qty;
+    },
+  },
+  ENORMOUS_GOLD_COINS: {
+    id: 'enormous_gold_coins',
+    name: 'Enormous Gold Coins',
+    icon: '🪙',
+    get description() {
+      return `Adds ${50000} gold per coin to your total.`;
+    },
+    dropChance: 2,
+    sort: 60,
+    onUse: (hero, qty = 1) => {
+      hero.gold += 50000 * qty;
     },
   },
   ELIXIR: {
     id: 'elixir',
     name: 'Elixir',
     icon: '🥤',
-    description: 'Grants skill points.',
+    description: 'Grants 1 skill point.',
     dropChance: 1,
+    sort: 70,
     onUse: (hero, qty = 1) => {
       hero.skillPoints = (hero.skillPoints || 0) + 1 * qty;
     },
@@ -34,8 +91,9 @@ export const MATERIALS = {
     id: 'crystalized_rock',
     name: 'Crystalized Rock',
     icon: '💎',
-    description: 'Gives crystals.',
+    description: 'Gives 1 crystal.',
     dropChance: 2,
+    sort: 80,
     onUse: (hero, qty = 1) => {
       hero.crystals += 1 * qty;
     },
@@ -44,8 +102,9 @@ export const MATERIALS = {
     id: 'potion_of_power',
     name: 'Potion of Power',
     icon: '💥',
-    description: 'Permanently increases strength.',
+    description: 'Increases strength by 1.',
     dropChance: 10,
+    sort: 90,
     onUse: (hero, qty = 1) => {
       hero.stats.strength += 1 * qty;
     },

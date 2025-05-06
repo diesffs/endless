@@ -8,6 +8,7 @@ import {
 import Enemy from './enemy.js';
 import { ITEM_RARITY } from './item.js';
 import { hero, game, inventory, prestige, statistics } from './globals.js';
+import { getRandomMaterial } from './material.js';
 
 export function enemyAttack(currentTime) {
   if (!game || !hero || !game.currentEnemy) return;

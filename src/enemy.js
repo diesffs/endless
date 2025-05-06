@@ -277,7 +277,7 @@ class Enemy {
   }
 
   rollForMaterialDrop() {
-    return Math.random() < 0.02; // 2% chance to drop a material
+    return Math.random() < 0.05; // 5% chance to drop a material
   }
 }
 export default Enemy;

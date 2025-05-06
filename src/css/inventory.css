@@ -403,3 +403,24 @@
   border: 1px solid #666;
   min-width: 120px; /* Optional: keeps button width stable when text changes */
 }
+
+.material-item {
+  height: 38px; // w/o border
+}
+
+.inventory-trash {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #888;
+  border-radius: 8px;
+  background: #222;
+  margin-left: 10px;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.inventory-trash.drag-over {
+  background: #a33;
+  border-color: #f55;
+}
