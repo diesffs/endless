@@ -171,9 +171,6 @@ class Enemy {
   setEnemyName() {
     const enemyNameElement = document.querySelector('.enemy-name');
     enemyNameElement.textContent = this.name;
-    // Also update the avatar icon (left of name)
-    const avatar = document.querySelector('.enemy-avatar');
-    if (avatar) avatar.textContent = this.name.split(' ')[0];
   }
 
   updateEnemyStats() {
