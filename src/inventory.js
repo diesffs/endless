@@ -3,7 +3,9 @@ import Item, { ITEM_RARITY, RARITY_ORDER, SLOT_REQUIREMENTS } from './item.js';
 import { game, hero } from './globals.js';
 import { hideTooltip, positionTooltip, showToast, showTooltip } from './ui.js';
 
+const ITEM_SLOTS = 200;
 const PERSISTENT_SLOTS = 30;
+const MATERIALS_SLOTS = 50;
 
 export default class Inventory {
   constructor(savedData = null) {
@@ -41,7 +43,8 @@ export default class Inventory {
     };
 
     this.equippedItems = savedData?.equippedItems || {};
-    this.inventoryItems = savedData?.inventoryItems || new Array(200).fill(null);
+    this.inventoryItems = savedData?.inventoryItems || new Array(ITEM_SLOTS).fill(null);
+    this.materials = savedData?.materials || new Array(MATERIALS_SLOTS).fill(null);
 
     if (savedData) {
       // Restore equipped items
@@ -64,9 +67,13 @@ export default class Inventory {
         }
         return null;
       });
+      this.materials = savedData.materials
+        ? savedData.materials.map((mat) => (mat ? { ...mat } : null))
+        : new Array(MATERIALS_SLOTS).fill(null);
     } else {
       this.equippedItems = {};
-      this.inventoryItems = new Array(200).fill(null);
+      this.inventoryItems = new Array(ITEM_SLOTS).fill(null);
+      this.materials = new Array(MATERIALS_SLOTS).fill(null);
     }
 
     this.initializeInventoryUI();
@@ -79,8 +86,8 @@ export default class Inventory {
 
   initializeInventoryUI() {
     const gridContainer = document.querySelector('.grid-container');
-    // Create 200 empty cells (10x20 grid)
-    for (let i = 0; i < 200; i++) {
+    // Create ITEM_SLOTS empty cells (10x20 grid)
+    for (let i = 0; i < ITEM_SLOTS; i++) {
       const cell = document.createElement('div');
       cell.classList.add('grid-cell');
       if (i < PERSISTENT_SLOTS) {
@@ -90,9 +97,48 @@ export default class Inventory {
     }
     this.updateInventoryGrid();
 
-    document.getElementById('sort-inventory').addEventListener('click', () => {
-      this.sortInventory();
-      showToast(`Sorted items by rarity, then level`, 'success');
+    const sortBtn = document.getElementById('sort-inventory');
+    const itemsTab = document.getElementById('items-tab');
+    const materialsTab = document.getElementById('materials-tab');
+    const materialsGrid = document.querySelector('.materials-grid');
+
+    // Update button text on tab switch
+    function updateSortBtnText() {
+      if (itemsTab.classList.contains('active')) {
+        sortBtn.textContent = 'Sort Items';
+      } else {
+        sortBtn.textContent = 'Sort Materials';
+      }
+    }
+    updateSortBtnText();
+
+    if (itemsTab && materialsTab && gridContainer && materialsGrid) {
+      itemsTab.addEventListener('click', () => {
+        itemsTab.classList.add('active');
+        materialsTab.classList.remove('active');
+        gridContainer.style.display = '';
+        materialsGrid.style.display = 'none';
+        updateSortBtnText();
+      });
+      materialsTab.addEventListener('click', () => {
+        materialsTab.classList.add('active');
+        itemsTab.classList.remove('active');
+        gridContainer.style.display = 'none';
+        materialsGrid.style.display = '';
+        this.updateMaterialsGrid();
+        updateSortBtnText();
+      });
+    }
+
+    // Sort button sorts only the visible tab
+    sortBtn.addEventListener('click', () => {
+      if (itemsTab.classList.contains('active')) {
+        this.sortInventory();
+        showToast(`Sorted items by rarity, then level`, 'success');
+      } else {
+        this.sortMaterials();
+        showToast(`Sorted materials by quantity, then id`, 'success');
+      }
     });
 
     // Add event listeners for salvage options
@@ -103,6 +149,61 @@ export default class Inventory {
         this.sortInventory();
       });
     });
+
+    const materialsContainer = document.querySelector('.materials-container');
+    if (materialsContainer) {
+      materialsContainer.innerHTML = '';
+      for (let i = 0; i < MATERIALS_SLOTS; i++) {
+        const cell = document.createElement('div');
+        cell.classList.add('materials-cell');
+        materialsContainer.appendChild(cell);
+      }
+    }
+  }
+
+  sortMaterials() {
+    // Sort by quantity descending, then by id ascending
+    const nonNullMaterials = this.materials.filter((mat) => mat !== null);
+    nonNullMaterials.sort((a, b) => {
+      if (b.qty !== a.qty) return b.qty - a.qty;
+      return a.id.localeCompare(b.id);
+    });
+    // Fill up to MATERIALS_SLOTS with nulls
+    this.materials = [...nonNullMaterials, ...new Array(MATERIALS_SLOTS - nonNullMaterials.length).fill(null)];
+    this.updateMaterialsGrid();
+    game.saveGame();
+  }
+
+  updateMaterialsGrid() {
+    const materialsContainer = document.querySelector('.materials-container');
+    if (!materialsContainer) return;
+    materialsContainer.innerHTML = '';
+    for (let i = 0; i < MATERIALS_SLOTS; i++) {
+      const mat = this.materials[i];
+      const cell = document.createElement('div');
+      cell.classList.add('materials-cell');
+      if (mat) {
+        cell.innerHTML = `<div class="material-item">${mat.icon || '🔹'}<span class="mat-qty">${
+          mat.qty || 1
+        }</span></div>`;
+      }
+      materialsContainer.appendChild(cell);
+    }
+  }
+
+  addMaterial(material) {
+    // material: { id, icon, qty }
+    let slot = this.materials.findIndex((m) => m && m.id === material.id);
+    if (slot !== -1) {
+      this.materials[slot].qty += material.qty;
+    } else {
+      slot = this.materials.findIndex((m) => m === null);
+      if (slot !== -1) {
+        this.materials[slot] = { ...material };
+      }
+    }
+    this.updateMaterialsGrid();
+    game.saveGame();
   }
 
   salvageItemsByRarity(rarity) {
@@ -303,7 +404,7 @@ export default class Inventory {
       return;
     }
 
-    if (specificPosition !== null && specificPosition < 200 && !this.inventoryItems[specificPosition]) {
+    if (specificPosition !== null && specificPosition < ITEM_SLOTS && !this.inventoryItems[specificPosition]) {
       this.inventoryItems[specificPosition] = item;
     } else {
       // Find first empty slot after persistent slots (40)
@@ -357,6 +458,7 @@ export default class Inventory {
     });
 
     this.setupDragAndDrop();
+    this.updateMaterialsGrid();
   }
 
   removeExistingListeners() {
@@ -556,7 +658,7 @@ export default class Inventory {
     this.inventoryItems = [
       ...persistentItems,
       ...nonPersistentItems,
-      ...new Array(200 - PERSISTENT_SLOTS - nonPersistentItems.length).fill(null),
+      ...new Array(ITEM_SLOTS - PERSISTENT_SLOTS - nonPersistentItems.length).fill(null),
     ];
 
     // Update the UI

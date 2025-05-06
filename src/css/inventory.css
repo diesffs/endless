@@ -1,7 +1,9 @@
 .inventory-btn {
-  padding: 5px 5px;
   margin: 5px;
   cursor: pointer;
+  padding: 8px;
+
+  border-radius: 0.5rem;
 }
 
 #sort-inventory {
@@ -175,7 +177,8 @@
   overflow-y: auto;
 }
 
-.grid-cell {
+.grid-cell,
+.materials-cell {
   width: 40px;
   height: 40px;
   background: var(--bg-panel);
@@ -227,6 +230,7 @@
 
 #inventory {
   user-select: none;
+  overflow-y: scroll;
 }
 
 .loot-notification {
@@ -361,4 +365,41 @@
   align-items: center;
   justify-content: center;
   background: unset;
+}
+
+.inventory-tabs {
+  display: flex;
+}
+
+.inventory-btn.active {
+  background: rgb(43, 151, 201);
+  color: #fff;
+  border: 1px solid rgb(43, 151, 201);
+  padding: 8px;
+}
+
+.materials-grid {
+  display: block;
+  align-content: center;
+  justify-items: center;
+}
+
+.materials-container {
+  display: grid;
+  grid-template-columns: repeat(10, 40px);
+  grid-template-rows: repeat(5, 40px);
+  gap: 0;
+  padding: 8px;
+  background: var(--bg-panel);
+  border-radius: 0.5rem;
+  width: fit-content;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
+#sort-inventory {
+  background-color: #4a4a4a;
+  color: white;
+  border: 1px solid #666;
+  min-width: 120px; /* Optional: keeps button width stable when text changes */
 }

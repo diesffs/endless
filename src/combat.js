@@ -142,6 +142,13 @@ export function defeatEnemy() {
     showLootNotification(newItem);
   }
 
+  // Drop material (new, separate chance)
+  if (enemy.rollForMaterialDrop && enemy.rollForMaterialDrop()) {
+    const mat = getRandomMaterial();
+    inventory.addMaterial({ id: mat.id, icon: mat.icon, qty: 1 });
+    showMaterialNotification(mat);
+  }
+
   game.incrementStage();
   game.currentEnemy = new Enemy(game.stage);
   game.currentEnemy.lastAttack = Date.now();
@@ -154,6 +161,16 @@ export function defeatEnemy() {
   updateStatsAndAttributesUI();
 
   game.saveGame();
+}
+
+function showMaterialNotification(mat) {
+  const notification = document.createElement('div');
+  notification.className = 'loot-notification';
+  notification.style.color = '#FFD700';
+  notification.textContent = `Found: ${mat.icon} ${mat.name}`;
+  document.body.appendChild(notification);
+
+  setTimeout(() => notification.remove(), 3000);
 }
 
 function showLootNotification(item) {

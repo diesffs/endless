@@ -275,5 +275,9 @@ class Enemy {
     const types = Object.values(ITEM_TYPES);
     return types[Math.floor(Math.random() * types.length)];
   }
+
+  rollForMaterialDrop() {
+    return Math.random() < 0.02; // 2% chance to drop a material
+  }
 }
 export default Enemy;
