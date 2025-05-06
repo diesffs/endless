@@ -12,6 +12,7 @@ import {
 import Enemy from './enemy.js';
 import { showToast } from './ui.js';
 import { handleSavedData } from './functions.js';
+import { updateRegionUI } from './region.js';
 
 const html = String.raw;
 
