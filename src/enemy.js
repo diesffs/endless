@@ -261,8 +261,9 @@ class Enemy {
     return enemyConst.itemDropChance * this.itemDropMultiplier;
   }
 
+  // Calculate item level based on stage (no effect at the moment)
   calculateItemLevel(stage) {
-    return Math.max(1, Math.floor(stage * 0.7));
+    return Math.max(1, Math.floor(stage * 1));
   }
 
   rollForDrop() {
