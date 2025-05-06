@@ -107,6 +107,8 @@ export default class Inventory {
 
   salvageItemsByRarity(rarity) {
     let salvagedItems = 0;
+    let goldGained = 0;
+    let crystalsGained = 0;
     const salvageRarities = RARITY_ORDER.slice(0, RARITY_ORDER.indexOf(rarity) + 1);
 
     // Skip first PERSISTENT_SLOTS slots when salvaging
@@ -114,13 +116,24 @@ export default class Inventory {
       if (index < PERSISTENT_SLOTS) return item; // Preserve persistent slots
       if (item && salvageRarities.includes(item.rarity)) {
         salvagedItems++;
+        // Give gold based on rarity and level (customize as needed)
+        goldGained += 10 * (item.level + 1) * (RARITY_ORDER.indexOf(item.rarity) + 1);
+        // If mythic, give a crystal
+        if (item.rarity === 'MYTHIC') {
+          crystalsGained++;
+        }
         return null;
       }
       return item;
     });
 
     if (salvagedItems > 0) {
-      showToast(`Salvaged ${salvagedItems} ${rarity.toLowerCase()} or lower items`, 'success');
+      if (goldGained > 0) hero.gold = (hero.gold || 0) + goldGained;
+      if (crystalsGained > 0) hero.crystals = (hero.crystals || 0) + crystalsGained;
+      let msg = `Salvaged ${salvagedItems} ${rarity.toLowerCase()} or lower items`;
+      if (goldGained > 0) msg += `, gained ${goldGained} gold`;
+      if (crystalsGained > 0) msg += `, gained ${crystalsGained} crystal${crystalsGained > 1 ? 's' : ''}`;
+      showToast(msg, 'success');
       this.updateInventoryGrid();
       game.saveGame();
     } else {
