@@ -659,7 +659,14 @@ export default class Hero {
     this.stats.bonusExperience = flatValues.bonusExperience;
     this.stats.bonusGold = flatValues.bonusGold;
 
-    this.stats.attackSpeed = Number(flatValues.attackSpeed.toFixed(STAT_DECIMAL_PLACES.attackSpeed));
+    const flatAttackSpeedBonus = flatValues.attackSpeed - BASE_ATTACK_SPEED;
+    const maxBonus = 3; // Max bonus to reach cap of 5
+    const scale = 7; // Lower = more diminishing, higher = flatter
+    this.stats.attackSpeed = Number(
+      (
+        BASE_ATTACK_SPEED + (flatAttackSpeedBonus > 0 ? maxBonus * (1 - Math.exp(-flatAttackSpeedBonus / scale)) : 0)
+      ).toFixed(STAT_DECIMAL_PLACES.attackSpeed)
+    );
     this.stats.critChance = Number(flatValues.critChance.toFixed(STAT_DECIMAL_PLACES.critChance));
     this.stats.critDamage = Number(flatValues.critDamage.toFixed(STAT_DECIMAL_PLACES.critDamage));
     this.stats.lifeSteal = Number(flatValues.lifeSteal.toFixed(STAT_DECIMAL_PLACES.lifeSteal));
