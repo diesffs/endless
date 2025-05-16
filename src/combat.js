@@ -169,16 +169,20 @@ function showLootNotification(item) {
 }
 
 export function createDamageNumber(damage, isPlayer, isCritical = false, isBlocked = false, isMiss = false) {
-  // Add to existing function
   const enemyElement = game.currentEnemy.element;
   const elementClass = `element-${enemyElement}`;
-
-  // Add element class to enemy section
   const enemySection = document.querySelector('.enemy-section');
   enemySection.classList.add(elementClass);
 
-  const target = isPlayer ? '.character-avatar' : '.enemy-avatar';
+  const target = isPlayer ? '#character-avatar' : '.enemy-avatar';
   const avatar = document.querySelector(target);
+  // Use parent container for positioning
+  const parent = avatar.parentElement;
+  // Make sure parent is positioned
+  if (getComputedStyle(parent).position === 'static') {
+    parent.style.position = 'relative';
+  }
+
   const damageEl = document.createElement('div');
 
   if (isBlocked) {
@@ -191,31 +195,53 @@ export function createDamageNumber(damage, isPlayer, isCritical = false, isBlock
     damageEl.style.color = '#888888';
   } else {
     damageEl.className = isCritical ? 'damage-number critical' : 'damage-number';
-    damageEl.textContent = isCritical ? `CRIT! -${Math.floor(damage)}` : `-${Math.floor(damage)}`;
+    damageEl.textContent = isCritical ? `💥 -${Math.floor(damage)}` : `-${Math.floor(damage)}`;
   }
+
+  // Get avatar's position relative to parent
+  const avatarRect = avatar.getBoundingClientRect();
+  const parentRect = parent.getBoundingClientRect();
+  const offsetX = avatarRect.left - parentRect.left;
+  const offsetY = avatarRect.top - parentRect.top;
 
   const randomX = Math.random() * 40 - 20;
   const randomY = Math.random() * 40 - 20;
-  damageEl.style.setProperty('--x', `${randomX}px`);
-  damageEl.style.setProperty('--y', `${randomY}px`);
-  avatar.appendChild(damageEl);
+
+  damageEl.style.position = 'absolute';
+  damageEl.style.left = `${offsetX + avatar.offsetWidth / 2 + randomX}px`;
+  damageEl.style.top = `${offsetY + avatar.offsetHeight / 2 + randomY}px`;
+
+  parent.appendChild(damageEl);
   setTimeout(() => damageEl.remove(), 1000);
 }
 
-export function createCombatText(text) {
-  const target = '.character-avatar';
+export function createCombatText(text, isPlayer = true) {
+  // Allow targeting enemy or player
+  const target = isPlayer ? '#character-avatar' : '.enemy-avatar';
   const avatar = document.querySelector(target);
-  const textEl = document.createElement('div');
+  const parent = avatar.parentElement;
+  if (getComputedStyle(parent).position === 'static') {
+    parent.style.position = 'relative';
+  }
 
+  const textEl = document.createElement('div');
   textEl.className = 'damage-number level-up';
   textEl.textContent = text;
   textEl.style.color = '#FFD700';
 
+  const avatarRect = avatar.getBoundingClientRect();
+  const parentRect = parent.getBoundingClientRect();
+  const offsetX = avatarRect.left - parentRect.left;
+  const offsetY = avatarRect.top - parentRect.top;
+
   const randomX = Math.random() * 40 - 20;
   const randomY = Math.random() * 40 - 20;
-  textEl.style.setProperty('--x', `${randomX}px`);
-  textEl.style.setProperty('--y', `${randomY}px`);
-  avatar.appendChild(textEl);
+
+  textEl.style.position = 'absolute';
+  textEl.style.left = `${offsetX + avatar.offsetWidth / 2 + randomX}px`;
+  textEl.style.top = `${offsetY + avatar.offsetHeight / 2 + randomY}px`;
+
+  parent.appendChild(textEl);
   setTimeout(() => textEl.remove(), 1000);
 }
 

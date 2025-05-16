@@ -15,10 +15,6 @@
   transition: transform 0.2s;
 }
 
-.class-path:hover {
-  transform: translateY(-5px);
-}
-
 .class-path h3 {
   color: var(--accent);
   margin-bottom: 10px;
@@ -232,4 +228,9 @@
   font-size: 1.5em;
   color: var(--accent);
   margin-right: 40px;
+}
+
+.class-path img {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  background: #222;
 }

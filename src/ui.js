@@ -85,6 +85,9 @@ export function updateResources() {
 
 export function updatePlayerHealth() {
   const stats = hero.stats;
+  if (!game.gameStarted) {
+    stats.currentHealth = stats.health;
+  }
   const healthPercentage = (stats.currentHealth / stats.health) * 100;
   document.getElementById('health-fill').style.width = `${healthPercentage}%`;
   document.getElementById('health-text').textContent = `${Math.max(0, Math.floor(stats.currentHealth))}/${Math.floor(
@@ -505,10 +508,21 @@ function showClassSelection() {
     if (!pathData.enabled) return;
     const pathElement = document.createElement('div');
     pathElement.className = 'class-path';
+
+    // Avatar + name/description row
     pathElement.innerHTML = html`
-      <h3>${pathData.name}</h3>
-      <p>${pathData.description}</p>
-      <div class="base-stats">
+      <div style="display: flex; align-items: flex-start; gap: 18px;">
+        <img
+          src="${import.meta.env.BASE_URL}avatars/${pathData.avatar}"
+          alt="${pathData.name} Avatar"
+          style="width: 72px; height: 72px; border-radius: 8px; object-fit: cover; background: #222;"
+        />
+        <div style="flex: 1;">
+          <h3>${pathData.name}</h3>
+          <p>${pathData.description}</p>
+        </div>
+      </div>
+      <div class="base-stats" style="margin-top: 15px;">
         ${Object.entries(pathData.baseStats)
           .map(([stat, value]) => {
             let readableStat = stat.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
@@ -526,7 +540,6 @@ function showClassSelection() {
     const button = document.createElement('button');
     button.textContent =
       hero.level < REQ_LEVEL_FOR_SKILL_TREE ? `Requires Level ${REQ_LEVEL_FOR_SKILL_TREE}` : 'Choose Path';
-    // button.disabled = hero.level < REQ_LEVEL_FOR_SKILL_TREE;
     button.addEventListener('click', () => selectClassPath(pathId));
     pathElement.appendChild(button);
 
@@ -591,6 +604,7 @@ export function initializeSkillTreeStructure() {
 
 export function updateSkillTreeValues() {
   const characterAvatarEl = document.getElementById('character-avatar');
+  const characterNameEl = document.getElementById('character-name');
 
   if (!skillTree.selectedPath) {
     let img = characterAvatarEl.querySelector('img');
@@ -599,6 +613,9 @@ export function updateSkillTreeValues() {
     characterAvatarEl.innerHTML = '';
     characterAvatarEl.appendChild(img);
     img.src = `${import.meta.env.BASE_URL}avatars/peasant-avatar.jpg`;
+
+    // reset name
+    characterNameEl.textContent = ``;
     return;
   }
 
@@ -614,7 +631,6 @@ export function updateSkillTreeValues() {
     img.src = `${import.meta.env.BASE_URL}avatars/${skillTree.selectedPath.avatar}`;
   }
 
-  const characterNameEl = document.getElementById('character-name');
   const characterName =
     skillTree.selectedPath.name.charAt(0).toUpperCase() + skillTree.selectedPath.name.slice(1).toLowerCase();
   characterNameEl.textContent = `${characterName}`;

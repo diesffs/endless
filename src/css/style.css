@@ -177,27 +177,37 @@ body {
 .damage-number {
   position: absolute;
   color: var(--health);
-  font-weight: bold;
+  margin-left: 40px;
+  /* font-weight: bold; */
   font-size: 1.2rem;
   pointer-events: none;
-  animation: damage-popup 1s ease-out forwards;
+  animation: damage-popup 2s ease-out forwards;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 5px;
+  border-radius: 5px;
+  text-shadow: 0px 0px 2px #fff, 0 0 2px #fff, 0 0 2px #ff0000;
+  background: rgba(0, 0, 0, 0.1);
   transform: translate(var(--x), var(--y));
 }
 
 .damage-number.critical {
-  color: #ff5722;
+  color: rgb(255, 0, 0);
   font-weight: bold;
-  text-shadow: 0 0 10px rgba(255, 87, 34, 0.8);
+  font-size: 1.5rem;
 }
 
 @keyframes damage-popup {
   0% {
     opacity: 1;
-    transform: translate(var(--x), var(--y));
+    transform: translateY(0);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(-40px);
   }
   100% {
     opacity: 0;
-    transform: translate(var(--x), calc(var(--y) - 50px));
+    transform: translateY(-60px);
   }
 }
 
