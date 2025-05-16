@@ -21,7 +21,7 @@ export const MATERIALS = {
     dropChance: 100,
     sort: 20,
     onUse: (hero, qty = 1) => {
-      hero.gold += 100 * qty;
+      hero.gainGold(100 * qty);
     },
   },
   SMALL_GOLD_COINS: {
@@ -34,7 +34,7 @@ export const MATERIALS = {
     dropChance: 50,
     sort: 30,
     onUse: (hero, qty = 1) => {
-      hero.gold += 500 * qty;
+      hero.gainGold(500 * qty);
     },
   },
   MEDIUM_GOLD_COINS: {
@@ -47,7 +47,7 @@ export const MATERIALS = {
     dropChance: 20,
     sort: 40,
     onUse: (hero, qty = 1) => {
-      hero.gold += 1000 * qty;
+      hero.gainGold(1000 * qty);
     },
   },
   LARGE_GOLD_COINS: {
@@ -60,7 +60,7 @@ export const MATERIALS = {
     dropChance: 10,
     sort: 50,
     onUse: (hero, qty = 1) => {
-      hero.gold += 5000 * qty;
+      hero.gainGold(5000 * qty);
     },
   },
   ENORMOUS_GOLD_COINS: {
@@ -73,7 +73,7 @@ export const MATERIALS = {
     dropChance: 2,
     sort: 60,
     onUse: (hero, qty = 1) => {
-      hero.gold += 50000 * qty;
+      hero.gainGold(50000 * qty);
     },
   },
   ELIXIR: {

@@ -45,6 +45,10 @@ class Game {
 
   damageEnemy(damage) {
     if (this.currentEnemy) {
+      // Only update highestDamageDealt if damage is greater than the current value
+      if (damage > statistics.highestDamageDealt) {
+        statistics.set('highestDamageDealt', null, damage);
+      }
       this.currentEnemy.currentHealth -= damage;
       if (this.currentEnemy.currentHealth < 0) this.currentEnemy.currentHealth = 0;
       updateEnemyHealth();

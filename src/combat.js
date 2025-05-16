@@ -115,7 +115,7 @@ export function defeatEnemy() {
   const expGained = Math.floor(baseExpGained * (1 + hero.stats.bonusExperience / 100) * (enemy.xpMultiplier || 1));
   const goldGained = Math.floor(baseGoldGained * (1 + hero.stats.bonusGold / 100) * (enemy.goldMultiplier || 1));
 
-  hero.gold += goldGained;
+  hero.gainGold(goldGained);
   hero.gainExp(expGained);
 
   if (enemy.rollForDrop()) {

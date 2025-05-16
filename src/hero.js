@@ -1,5 +1,5 @@
 import { initializeSkillTreeStructure, updateStatsAndAttributesUI } from './ui.js';
-import { game, inventory, shop, skillTree } from './globals.js';
+import { game, inventory, shop, skillTree, statistics } from './globals.js';
 import { updatePlayerHealth } from './ui.js';
 import { createCombatText } from './combat.js';
 import { handleSavedData } from './functions.js';
@@ -386,6 +386,11 @@ export default class Hero {
     while (this.exp >= this.expToNextLevel) {
       this.levelUp();
     }
+  }
+
+  gainGold(amount) {
+    statistics.increment('totalGoldEarned', null, amount);
+    this.gold += amount;
   }
 
   levelUp() {

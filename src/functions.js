@@ -252,7 +252,7 @@ export function createModifyUI() {
   addGoldBtn.textContent = 'Add Gold';
   addGoldBtn.addEventListener('click', () => {
     const goldAmount = 100000000; // Amount of gold to add
-    hero.gold += goldAmount;
+    hero.gainGold(goldAmount);
     updateResources(); // Assuming there's a function to update the UI
     showToast(`Added ${goldAmount} gold!`);
   });
