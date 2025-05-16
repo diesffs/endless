@@ -42,10 +42,10 @@ export const BASE_UPGRADE_COSTS = {
   blockChance: 150,
   attackRating: 60,
   lifeSteal: 500,
-  fireDamage: 40,
-  coldDamage: 40,
-  airDamage: 40,
-  earthDamage: 40,
+  fireDamage: 30,
+  coldDamage: 30,
+  airDamage: 30,
+  earthDamage: 30,
 };
 export default class Shop {
   constructor(savedData = null) {
