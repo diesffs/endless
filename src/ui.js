@@ -473,6 +473,7 @@ export function initializeSkillTreeUI() {
           initializeSkillTreeUI();
           updateResources();
           showToast('Skill tree has been reset and all points refunded.', 'success');
+          updateSkillTreeValues();
         }
       };
       container.insertBefore(resetBtn, container.firstChild);
@@ -492,6 +493,7 @@ export function initializeSkillTreeUI() {
     showSkillTree();
   }
 
+  updateSkillTreeValues();
   updateActionBar();
 }
 
@@ -588,16 +590,40 @@ export function initializeSkillTreeStructure() {
 }
 
 export function updateSkillTreeValues() {
+  const characterAvatarEl = document.getElementById('character-avatar');
+
   if (!skillTree.selectedPath) {
+    let img = characterAvatarEl.querySelector('img');
+    img = document.createElement('img');
+    img.alt = 'Peasant Avatar';
+    characterAvatarEl.innerHTML = '';
+    characterAvatarEl.appendChild(img);
+    img.src = `${import.meta.env.BASE_URL}avatars/peasant-avatar.jpg`;
     return;
   }
+
+  if (characterAvatarEl && skillTree.selectedPath?.avatar) {
+    // Remove any previous img
+    let img = characterAvatarEl.querySelector('img');
+    if (!img) {
+      img = document.createElement('img');
+      img.alt = skillTree.selectedPath.name + ' avatar';
+      characterAvatarEl.innerHTML = '';
+      characterAvatarEl.appendChild(img);
+    }
+    img.src = `${import.meta.env.BASE_URL}avatars/${skillTree.selectedPath.avatar}`;
+  }
+
+  const characterNameEl = document.getElementById('character-name');
+  const characterName =
+    skillTree.selectedPath.name.charAt(0).toUpperCase() + skillTree.selectedPath.name.slice(1).toLowerCase();
+  characterNameEl.textContent = `${characterName}`;
+
   const container = document.getElementById('skill-tree-container');
 
   const skillPointsHeader = container.querySelector('.skill-points-header');
   skillPointsHeader.innerHTML = `
-    <span class="skill-path-name">${
-      skillTree.selectedPath.name.charAt(0).toUpperCase() + skillTree.selectedPath.name.slice(1).toLowerCase()
-    }</span> Available Skill Points: ${skillTree.skillPoints}`;
+    <span class="skill-path-name">${characterName}</span> Available Skill Points: ${skillTree.skillPoints}`;
 
   container.querySelectorAll('.skill-node').forEach((node) => {
     const skillId = node.dataset.skillId;
@@ -687,7 +713,7 @@ function createSkillElement(skill) {
   };
 
   skillElement.innerHTML = html`
-    <div class="skill-icon" style="background-image: url('${import.meta.env.BASE_URL}skills/${skill.icon}.png')"></div>
+    <div class="skill-icon" style="background-image: url('${import.meta.env.BASE_URL}skills/${skill.icon}.jpg')"></div>
     <div class="skill-level">
       ${skillTree.skills[skill.id]?.level || 0}${skill.maxLevel !== Infinity ? `/${skill.maxLevel}` : ''}
     </div>
@@ -736,7 +762,7 @@ export function updateActionBar() {
     // Add skill icon
     const iconDiv = document.createElement('div');
     iconDiv.className = 'skill-icon';
-    iconDiv.style.backgroundImage = `url('${import.meta.env.BASE_URL}skills/${skill.icon}.png')`;
+    iconDiv.style.backgroundImage = `url('${import.meta.env.BASE_URL}skills/${skill.icon}.jpg')`;
     skillSlot.appendChild(iconDiv);
 
     // Show active state

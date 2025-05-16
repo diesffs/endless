@@ -59,6 +59,10 @@ body {
   border-radius: 0.5rem;
 }
 
+.character-info {
+  display: flex;
+}
+
 .tab-buttons {
   display: flex;
   gap: 0.5rem;
@@ -99,18 +103,28 @@ body {
   display: block;
 }
 
-.character-avatar,
+#character-avatar,
 .enemy-avatar {
   width: 8rem;
   height: 8rem;
-  background-color: var(--bg-element);
-  border-radius: 0.5rem;
-  margin: 1rem auto;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2.5rem;
   position: relative;
+  overflow: hidden;
+  border-radius: 2.5rem;
+}
+
+#character-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.enemy-avatar {
+  margin: 0 auto;
 }
 
 .enemy-health-bar {
@@ -298,11 +312,27 @@ body {
 .health-bar,
 .enemy-health-bar,
 .mana-bar {
+  width: 100%;
   position: relative;
   height: 20px;
   background-color: #a8a3a3;
   border-radius: 5px;
   margin: 5px 0;
+}
+
+.character-resources {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.character-hp-mana {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0px 10px;
 }
 
 #health-fill,

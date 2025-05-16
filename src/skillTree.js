@@ -18,6 +18,7 @@ export const CLASS_PATHS = {
   WARRIOR: {
     name: 'Warrior',
     enabled: true,
+    avatar: 'warrior-avatar.jpg',
     baseStats: {
       strength: 20,
       vitality: 20,
@@ -29,6 +30,7 @@ export const CLASS_PATHS = {
   ROGUE: {
     name: 'Rogue',
     enabled: true,
+    avatar: 'rogue-avatar.jpg',
     baseStats: {
       agility: 40,
       critChance: 5,
@@ -40,6 +42,7 @@ export const CLASS_PATHS = {
   VAMPIRE: {
     name: 'Vampire',
     enabled: true,
+    avatar: 'vampire-avatar.jpg',
     baseStats: {
       lifeSteal: 3,
       critDamage: 0.5,
@@ -51,6 +54,7 @@ export const CLASS_PATHS = {
   PALADIN: {
     name: 'Paladin',
     enabled: true,
+    avatar: 'paladin-avatar.jpg',
     baseStats: {
       blockChance: 10,
       armor: 100,
@@ -62,6 +66,7 @@ export const CLASS_PATHS = {
   BERSERKER: {
     name: 'Berserker',
     enabled: true,
+    avatar: 'berserker-avatar.jpg',
     baseStats: {
       damage: 45,
       attackSpeed: 0.3,
@@ -73,6 +78,7 @@ export const CLASS_PATHS = {
   ELEMENTALIST: {
     name: 'Elementalist',
     enabled: true,
+    avatar: 'elementalist-avatar.jpg',
     baseStats: {
       fireDamage: 40,
       airDamage: 40,
@@ -1359,6 +1365,8 @@ export default class SkillTree {
     this.selectedPath = {
       name: pathName,
       baseStats: CLASS_PATHS[pathName].baseStats,
+      avatar: CLASS_PATHS[pathName].avatar,
+      description: CLASS_PATHS[pathName].description,
     };
     hero.recalculateFromAttributes();
     game.saveGame();
