@@ -2,9 +2,180 @@ import Enemy from './enemy.js';
 import { game, hero, prestige, skillTree } from './globals.js';
 import { calculateHitChance } from './combat.js';
 import { CLASS_PATHS, REQ_LEVEL_FOR_SKILL_TREE, SKILL_LEVEL_TIERS, SKILL_TREES } from './skillTree.js';
-import { ATTRIBUTE_TOOLTIPS, STAT_DECIMAL_PLACES } from './hero.js';
+import { STATS } from './stats.js';
+import { ATTRIBUTES } from './hero.js';
 
 const html = String.raw;
+
+export const ATTRIBUTE_TOOLTIPS = {
+  getStrengthTooltip: () => html`
+    <strong>Strength</strong><br />
+    Each point increases:<br />
+    • Damage by ${ATTRIBUTES.strength.effects.damagePerPoint}<br />
+    ${ATTRIBUTES.strength.effects.damagePercentPer.enabled
+      ? `• Every ${ATTRIBUTES.strength.effects.damagePercentPer.points} points adds ${
+          ATTRIBUTES.strength.effects.damagePercentPer.value * 100
+        }% to total damage`
+      : ''}
+  `,
+
+  getAgilityTooltip: () => html`
+    <strong>Agility</strong><br />
+    Each point increases:<br />
+    • Attack Rating by ${ATTRIBUTES.agility.effects.attackRatingPerPoint}<br />
+    ${ATTRIBUTES.agility.effects.attackRatingPercentPer.enabled
+      ? `• Every ${ATTRIBUTES.agility.effects.attackRatingPercentPer.points} points adds ${
+          ATTRIBUTES.agility.effects.attackRatingPercentPer.value * 100
+        }% to total attack rating`
+      : ''}
+    ${ATTRIBUTES.agility.effects.attackSpeedPer.enabled
+      ? `• Every ${ATTRIBUTES.agility.effects.attackSpeedPer.points} points adds ${
+          ATTRIBUTES.agility.effects.attackSpeedPer.value * 100
+        }% attack speed`
+      : ''}
+  `,
+
+  getVitalityTooltip: () => html`
+    <strong>Vitality</strong><br />
+    Each point increases:<br />
+    • Health by ${ATTRIBUTES.vitality.effects.healthPerPoint}<br />
+    ${ATTRIBUTES.vitality.effects.healthPercentPer.enabled
+      ? `• Every ${ATTRIBUTES.vitality.effects.healthPercentPer.points} points adds ${
+          ATTRIBUTES.vitality.effects.healthPercentPer.value * 100
+        }% to total health`
+      : ''}
+    ${ATTRIBUTES.vitality.effects.regenPercentPer.enabled
+      ? `• Every ${ATTRIBUTES.vitality.effects.regenPercentPer.points} points adds ${
+          ATTRIBUTES.vitality.effects.regenPercentPer.value * 100
+        }% health regeneration`
+      : ''}
+  `,
+
+  getWisdomTooltip: () => html`
+    <strong>Wisdom</strong><br />
+    Each point increases:<br />
+    • Mana by ${ATTRIBUTES.wisdom.effects.manaPerPoint}<br />
+    ${ATTRIBUTES.wisdom.effects.manaPercentPer.enabled
+      ? `• Every ${ATTRIBUTES.wisdom.effects.manaPercentPer.points} points adds ${
+          ATTRIBUTES.wisdom.effects.manaPercentPer.value * 100
+        }% to total mana`
+      : ''}
+    ${ATTRIBUTES.wisdom.effects.regenPercentPer.enabled
+      ? `• Every ${ATTRIBUTES.wisdom.effects.regenPercentPer.points} points adds ${
+          ATTRIBUTES.wisdom.effects.regenPercentPer.value * 100
+        }% mana regeneration`
+      : ''}
+  `,
+
+  getEnduranceTooltip: () => html`
+    <strong>Endurance</strong><br />
+    Each point increases:<br />
+    • Armor by ${ATTRIBUTES.endurance.effects.armorPerPoint}<br />
+    ${ATTRIBUTES.endurance.effects.armorPercentPer.enabled
+      ? `• Every ${ATTRIBUTES.endurance.effects.armorPercentPer.points} points adds ${
+          ATTRIBUTES.endurance.effects.armorPercentPer.value * 100
+        }% to total armor`
+      : ''}
+  `,
+
+  getDexterityTooltip: () => html`
+    <strong>Dexterity</strong><br />
+    Each point increases:<br />
+    • Critical Damage by ${ATTRIBUTES.dexterity.effects.critDamagePerPoint}<br />
+    ${ATTRIBUTES.dexterity.effects.critChancePer.enabled
+      ? `• Every ${ATTRIBUTES.dexterity.effects.critChancePer.points} points adds ${
+          ATTRIBUTES.dexterity.effects.critChancePer.value * 100
+        }% critical strike chance`
+      : ''}
+    ${ATTRIBUTES.dexterity.effects.critDamagePer.enabled
+      ? `• Every ${ATTRIBUTES.dexterity.effects.critDamagePer.points} points adds ${
+          ATTRIBUTES.dexterity.effects.critDamagePer.value * 100
+        }% critical strike damage`
+      : ''}
+  `,
+
+  getElementalDamageTooltip: () => html`
+    <strong>Elemental Damage</strong><br />
+    Effectiveness against enemy elements:<br />
+    • 200% damage vs opposite element<br />
+    • 0% damage vs same element<br />
+    • 25% damage vs other elements<br /><br />
+    Element Strengths:<br />
+    🔥 Fire → ☁️ Air<br />
+    🌍 Earth → ❄️ Cold<br />
+    ❄️ Cold → 🔥 Fire<br />
+    ☁️ Air → 🌍 Earth
+  `,
+
+  getDamageTooltip: () => html`
+    <strong>Damage</strong><br />
+    Base physical damage dealt to enemies.<br />
+    Increased by Strength and equipment.
+  `,
+
+  getAttackSpeedTooltip: () => html`
+    <strong>Attack Speed</strong><br />
+    Number of attacks per second.<br />
+    Maximum: 5 attacks/second
+  `,
+
+  getAttackRatingTooltip: () => html`
+    <strong>Attack Rating</strong><br />
+    Determines hit chance against enemies.<br />
+    Higher stages require more Attack Rating.
+  `,
+
+  getCritChanceTooltip: () => html`
+    <strong>Critical Strike Chance</strong><br />
+    Chance to deal critical damage.<br />
+    Maximum: 100%
+  `,
+
+  getCritDamageTooltip: () => html`
+    <strong>Critical Strike Damage</strong><br />
+    Damage multiplier on critical hits.<br />
+    Base: 1.5x damage
+  `,
+
+  getLifeStealTooltip: () => html`
+    <strong>Life Steal</strong><br />
+    Percentage of damage dealt recovered as health.
+  `,
+
+  getMaxHealthTooltip: () => html`
+    <strong>Health</strong><br />
+    Maximum health points.<br />
+    Increased by Vitality and level ups.
+  `,
+
+  getHealthRegenTooltip: () => html`
+    <strong>Health Regeneration</strong><br />
+    Amount of health recovered per second.
+  `,
+
+  getMaxManaTooltip: () => html`
+    <strong>Mana</strong><br />
+    Maximum mana points.<br />
+    Increased by Wisdom and level ups.
+  `,
+
+  getManaRegenTooltip: () => html`
+    <strong>Mana Regeneration</strong><br />
+    Amount of mana recovered per second.
+  `,
+
+  getArmorTooltip: () => html`
+    <strong>Armor</strong><br />
+    Reduces incoming damage.<br />
+    Effectiveness decreases in higher stages.
+  `,
+
+  getBlockChanceTooltip: () => html`
+    <strong>Block Chance</strong><br />
+    Chance to block incoming attacks.<br />
+    Maximum: 75%
+  `,
+};
 
 export function initializeUI() {
   game.currentEnemy = new Enemy(game.stage);
@@ -151,7 +322,7 @@ export function updateStatsAndAttributesUI() {
       <div>
         <strong>Attack Speed:</strong>
         <span id="attack-speed-value"
-          >${hero.stats.attackSpeed.toFixed(STAT_DECIMAL_PLACES.attackSpeed).replace(/\./g, ',')}</span
+          >${hero.stats.attackSpeed.toFixed(STATS.attackSpeed.decimalPlaces).replace(/\./g, ',')}</span
         >
         attacks/sec
       </div>
@@ -166,20 +337,22 @@ export function updateStatsAndAttributesUI() {
       <div>
         <strong>Crit Chance:</strong>
         <span id="crit-chance-value"
-          >${hero.stats.critChance.toFixed(STAT_DECIMAL_PLACES.critChance).replace(/\./g, ',')}%</span
+          >${hero.stats.critChance.toFixed(STATS.critChance.decimalPlaces).replace(/\./g, ',')}%</span
         >
       </div>
 
       <div>
         <strong>Crit Damage:</strong>
         <span id="crit-damage-value"
-          >${hero.stats.critDamage.toFixed(STAT_DECIMAL_PLACES.critDamage).replace(/\./g, ',')}x</span
+          >${hero.stats.critDamage.toFixed(STATS.critDamage.decimalPlaces).replace(/\./g, ',')}x</span
         >
       </div>
 
       <div>
         <strong>Life Steal:</strong>
-        <span id="life-steal-value">${hero.stats.lifeSteal.toFixed(STAT_DECIMAL_PLACES.lifeSteal)}%</span>
+        <span id="life-steal-value"
+          >${hero.stats.lifeSteal.toFixed(STATS.lifeSteal.decimalPlaces).replace(/\./g, ',')}%</span
+        >
       </div>
       <div class="elemental-damage">
         <div><strong>🔥 Fire Damage:</strong> <span id="fire-damage-value">${hero.stats.fireDamage}</span></div>
@@ -195,14 +368,14 @@ export function updateStatsAndAttributesUI() {
       <div>
         <strong>Health Regen:</strong>
         <span id="health-regen-value"
-          >${hero.stats.lifeRegen.toFixed(STAT_DECIMAL_PLACES.lifeRegen).replace(/\./g, ',')}</span
+          >${hero.stats.lifeRegen.toFixed(STATS.lifeRegen.decimalPlaces).replace(/\./g, ',')}</span
         >/s
       </div>
       <div><strong>Mana:</strong> <span id="max-mana-value">${hero.stats.mana}</span></div>
       <div>
         <strong>Mana Regen:</strong>
         <span id="mana-regen-value"
-          >${hero.stats.manaRegen.toFixed(STAT_DECIMAL_PLACES.manaRegen).replace(/\./g, ',')}</span
+          >${hero.stats.manaRegen.toFixed(STATS.manaRegen.decimalPlaces).replace(/\./g, ',')}</span
         >/s
       </div>
 
@@ -215,7 +388,7 @@ export function updateStatsAndAttributesUI() {
       <div>
         <strong>Block Chance:</strong>
         <span id="block-chance-value"
-          >${hero.stats.blockChance.toFixed(STAT_DECIMAL_PLACES.blockChance).replace(/\./g, ',')}%</span
+          >${hero.stats.blockChance.toFixed(STATS.blockChance.decimalPlaces).replace(/\./g, ',')}%</span
         >
       </div>
     `;
@@ -294,18 +467,18 @@ export function updateStatsAndAttributesUI() {
     document.getElementById('highest-stage-value').textContent = hero.highestStage;
     document.getElementById('damage-value').textContent = hero.stats.damage;
     document.getElementById('attack-speed-value').textContent = hero.stats.attackSpeed
-      .toFixed(STAT_DECIMAL_PLACES.attackSpeed)
+      .toFixed(STATS.attackSpeed.decimalPlaces)
       .replace(/\./g, ',');
     document.getElementById('attack-rating-value').textContent = hero.stats.attackRating;
     document.getElementById('hit-chance-value').textContent =
       calculateHitChance(hero.stats.attackRating, game.stage).toFixed(2) + '%';
     document.getElementById('crit-chance-value').textContent =
-      hero.stats.critChance.toFixed(STAT_DECIMAL_PLACES.critChance).replace(/\./g, ',') + '%';
+      hero.stats.critChance.toFixed(STATS.critChance.decimalPlaces).replace(/\./g, ',') + '%';
     document.getElementById('crit-damage-value').textContent =
-      hero.stats.critDamage.toFixed(STAT_DECIMAL_PLACES.critDamage).replace(/\./g, ',') + 'x';
+      hero.stats.critDamage.toFixed(STATS.critDamage.decimalPlaces).replace(/\./g, ',') + 'x';
 
     document.getElementById('life-steal-value').textContent =
-      hero.stats.lifeSteal.toFixed(STAT_DECIMAL_PLACES.lifeSteal) + '%';
+      hero.stats.lifeSteal.toFixed(STATS.lifeSteal.decimalPlaces).replace(/\./g, ',') + '%';
     document.getElementById('fire-damage-value').textContent = hero.stats.fireDamage;
     document.getElementById('cold-damage-value').textContent = hero.stats.coldDamage;
     document.getElementById('air-damage-value').textContent = hero.stats.airDamage;
@@ -313,17 +486,17 @@ export function updateStatsAndAttributesUI() {
 
     document.getElementById('max-health-value').textContent = hero.stats.health;
     document.getElementById('health-regen-value').textContent = hero.stats.lifeRegen
-      .toFixed(STAT_DECIMAL_PLACES.lifeRegen)
+      .toFixed(STATS.lifeRegen.decimalPlaces)
       .replace(/\./g, ',');
     document.getElementById('max-mana-value').textContent = hero.stats.mana;
     document.getElementById('mana-regen-value').textContent = hero.stats.manaRegen
-      .toFixed(STAT_DECIMAL_PLACES.manaRegen)
+      .toFixed(STATS.manaRegen.decimalPlaces)
       .replace(/\./g, ',');
     document.getElementById('armor-value').textContent = hero.stats.armor || 0;
     document.getElementById('armor-reduction-value').textContent =
       hero.calculateArmorReduction().toFixed(2).replace(/\./g, ',') + '%';
     document.getElementById('block-chance-value').textContent =
-      hero.stats.blockChance.toFixed(STAT_DECIMAL_PLACES.blockChance).replace(/\./g, ',') + '%';
+      hero.stats.blockChance.toFixed(STATS.blockChance.decimalPlaces).replace(/\./g, ',') + '%';
   }
 
   if (!attributesContainer) {
@@ -707,7 +880,7 @@ function createSkillElement(skill) {
     if (effectsCurrent && Object.keys(effectsCurrent).length > 0) {
       skillDescription += '<br /><u>Current Effects:</u><br />';
       Object.entries(effectsCurrent).forEach(([stat, value]) => {
-        const decimals = STAT_DECIMAL_PLACES[stat] || 0;
+        const decimals = STATS[stat].decimalPlaces || 0;
         const formattedValue = value.toFixed(decimals);
         skillDescription += `${stat}: +${formattedValue}<br />`;
       });
@@ -717,7 +890,7 @@ function createSkillElement(skill) {
     if (currentLevel < skill.maxLevel || skill.maxLevel === Infinity) {
       skillDescription += '<br /><u>Next Level Effects:</u><br />';
       Object.entries(effectsNext).forEach(([stat, value]) => {
-        const decimals = STAT_DECIMAL_PLACES[stat] || 0;
+        const decimals = STATS[stat].decimalPlaces || 0;
         const currentValue = effectsCurrent[stat] || 0;
         const difference = value - currentValue;
         skillDescription += `${stat}: +${value.toFixed(decimals)} <span class="bonus">(+${difference.toFixed(
@@ -819,7 +992,7 @@ function createSkillTooltip(skillId) {
   // Add effects
   tooltip += '<div class="tooltip-effects">';
   Object.entries(effects).forEach(([stat, value]) => {
-    const decimals = STAT_DECIMAL_PLACES[stat] || 0;
+    const decimals = STATS[stat].decimalPlaces || 0;
     const formattedValue = value.toFixed(decimals);
     tooltip += `<div>${stat}: +${formattedValue}</div>`;
   });

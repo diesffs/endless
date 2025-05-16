@@ -1,14 +1,7 @@
 import { createDamageNumber, defeatEnemy } from './combat.js';
 import { handleSavedData } from './functions.js';
 import { game, hero } from './globals.js';
-import {
-  showManaWarning,
-  showToast,
-  updateActionBar,
-  updateEnemyHealth,
-  updatePlayerHealth,
-  updateSkillTreeValues,
-} from './ui.js';
+import { showManaWarning, showToast, updateActionBar, updatePlayerHealth, updateSkillTreeValues } from './ui.js';
 
 export const SKILL_LEVEL_TIERS = [10, 20, 30, 50, 75, 100, 150];
 export const DEFAULT_MAX_SKILL_LEVEL = 100;
@@ -127,7 +120,7 @@ export const SKILL_TREES = {
       description: 'Increases experience gained from battles',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        expBonus: level * 5,
+        bonusExperience: level * 5,
       }),
     },
 

@@ -1,4 +1,4 @@
-import { STAT_DECIMAL_PLACES } from './hero.js';
+import { STATS } from './stats.js';
 
 export const EQUIPMENT_SLOTS = {
   HEAD: 'head',
@@ -236,7 +236,7 @@ export default class Item {
           ? baseValue * multiplier * Math.min(1 + this.level * (1 / 200), 2)
           : baseValue * multiplier * (1 + this.level * 0.03);
 
-      const decimals = STAT_DECIMAL_PLACES[stat] || 0;
+      const decimals = STATS[stat].decimalPlaces || 0;
       return Number(value.toFixed(decimals));
     };
 
@@ -313,7 +313,7 @@ export default class Item {
         <div class="item-stats">
           ${Object.entries(this.stats)
             .map(([stat, value]) => {
-              const decimals = STAT_DECIMAL_PLACES[stat] || 0;
+              const decimals = STATS[stat].decimalPlaces || 0;
               const formattedValue = value.toFixed(decimals);
               return `<div>${formatStatName(stat)}: ${formattedValue}${isPercentStat(stat) ? '%' : ''}</div>`;
             })

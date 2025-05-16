@@ -3,6 +3,7 @@ import Item, { ITEM_RARITY, RARITY_ORDER, SLOT_REQUIREMENTS } from './item.js';
 import { game, hero, statistics } from './globals.js';
 import { hideTooltip, positionTooltip, showToast, showTooltip, updateResources } from './ui.js';
 import { MATERIALS } from './material.js';
+import { STATS } from './stats.js';
 
 export const ITEM_SLOTS = 200;
 export const PERSISTENT_SLOTS = 30;
@@ -10,38 +11,11 @@ export const MATERIALS_SLOTS = 50;
 
 export default class Inventory {
   constructor(savedData = null) {
-    this.equipmentBonuses = {
-      damage: 0,
-      armor: 0,
-      strength: 0,
-      agility: 0,
-      vitality: 0,
-      wisdom: 0,
-      endurance: 0,
-      dexterity: 0,
-      critChance: 0,
-      critDamage: 0,
-      attackSpeed: 0,
-      health: 0,
-      blockChance: 0,
-      mana: 0,
-      manaRegen: 0,
-      lifeRegen: 0,
-      lifeSteal: 0,
-      fireDamage: 0,
-      coldDamage: 0,
-      airDamage: 0,
-      earthDamage: 0,
-      attackRatingPercent: 0,
-      attackRating: 0,
-      damagePercent: 0,
-      bonusGold: 0,
-      bonusExperience: 0,
-      healthPercent: 0,
-      manaPercent: 0,
-      armorPercent: 0,
-      elementalDamagePercent: 0,
-    };
+    this.equipmentBonuses = {};
+
+    for (const stat in STATS) {
+      this.equipmentBonuses[stat] = 0;
+    }
 
     this.equippedItems = savedData?.equippedItems || {};
     this.inventoryItems = savedData?.inventoryItems || new Array(ITEM_SLOTS).fill(null);

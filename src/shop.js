@@ -3,7 +3,7 @@ import { updateResources, updateStatsAndAttributesUI } from './ui.js';
 import { showToast } from './ui.js';
 import { game, hero } from './globals.js';
 import { handleSavedData } from './functions.js';
-import { STAT_DECIMAL_PLACES } from './hero.js';
+import { STATS } from './stats.js';
 
 const html = String.raw;
 
@@ -37,8 +37,8 @@ export const BASE_UPGRADE_COSTS = {
   critChance: 140,
   critDamage: 200,
   mana: 100,
-  lifeRegen: 60,
-  manaRegen: 60,
+  lifeRegen: 80,
+  manaRegen: 80,
   blockChance: 150,
   attackRating: 60,
   lifeSteal: 500,
@@ -209,7 +209,7 @@ export default class Shop {
 
   getBonusText(stat, config, level) {
     const value = config.bonus * level;
-    const decimals = STAT_DECIMAL_PLACES[stat] || 0;
+    const decimals = STATS[stat].decimalPlaces || 0;
     const formattedValue = value.toFixed(decimals);
     return `+${formattedValue}${config.suffix || ''} ${config.label}`;
   }
