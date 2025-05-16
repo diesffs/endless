@@ -14,9 +14,11 @@ export default class Statistics {
     this.highestDamageDealt = 0;
     this.totalGoldEarned = 0;
     this.totalItemsFound = 0;
-    this.timePlayedInSeconds = 0;
+    this.timeSinceLastPrestige = 0;
+    this.totalTimePlayed = 0; // New: total time played (resets on reset)
     this.prestigeCount = 0;
     this.highestStageReached = 0;
+    this.totalTimeInFights = 0; // Track total time spent in fights
 
     handleSavedData(savedData, this);
     this.lastUpdate = Date.now();
@@ -34,13 +36,14 @@ export default class Statistics {
     this.highestDamageDealt = 0;
     this.totalGoldEarned = 0;
     this.totalItemsFound = 0;
-    this.timePlayedInSeconds = 0;
+    this.timeSinceLastPrestige = 0;
+    this.totalTimePlayed = 0; // Reset total time played
     this.prestigeCount = 0;
     this.highestStageReached = 0;
+    this.totalTimeInFights = 0; // Reset total time in fights
     this.updateStatisticsUI();
   }
 
-  // Add to the constructor or in a separate initUI method
   initializeStatisticsUI() {
     const resetButton = document.getElementById('reset-progress');
     const modal = document.getElementById('reset-modal');
@@ -48,23 +51,16 @@ export default class Statistics {
     const cancelButton = document.getElementById('cancel-reset');
 
     if (resetButton && modal && confirmButton && cancelButton) {
-      // Open modal on Reset button click
       resetButton.onclick = () => {
         modal.style.display = 'block';
       };
-
-      // Confirm Reset action
       confirmButton.onclick = () => {
         modal.style.display = 'none';
         game.resetAllProgress();
       };
-
-      // Cancel Reset action
       cancelButton.onclick = () => {
         modal.style.display = 'none';
       };
-
-      // Close modal when clicking outside
       modal.onclick = (e) => {
         if (e.target === modal) {
           modal.style.display = 'none';
@@ -76,16 +72,67 @@ export default class Statistics {
   }
 
   updateStatisticsUI() {
-    // Update total enemies killed
-    const enemiesKilled = document.getElementById('stat-enemies-killed');
-    if (enemiesKilled) {
-      enemiesKilled.textContent = `Total Enemies killed: ${this.enemiesKilled.total || 0}`;
+    // Total Time Played (resets on reset)
+    const totalTime = document.getElementById('stat-total-time-played');
+    if (totalTime) {
+      const seconds = Math.floor(this.totalTimePlayed);
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      totalTime.textContent = `Total Time Played: ${hours}h ${minutes}m`;
     }
 
-    // Update highest stage if displayed
+    // Current Session Time Played (not reset until reload)
+    const sessionTime = document.getElementById('stat-time-played');
+    if (sessionTime) {
+      const seconds = Math.floor(this.timeSinceLastPrestige);
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      sessionTime.textContent = `Time Since Last Prestige: ${hours}h ${minutes}m`;
+    }
+
+    // Total Enemies Killed
+    const enemiesKilled = document.getElementById('stat-enemies-killed');
+    if (enemiesKilled) {
+      enemiesKilled.textContent = `Total Enemies Killed: ${this.enemiesKilled.total || 0}`;
+    }
+
+    // Highest Damage Dealt
+    const highestDamage = document.getElementById('stat-highest-damage');
+    if (highestDamage) {
+      highestDamage.textContent = `Highest Damage Dealt: ${this.highestDamageDealt || 0}`;
+    }
+
+    // Total Gold Earned
+    const totalGold = document.getElementById('stat-total-gold');
+    if (totalGold) {
+      totalGold.textContent = `Total Gold Earned: ${this.totalGoldEarned || 0}`;
+    }
+
+    // Total Items Found
+    const itemsFound = document.getElementById('stat-items-found');
+    if (itemsFound) {
+      itemsFound.textContent = `Total Items Found: ${this.totalItemsFound || 0}`;
+    }
+
+    // Prestige Count
+    const prestigeCount = document.getElementById('stat-prestige-count');
+    if (prestigeCount) {
+      prestigeCount.textContent = `Prestige Count: ${this.prestigeCount || 0}`;
+    }
+
+    // Highest Stage Reached
     const highestStage = document.getElementById('stat-highest-stage');
     if (highestStage) {
       highestStage.textContent = `Highest Stage Reached: ${this.highestStageReached || 1}`;
+    }
+
+    // Total Time In Fights
+    const timeInFights = document.getElementById('stat-total-time-in-fights');
+    if (timeInFights) {
+      const seconds = Math.floor(this.totalTimeInFights);
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      timeInFights.textContent = `Total Time In Fights: ${hours}h ${minutes}m ${seconds % 60}s`;
     }
   }
 
@@ -101,6 +148,7 @@ export default class Statistics {
       }
       this[category] += amount;
     }
+    this.updateStatisticsUI();
   }
 
   set(category, subcategory = null, value) {
@@ -111,12 +159,21 @@ export default class Statistics {
     } else {
       this[category] = value;
     }
+    this.updateStatisticsUI();
   }
 
-  //TODO: use it
   update() {
     const now = Date.now();
-    this.timePlayedInSeconds += (now - this.lastUpdate) / 1000;
+    const deltaSeconds = (now - this.lastUpdate) / 1000;
+    this.timeSinceLastPrestige += deltaSeconds;
+    this.totalTimePlayed += deltaSeconds;
     this.lastUpdate = now;
+    this.updateStatisticsUI();
+  }
+
+  // Add a method to increment totalTimeInFights
+  addFightTime(seconds) {
+    this.totalTimeInFights += seconds;
+    this.updateStatisticsUI();
   }
 }

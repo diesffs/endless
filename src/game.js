@@ -7,10 +7,9 @@ import {
   showToast,
   initializeSkillTreeUI,
 } from './ui.js';
-import { playerAttack, enemyAttack } from './combat.js';
+import { playerAttack, enemyAttack, playerDeath, defeatEnemy } from './combat.js';
 import { game, hero, inventory, prestige, shop, skillTree, statistics } from './globals.js';
 import Enemy from './enemy.js';
-import { loadGameData } from './api.js';
 
 class Game {
   constructor() {
@@ -33,6 +32,27 @@ class Game {
 
     updateStageUI();
     updateResources(); // Update resources to reflect new crystal count
+  }
+
+  damagePlayer(damage) {
+    hero.stats.currentHealth -= damage;
+    if (hero.stats.currentHealth <= 0) {
+      hero.stats.currentHealth = 0;
+      playerDeath();
+    }
+    updatePlayerHealth();
+  }
+
+  damageEnemy(damage) {
+    if (this.currentEnemy) {
+      this.currentEnemy.currentHealth -= damage;
+      if (this.currentEnemy.currentHealth < 0) this.currentEnemy.currentHealth = 0;
+      updateEnemyHealth();
+
+      if (this.currentEnemy.currentHealth <= 0) {
+        defeatEnemy();
+      }
+    }
   }
 
   resetAllHealth() {
@@ -61,6 +81,9 @@ class Game {
     const currentTime = Date.now();
     playerAttack(currentTime);
     enemyAttack(currentTime);
+
+    const deltaSeconds = 0.1; // gameLoop runs every 100ms
+    statistics.addFightTime(deltaSeconds);
 
     // Regenerate health and mana every 100 ms
     if (currentTime - this.lastRegen >= 100) {

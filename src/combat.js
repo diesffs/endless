@@ -30,18 +30,8 @@ export function enemyAttack(currentTime) {
       const damageReduction = hero.calculateArmorReduction() / 100;
       const effectiveDamage = Math.floor(game.currentEnemy.damage * (1 - damageReduction));
 
-      // Apply reduced damage to player's health
-      hero.stats.currentHealth -= effectiveDamage;
-      if (hero.stats.currentHealth < 0) hero.stats.currentHealth = 0;
-
-      // Show the damage number
+      game.damagePlayer(effectiveDamage);
       createDamageNumber(Math.floor(effectiveDamage), true);
-
-      // Update player health UI
-      updatePlayerHealth();
-
-      // Handle player death if health drops to 0
-      if (hero.stats.currentHealth <= 0) playerDeath();
     }
 
     // Record the enemy's last attack time
@@ -69,14 +59,8 @@ export function playerAttack(currentTime) {
         const lifeStealAmount = damage * (hero.stats.lifeSteal / 100);
         hero.stats.currentHealth = Math.min(hero.stats.health, hero.stats.currentHealth + lifeStealAmount);
 
-        game.currentEnemy.currentHealth -= damage;
+        game.damageEnemy(damage);
         createDamageNumber(damage, false, isCritical);
-      }
-
-      updateEnemyHealth();
-
-      if (game.currentEnemy.currentHealth <= 0) {
-        defeatEnemy();
       }
     }
     game.lastPlayerAttack = currentTime;

@@ -1460,17 +1460,12 @@ export default class SkillTree {
     hero.stats.currentMana -= skill.manaCost;
     const instantSkillDamage = this.calculateInstantDamage(skillId);
     const { damage, isCritical } = hero.calculateTotalDamage(instantSkillDamage);
-    game.currentEnemy.currentHealth -= damage;
-
-    if (game.currentEnemy.currentHealth <= 0) {
-      defeatEnemy();
-    }
+    game.damageEnemy(damage);
 
     // Set cooldown
     skillData.cooldownEndTime = Date.now() + skill.cooldown;
 
     // Update UI
-    updateEnemyHealth();
     updatePlayerHealth();
     createDamageNumber(damage, false, isCritical, false, false); // Add parameter for instant skill visual
 

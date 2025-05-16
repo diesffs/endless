@@ -84,6 +84,11 @@ export let dev = false;
     }
   }, 100);
 
+  setInterval(() => {
+    statistics.update();
+    game.saveGame();
+  }, 60000);
+
   if (dev) {
     document.addEventListener('DOMContentLoaded', () => {
       // Create debug UI
