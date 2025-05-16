@@ -505,15 +505,15 @@ export function updateStatsAndAttributesUI() {
     attributesContainer.innerHTML = html`
       <h3 id="attributes">Attributes (+${hero.statPoints})</h3>
       ${Object.entries(hero.primaryStats)
-        .map(
-          ([stat, value]) => `
-      <div class="attribute-row">
-        <button class="allocate-btn" data-stat="${stat}">+</button>
-        <strong>${stat.charAt(0).toUpperCase() + stat.slice(1)}:</strong>
-        <span id="${stat}-value">${hero.stats[stat]}</span>
-      </div>
-    `
-        )
+        .map(([stat, value]) => {
+          return `
+            <div class="attribute-row">
+            <button class="allocate-btn" data-stat="${stat}">+</button>
+            <strong>${stat.charAt(0).toUpperCase() + stat.slice(1)}:</strong>
+            <span id="${stat}-value">${hero.stats[stat]}</span>
+            </div>
+            `;
+        })
         .join('')}
     `;
 

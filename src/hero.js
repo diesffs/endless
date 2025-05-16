@@ -193,7 +193,7 @@ export default class Hero {
     const flatValues = this.calculateFlatValues(attributeEffects, skillTreeBonuses);
     const percentBonuses = this.calculatePercentBonuses(attributeEffects, skillTreeBonuses);
 
-    this.applyFinalCalculations(flatValues, percentBonuses, attributeEffects);
+    this.applyFinalCalculations(flatValues, percentBonuses);
 
     updatePlayerHealth();
     updateStatsAndAttributesUI();
@@ -261,6 +261,7 @@ export default class Hero {
     for (const stat in STATS) {
       // Sum all sources for each stat
       flatValues[stat] =
+        (this.primaryStats[stat] ?? 0) +
         (STATS[stat].base ?? 0) +
         (attributeEffects[stat] ?? 0) +
         (STATS[stat].levelUpBonus ?? 0) * (this.level - 1) +
@@ -290,7 +291,7 @@ export default class Hero {
     return percentBonuses;
   }
 
-  applyFinalCalculations(flatValues, percentBonuses, attributeEffects) {
+  applyFinalCalculations(flatValues, percentBonuses) {
     // Apply percent bonuses to all stats that have them
     for (const stat in STATS) {
       if (!stat.endsWith('Percent')) {
