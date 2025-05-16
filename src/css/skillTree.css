@@ -234,3 +234,21 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
   background: #222;
 }
+
+#class-selection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+#class-selection .class-path {
+  margin-bottom: 18px;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background: #181818;
+  padding: 12px;
+}
+
+#class-selection .class-path {
+  margin-bottom: 0;
+}

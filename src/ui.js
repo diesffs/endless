@@ -531,7 +531,8 @@ function showClassSelection() {
               readableStat = readableStat.replace(/ Percent$/, '');
               displayValue = `${value}%`;
             }
-            return `<div>${readableStat}: +${displayValue}</div>`;
+            const prefix = value > 0 ? '+' : '';
+            return `<div>${readableStat}: ${prefix}${displayValue}</div>`;
           })
           .join('')}
       </div>
