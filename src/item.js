@@ -143,9 +143,24 @@ const OFFENSIVE_STATS = [
   'lifeSteal',
 ];
 
+const OFFENSIVE_JEWELRY_STATS = [
+  'critChance',
+  'critDamage',
+  'attackRating',
+  'damagePercent',
+  'attackRatingPercent',
+  'lifeSteal',
+];
+
 const ELEMENTAL_STATS = ['fireDamage', 'coldDamage', 'airDamage', 'earthDamage', 'elementalDamagePercent'];
 
-const JEWELRY_STATS = [...OFFENSIVE_STATS, ...DEFENSIVE_STATS, ...ELEMENTAL_STATS, 'bonusGold', 'bonusExperience'];
+const JEWELRY_STATS = [
+  ...OFFENSIVE_JEWELRY_STATS,
+  ...DEFENSIVE_STATS,
+  ...ELEMENTAL_STATS,
+  'bonusGold',
+  'bonusExperience',
+];
 
 export const ITEM_STAT_POOLS = {
   HELMET: {
