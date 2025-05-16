@@ -52,6 +52,8 @@ export default class Prestige {
   }
 
   performPrestige() {
+    statistics.increment('prestigeCount', null, 1);
+
     const earnedSouls = this.calculateSouls();
 
     // Store crystal-related values before reset

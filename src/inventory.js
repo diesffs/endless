@@ -1,6 +1,6 @@
 import { handleSavedData } from './functions.js';
 import Item, { ITEM_RARITY, RARITY_ORDER, SLOT_REQUIREMENTS } from './item.js';
-import { game, hero } from './globals.js';
+import { game, hero, statistics } from './globals.js';
 import { hideTooltip, positionTooltip, showToast, showTooltip, updateResources } from './ui.js';
 import { MATERIALS } from './material.js';
 
@@ -565,6 +565,8 @@ export default class Inventory {
       console.error('Attempted to add null item to inventory');
       return;
     }
+
+    statistics.increment('totalItemsFound', null, 1);
 
     if (specificPosition !== null && specificPosition < ITEM_SLOTS && !this.inventoryItems[specificPosition]) {
       this.inventoryItems[specificPosition] = item;
