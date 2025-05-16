@@ -194,7 +194,7 @@ export default class Inventory {
         const matDef = Object.values(MATERIALS).find((m) => m.id === mat.id) || {};
         // Show only first 2 digits, and "9+" if >9
         let qtyDisplay = mat.qty > 9 ? '+' : String(mat.qty).padStart(2, ' ');
-        cell.innerHTML = `<div class="material-item" data-mat-id="${mat.id}" title="${matDef.name || mat.name || ''}">
+        cell.innerHTML = `<div class="material-item" data-mat-id="${mat.id}">
           ${mat.icon || '🔹'}
           <span class="mat-qty">${qtyDisplay}</span>
         </div>`;
