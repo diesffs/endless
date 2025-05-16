@@ -246,7 +246,7 @@ export function createCombatText(text, isPlayer = true) {
 }
 
 export function calculateHitChance(attackRating, stage) {
-  const stageScaling = 1 + (stage - 1) * 0.1; // Linear 10% increase per stage
+  const stageScaling = 1 + (stage - 1) * 0.25; // Linear 25% increase per stage
   const baseChance = (attackRating / (attackRating + 25 * stageScaling)) * 100;
   return Math.min(Math.max(baseChance, 10), 100);
 }
