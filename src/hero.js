@@ -679,7 +679,9 @@ export default class Hero {
     updatePlayerHealth();
   }
 
-  calculateTotalDamage(isCritical) {
+  calculateTotalDamage(bonusDamage = 0) {
+    // Hit - existing damage calculation code
+    const isCritical = Math.random() * 100 < this.stats.critChance;
     // Calculate physical damage
     let physicalDamage = this.stats.damage * (1 + this.stats.damagePercent / 100);
 
@@ -722,10 +724,13 @@ export default class Hero {
     });
 
     // Calculate total damage before crit
-    const totalDamage = physicalDamage + elementalDamage;
+    const totalDamage = physicalDamage + elementalDamage + bonusDamage;
 
     // Apply crit at the end to total damage
-    return isCritical ? totalDamage * this.stats.critDamage : totalDamage;
+    return {
+      damage: isCritical ? totalDamage * this.stats.critDamage : totalDamage,
+      isCritical,
+    };
   }
 
   calculateBlockHealing() {

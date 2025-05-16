@@ -1458,7 +1458,8 @@ export default class SkillTree {
 
     // Apply instant effect
     hero.stats.currentMana -= skill.manaCost;
-    const damage = this.calculateInstantDamage(skillId);
+    const instantSkillDamage = this.calculateInstantDamage(skillId);
+    const { damage, isCritical } = hero.calculateTotalDamage(instantSkillDamage);
     game.currentEnemy.currentHealth -= damage;
 
     if (game.currentEnemy.currentHealth <= 0) {
@@ -1471,7 +1472,7 @@ export default class SkillTree {
     // Update UI
     updateEnemyHealth();
     updatePlayerHealth();
-    createDamageNumber(damage, false, false, false, false, true); // Add parameter for instant skill visual
+    createDamageNumber(damage, false, isCritical, false, false); // Add parameter for instant skill visual
 
     return true;
   }
@@ -1482,7 +1483,7 @@ export default class SkillTree {
     const baseEffect = skill.effect(skillData.level);
 
     // Scale with hero's damage bonuses
-    return hero.stats.damage + baseEffect.damage;
+    return baseEffect.damage;
   }
 
   applyToggleEffects() {

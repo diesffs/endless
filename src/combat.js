@@ -60,12 +60,12 @@ export function playerAttack(currentTime) {
       const roll = Math.random() * 100;
 
       if (roll > hitChance) {
-        // Miss
+        // to take up mana even when missing. (for toggle skills)
+        // Instant skills always hit
+        hero.calculateTotalDamage();
         createDamageNumber('MISS', false, false, false, true);
       } else {
-        // Hit - existing damage calculation code
-        const isCritical = Math.random() * 100 < hero.stats.critChance;
-        const damage = hero.calculateTotalDamage(isCritical);
+        const { damage, isCritical } = hero.calculateTotalDamage();
         const lifeStealAmount = damage * (hero.stats.lifeSteal / 100);
         hero.stats.currentHealth = Math.min(hero.stats.health, hero.stats.currentHealth + lifeStealAmount);
 
