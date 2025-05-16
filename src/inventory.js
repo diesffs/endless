@@ -4,9 +4,9 @@ import { game, hero } from './globals.js';
 import { hideTooltip, positionTooltip, showToast, showTooltip, updateResources } from './ui.js';
 import { MATERIALS } from './material.js';
 
-const ITEM_SLOTS = 200;
-const PERSISTENT_SLOTS = 30;
-const MATERIALS_SLOTS = 50;
+export const ITEM_SLOTS = 200;
+export const PERSISTENT_SLOTS = 30;
+export const MATERIALS_SLOTS = 50;
 
 export default class Inventory {
   constructor(savedData = null) {

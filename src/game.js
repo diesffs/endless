@@ -10,6 +10,7 @@ import {
 import { playerAttack, enemyAttack, playerDeath, defeatEnemy } from './combat.js';
 import { game, hero, inventory, prestige, shop, skillTree, statistics } from './globals.js';
 import Enemy from './enemy.js';
+import { ITEM_SLOTS, MATERIALS_SLOTS } from './inventory.js';
 
 class Game {
   constructor() {
@@ -180,7 +181,8 @@ class Game {
 
     // Reset inventory and equipped items
     inventory.equippedItems = {};
-    inventory.inventoryItems = new Array(200).fill(null);
+    inventory.inventoryItems = new Array(ITEM_SLOTS).fill(null);
+    inventory.materials = new Array(MATERIALS_SLOTS).fill(null);
     inventory.updateInventoryGrid();
 
     prestige.performPrestige(); // Use the existing functionality to reset progress
