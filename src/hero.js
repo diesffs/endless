@@ -1,6 +1,6 @@
 import { initializeSkillTreeStructure, updateStatsAndAttributesUI } from './ui.js';
 import { game, inventory, shop, skillTree, statistics } from './globals.js';
-import { updatePlayerHealth } from './ui.js';
+import { updatePlayerLife } from './ui.js';
 import { createCombatText } from './combat.js';
 import { handleSavedData } from './functions.js';
 import { ELEMENT_OPPOSITES } from './enemy.js';
@@ -35,8 +35,8 @@ export const ATTRIBUTES = {
   },
   vitality: {
     effects: {
-      healthPerPoint: 10,
-      healthPercentPer: {
+      lifePerPoint: 10,
+      lifePercentPer: {
         enabled: false,
         points: 5,
         value: 0.01,
@@ -124,8 +124,8 @@ export default class Hero {
     for (const [stat, config] of Object.entries(STATS)) {
       this.stats[stat] = config.base;
     }
-    // Optionally, set currentHealth and currentMana to their max values:
-    this.stats.currentHealth = this.stats.health;
+    // Optionally, set currentLife and currentMana to their max values:
+    this.stats.currentLife = this.stats.life;
     this.stats.currentMana = this.stats.mana;
 
     handleSavedData(savedData, this);
@@ -153,7 +153,7 @@ export default class Hero {
     this.statPoints += STATS_ON_LEVEL_UP;
     this.expToNextLevel += this.level * 20 - 20;
     this.recalculateFromAttributes();
-    this.stats.currentHealth = this.stats.health; // Full heal on level up
+    this.stats.currentLife = this.stats.life; // Full heal on level up
     this.stats.currentMana = this.stats.mana; // Full heal on level up
 
     // Add level up notification
@@ -161,7 +161,7 @@ export default class Hero {
 
     skillTree.addSkillPoints(1); // Add 1 skill point per level
 
-    updatePlayerHealth();
+    updatePlayerLife();
     updateStatsAndAttributesUI();
     initializeSkillTreeStructure();
     game.saveGame();
@@ -174,7 +174,7 @@ export default class Hero {
       this.statPoints--;
       this.recalculateFromAttributes();
       if (stat === 'vitality' && !game.gameStarted) {
-        this.stats.currentHealth = this.stats.health;
+        this.stats.currentLife = this.stats.life;
       }
       game.saveGame();
       return true;
@@ -195,7 +195,7 @@ export default class Hero {
 
     this.applyFinalCalculations(flatValues, percentBonuses);
 
-    updatePlayerHealth();
+    updatePlayerLife();
     updateStatsAndAttributesUI();
   }
 
@@ -227,13 +227,13 @@ export default class Hero {
       for (const attr in ATTRIBUTES) {
         const attrEffects = ATTRIBUTES[attr].effects;
 
-        // Flat per-point bonus (e.g., damagePerPoint, healthPerPoint, etc.)
+        // Flat per-point bonus (e.g., damagePerPoint, lifePerPoint, etc.)
         const flatKey = stat + 'PerPoint';
         if (flatKey in attrEffects) {
           flatBonus += (this.stats[attr] || 0) * attrEffects[flatKey];
         }
 
-        // Percent per N points bonus (e.g., damagePercentPer, healthPercentPer, etc.)
+        // Percent per N points bonus (e.g., damagePercentPer, lifePercentPer, etc.)
         const percentKey = stat + 'PercentPer';
         if (percentKey in attrEffects && attrEffects[percentKey].enabled) {
           percentBonus +=
@@ -350,9 +350,9 @@ export default class Hero {
   }
 
   regenerate() {
-    this.stats.currentHealth = Math.min(this.stats.health, this.stats.currentHealth + this.stats.lifeRegen / 10);
+    this.stats.currentLife = Math.min(this.stats.life, this.stats.currentLife + this.stats.lifeRegen / 10);
     this.stats.currentMana = Math.min(this.stats.mana, this.stats.currentMana + this.stats.manaRegen / 10);
-    updatePlayerHealth();
+    updatePlayerLife();
   }
 
   // calculated when hit is successful
@@ -418,8 +418,8 @@ export default class Hero {
     // Get evasion skill level if it exists
     const evasionSkill = skillTree.skills['evasion'];
     if (evasionSkill) {
-      // Heal 5% of max health when blocking
-      const healAmount = this.stats.health * 0.05;
+      // Heal 5% of max life when blocking
+      const healAmount = this.stats.life * 0.05;
       game.healPlayer(healAmount);
       return healAmount;
     }

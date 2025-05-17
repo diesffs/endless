@@ -2,7 +2,7 @@ import { createDamageNumber } from './combat.js';
 import { handleSavedData } from './functions.js';
 import { game, hero } from './globals.js';
 import { CLASS_PATHS, REQ_LEVEL_FOR_SKILL_TREE, SKILL_TREES } from './skills.js';
-import { showManaWarning, showToast, updateActionBar, updatePlayerHealth, updateSkillTreeValues } from './ui.js';
+import { showManaWarning, showToast, updateActionBar, updatePlayerLife, updateSkillTreeValues } from './ui.js';
 
 export default class SkillTree {
   constructor(savedData = null) {
@@ -211,13 +211,16 @@ export default class SkillTree {
       const lifeStealAmount = damage * (baseEffects.lifeSteal / 100);
       game.healPlayer(lifeStealAmount);
     }
+    if (baseEffects.lifePerHit) {
+      game.healPlayer(baseEffects.lifePerHit);
+    }
     game.damageEnemy(damage);
 
     // Set cooldown
     skillData.cooldownEndTime = Date.now() + skill.cooldown;
 
     // Update UI
-    updatePlayerHealth();
+    updatePlayerLife();
     createDamageNumber(damage, false, isCritical, false, false); // Add parameter for instant skill visual
 
     return true;

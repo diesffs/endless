@@ -1,6 +1,6 @@
 import {
-  updatePlayerHealth,
-  updateEnemyHealth,
+  updatePlayerLife,
+  updateEnemyLife,
   updateStageUI,
   updateResources,
   updateBuffIndicators,
@@ -36,20 +36,20 @@ class Game {
   }
 
   damagePlayer(damage) {
-    hero.stats.currentHealth -= damage;
-    if (hero.stats.currentHealth <= 0) {
-      hero.stats.currentHealth = 0;
+    hero.stats.currentLife -= damage;
+    if (hero.stats.currentLife <= 0) {
+      hero.stats.currentLife = 0;
       playerDeath();
     }
-    updatePlayerHealth();
+    updatePlayerLife();
   }
 
   healPlayer(heal) {
-    hero.stats.currentHealth += heal;
-    if (hero.stats.currentHealth > hero.stats.health) {
-      hero.stats.currentHealth = hero.stats.health;
+    hero.stats.currentLife += heal;
+    if (hero.stats.currentLife > hero.stats.life) {
+      hero.stats.currentLife = hero.stats.life;
     }
-    updatePlayerHealth();
+    updatePlayerLife();
   }
 
   damageEnemy(damage) {
@@ -58,22 +58,22 @@ class Game {
       if (damage > statistics.highestDamageDealt) {
         statistics.set('highestDamageDealt', null, damage);
       }
-      this.currentEnemy.currentHealth -= damage;
-      if (this.currentEnemy.currentHealth < 0) this.currentEnemy.currentHealth = 0;
-      updateEnemyHealth();
+      this.currentEnemy.currentLife -= damage;
+      if (this.currentEnemy.currentLife < 0) this.currentEnemy.currentLife = 0;
+      updateEnemyLife();
 
-      if (this.currentEnemy.currentHealth <= 0) {
+      if (this.currentEnemy.currentLife <= 0) {
         defeatEnemy();
       }
     }
   }
 
-  resetAllHealth() {
-    hero.stats.currentHealth = hero.stats.health;
+  resetAllLife() {
+    hero.stats.currentLife = hero.stats.life;
     hero.stats.currentMana = hero.stats.mana;
-    updatePlayerHealth();
-    this.currentEnemy.resetHealth();
-    updateEnemyHealth();
+    updatePlayerLife();
+    this.currentEnemy.resetLife();
+    updateEnemyLife();
 
     // Reset combat timers
     const currentTime = Date.now();
@@ -98,7 +98,7 @@ class Game {
     const deltaSeconds = 0.1; // gameLoop runs every 100ms
     statistics.addFightTime(deltaSeconds);
 
-    // Regenerate health and mana every 100 ms
+    // Regenerate life and mana every 100 ms
     if (currentTime - this.lastRegen >= 100) {
       hero.regenerate();
       this.lastRegen = currentTime;
@@ -120,8 +120,8 @@ class Game {
 
     if (this.gameStarted) {
       this.currentEnemy.lastAttack = Date.now();
-      // When the game starts, reset health and update resources
-      this.resetAllHealth();
+      // When the game starts, reset life and update resources
+      this.resetAllLife();
       updateResources(); // Pass game here
     } else {
       // Stop all active buffs when combat ends
@@ -132,11 +132,11 @@ class Game {
       updateStageUI();
       this.currentEnemy = new Enemy(this.stage);
 
-      hero.stats.currentHealth = hero.stats.health; // Reset player health
+      hero.stats.currentLife = hero.stats.life; // Reset player life
       hero.stats.currentMana = hero.stats.mana; // Reset player mana
-      this.currentEnemy.resetHealth(); // Reset enemy health
-      updatePlayerHealth();
-      updateEnemyHealth();
+      this.currentEnemy.resetLife(); // Reset enemy life
+      updatePlayerLife();
+      updateEnemyLife();
     }
   }
 

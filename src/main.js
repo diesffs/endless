@@ -4,8 +4,8 @@ import Shop from './shop.js';
 import {
   initializeSkillTreeUI,
   initializeUI,
-  updateEnemyHealth,
-  updatePlayerHealth,
+  updateEnemyLife,
+  updatePlayerLife,
   updateResources,
   updateStatsAndAttributesUI,
   updateStageUI,
@@ -60,13 +60,13 @@ export let dev = false;
 
   updateResources();
   hero.recalculateFromAttributes();
-  game.healPlayer(hero.stats.health);
+  game.healPlayer(hero.stats.life);
   hero.stats.currentMana = hero.stats.mana;
 
-  updatePlayerHealth();
+  updatePlayerLife();
   updateStatsAndAttributesUI();
   updateStageUI();
-  updateEnemyHealth();
+  updateEnemyLife();
 
   window.addEventListener('DOMContentLoaded', () => {
     initializeRegionSystem();

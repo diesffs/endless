@@ -7,7 +7,7 @@ export const ENEMY_RARITY = {
     itemDropChance: 2,
     color: 'gray',
     threshold: 80,
-    healthBonus: 1,
+    lifeBonus: 1,
     bonusDamage: 1,
     bonusAttackSpeed: 1,
   },
@@ -16,7 +16,7 @@ export const ENEMY_RARITY = {
     itemDropChance: 1,
     color: 'blue',
     threshold: 90,
-    healthBonus: 1.2,
+    lifeBonus: 1.2,
     bonusDamage: 1.2,
     bonusAttackSpeed: 0.9,
   },
@@ -25,7 +25,7 @@ export const ENEMY_RARITY = {
     itemDropChance: 2,
     color: 'purple',
     threshold: 96,
-    healthBonus: 1.5,
+    lifeBonus: 1.5,
     bonusDamage: 1.5,
     bonusAttackSpeed: 0.8,
   },
@@ -34,7 +34,7 @@ export const ENEMY_RARITY = {
     itemDropChance: 2,
     color: 'orange',
     threshold: 99,
-    healthBonus: 2,
+    lifeBonus: 2,
     bonusDamage: 2,
     bonusAttackSpeed: 0.7,
   },
@@ -43,7 +43,7 @@ export const ENEMY_RARITY = {
     itemDropChance: 3,
     color: 'red',
     threshold: 100,
-    healthBonus: 3,
+    lifeBonus: 3,
     bonusDamage: 3,
     bonusAttackSpeed: 0.5,
   },
@@ -134,9 +134,9 @@ class Enemy {
     const region = getCurrentRegion();
     this.rarity = this.generateRarity();
     this.color = this.getRarityColor(this.rarity);
-    // Use region multipliers for health and damage
-    this.health = this.calculateHealth(stage, this.rarity) * (region.enemyHealthMultiplier || 1);
-    this.currentHealth = this.health;
+    // Use region multipliers for life and damage
+    this.life = this.calculateLife(stage, this.rarity) * (region.enemyLifeMultiplier || 1);
+    this.currentLife = this.life;
     this.damage = this.calculateDamage(stage, this.rarity) * (region.enemyDamageMultiplier || 1);
     this.attackSpeed = this.calculateAttackSpeed(this.rarity);
     this.lastAttack = Date.now();
@@ -206,17 +206,17 @@ class Enemy {
     return rarityMap[rarity] || 'white';
   }
 
-  calculateHealth(stage, rarity) {
-    const baseHealth = 49 + Math.pow(stage, 1.75);
+  calculateLife(stage, rarity) {
+    const baseLife = 49 + Math.pow(stage, 1.75);
     const rarityMap = {
-      [ENEMY_RARITY.NORMAL.type]: ENEMY_RARITY.NORMAL.healthBonus,
-      [ENEMY_RARITY.RARE.type]: ENEMY_RARITY.RARE.healthBonus,
-      [ENEMY_RARITY.EPIC.type]: ENEMY_RARITY.EPIC.healthBonus,
-      [ENEMY_RARITY.LEGENDARY.type]: ENEMY_RARITY.LEGENDARY.healthBonus,
-      [ENEMY_RARITY.MYTHIC.type]: ENEMY_RARITY.MYTHIC.healthBonus,
+      [ENEMY_RARITY.NORMAL.type]: ENEMY_RARITY.NORMAL.lifeBonus,
+      [ENEMY_RARITY.RARE.type]: ENEMY_RARITY.RARE.lifeBonus,
+      [ENEMY_RARITY.EPIC.type]: ENEMY_RARITY.EPIC.lifeBonus,
+      [ENEMY_RARITY.LEGENDARY.type]: ENEMY_RARITY.LEGENDARY.lifeBonus,
+      [ENEMY_RARITY.MYTHIC.type]: ENEMY_RARITY.MYTHIC.lifeBonus,
     };
 
-    return baseHealth * (rarityMap[rarity] || ENEMY_RARITY.NORMAL.healthBonus);
+    return baseLife * (rarityMap[rarity] || ENEMY_RARITY.NORMAL.lifeBonus);
   }
 
   calculateDamage(stage, rarity) {
@@ -248,8 +248,8 @@ class Enemy {
     return currentTime - this.lastAttack >= this.attackSpeed * 1000; // Convert to ms
   }
 
-  resetHealth() {
-    this.currentHealth = this.health;
+  resetLife() {
+    this.currentLife = this.life;
   }
 
   calculateDropChance() {

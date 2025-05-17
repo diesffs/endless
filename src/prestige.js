@@ -2,7 +2,7 @@ import { game, hero, shop, skillTree, statistics } from './globals.js';
 import {
   updateStageUI,
   updateResources,
-  updatePlayerHealth,
+  updatePlayerLife,
   updateStatsAndAttributesUI,
   positionTooltip,
   showTooltip,
@@ -98,9 +98,9 @@ export default class Prestige {
     hero.recalculateFromAttributes();
     updateStatsAndAttributesUI(); // Update stats and attributes UI
     updateResources(); // Update resources UI
-    updatePlayerHealth(); // Update health bar dynamically
+    updatePlayerLife(); // Update life bar dynamically
     updateRegionUI();
-    game.resetAllHealth();
+    game.resetAllLife();
 
     const startBtn = document.getElementById('start-btn');
     if (startBtn) {
@@ -133,7 +133,7 @@ export default class Prestige {
 
     // Update UI and save game
     updateResources();
-    updatePlayerHealth();
+    updatePlayerLife();
     game.saveGame();
     this.initializePrestigeUI(); // Ensure UI reflects reset state
   }

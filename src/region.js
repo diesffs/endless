@@ -26,7 +26,7 @@ export const REGIONS = [
       'Frostlord',
     ],
     unlockLevel: 1, // Always unlocked
-    enemyHealthMultiplier: 1.0,
+    enemyLifeMultiplier: 1.0,
     enemyDamageMultiplier: 1.0,
     xpMultiplier: 1.0,
     goldMultiplier: 1.3,
@@ -48,7 +48,7 @@ export const REGIONS = [
       'Grimreaper',
     ],
     unlockLevel: 25, // Unlocked at hero level 20
-    enemyHealthMultiplier: 1.4,
+    enemyLifeMultiplier: 1.4,
     enemyDamageMultiplier: 1.2,
     xpMultiplier: 1.5,
     goldMultiplier: 1.3,
@@ -70,7 +70,7 @@ export const REGIONS = [
       'Stormcaller',
     ],
     unlockLevel: 50, // Unlocked at hero level 50
-    enemyHealthMultiplier: 1.7,
+    enemyLifeMultiplier: 1.7,
     enemyDamageMultiplier: 1.3,
     xpMultiplier: 1,
     goldMultiplier: 1,
@@ -92,7 +92,7 @@ export const REGIONS = [
       'Inferno',
     ],
     unlockLevel: 90, // Unlocked at hero level 35
-    enemyHealthMultiplier: 2.2,
+    enemyLifeMultiplier: 2.2,
     enemyDamageMultiplier: 1.5,
     xpMultiplier: 1.8,
     goldMultiplier: 1.8,
@@ -114,7 +114,7 @@ export const REGIONS = [
       'Poisonfang',
     ],
     unlockLevel: 150, // Unlocked at hero level 10
-    enemyHealthMultiplier: 2,
+    enemyLifeMultiplier: 2,
     enemyDamageMultiplier: 1.8,
     xpMultiplier: 4,
     goldMultiplier: 1.5,
@@ -136,7 +136,7 @@ export const REGIONS = [
       'Aetherborn',
     ],
     unlockLevel: 250, // Unlocked at hero level 60
-    enemyHealthMultiplier: 4,
+    enemyLifeMultiplier: 4,
     enemyDamageMultiplier: 1.5,
     xpMultiplier: 2,
     goldMultiplier: 11,
@@ -158,7 +158,7 @@ export async function setCurrentRegion(regionId) {
   if (game) {
     game.stage = game.hero?.startingStage || 1;
     game.currentEnemy = new Enemy(game.stage);
-    game.resetAllHealth();
+    game.resetAllLife();
     if (typeof game.saveGame === 'function') game.saveGame();
   }
   updateRegionUI();

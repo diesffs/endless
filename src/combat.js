@@ -1,13 +1,14 @@
 import {
-  updatePlayerHealth,
-  updateEnemyHealth,
+  updatePlayerLife,
+  updateEnemyLife,
   updateResources,
   updateStageUI,
   updateStatsAndAttributesUI,
+  updateBuffIndicators,
 } from './ui.js';
 import Enemy from './enemy.js';
 import { ITEM_RARITY } from './item.js';
-import { hero, game, inventory, prestige, statistics } from './globals.js';
+import { hero, game, inventory, prestige, statistics, skillTree } from './globals.js';
 import { getRandomMaterial } from './material.js';
 
 export function enemyAttack(currentTime) {
@@ -44,7 +45,7 @@ export function playerAttack(currentTime) {
   const timeBetweenAttacks = 1000 / hero.stats.attackSpeed;
 
   if (currentTime - game.lastPlayerAttack >= timeBetweenAttacks) {
-    if (game.currentEnemy.currentHealth > 0) {
+    if (game.currentEnemy.currentLife > 0) {
       // Calculate if attack hits
       const hitChance = calculateHitChance(hero.stats.attackRating, game.stage);
       const roll = Math.random() * 100;
@@ -83,15 +84,19 @@ export function playerDeath() {
   game.stage = hero.startingStage;
   updateStageUI();
   game.currentEnemy = new Enemy(game.stage);
-  game.resetAllHealth();
+  game.resetAllLife();
 
   // Update all UI elements
-  updatePlayerHealth();
+  updatePlayerLife();
   if (game.currentEnemy) {
-    updateEnemyHealth();
+    updateEnemyLife();
   }
   updateResources();
   updateStatsAndAttributesUI();
+
+  // Reset buffs and indicators
+  skillTree.stopAllBuffs();
+  updateBuffIndicators();
 
   // If continuing, restart the game state
   if (shouldContinue) {
@@ -141,7 +146,7 @@ export function defeatEnemy() {
   statistics.increment('enemiesKilled', enemy.rarity.toLowerCase());
 
   updateResources();
-  updateEnemyHealth();
+  updateEnemyLife();
   updateStatsAndAttributesUI();
 
   game.saveGame();

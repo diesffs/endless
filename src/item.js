@@ -87,7 +87,7 @@ export const AVAILABLE_STATS = {
   critChance: { min: 0.5, max: 1.5, scaling: 'capped' },
   critDamage: { min: 0.02, max: 0.1, scaling: 'full' },
   attackSpeed: { min: 0.05, max: 0.2, scaling: 'capped' },
-  health: { min: 30, max: 75, scaling: 'full' },
+  life: { min: 30, max: 75, scaling: 'full' },
   blockChance: { min: 2, max: 6, scaling: 'capped' },
   attackRating: { min: 50, max: 150, scaling: 'full' },
   lifeSteal: { min: 0.01, max: 0.1, scaling: 'capped' },
@@ -104,7 +104,7 @@ export const AVAILABLE_STATS = {
   mana: { min: 5, max: 15, scaling: 'capped' },
   manaRegen: { min: 0.5, max: 2, scaling: 'capped' },
   lifeRegen: { min: 0.5, max: 1.5, scaling: 'full' },
-  healthPercent: { min: 2, max: 8, scaling: 'capped' },
+  lifePercent: { min: 2, max: 8, scaling: 'capped' },
   manaPercent: { min: 2, max: 5, scaling: 'capped' },
   armorPercent: { min: 3, max: 8, scaling: 'capped' },
   elementalDamagePercent: { min: 5, max: 10, scaling: 'capped' },
@@ -120,14 +120,14 @@ const DEFENSIVE_STATS = [
   'wisdom',
   'endurance',
   'dexterity',
-  'health',
+  'life',
   'lifeRegen',
   'endurance',
   'armorPercent',
   'mana',
   'manaRegen',
   'manaPercent',
-  'healthPercent',
+  'lifePercent',
   'strength',
   'agility',
   'dexterity',
@@ -283,7 +283,7 @@ export default class Item {
       if (stat === 'attackRating') return 'Attack Rating';
       if (stat === 'attackRatingPercent') return 'Attack Rating';
       if (stat === 'damagePercent') return 'Damage';
-      if (stat === 'healthPercent') return 'Health';
+      if (stat === 'lifePercent') return 'Life';
       if (stat === 'manaPercent') return 'Mana';
       if (stat === 'armorPercent') return 'Armor';
       if (stat === 'elementalDamagePercent') return 'Elemental Damage';

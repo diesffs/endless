@@ -11,7 +11,7 @@ export const CLASS_PATHS = {
       strength: 20,
       vitality: 20,
       armor: 60,
-      healthPercent: 30,
+      lifePercent: 30,
     },
     description: 'A mighty warrior specializing in heavy armor and raw strength',
   },
@@ -47,7 +47,7 @@ export const CLASS_PATHS = {
       blockChance: 10,
       armor: 100,
       vitality: 50,
-      healthPercent: 20,
+      lifePercent: 20,
     },
     description: 'Holy warrior specializing in defense and vitality',
   },
@@ -59,7 +59,7 @@ export const CLASS_PATHS = {
       damage: 50,
       attackSpeed: 0.5,
       damagePercent: 20,
-      healthPercent: -30,
+      lifePercent: -30,
     },
     description: 'Frenzied fighter focusing on raw damage output',
   },
@@ -171,7 +171,7 @@ export const SKILL_TREES = {
       type: 'passive',
       requiredLevel: SKILL_LEVEL_TIERS[2],
       icon: 'armor',
-      description: 'Increases health regeneration',
+      description: 'Increases life regeneration',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         lifeRegen: level * 5,
@@ -300,7 +300,7 @@ export const SKILL_TREES = {
       icon: 'dodge',
       description: `
         Increases armor and block chance. 
-        Additionally, when blocking, you also recover health equal to 5% of your maximum health.
+        Additionally, when blocking, you also recover life equal to 5% of your maximum life.
         `,
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
@@ -501,7 +501,7 @@ export const SKILL_TREES = {
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         damage: level * 3,
-        agility: level * 5,
+        agility: level * 6,
       }),
     },
     bloodHunger: {
@@ -526,11 +526,10 @@ export const SKILL_TREES = {
       cooldown: 3000,
       requiredLevel: SKILL_LEVEL_TIERS[1],
       icon: 'bite',
-      description: 'A powerful strike that restores health.',
+      description: 'A powerful strike that restores life.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 10,
-        lifeSteal: level * 1,
+        damage: level * 12,
       }),
     },
     darkAura: {
@@ -538,8 +537,8 @@ export const SKILL_TREES = {
       name: 'Dark Aura',
       type: 'buff',
       manaCost: 20,
-      cooldown: 10000,
-      duration: 60000,
+      cooldown: 40000,
+      duration: 40000,
       requiredLevel: SKILL_LEVEL_TIERS[1],
       icon: 'blood-aura',
       description: 'Increases life steal and damage temporarily.',
@@ -556,14 +555,14 @@ export const SKILL_TREES = {
       name: 'Draining Touch',
       type: 'instant',
       manaCost: 25,
-      cooldown: 8000,
+      cooldown: 2000,
       requiredLevel: SKILL_LEVEL_TIERS[2],
       icon: 'drain',
-      description: 'Drains life from enemies, restoring your health.',
+      description: 'Drains life from enemies, restoring your life.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         damage: level * 8,
-        health: level * 4,
+        lifePerHit: level * 15,
       }),
     },
     greaterBloodHunger: {
@@ -575,8 +574,8 @@ export const SKILL_TREES = {
       description: 'Greatly increases experience gained and life steal.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        bonusExperience: level * 7,
-        lifeSteal: level * 2,
+        strength: level * 5,
+        vitality: level * 10,
       }),
     },
 
@@ -593,7 +592,7 @@ export const SKILL_TREES = {
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         damage: level * 12,
-        health: level * 5,
+        life: level * 5,
       }),
     },
     treasureHunter: {
@@ -619,11 +618,11 @@ export const SKILL_TREES = {
       duration: 8000,
       requiredLevel: SKILL_LEVEL_TIERS[4],
       icon: 'pact',
-      description: 'Increases life steal and health temporarily.',
+      description: 'Increases life steal and life temporarily.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         lifeSteal: level * 3,
-        healthPercent: level * 5,
+        lifePercent: level * 5,
       }),
     },
 
@@ -649,12 +648,12 @@ export const SKILL_TREES = {
       type: 'passive',
       requiredLevel: SKILL_LEVEL_TIERS[5],
       icon: 'presence',
-      description: 'Increases life steal, damage, and health permanently.',
+      description: 'Increases life steal, damage, and life permanently.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         lifeSteal: level * 2,
         damagePercent: level * 5,
-        healthPercent: level * 3,
+        lifePercent: level * 3,
       }),
     },
 
@@ -746,7 +745,7 @@ export const SKILL_TREES = {
       cooldown: 8000,
       requiredLevel: SKILL_LEVEL_TIERS[1],
       icon: 'heal',
-      description: 'Heals a large amount of health instantly.',
+      description: 'Heals a large amount of life instantly.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         healing: level * 10,
@@ -913,7 +912,7 @@ export const SKILL_TREES = {
       cooldown: 6000,
       requiredLevel: SKILL_LEVEL_TIERS[1],
       icon: 'swing',
-      description: 'A powerful strike that sacrifices health for damage.',
+      description: 'A powerful strike that sacrifices life for damage.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         damage: level * 15,
@@ -1022,7 +1021,7 @@ export const SKILL_TREES = {
       manaCost: 40,
       requiredLevel: SKILL_LEVEL_TIERS[5],
       icon: 'fury',
-      description: 'Increases damage and attack speed at the cost of health.',
+      description: 'Increases damage and attack speed at the cost of life.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         damage: level * 15,

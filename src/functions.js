@@ -1,5 +1,5 @@
 import { game, hero, inventory, prestige, shop, skillTree } from './globals.js';
-import { showToast, updatePlayerHealth, updateResources } from './ui.js';
+import { showToast, updatePlayerLife, updateResources } from './ui.js';
 import { MATERIALS, getRandomMaterial } from './material.js';
 
 export const handleSavedData = (savedData, self) => {
@@ -363,7 +363,7 @@ export function createModifyUI() {
     shop.updateShopUI('gold-upgrades');
     shop.updateShopUI('crystal-upgrades');
     hero.recalculateFromAttributes();
-    updatePlayerHealth();
+    updatePlayerLife();
   });
   shopSection.appendChild(resetShopBtn);
 

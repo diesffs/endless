@@ -11,13 +11,13 @@ export const STATS = {
     levelUpBonus: 0,
   },
 
-  // HEALTH
-  health: {
+  // LIFE
+  life: {
     base: 100,
     decimalPlaces: 0,
     levelUpBonus: 10,
   },
-  healthPercent: {
+  lifePercent: {
     base: 0,
     decimalPlaces: 0,
     levelUpBonus: 0,

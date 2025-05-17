@@ -11,12 +11,12 @@ const UPGRADE_CONFIG = {
   // Existing stats
   damage: { label: 'Damage', bonus: 1 },
   attackSpeed: { label: 'Attack Speed', bonus: 0.01, suffix: '' },
-  health: { label: 'Health', bonus: 10 },
+  life: { label: 'Life', bonus: 10 },
   armor: { label: 'Armor', bonus: 1 },
   critChance: { label: 'Crit Chance', bonus: 0.1, suffix: '%' },
   critDamage: { label: 'Crit Damage', bonus: 0.01, suffix: '%' },
   mana: { label: 'Mana', bonus: 5 },
-  lifeRegen: { label: 'Health Regen', bonus: 0.1 },
+  lifeRegen: { label: 'Life Regen', bonus: 0.1 },
   manaRegen: { label: 'Mana Regen', bonus: 0.1 },
 
   // New stats to add
@@ -32,7 +32,7 @@ const UPGRADE_CONFIG = {
 export const BASE_UPGRADE_COSTS = {
   damage: 60,
   attackSpeed: 200,
-  health: 80,
+  life: 80,
   armor: 60,
   critChance: 140,
   critDamage: 200,
@@ -53,7 +53,7 @@ export default class Shop {
     this.upgradeLevels = {
       damage: 0,
       attackSpeed: 0,
-      health: 0,
+      life: 0,
       armor: 0,
       critChance: 0,
       critDamage: 0,
@@ -84,7 +84,7 @@ export default class Shop {
     this.upgradeLevels = {
       damage: 0,
       attackSpeed: 0,
-      health: 0,
+      life: 0,
       armor: 0,
       critChance: 0,
       critDamage: 0,

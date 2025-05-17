@@ -38,16 +38,16 @@ export const ATTRIBUTE_TOOLTIPS = {
   getVitalityTooltip: () => html`
     <strong>Vitality</strong><br />
     Each point increases:<br />
-    • Health by ${ATTRIBUTES.vitality.effects.healthPerPoint}<br />
-    ${ATTRIBUTES.vitality.effects.healthPercentPer.enabled
-      ? `• Every ${ATTRIBUTES.vitality.effects.healthPercentPer.points} points adds ${
-          ATTRIBUTES.vitality.effects.healthPercentPer.value * 100
-        }% to total health`
+    • Life by ${ATTRIBUTES.vitality.effects.lifePerPoint}<br />
+    ${ATTRIBUTES.vitality.effects.lifePercentPer.enabled
+      ? `• Every ${ATTRIBUTES.vitality.effects.lifePercentPer.points} points adds ${
+          ATTRIBUTES.vitality.effects.lifePercentPer.value * 100
+        }% to total life`
       : ''}
     ${ATTRIBUTES.vitality.effects.regenPercentPer.enabled
       ? `• Every ${ATTRIBUTES.vitality.effects.regenPercentPer.points} points adds ${
           ATTRIBUTES.vitality.effects.regenPercentPer.value * 100
-        }% health regeneration`
+        }% life regeneration`
       : ''}
   `,
 
@@ -139,18 +139,18 @@ export const ATTRIBUTE_TOOLTIPS = {
 
   getLifeStealTooltip: () => html`
     <strong>Life Steal</strong><br />
-    Percentage of damage dealt recovered as health.
+    Percentage of damage dealt recovered as life.
   `,
 
-  getMaxHealthTooltip: () => html`
-    <strong>Health</strong><br />
-    Maximum health points.<br />
+  getMaxLifeTooltip: () => html`
+    <strong>Life</strong><br />
+    Maximum life points.<br />
     Increased by Vitality and level ups.
   `,
 
-  getHealthRegenTooltip: () => html`
-    <strong>Health Regeneration</strong><br />
-    Amount of health recovered per second.
+  getLifeRegenTooltip: () => html`
+    <strong>Life Regeneration</strong><br />
+    Amount of life recovered per second.
   `,
 
   getMaxManaTooltip: () => html`
@@ -254,15 +254,15 @@ export function updateResources() {
   document.getElementById('gold').textContent = hero.gold || 0;
 }
 
-export function updatePlayerHealth() {
+export function updatePlayerLife() {
   const stats = hero.stats;
   if (!game.gameStarted) {
-    stats.currentHealth = stats.health;
+    stats.currentLife = stats.life;
   }
-  const healthPercentage = (stats.currentHealth / stats.health) * 100;
-  document.getElementById('health-fill').style.width = `${healthPercentage}%`;
-  document.getElementById('health-text').textContent = `${Math.max(0, Math.floor(stats.currentHealth))}/${Math.floor(
-    stats.health
+  const lifePercentage = (stats.currentLife / stats.life) * 100;
+  document.getElementById('life-fill').style.width = `${lifePercentage}%`;
+  document.getElementById('life-text').textContent = `${Math.max(0, Math.floor(stats.currentLife))}/${Math.floor(
+    stats.life
   )}`;
 
   const manaPercentage = (stats.currentMana / stats.mana) * 100;
@@ -272,14 +272,13 @@ export function updatePlayerHealth() {
   )}`;
 }
 
-export function updateEnemyHealth() {
+export function updateEnemyLife() {
   const enemy = game.currentEnemy;
-  const healthPercentage = (enemy.currentHealth / enemy.health) * 100;
-  document.getElementById('enemy-health-fill').style.width = `${healthPercentage}%`;
-  document.getElementById('enemy-health-text').textContent = `${Math.max(
-    0,
-    Math.floor(enemy.currentHealth)
-  )}/${Math.floor(enemy.health)}`;
+  const lifePercentage = (enemy.currentLife / enemy.life) * 100;
+  document.getElementById('enemy-life-fill').style.width = `${lifePercentage}%`;
+  document.getElementById('enemy-life-text').textContent = `${Math.max(0, Math.floor(enemy.currentLife))}/${Math.floor(
+    enemy.life
+  )}`;
 }
 
 export function toggleGame() {
@@ -364,10 +363,10 @@ export function updateStatsAndAttributesUI() {
       <!-- DEFENSE -->
       <hr style="margin: 5px 1px" />
 
-      <div><strong>Health:</strong> <span id="max-health-value">${hero.stats.health}</span></div>
+      <div><strong>Life:</strong> <span id="max-life-value">${hero.stats.life}</span></div>
       <div>
-        <strong>Health Regen:</strong>
-        <span id="health-regen-value"
+        <strong>Life Regen:</strong>
+        <span id="life-regen-value"
           >${hero.stats.lifeRegen.toFixed(STATS.lifeRegen.decimalPlaces).replace(/\./g, ',')}</span
         >/s
       </div>
@@ -433,12 +432,12 @@ export function updateStatsAndAttributesUI() {
 
     // Defense stats
     addTooltipToElement(
-      statsContainer.querySelector('#max-health-value').previousElementSibling,
-      ATTRIBUTE_TOOLTIPS.getMaxHealthTooltip
+      statsContainer.querySelector('#max-life-value').previousElementSibling,
+      ATTRIBUTE_TOOLTIPS.getMaxLifeTooltip
     );
     addTooltipToElement(
-      statsContainer.querySelector('#health-regen-value').previousElementSibling,
-      ATTRIBUTE_TOOLTIPS.getHealthRegenTooltip
+      statsContainer.querySelector('#life-regen-value').previousElementSibling,
+      ATTRIBUTE_TOOLTIPS.getLifeRegenTooltip
     );
     addTooltipToElement(
       statsContainer.querySelector('#max-mana-value').previousElementSibling,
@@ -484,8 +483,8 @@ export function updateStatsAndAttributesUI() {
     document.getElementById('air-damage-value').textContent = hero.stats.airDamage;
     document.getElementById('earth-damage-value').textContent = hero.stats.earthDamage;
 
-    document.getElementById('max-health-value').textContent = hero.stats.health;
-    document.getElementById('health-regen-value').textContent = hero.stats.lifeRegen
+    document.getElementById('max-life-value').textContent = hero.stats.life;
+    document.getElementById('life-regen-value').textContent = hero.stats.lifeRegen
       .toFixed(STATS.lifeRegen.decimalPlaces)
       .replace(/\./g, ',');
     document.getElementById('max-mana-value').textContent = hero.stats.mana;
