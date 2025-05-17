@@ -44,6 +44,14 @@ class Game {
     updatePlayerHealth();
   }
 
+  healPlayer(heal) {
+    hero.stats.currentHealth += heal;
+    if (hero.stats.currentHealth > hero.stats.health) {
+      hero.stats.currentHealth = hero.stats.health;
+    }
+    updatePlayerHealth();
+  }
+
   damageEnemy(damage) {
     if (this.currentEnemy) {
       // Only update highestDamageDealt if damage is greater than the current value

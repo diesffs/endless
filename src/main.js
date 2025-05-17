@@ -60,7 +60,7 @@ export let dev = false;
 
   updateResources();
   hero.recalculateFromAttributes();
-  hero.stats.currentHealth = hero.stats.health;
+  game.healPlayer(hero.stats.health);
   hero.stats.currentMana = hero.stats.mana;
 
   updatePlayerHealth();

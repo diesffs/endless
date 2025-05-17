@@ -487,8 +487,8 @@ export const SKILL_TREES = {
       description: 'Steal life from enemies with each attack.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        lifeSteal: level * 1,
-        damage: level * 8,
+        lifePerHit: level * 1,
+        damage: level * 3,
       }),
     },
     nightStalker: {
@@ -501,7 +501,7 @@ export const SKILL_TREES = {
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         damage: level * 3,
-        agility: level * 2,
+        agility: level * 5,
       }),
     },
     bloodHunger: {
@@ -523,14 +523,14 @@ export const SKILL_TREES = {
       name: 'Vampiric Strike',
       type: 'instant',
       manaCost: 15,
-      cooldown: 5000,
+      cooldown: 3000,
       requiredLevel: SKILL_LEVEL_TIERS[1],
       icon: 'bite',
       description: 'A powerful strike that restores health.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         damage: level * 10,
-        lifeSteal: level * 5,
+        lifeSteal: level * 1,
       }),
     },
     darkAura: {
@@ -539,14 +539,14 @@ export const SKILL_TREES = {
       type: 'buff',
       manaCost: 20,
       cooldown: 10000,
-      duration: 6000,
+      duration: 60000,
       requiredLevel: SKILL_LEVEL_TIERS[1],
       icon: 'blood-aura',
       description: 'Increases life steal and damage temporarily.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        lifeSteal: level * 2,
-        damagePercent: level * 5,
+        lifeSteal: level * 0.05,
+        damagePercent: level * 2,
       }),
     },
 

@@ -194,6 +194,7 @@ export default class SkillTree {
 
     const skill = SKILL_TREES[this.selectedPath?.name][skillId];
     const skillData = this.skills[skillId];
+    const baseEffects = skill.effect(skillData.level);
 
     if (hero.stats.currentMana < skill.manaCost) {
       showManaWarning();
@@ -204,8 +205,12 @@ export default class SkillTree {
 
     // Apply instant effect
     hero.stats.currentMana -= skill.manaCost;
-    const instantSkillDamage = this.calculateInstantDamage(skillId);
+    const instantSkillDamage = baseEffects.damage || 0;
     const { damage, isCritical } = hero.calculateTotalDamage(instantSkillDamage);
+    if (baseEffects.lifeSteal) {
+      const lifeStealAmount = damage * (baseEffects.lifeSteal / 100);
+      game.healPlayer(lifeStealAmount);
+    }
     game.damageEnemy(damage);
 
     // Set cooldown
@@ -216,15 +221,6 @@ export default class SkillTree {
     createDamageNumber(damage, false, isCritical, false, false); // Add parameter for instant skill visual
 
     return true;
-  }
-
-  calculateInstantDamage(skillId) {
-    const skill = SKILL_TREES[this.selectedPath?.name][skillId];
-    const skillData = this.skills[skillId];
-    const baseEffect = skill.effect(skillData.level);
-
-    // Scale with hero's damage bonuses
-    return baseEffect.damage;
   }
 
   applyToggleEffects() {

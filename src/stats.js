@@ -295,7 +295,61 @@ export const STATS = {
   },
 
   // VAMPIRE BONUSES
-  healthPerHit: {
+  lifePerHit: {
+    base: 0,
+    decimalPlaces: 0,
+    levelUpBonus: 0,
+  },
+
+  lifePerHitPercent: {
+    base: 0,
+    decimalPlaces: 0,
+    levelUpBonus: 0,
+  },
+
+  manaPerHit: {
+    base: 0,
+    decimalPlaces: 0,
+    levelUpBonus: 0,
+  },
+
+  manaPerHitPercent: {
+    base: 0,
+    decimalPlaces: 0,
+    levelUpBonus: 0,
+  },
+
+  thornsDamage: {
+    base: 0,
+    decimalPlaces: 0,
+    levelUpBonus: 0,
+  },
+
+  thornsDamagePercent: {
+    base: 0,
+    decimalPlaces: 0,
+    levelUpBonus: 0,
+  },
+
+  cooldownReductionPercent: {
+    base: 0,
+    decimalPlaces: 0,
+    levelUpBonus: 0,
+  },
+
+  buffDurationPercent: {
+    base: 0,
+    decimalPlaces: 0,
+    levelUpBonus: 0,
+  },
+
+  itemBonusesPercent: {
+    base: 0,
+    decimalPlaces: 0,
+    levelUpBonus: 0,
+  },
+
+  doubleDamageChance: {
     base: 0,
     decimalPlaces: 0,
     levelUpBonus: 0,

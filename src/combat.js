@@ -57,8 +57,7 @@ export function playerAttack(currentTime) {
       } else {
         const { damage, isCritical } = hero.calculateTotalDamage();
         const lifeStealAmount = damage * (hero.stats.lifeSteal / 100);
-        hero.stats.currentHealth = Math.min(hero.stats.health, hero.stats.currentHealth + lifeStealAmount);
-
+        game.healPlayer(lifeStealAmount);
         game.damageEnemy(damage);
         createDamageNumber(damage, false, isCritical);
       }

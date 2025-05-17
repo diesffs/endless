@@ -355,6 +355,7 @@ export default class Hero {
     updatePlayerHealth();
   }
 
+  // calculated when hit is successful
   calculateTotalDamage(bonusDamage = 0) {
     // Hit - existing damage calculation code
     const isCritical = Math.random() * 100 < this.stats.critChance;
@@ -378,6 +379,10 @@ export default class Hero {
     if (toggleEffects.damage) {
       physicalDamage += toggleEffects.damage;
     }
+    if (toggleEffects.lifePerHit) {
+      game.healPlayer(toggleEffects.lifePerHit);
+    }
+
     // Add toggle elemental effects before the element calculations
     if (toggleEffects.fireDamage) elements.fire += toggleEffects.fireDamage;
     if (toggleEffects.coldDamage) elements.cold += toggleEffects.coldDamage;
@@ -415,7 +420,7 @@ export default class Hero {
     if (evasionSkill) {
       // Heal 5% of max health when blocking
       const healAmount = this.stats.health * 0.05;
-      this.stats.currentHealth = Math.min(this.stats.health, this.stats.currentHealth + healAmount);
+      game.healPlayer(healAmount);
       return healAmount;
     }
     return 0;
