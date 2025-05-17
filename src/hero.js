@@ -363,8 +363,14 @@ export default class Hero {
     let physicalDamage = this.stats.damage * (1 + this.stats.damagePercent / 100);
 
     // Calculate elemental damage with type effectiveness
-    let elementalDamage = 0;
     const enemyElement = game.currentEnemy.element;
+
+    // Calculate total damage before crit
+    let totalDamage = physicalDamage + bonusDamage; // more dmg added later
+
+    // Add toggle skill effects
+    const toggleEffects = skillTree.applyToggleEffects();
+    let elementalDamage = 0;
 
     // Calculate each element type
     const elements = {
@@ -373,21 +379,6 @@ export default class Hero {
       air: this.stats.airDamage,
       earth: this.stats.earthDamage,
     };
-
-    // Add toggle skill effects
-    const toggleEffects = skillTree.applyToggleEffects();
-    if (toggleEffects.damage) {
-      physicalDamage += toggleEffects.damage;
-    }
-    if (toggleEffects.lifePerHit) {
-      game.healPlayer(toggleEffects.lifePerHit);
-    }
-
-    // Add toggle elemental effects before the element calculations
-    if (toggleEffects.fireDamage) elements.fire += toggleEffects.fireDamage;
-    if (toggleEffects.coldDamage) elements.cold += toggleEffects.coldDamage;
-    if (toggleEffects.airDamage) elements.air += toggleEffects.airDamage;
-    if (toggleEffects.earthDamage) elements.earth += toggleEffects.earthDamage;
 
     Object.entries(elements).forEach(([elementType, damage]) => {
       if (damage > 0) {
@@ -404,14 +395,54 @@ export default class Hero {
       }
     });
 
-    // Calculate total damage before crit
-    const totalDamage = physicalDamage + elementalDamage + bonusDamage;
+    // Add toggle elemental effects before the element calculations
+    if (toggleEffects.fireDamage) elements.fire += toggleEffects.fireDamage;
+    if (toggleEffects.coldDamage) elements.cold += toggleEffects.coldDamage;
+    if (toggleEffects.airDamage) elements.air += toggleEffects.airDamage;
+    if (toggleEffects.earthDamage) elements.earth += toggleEffects.earthDamage;
+
+    if (toggleEffects.damage) {
+      totalDamage += toggleEffects.damage;
+    }
+    if (toggleEffects.lifePerHit) {
+      game.healPlayer(toggleEffects.lifePerHit);
+    }
+    if (toggleEffects.doubleDamageChance) {
+      const doubleDamageChance = Math.random() * 100;
+      if (doubleDamageChance < toggleEffects.doubleDamageChance) {
+        totalDamage *= 2;
+      }
+    }
+
+    totalDamage += elementalDamage;
 
     // Apply crit at the end to total damage
     return {
       damage: isCritical ? totalDamage * this.stats.critDamage : totalDamage,
       isCritical,
     };
+  }
+
+  calculateTotalThornsDamage() {
+    const damage = this.stats.thornsDamage * (1 + this.stats.thornsDamagePercent / 100);
+    if (damage <= 0)
+      return {
+        damage: 0,
+        isCritical: false,
+      };
+    return this.calculateTotalDamage(damage);
+  }
+
+  willRessurect() {
+    if (this.stats.resurrectionChance > 0) {
+      const roll = Math.random() * 100;
+      if (roll < this.stats.resurrectionChance) {
+        this.stats.currentLife = this.stats.life;
+        this.stats.currentMana = this.stats.mana;
+        return true;
+      }
+    }
+    return false;
   }
 
   calculateBlockHealing() {

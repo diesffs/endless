@@ -38,8 +38,11 @@ class Game {
   damagePlayer(damage) {
     hero.stats.currentLife -= damage;
     if (hero.stats.currentLife <= 0) {
-      hero.stats.currentLife = 0;
-      playerDeath();
+      // check if ressurection will proc
+      if (!hero.willRessurect()) {
+        hero.stats.currentLife = 0;
+        playerDeath();
+      }
     }
     updatePlayerLife();
   }
@@ -48,6 +51,14 @@ class Game {
     hero.stats.currentLife += heal;
     if (hero.stats.currentLife > hero.stats.life) {
       hero.stats.currentLife = hero.stats.life;
+    }
+    updatePlayerLife();
+  }
+
+  restoreMana(mana) {
+    hero.stats.currentMana += mana;
+    if (hero.stats.currentMana > hero.stats.mana) {
+      hero.stats.currentMana = hero.stats.mana;
     }
     updatePlayerLife();
   }

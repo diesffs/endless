@@ -585,14 +585,14 @@ export const SKILL_TREES = {
       name: 'Crimson Burst',
       type: 'instant',
       manaCost: 30,
-      cooldown: 12000,
+      cooldown: 3000,
       requiredLevel: SKILL_LEVEL_TIERS[3],
       icon: 'burst',
-      description: 'Unleashes a burst of crimson energy, damaging all enemies.',
+      description: 'Unleashes a burst of crimson energy, greatly damaging the enemy at the cost of life.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 12,
-        life: level * 5,
+        damage: level * 50,
+        lifePerHit: level * -20,
       }),
     },
     treasureHunter: {
@@ -614,15 +614,14 @@ export const SKILL_TREES = {
       name: 'Blood Pact',
       type: 'buff',
       manaCost: 50,
-      cooldown: 15000,
-      duration: 8000,
+      cooldown: 60000,
+      duration: 120000,
       requiredLevel: SKILL_LEVEL_TIERS[4],
       icon: 'pact',
       description: 'Increases life steal and life temporarily.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        lifeSteal: level * 3,
-        lifePercent: level * 5,
+        lifePercent: level * 4,
       }),
     },
 
@@ -634,12 +633,12 @@ export const SKILL_TREES = {
       manaCost: 35,
       requiredLevel: SKILL_LEVEL_TIERS[5],
       icon: 'thirst',
-      description: 'Permanently increases life steal and damage but reduces mana regen.',
+      description: 'Increases life steal and damage.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        lifeSteal: level * 5,
+        lifeSteal: level * 0.1,
         damage: level * 10,
-        manaRegen: -level * 1,
+        earthDamage: level * 50,
       }),
     },
     deathlyPresence: {
@@ -651,9 +650,10 @@ export const SKILL_TREES = {
       description: 'Increases life steal, damage, and life permanently.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        lifeSteal: level * 2,
-        damagePercent: level * 5,
-        lifePercent: level * 3,
+        damagePercent: level * 1,
+        lifePercent: level * 1,
+        strengthPercent: level * 1,
+        vitalityPercent: level * 1,
       }),
     },
 
@@ -667,10 +667,10 @@ export const SKILL_TREES = {
       description: 'Greatly increases all attributes and life steal.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        strength: level * 5,
-        agility: level * 5,
+        strength: level * 10,
         vitality: level * 10,
-        lifeSteal: level * 3,
+        wisdom: level * 10,
+        wisdomPercent: level * 2,
       }),
     },
   },
@@ -688,7 +688,7 @@ export const SKILL_TREES = {
       description: 'A burst of holy light that heals allies and damages enemies.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        healing: level * 5,
+        life: level * 5,
         damage: level * 3,
       }),
     },
@@ -704,7 +704,6 @@ export const SKILL_TREES = {
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         damage: level * 4,
-        stunDuration: level * 0.5,
       }),
     },
     divineProtection: {
@@ -713,11 +712,11 @@ export const SKILL_TREES = {
       type: 'passive',
       requiredLevel: SKILL_LEVEL_TIERS[0],
       icon: 'protection',
-      description: 'Permanently increases armor and block chance.',
+      description: 'Greatly increases armor and block chance.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        armor: level * 3,
-        blockChance: level * 2,
+        armor: level * 10,
+        blockChance: level * 0.3,
       }),
     },
 
@@ -734,7 +733,7 @@ export const SKILL_TREES = {
       description: 'Blesses the ground, dealing holy damage to enemies.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        holyDamage: level * 5,
+        damage: level * 5,
       }),
     },
     greaterHealing: {
@@ -748,7 +747,7 @@ export const SKILL_TREES = {
       description: 'Heals a large amount of life instantly.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        healing: level * 10,
+        life: level * 10,
       }),
     },
 
@@ -765,7 +764,7 @@ export const SKILL_TREES = {
       description: 'Creates a shield that absorbs damage.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        shieldAmount: level * 15,
+        blockChance: level * 15,
       }),
     },
     auraOfLight: {
@@ -777,8 +776,8 @@ export const SKILL_TREES = {
       description: 'Increases healing effects and reduces damage taken.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        healingPercent: level * 5,
-        damageReduction: level * 2,
+        lifePercent: level * 5,
+        armorPercent: level * 2,
       }),
     },
 
@@ -795,6 +794,8 @@ export const SKILL_TREES = {
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         damage: level * 20,
+        fireDamage: level * 10,
+        airDamage: level * 10,
       }),
     },
     beaconOfFaith: {
@@ -803,10 +804,11 @@ export const SKILL_TREES = {
       type: 'passive',
       requiredLevel: SKILL_LEVEL_TIERS[3],
       icon: 'beacon',
-      description: 'Increases healing done to allies.',
+      description: 'Increases healing done.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        healingPercent: level * 10,
+        lifeRegen: level * 3,
+        lifeRegenPercent: level * 1,
       }),
     },
 
@@ -820,11 +822,11 @@ export const SKILL_TREES = {
       duration: 8000,
       requiredLevel: SKILL_LEVEL_TIERS[4],
       icon: 'barrier',
-      description: 'Creates a holy barrier that absorbs damage and heals allies.',
+      description: 'Creates a holy barrier that absorbs damage.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        shieldAmount: level * 20,
-        healing: level * 10,
+        lifeRegen: level * 8,
+        life: level * 10,
       }),
     },
 
@@ -839,8 +841,8 @@ export const SKILL_TREES = {
       description: 'Unleashes divine energy to increase damage and healing.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 15,
-        healingPercent: level * 10,
+        damage: level * 10,
+        lifePerHit: level * 20,
       }),
     },
     guardianAngel: {
@@ -849,10 +851,10 @@ export const SKILL_TREES = {
       type: 'passive',
       requiredLevel: SKILL_LEVEL_TIERS[5],
       icon: 'angel',
-      description: 'Provides a chance to resurrect allies upon death.',
+      description: 'Provides a chance to resurrect with maximum life upon death',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        resurrectionChance: level * 2,
+        resurrectionChance: level * 0.5,
       }),
     },
 
@@ -868,7 +870,12 @@ export const SKILL_TREES = {
       effect: (level) => ({
         strength: level * 5,
         vitality: level * 5,
+        attackRating: level * 20,
+        attackRatingPercent: level * 2,
         wisdom: level * 10,
+        mana: level * 10,
+        manaPercent: level * 5,
+        manaPercent: level * 2,
       }),
     },
   },
@@ -885,8 +892,8 @@ export const SKILL_TREES = {
       description: 'Increases attack speed and damage while active.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        attackSpeed: level * 0.05,
-        damage: level * 5,
+        damage: level * 16,
+        lifePerHit: level * -1,
       }),
     },
     toughSkin: {
@@ -898,8 +905,8 @@ export const SKILL_TREES = {
       description: 'Increases armor and reduces damage taken.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        armor: level * 3,
-        damageReduction: level * 2,
+        armor: level * 18,
+        armorPercent: level * 2,
       }),
     },
 
@@ -909,14 +916,14 @@ export const SKILL_TREES = {
       name: 'Reckless Swing',
       type: 'instant',
       manaCost: 20,
-      cooldown: 6000,
+      cooldown: 1000,
       requiredLevel: SKILL_LEVEL_TIERS[1],
       icon: 'swing',
       description: 'A powerful strike that sacrifices life for damage.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 15,
-        selfDamage: level * 3,
+        damage: level * 100,
+        lifePerHit: level * -10,
       }),
     },
     battleCry: {
@@ -931,8 +938,9 @@ export const SKILL_TREES = {
       description: 'Boosts damage and attack speed temporarily.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 8,
-        attackSpeed: level * 0.1,
+        damagePercent: level * 1,
+        attackSpeed: level * 0.02,
+        lifeSteal: level * 0.03,
       }),
     },
 
@@ -947,8 +955,9 @@ export const SKILL_TREES = {
       description: 'Greatly increases damage but lowers defense.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 10,
-        armor: -level * 2,
+        fireDamage: level * 60,
+        coldDamage: level * 60,
+        doubleDamageChance: level * 0.2,
       }),
     },
     greaterFrenzy: {
@@ -960,8 +969,8 @@ export const SKILL_TREES = {
       description: 'Further enhances attack speed and damage.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        attackSpeed: level * 0.1,
-        damage: level * 7,
+        attackSpeed: level * 0.01,
+        lifePerHit: level * 5,
       }),
     },
 
@@ -971,14 +980,14 @@ export const SKILL_TREES = {
       name: 'Earthquake',
       type: 'instant',
       manaCost: 50,
-      cooldown: 15000,
+      cooldown: 5000,
       requiredLevel: SKILL_LEVEL_TIERS[3],
       icon: 'earthquake',
-      description: 'Smashes the ground, dealing area damage.',
+      description: 'Smashes the ground, dealing earth damage.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         damage: level * 20,
-        radius: level * 2,
+        earthDamage: level * 150,
       }),
     },
     rageMastery: {
@@ -990,8 +999,10 @@ export const SKILL_TREES = {
       description: 'Increases critical chance and critical damage.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        critChance: level * 2,
-        critDamage: level * 10,
+        critChance: level * 0.1,
+        critDamage: level * 0.01,
+        doubleDamageChance: level * 0.1,
+        attackRating: level * 30,
       }),
     },
 
@@ -1002,14 +1013,15 @@ export const SKILL_TREES = {
       type: 'buff',
       manaCost: 60,
       cooldown: 20000,
-      duration: 7000,
+      duration: 20000,
       requiredLevel: SKILL_LEVEL_TIERS[4],
       icon: 'bloodlust',
       description: 'Increases attack speed and life steal temporarily.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        attackSpeed: level * 0.2,
-        lifeSteal: level * 5,
+        attackSpeed: level * 0.01,
+        lifeSteal: level * 0.02,
+        lifePercent: level * 5,
       }),
     },
 
@@ -1018,15 +1030,14 @@ export const SKILL_TREES = {
       id: 'unbridledFury',
       name: 'Unbridled Fury',
       type: 'toggle',
-      manaCost: 40,
+      manaCost: 0,
       requiredLevel: SKILL_LEVEL_TIERS[5],
       icon: 'fury',
       description: 'Increases damage and attack speed at the cost of life.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 15,
-        attackSpeed: level * 0.15,
-        selfDamage: level * 5,
+        damage: level * 10,
+        manaPerHit: level * 3,
       }),
     },
     undyingRage: {
@@ -1038,8 +1049,8 @@ export const SKILL_TREES = {
       description: 'Provides a chance to survive fatal damage.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        survivalChance: level * 3,
-        lifeRegen: level * 2,
+        resurrectionChance: level * 0.25,
+        lifeRegen: level * 8,
       }),
     },
 
@@ -1054,8 +1065,9 @@ export const SKILL_TREES = {
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
         strength: level * 10,
-        critChance: level * 5,
-        attackSpeed: level * 0.1,
+        strengthPercent: level * 2,
+        critChance: level * 0.2,
+        attackSpeed: level * 0.01,
         damage: level * 20,
       }),
     },
@@ -1068,13 +1080,13 @@ export const SKILL_TREES = {
       name: 'Fireball',
       type: 'instant',
       manaCost: 20,
-      cooldown: 5000,
+      cooldown: 800,
       requiredLevel: SKILL_LEVEL_TIERS[0],
       icon: 'fireball',
       description: 'Launches a fireball that deals fire damage.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        fireDamage: level * 10,
+        fireDamage: level * 50,
       }),
     },
     frostArmor: {

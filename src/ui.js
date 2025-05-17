@@ -881,7 +881,8 @@ function createSkillElement(skill) {
       Object.entries(effectsCurrent).forEach(([stat, value]) => {
         const decimals = STATS[stat].decimalPlaces || 0;
         const formattedValue = value.toFixed(decimals);
-        skillDescription += `${stat}: +${formattedValue}<br />`;
+        const prefix = value > 0 ? '+' : '';
+        skillDescription += `${stat}: ${prefix}${formattedValue}<br />`;
       });
     }
 
@@ -892,9 +893,11 @@ function createSkillElement(skill) {
         const decimals = STATS[stat].decimalPlaces || 0;
         const currentValue = effectsCurrent[stat] || 0;
         const difference = value - currentValue;
-        skillDescription += `${stat}: +${value.toFixed(decimals)} <span class="bonus">(+${difference.toFixed(
+        const valuePrefix = value >= 0 ? '+' : '';
+        const diffPrefix = difference >= 0 ? '+' : '';
+        skillDescription += `${stat}: ${valuePrefix}${value.toFixed(
           decimals
-        )})</span><br />`;
+        )} <span class="bonus">(${diffPrefix}${difference.toFixed(decimals)})</span><br />`;
       });
     }
 
@@ -993,7 +996,8 @@ function createSkillTooltip(skillId) {
   Object.entries(effects).forEach(([stat, value]) => {
     const decimals = STATS[stat].decimalPlaces || 0;
     const formattedValue = value.toFixed(decimals);
-    tooltip += `<div>${stat}: +${formattedValue}</div>`;
+    const prefix = value > 0 ? '+' : '';
+    tooltip += `<div>${stat}: ${prefix}${formattedValue}</div>`;
   });
   tooltip += '</div>';
 

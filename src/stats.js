@@ -351,6 +351,34 @@ export const STATS = {
 
   doubleDamageChance: {
     base: 0,
+    decimalPlaces: 1,
+    levelUpBonus: 0,
+  },
+
+  resurrectionChance: {
+    base: 0,
+    decimalPlaces: 1,
+    levelUpBonus: 0,
+  },
+
+  returnFireDamage: {
+    base: 0,
+    decimalPlaces: 0,
+    levelUpBonus: 0,
+  },
+
+  returnColdDamage: {
+    base: 0,
+    decimalPlaces: 0,
+    levelUpBonus: 0,
+  },
+  returnAirDamage: {
+    base: 0,
+    decimalPlaces: 0,
+    levelUpBonus: 0,
+  },
+  returnEarthDamage: {
+    base: 0,
     decimalPlaces: 0,
     levelUpBonus: 0,
   },

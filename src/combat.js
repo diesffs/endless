@@ -31,6 +31,13 @@ export function enemyAttack(currentTime) {
       const damageReduction = hero.calculateArmorReduction() / 100;
       const effectiveDamage = Math.floor(game.currentEnemy.damage * (1 - damageReduction));
 
+      // Thorns damage available for paladin only
+      // const { damage: thornsDamage, isCritical } = hero.calculateTotalThornsDamage();
+      // if (thornsDamage > 0) {
+      //   game.damageEnemy(thornsDamage);
+      //   createDamageNumber(thornsDamage, false, isCritical);
+      // }
+
       game.damagePlayer(effectiveDamage);
       createDamageNumber(Math.floor(effectiveDamage), true);
     }

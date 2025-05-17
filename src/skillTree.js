@@ -205,8 +205,18 @@ export default class SkillTree {
 
     // Apply instant effect
     hero.stats.currentMana -= skill.manaCost;
-    const instantSkillDamage = baseEffects.damage || 0;
+
+    // all damages
+    const instantSkillDamage =
+      baseEffects.damage ||
+      0 + baseEffects.fireDamage ||
+      0 + baseEffects.coldDamage ||
+      0 + baseEffects.airDamage ||
+      0 + baseEffects.earthDamage ||
+      0;
+
     const { damage, isCritical } = hero.calculateTotalDamage(instantSkillDamage);
+
     if (baseEffects.lifeSteal) {
       const lifeStealAmount = damage * (baseEffects.lifeSteal / 100);
       game.healPlayer(lifeStealAmount);
@@ -214,6 +224,10 @@ export default class SkillTree {
     if (baseEffects.lifePerHit) {
       game.healPlayer(baseEffects.lifePerHit);
     }
+    if (baseEffects.manaPerHit) {
+      game.restoreMana(baseEffects.manaPerHit);
+    }
+
     game.damageEnemy(damage);
 
     // Set cooldown
