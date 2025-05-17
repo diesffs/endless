@@ -1,9 +1,9 @@
 import Enemy from './enemy.js';
 import { game, hero, prestige, skillTree } from './globals.js';
 import { calculateHitChance } from './combat.js';
-import { CLASS_PATHS, REQ_LEVEL_FOR_SKILL_TREE, SKILL_LEVEL_TIERS, SKILL_TREES } from './skillTree.js';
 import { STATS } from './stats.js';
 import { ATTRIBUTES } from './hero.js';
+import { CLASS_PATHS, REQ_LEVEL_FOR_SKILL_TREE, SKILL_LEVEL_TIERS, SKILL_TREES } from './skills.js';
 
 const html = String.raw;
 

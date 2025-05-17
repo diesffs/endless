@@ -7,7 +7,7 @@ export const STATS = {
   },
   damagePercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 
@@ -19,7 +19,7 @@ export const STATS = {
   },
   healthPercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 
@@ -31,7 +31,7 @@ export const STATS = {
   },
   armorPercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 
@@ -43,7 +43,7 @@ export const STATS = {
   },
   attackSpeedPercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 
@@ -55,7 +55,7 @@ export const STATS = {
   },
   critChancePercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 
@@ -67,7 +67,7 @@ export const STATS = {
   },
   critDamagePercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 
@@ -79,7 +79,7 @@ export const STATS = {
   },
   blockChancePercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 
@@ -91,7 +91,7 @@ export const STATS = {
   },
   attackRatingPercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 
@@ -103,7 +103,7 @@ export const STATS = {
   },
   manaPercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 
@@ -115,7 +115,7 @@ export const STATS = {
   },
   manaRegenPercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 
@@ -127,7 +127,7 @@ export const STATS = {
   },
   lifeRegenPercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 
@@ -139,7 +139,7 @@ export const STATS = {
   },
   lifeStealPercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 
@@ -151,7 +151,7 @@ export const STATS = {
   },
   fireDamagePercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 
@@ -163,7 +163,7 @@ export const STATS = {
   },
   coldDamagePercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 
@@ -175,7 +175,7 @@ export const STATS = {
   },
   airDamagePercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 
@@ -187,7 +187,7 @@ export const STATS = {
   },
   earthDamagePercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 
@@ -199,7 +199,7 @@ export const STATS = {
   },
   strengthPercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 
@@ -211,7 +211,7 @@ export const STATS = {
   },
   agilityPercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 
@@ -223,7 +223,7 @@ export const STATS = {
   },
   vitalityPercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 
@@ -235,7 +235,7 @@ export const STATS = {
   },
   wisdomPercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 
@@ -247,7 +247,7 @@ export const STATS = {
   },
   endurancePercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 
@@ -259,7 +259,7 @@ export const STATS = {
   },
   dexterityPercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 
@@ -271,7 +271,7 @@ export const STATS = {
   },
   bonusGoldPercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 
@@ -283,14 +283,21 @@ export const STATS = {
   },
   bonusExperiencePercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 
   // ELEMENTAL DAMAGE PERCENT
   elementalDamagePercent: {
     base: 0,
-    decimalPlaces: 2,
+    decimalPlaces: 0,
+    levelUpBonus: 0,
+  },
+
+  // VAMPIRE BONUSES
+  healthPerHit: {
+    base: 0,
+    decimalPlaces: 0,
     levelUpBonus: 0,
   },
 };

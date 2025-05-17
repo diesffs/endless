@@ -278,10 +278,8 @@ export default class Hero {
 
     for (const stat in STATS) {
       if (stat.endsWith('Percent')) {
-        const baseStat = stat.replace('Percent', '');
-        percentBonuses[baseStat] =
+        percentBonuses[stat] =
           (attributeEffects[stat] || 0) +
-          (this.stats[stat] || 0) / 100 +
           (skillTreeBonuses[stat] || 0) / 100 +
           (inventory.equipmentBonuses[stat] || 0) / 100 +
           (shop.shopBonuses[stat] || 0) / 100;
@@ -296,7 +294,7 @@ export default class Hero {
     for (const stat in STATS) {
       if (!stat.endsWith('Percent')) {
         // Souls bonus only applies to damage
-        let percent = percentBonuses[stat] || 0;
+        let percent = percentBonuses[stat + 'Percent'] || 0;
         if (stat === 'damage') percent += this.souls * 0.01;
 
         // Use Math.floor for integer stats, Number.toFixed for decimals
@@ -323,8 +321,24 @@ export default class Hero {
         if (stat === 'attackSpeed') value = Math.min(value, 5);
 
         this.stats[stat] = value;
+      } else {
+        // add percent bonuses to stats, mainly for elemental damage
+        this.stats[stat] = percentBonuses[stat] || 0;
       }
     }
+    // Special handling for elemental damages
+    this.stats.fireDamage = Math.floor(
+      flatValues.fireDamage * (1 + this.stats.elementalDamagePercent + percentBonuses.fireDamagePercent)
+    );
+    this.stats.coldDamage = Math.floor(
+      flatValues.coldDamage * (1 + this.stats.elementalDamagePercent + percentBonuses.coldDamagePercent)
+    );
+    this.stats.airDamage = Math.floor(
+      flatValues.airDamage * (1 + this.stats.elementalDamagePercent + percentBonuses.airDamagePercent)
+    );
+    this.stats.earthDamage = Math.floor(
+      flatValues.earthDamage * (1 + this.stats.elementalDamagePercent + percentBonuses.earthDamagePercent)
+    );
   }
 
   calculateArmorReduction() {
