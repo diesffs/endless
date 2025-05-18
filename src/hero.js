@@ -380,6 +380,12 @@ export default class Hero {
       earth: this.stats.earthDamage,
     };
 
+    // Add toggle elemental effects before the element calculations
+    if (toggleEffects.fireDamage) elements.fire += toggleEffects.fireDamage;
+    if (toggleEffects.coldDamage) elements.cold += toggleEffects.coldDamage;
+    if (toggleEffects.airDamage) elements.air += toggleEffects.airDamage;
+    if (toggleEffects.earthDamage) elements.earth += toggleEffects.earthDamage;
+
     Object.entries(elements).forEach(([elementType, damage]) => {
       if (damage > 0) {
         if (ELEMENT_OPPOSITES[elementType] === enemyElement) {
@@ -395,11 +401,7 @@ export default class Hero {
       }
     });
 
-    // Add toggle elemental effects before the element calculations
-    if (toggleEffects.fireDamage) elements.fire += toggleEffects.fireDamage;
-    if (toggleEffects.coldDamage) elements.cold += toggleEffects.coldDamage;
-    if (toggleEffects.airDamage) elements.air += toggleEffects.airDamage;
-    if (toggleEffects.earthDamage) elements.earth += toggleEffects.earthDamage;
+    totalDamage += elementalDamage;
 
     if (toggleEffects.damage) {
       totalDamage += toggleEffects.damage;
@@ -407,14 +409,16 @@ export default class Hero {
     if (toggleEffects.lifePerHit) {
       game.healPlayer(toggleEffects.lifePerHit);
     }
+    if (toggleEffects.manaPerHit) {
+      game.restoreMana(toggleEffects.manaPerHit);
+    }
+
     if (toggleEffects.doubleDamageChance) {
       const doubleDamageChance = Math.random() * 100;
       if (doubleDamageChance < toggleEffects.doubleDamageChance) {
         totalDamage *= 2;
       }
     }
-
-    totalDamage += elementalDamage;
 
     // Apply crit at the end to total damage
     return {

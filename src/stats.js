@@ -372,11 +372,13 @@ export const STATS = {
     decimalPlaces: 0,
     levelUpBonus: 0,
   },
+
   returnAirDamage: {
     base: 0,
     decimalPlaces: 0,
     levelUpBonus: 0,
   },
+
   returnEarthDamage: {
     base: 0,
     decimalPlaces: 0,
