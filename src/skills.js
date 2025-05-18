@@ -688,22 +688,22 @@ export const SKILL_TREES = {
       description: 'A burst of holy light that heals allies and damages enemies.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        life: level * 5,
-        damage: level * 3,
+        life: level * 30,
+        damage: level * 1,
       }),
     },
     shieldBash: {
       id: 'shieldBash',
       name: 'Shield Bash',
       type: 'instant',
-      manaCost: 10,
+      manaCost: 3,
       cooldown: 1400,
       requiredLevel: SKILL_LEVEL_TIERS[0],
       icon: 'bash',
       description: 'Bashes an enemy with your shield, stunning them.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 20,
+        damage: level * 40,
       }),
     },
     divineProtection: {
@@ -715,8 +715,8 @@ export const SKILL_TREES = {
       description: 'Greatly increases armor and block chance.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        armor: level * 10,
-        blockChance: level * 0.3,
+        armor: level * 15,
+        blockChance: level * 0.4,
       }),
     },
 
@@ -727,13 +727,13 @@ export const SKILL_TREES = {
       type: 'buff',
       manaCost: 25,
       cooldown: 10000,
-      duration: 6000,
+      duration: 60000,
       requiredLevel: SKILL_LEVEL_TIERS[1],
       icon: 'consecration',
       description: 'Blesses the ground, dealing holy damage to enemies.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        damage: level * 5,
+        damage: level * 30,
       }),
     },
     greaterHealing: {
@@ -747,7 +747,7 @@ export const SKILL_TREES = {
       description: 'Heals a large amount of life instantly.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        life: level * 10,
+        life: level * 100,
       }),
     },
 

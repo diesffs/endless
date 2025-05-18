@@ -224,7 +224,10 @@ export default class SkillTree {
     if (baseEffects.lifePerHit) {
       game.healPlayer(baseEffects.lifePerHit);
     }
-    console.log('baseEffects', baseEffects);
+
+    if (baseEffects.life) {
+      game.healPlayer(baseEffects.life);
+    }
 
     if (baseEffects.manaPerHit) {
       game.restoreMana(baseEffects.manaPerHit);
