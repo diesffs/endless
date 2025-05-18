@@ -75,7 +75,7 @@ export const ATTRIBUTES = {
   },
   dexterity: {
     effects: {
-      critDamagePerPoint: 0.01,
+      critDamagePerPoint: 0.005,
       critChancePer: {
         enabled: false,
         points: 25,

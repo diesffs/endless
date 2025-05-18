@@ -422,7 +422,7 @@ export const SKILL_TREES = {
       description: 'Massively increases crit damage temporarily.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        critDamage: level * 0.5,
+        critDamage: level * 0.05,
       }),
     },
 
@@ -450,7 +450,7 @@ export const SKILL_TREES = {
       description: 'Permanently increases crit chance and crit damage.',
       maxLevel: DEFAULT_MAX_SKILL_LEVEL,
       effect: (level) => ({
-        critDamage: level * 0.3,
+        critDamage: level * 0.03,
         attackRating: level * 100,
         attackRatingPercent: level * 5,
       }),
