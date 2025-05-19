@@ -220,9 +220,9 @@ export default class Shop {
       this.shopBonuses[stat] = 0;
     });
 
-    // Calculate bonuses from all equipped items
-    Object.keys(this.upgradeLevels).forEach((upg) => {
-      if (this.shopBonuses[upg] !== undefined) {
+    // Only calculate bonuses for upgrades defined in UPGRADE_CONFIG
+    Object.keys(UPGRADE_CONFIG).forEach((upg) => {
+      if (this.shopBonuses[upg] !== undefined && this.upgradeLevels[upg] !== undefined) {
         this.shopBonuses[upg] += this.upgradeLevels[upg] * UPGRADE_CONFIG[upg].bonus;
       }
     });
