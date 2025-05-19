@@ -99,7 +99,7 @@ export default class Statistics {
     // Highest Damage Dealt
     const highestDamage = document.getElementById('stat-highest-damage');
     if (highestDamage) {
-      highestDamage.textContent = `Highest Damage Dealt: ${this.highestDamageDealt || 0}`;
+      highestDamage.textContent = `Highest Damage Dealt: ${Math.floor(this.highestDamageDealt) || 0}`;
     }
 
     // Total Gold Earned
