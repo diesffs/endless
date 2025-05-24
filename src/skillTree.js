@@ -1,8 +1,12 @@
 import { createDamageNumber } from './combat.js';
 import { handleSavedData } from './functions.js';
 import { game, hero } from './globals.js';
-import { CLASS_PATHS, REQ_LEVEL_FOR_SKILL_TREE, SKILL_TREES } from './skills.js';
+import { CLASS_PATHS, SKILL_TREES } from './skills.js';
 import { showManaWarning, showToast, updateActionBar, updatePlayerLife, updateSkillTreeValues } from './ui.js';
+
+export const SKILL_LEVEL_TIERS = [10, 25, 60, 150, 400, 750, 1500];
+export const DEFAULT_MAX_SKILL_LEVEL = 100;
+export const REQ_LEVEL_FOR_SKILL_TREE = 10;
 
 export default class SkillTree {
   constructor(savedData = null) {
