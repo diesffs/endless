@@ -1,4 +1,5 @@
 import { STATS } from './stats.js';
+import { formatStatName } from './ui.js';
 
 export const EQUIPMENT_SLOTS = {
   HEAD: 'head',
@@ -272,33 +273,6 @@ export default class Item {
 
   getTooltipHTML(isEquipped = false) {
     const html = String.raw;
-
-    // Helper function to convert camelCase to Title Case with spaces
-    const formatStatName = (stat) => {
-      // Handle special cases first
-      if (stat === 'critChance') return 'Crit Chance';
-      if (stat === 'critDamage') return 'Crit Damage';
-      if (stat === 'lifeSteal') return 'Life Steal';
-      if (stat === 'attackSpeed') return 'Attack Speed';
-      if (stat === 'attackRating') return 'Attack Rating';
-      if (stat === 'attackRatingPercent') return 'Attack Rating';
-      if (stat === 'damagePercent') return 'Damage';
-      if (stat === 'lifePercent') return 'Life';
-      if (stat === 'manaPercent') return 'Mana';
-      if (stat === 'armorPercent') return 'Armor';
-      if (stat === 'elementalDamagePercent') return 'Elemental Damage';
-      if (stat === 'lifeRegen') return 'Life Regeneration';
-      if (stat === 'manaRegen') return 'Mana Regeneration';
-      if (stat === 'bonusGold') return 'Bonus Gold';
-      if (stat === 'bonusExperience') return 'Bonus Experience';
-      if (stat === 'blockChance') return 'Block Chance';
-      if (stat === 'fireDamage') return 'Fire Damage';
-      if (stat === 'coldDamage') return 'Cold Damage';
-      if (stat === 'airDamage') return 'Air Damage';
-      if (stat === 'earthDamage') return 'Earth Damage';
-
-      return stat.charAt(0).toUpperCase() + stat.slice(1);
-    };
 
     const isPercentStat = (stat) => {
       return stat.endsWith('Percent') || stat === 'critChance' || stat === 'blockChance' || stat === 'lifeSteal';

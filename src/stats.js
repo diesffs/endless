@@ -337,6 +337,12 @@ export const STATS = {
     levelUpBonus: 0,
   },
 
+  manaCostReductionPercent: {
+    base: 0,
+    decimalPlaces: 0,
+    levelUpBonus: 0,
+  },
+
   buffDurationPercent: {
     base: 0,
     decimalPlaces: 0,

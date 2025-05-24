@@ -28,7 +28,6 @@ class Game {
         statistics.set('highestStageReached', null, this.stage);
       }
       hero.highestStage = this.stage;
-      hero.crystals += 1; // Award 1 crystal for increasing highest stage
     }
 
     updateStageUI();

@@ -633,21 +633,21 @@ export function initializeSkillTreeUI() {
       resetBtn.className = 'danger-btn';
       resetBtn.style.margin = '12px auto 16px auto';
       resetBtn.style.display = 'block';
-      resetBtn.textContent = 'Reset Skill Tree (Cost: 10 💎)';
+      resetBtn.textContent = 'Reset Class (Cost: 10 💎)';
       resetBtn.onclick = async () => {
         if (hero.crystals < 10) {
-          showToast('Not enough crystals to reset skill tree!', 'warning');
+          showToast('Not enough crystals to reset class!', 'warning');
           return;
         }
         const confirmed = await showConfirmDialog(
-          'Are you sure you want to reset your skill path and refund all skill points?<br>This will cost <strong>10 crystals</strong> and cannot be undone.'
+          'Are you sure you want to reset your class and refund all skill points?<br>This will cost <strong>10 crystals</strong> and cannot be undone.'
         );
         if (confirmed) {
           hero.crystals -= 10;
           skillTree.resetSkillTree();
           initializeSkillTreeUI();
           updateResources();
-          showToast('Skill tree has been reset and all points refunded.', 'success');
+          showToast('Class has been reset and all points refunded.', 'success');
           updateSkillTreeValues();
         }
       };
@@ -838,71 +838,13 @@ function showSkillTree() {
   }
 }
 
-function createSkillElement(skill) {
+function createSkillElement(baseSkill) {
+  let skill = skillTree.getSkill(baseSkill.id);
+
   const skillElement = document.createElement('div');
   skillElement.className = 'skill-node';
   skillElement.dataset.skillId = skill.id;
   skillElement.dataset.skillType = skill.type;
-
-  const updateTooltipContent = () => {
-    const currentLevel = skillTree.skills[skill.id]?.level || 0;
-    const canUnlock = skillTree.canUnlockSkill(skill.id);
-
-    // Calculate effects at current level
-    const effectsCurrent = skill.effect(currentLevel);
-    // Calculate effects at next level (if not maxed out)
-    const nextLevel = currentLevel < skill.maxLevel ? currentLevel + 1 : currentLevel;
-    const effectsNext = skill.effect(nextLevel);
-
-    let skillDescription = `
-    <strong>${skill.name} [${skill.type.toUpperCase()}]</strong><br>
-    ${skill.description
-      .split('\n')
-      .map((line) => line.trim())
-      .filter((line) => line)
-      .join('<br>')}
-    <br>
-    Level: ${currentLevel}${skill.maxLevel !== Infinity ? `/${skill.maxLevel}` : ''}
-  `;
-
-    if (skill.manaCost) {
-      skillDescription += `<br />Mana Cost: ${skill.manaCost}`;
-    }
-    if (skill.cooldown) {
-      skillDescription += `<br />Cooldown: ${skill.cooldown / 1000}s`;
-    }
-    if (skill.duration) {
-      skillDescription += `<br />Duration: ${skill.duration / 1000}s`;
-    }
-
-    // Calculate effects at current level
-    if (effectsCurrent && Object.keys(effectsCurrent).length > 0) {
-      skillDescription += '<br /><u>Current Effects:</u><br />';
-      Object.entries(effectsCurrent).forEach(([stat, value]) => {
-        const decimals = STATS[stat].decimalPlaces || 0;
-        const formattedValue = value.toFixed(decimals);
-        const prefix = value > 0 ? '+' : '';
-        skillDescription += `${stat}: ${prefix}${formattedValue}<br />`;
-      });
-    }
-
-    // If not at max level, show next level effects and the bonus
-    if (currentLevel < skill.maxLevel || skill.maxLevel === Infinity) {
-      skillDescription += '<br /><u>Next Level Effects:</u><br />';
-      Object.entries(effectsNext).forEach(([stat, value]) => {
-        const decimals = STATS[stat].decimalPlaces || 0;
-        const currentValue = effectsCurrent[stat] || 0;
-        const difference = value - currentValue;
-        const valuePrefix = value >= 0 ? '+' : '';
-        const diffPrefix = difference >= 0 ? '+' : '';
-        skillDescription += `${stat}: ${valuePrefix}${value.toFixed(
-          decimals
-        )} <span class="bonus">(${diffPrefix}${difference.toFixed(decimals)})</span><br />`;
-      });
-    }
-
-    return skillDescription;
-  };
 
   skillElement.innerHTML = html`
     <div class="skill-icon" style="background-image: url('${import.meta.env.BASE_URL}skills/${skill.icon}.jpg')"></div>
@@ -911,7 +853,7 @@ function createSkillElement(skill) {
     </div>
   `;
 
-  skillElement.addEventListener('mouseenter', (e) => showTooltip(updateTooltipContent(), e));
+  skillElement.addEventListener('mouseenter', (e) => showTooltip(updateTooltipContent(skill.id), e));
   skillElement.addEventListener('mousemove', positionTooltip);
   skillElement.addEventListener('mouseleave', hideTooltip);
 
@@ -919,12 +861,83 @@ function createSkillElement(skill) {
     if (skillTree.unlockSkill(skill.id)) {
       updateSkillTreeValues();
       // Update tooltip content after skill upgrade
-      showTooltip(updateTooltipContent(), { clientX: e.clientX, clientY: e.clientY });
+      showTooltip(updateTooltipContent(skill.id), { clientX: e.clientX, clientY: e.clientY });
     }
   });
 
   return skillElement;
 }
+
+const updateTooltipContent = (skillId) => {
+  // get fresh skill data
+  let skill = skillTree.getSkill(skillId);
+
+  const currentLevel = skillTree.skills[skill.id]?.level || 0;
+  const canUnlock = skillTree.canUnlockSkill(skill.id);
+
+  // Calculate effects at current level
+  const effectsCurrent = skillTree.getSkillEffect(skill.id);
+
+  // Calculate effects at next level (if not maxed out)
+  const nextLevel = currentLevel < skill.maxLevel ? currentLevel + 1 : currentLevel;
+  const effectsNext = skillTree.getSkillEffect(skill.id, nextLevel);
+
+  let skillDescription = `
+      <strong>${skill.name} [${skill.type.toUpperCase()}]</strong><br>
+      ${skill.description
+        .split('\n')
+        .map((line) => line.trim())
+        .filter((line) => line)
+        .join('<br>')}
+      <br>
+      Level: ${currentLevel}${skill.maxLevel !== Infinity ? `/${skill.maxLevel}` : ''}
+    `;
+
+  const skillManaCost = skillTree.getSkillManaCost(skill);
+  const skillManaCostNextLevel = skillTree.getSkillManaCost(skill, nextLevel);
+  if (skillManaCost) {
+    skillDescription += `<br />Mana Cost: ${skillManaCost} (+${skillManaCostNextLevel - skillManaCost})`;
+  }
+  const skillCooldown = skillTree.getSkillCooldown(skill);
+
+  const skillCooldownNextLevel = skillTree.getSkillCooldown(skill, nextLevel);
+  if (skillCooldown) {
+    skillDescription += `<br />Cooldown: ${skillCooldown / 1000}s (-${skillCooldownNextLevel - skillCooldown / 1000}s)`;
+  }
+  const skillDuration = skillTree.getSkillDuration(skill);
+  const skillDurationNextLevel = skillTree.getSkillDuration(skill, nextLevel);
+  if (skillDuration) {
+    skillDescription += `<br />Duration: ${skillDuration / 1000}s (+${skillDurationNextLevel - skillDuration / 1000}s)`;
+  }
+
+  // Calculate effects at current level
+  if (effectsCurrent && Object.keys(effectsCurrent).length > 0) {
+    skillDescription += '<br /><u>Current Effects:</u><br />';
+    Object.entries(effectsCurrent).forEach(([stat, value]) => {
+      const decimals = STATS[stat].decimalPlaces || 0;
+      const formattedValue = value.toFixed(decimals);
+      const prefix = value > 0 ? '+' : '';
+      skillDescription += `${formatStatName(stat)}: ${prefix}${formattedValue}<br />`;
+    });
+  }
+
+  // If not at max level, show next level effects and the bonus
+  if (currentLevel < skill.maxLevel || skill.maxLevel === Infinity) {
+    skillDescription += '<br /><u>Next Level Effects:</u><br />';
+    Object.entries(effectsNext).forEach(([stat, value]) => {
+      const decimals = STATS[stat].decimalPlaces || 0;
+      const currentValue = effectsCurrent[stat] || 0;
+      const difference = value - currentValue;
+      const valuePrefix = value >= 0 ? '+' : '';
+      const diffPrefix = difference >= 0 ? '+' : '';
+      skillDescription += `${formatStatName(stat)}: ${valuePrefix}${value.toFixed(
+        decimals
+      )} <span class="bonus">(${diffPrefix}${difference.toFixed(decimals)})</span><br />`;
+    });
+  }
+
+  return skillDescription;
+};
 
 export function updateActionBar() {
   const skillSlotsContainer = document.querySelector('.skill-slots');
@@ -979,16 +992,15 @@ export function updateActionBar() {
 }
 
 function createSkillTooltip(skillId) {
-  const skill = SKILL_TREES[skillTree.selectedPath?.name][skillId];
-  const skillData = skillTree.skills[skillId];
-  const level = skillData?.level || 0;
-  const effects = skill.effect(level);
+  const skill = skillTree.getSkill(skillId);
+  const level = skill?.level || 0;
+  const effects = skillTree.getSkillEffect(skillId, level);
 
   let tooltip = `
       <div class="tooltip-header">${skill.name}</div>
       <div class="tooltip-type">${skill.type.toUpperCase()}</div>
       <div class="tooltip-level">Level: ${level}</div>
-      <div class="tooltip-mana">Mana Cost: ${skill.manaCost}</div>
+      <div class="tooltip-mana">Mana Cost: ${skillTree.getSkillManaCost(skill)}</div>
   `;
 
   // Add effects
@@ -997,16 +1009,16 @@ function createSkillTooltip(skillId) {
     const decimals = STATS[stat].decimalPlaces || 0;
     const formattedValue = value.toFixed(decimals);
     const prefix = value > 0 ? '+' : '';
-    tooltip += `<div>${stat}: ${prefix}${formattedValue}</div>`;
+    tooltip += `<div>${formatStatName(stat)}: ${prefix}${formattedValue}</div>`;
   });
   tooltip += '</div>';
 
   // Add cooldown/duration for applicable skills
-  if (skill.cooldown) {
-    tooltip += `<div class="tooltip-cooldown">Cooldown: ${skill.cooldown / 1000}s</div>`;
+  if (skillTree.getSkillCooldown(skill)) {
+    tooltip += `<div class="tooltip-cooldown">Cooldown: ${skillTree.getSkillCooldown(skill) / 1000}s</div>`;
   }
-  if (skill.duration) {
-    tooltip += `<div class="tooltip-duration">Duration: ${skill.duration / 1000}s</div>`;
+  if (skillTree.getSkillDuration(skill)) {
+    tooltip += `<div class="tooltip-duration">Duration: ${skillTree.getSkillDuration(skill) / 1000}s</div>`;
   }
 
   return tooltip;
@@ -1030,7 +1042,7 @@ function handleKeyPress(e) {
 export function updateBuffIndicators() {
   document.querySelectorAll('.skill-slot').forEach((slot) => {
     const skillId = slot.dataset.skillId;
-    const skill = skillTree.skills[skillId];
+    const skill = skillTree.getSkill(skillId);
     const cooldownOverlay = slot.querySelector('.cooldown-overlay');
 
     // Handle active states for all skill types
@@ -1043,7 +1055,7 @@ export function updateBuffIndicators() {
     if ((skill.type === 'buff' || skill.type === 'instant') && skill?.cooldownEndTime) {
       const remaining = skill.cooldownEndTime - Date.now();
       if (remaining > 0) {
-        const percentage = (remaining / SKILL_TREES[skillTree.selectedPath.name][skillId].cooldown) * 100;
+        const percentage = (remaining / skillTree.getSkillCooldown(skill)) * 100;
         cooldownOverlay.style.height = `${percentage}%`;
         slot.classList.add('on-cooldown');
       } else {
@@ -1227,3 +1239,69 @@ if (!document.getElementById('custom-confirm-dialog-style')) {
   `;
   document.head.appendChild(style);
 }
+
+// Helper function to convert camelCase to Title Case with spaces
+export const formatStatName = (stat) => {
+  // Handle special cases first
+  if (stat === 'critChance') return 'Crit Chance';
+  if (stat === 'critDamage') return 'Crit Damage';
+  if (stat === 'lifeSteal') return 'Life Steal';
+  if (stat === 'attackSpeed') return 'Attack Speed';
+  if (stat === 'attackRating') return 'Attack Rating';
+  if (stat === 'attackRatingPercent') return 'Attack Rating';
+  if (stat === 'damagePercent') return 'Damage';
+  if (stat === 'lifePercent') return 'Life';
+  if (stat === 'manaPercent') return 'Mana';
+  if (stat === 'armorPercent') return 'Armor';
+  if (stat === 'elementalDamagePercent') return 'Elemental Damage %';
+  if (stat === 'lifeRegen') return 'Life Regeneration';
+  if (stat === 'manaRegen') return 'Mana Regeneration';
+  if (stat === 'bonusGold') return 'Bonus Gold';
+  if (stat === 'bonusExperience') return 'Bonus Experience';
+  if (stat === 'blockChance') return 'Block Chance';
+  if (stat === 'fireDamage') return 'Fire Damage';
+  if (stat === 'coldDamage') return 'Cold Damage';
+  if (stat === 'airDamage') return 'Air Damage';
+  if (stat === 'earthDamage') return 'Earth Damage';
+  if (stat === 'fireDamagePercent') return 'Fire Damage %';
+  if (stat === 'coldDamagePercent') return 'Cold Damage %';
+  if (stat === 'airDamagePercent') return 'Air Damage %';
+  if (stat === 'earthDamagePercent') return 'Earth Damage %';
+  if (stat === 'strength') return 'Strength';
+  if (stat === 'strengthPercent') return 'Strength %';
+  if (stat === 'agility') return 'Agility';
+  if (stat === 'agilityPercent') return 'Agility %';
+  if (stat === 'vitality') return 'Vitality';
+  if (stat === 'vitalityPercent') return 'Vitality %';
+  if (stat === 'wisdom') return 'Wisdom';
+  if (stat === 'wisdomPercent') return 'Wisdom %';
+  if (stat === 'endurance') return 'Endurance';
+  if (stat === 'endurancePercent') return 'Endurance %';
+  if (stat === 'dexterity') return 'Dexterity';
+  if (stat === 'dexterityPercent') return 'Dexterity %';
+  if (stat === 'bonusGoldPercent') return 'Bonus Gold %';
+  if (stat === 'bonusExperiencePercent') return 'Bonus Experience %';
+  if (stat === 'lifePerHit') return 'Life Per Hit';
+  if (stat === 'lifePerHitPercent') return 'Life Per Hit %';
+  if (stat === 'manaPerHit') return 'Mana Per Hit';
+  if (stat === 'manaPerHitPercent') return 'Mana Per Hit %';
+  if (stat === 'thornsDamage') return 'Thorns Damage';
+  if (stat === 'thornsDamagePercent') return 'Thorns Damage %';
+  if (stat === 'cooldownReductionPercent') return 'Cooldown Reduction %';
+  if (stat === 'manaCostReductionPercent') return 'Mana Cost Reduction %';
+  if (stat === 'buffDurationPercent') return 'Buff Duration %';
+  if (stat === 'itemBonusesPercent') return 'Item Bonuses %';
+  if (stat === 'doubleDamageChance') return 'Double Damage Chance';
+  if (stat === 'resurrectionChance') return 'Resurrection Chance';
+  if (stat === 'returnFireDamage') return 'Return Fire Damage';
+  if (stat === 'returnColdDamage') return 'Return Cold Damage';
+  if (stat === 'returnAirDamage') return 'Return Air Damage';
+  if (stat === 'returnEarthDamage') return 'Return Earth Damage';
+
+  // Fallback: convert camelCase to Title Case with spaces
+  return stat
+    .replace(/([A-Z])/g, ' $1')
+    .replace(/^./, (str) => str.toUpperCase())
+    .replace(/Percent$/, '%')
+    .trim();
+};

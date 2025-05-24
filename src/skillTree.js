@@ -11,6 +11,17 @@ export default class SkillTree {
     this.skills = {};
 
     handleSavedData(savedData, this);
+    // add methods for all skills from SKILL_TREES
+    Object.entries(this.skills).forEach(([skillId, skillData]) => {
+      this.skills[skillId] = {};
+      // find skill in SKILL_TREES
+      const skill = SKILL_TREES[this.selectedPath?.name][skillId];
+
+      this.skills[skillId] = {
+        ...skill,
+        ...skillData,
+      };
+    });
     // always empty at start
     this.activeBuffs = new Map();
   }
@@ -189,22 +200,57 @@ export default class SkillTree {
     updateActionBar();
   }
 
+  getSkill(skillId) {
+    const skillObj = {
+      ...SKILL_TREES[this.selectedPath?.name][skillId],
+      ...this.skills[skillId],
+    };
+    return skillObj;
+  }
+
+  getSkillEffect(skillId, level = 0) {
+    return SKILL_TREES[this.selectedPath?.name][skillId]?.effect(level || this.getSkill(skillId)?.level || 0);
+  }
+
+  // level is for getting the mana cost for a certain level
+  getSkillManaCost(skill, level = 0) {
+    let effectiveLevel = level || skill?.level;
+    if (!skill?.manaCost) return 0;
+    return Math.floor(
+      skill.manaCost(effectiveLevel) - (skill.manaCost(effectiveLevel) * hero.stats.manaCostReductionPercent) / 100
+    );
+  }
+
+  getSkillCooldown(skill, level = 0) {
+    let effectiveLevel = level || skill?.level;
+    if (!skill?.cooldown) return 0;
+    return Math.floor(
+      skill.cooldown(effectiveLevel) - (skill.cooldown(effectiveLevel) * hero.stats.cooldownReductionPercent) / 100
+    );
+  }
+
+  getSkillDuration(skill, level = 0) {
+    let effectiveLevel = level || skill?.level;
+    if (!skill?.duration) return 0;
+    return Math.floor(
+      skill.duration(effectiveLevel) + (skill.duration(effectiveLevel) * hero.stats.buffDurationPercent) / 100
+    );
+  }
+
   useInstantSkill(skillId) {
     if (!game.gameStarted) return false;
 
-    const skill = SKILL_TREES[this.selectedPath?.name][skillId];
-    const skillData = this.skills[skillId];
-    const baseEffects = skill.effect(skillData.level);
+    const skill = this.getSkill(skillId);
+    const baseEffects = this.getSkillEffect(skillId);
 
-    if (hero.stats.currentMana < skill.manaCost) {
+    if (hero.stats.currentMana < this.getSkillManaCost(skill)) {
       showManaWarning();
       return false;
     }
 
-    if (skillData.cooldownEndTime && skillData.cooldownEndTime > Date.now()) return false;
+    if (skill.cooldownEndTime && skill.cooldownEndTime > Date.now()) return false;
 
-    // Apply instant effect
-    hero.stats.currentMana -= skill.manaCost;
+    hero.stats.currentMana -= this.getSkillManaCost(skill);
 
     // all damages
     const instantSkillDamage =
@@ -233,10 +279,12 @@ export default class SkillTree {
       game.restoreMana(baseEffects.manaPerHit);
     }
 
-    game.damageEnemy(damage);
+    if (instantSkillDamage !== 0) {
+      game.damageEnemy(damage);
+    }
 
     // Set cooldown
-    skillData.cooldownEndTime = Date.now() + skill.cooldown;
+    this.skills[skill.id].cooldownEndTime = Date.now() + this.getSkillCooldown(skill);
 
     // Update UI
     updatePlayerLife();
@@ -251,8 +299,8 @@ export default class SkillTree {
     Object.entries(this.skills).forEach(([skillId, skillData]) => {
       const skill = SKILL_TREES[this.selectedPath?.name][skillId];
       if (skill.type === 'toggle' && skillData.active) {
-        if (hero.stats.currentMana >= skill.manaCost) {
-          hero.stats.currentMana -= skill.manaCost;
+        if (hero.stats.currentMana >= this.getSkillManaCost(skill)) {
+          hero.stats.currentMana -= this.getSkillManaCost(skill);
           effects = { ...effects, ...skill.effect(skillData.level) };
         } else {
           showManaWarning();
@@ -273,7 +321,7 @@ export default class SkillTree {
     const skillData = this.skills[skillId];
 
     if (skill.type !== 'buff') return false;
-    if (hero.stats.currentMana < skill.manaCost) {
+    if (hero.stats.currentMana < this.getSkillManaCost(skill)) {
       showManaWarning();
       return false;
     }
@@ -282,9 +330,9 @@ export default class SkillTree {
     if (skillData.cooldownEndTime && skillData.cooldownEndTime > Date.now()) return false;
 
     // Apply buff
-    hero.stats.currentMana -= skill.manaCost;
+    hero.stats.currentMana -= this.getSkillManaCost(skill);
     const buffEndTime = Date.now() + skill.duration;
-    const cooldownEndTime = Date.now() + skill.cooldown;
+    const cooldownEndTime = Date.now() + this.getSkillCooldown(skill);
 
     // Store buff data
     this.activeBuffs.set(skillId, {

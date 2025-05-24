@@ -92,7 +92,7 @@ export const MATERIALS = {
     name: 'Crystalized Rock',
     icon: '💎',
     description: 'Gives 1 crystal.',
-    dropChance: 2,
+    dropChance: 40,
     sort: 80,
     onUse: (hero, qty = 1) => {
       hero.crystals += 1 * qty;

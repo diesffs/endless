@@ -31,12 +31,12 @@ export function enemyAttack(currentTime) {
       const damageReduction = hero.calculateArmorReduction() / 100;
       const effectiveDamage = Math.floor(game.currentEnemy.damage * (1 - damageReduction));
 
-      // Thorns damage available for paladin only
-      // const { damage: thornsDamage, isCritical } = hero.calculateTotalThornsDamage();
-      // if (thornsDamage > 0) {
-      //   game.damageEnemy(thornsDamage);
-      //   createDamageNumber(thornsDamage, false, isCritical);
-      // }
+      const thornsDamage = hero.calculateTotalThornsDamage(game.currentEnemy.damage);
+      // only if there is some thorns damage to deal, only paladin
+      if (thornsDamage - game.currentEnemy.damage > 1) {
+        game.damageEnemy(thornsDamage);
+        createDamageNumber(thornsDamage, false);
+      }
 
       game.damagePlayer(effectiveDamage);
       createDamageNumber(Math.floor(effectiveDamage), true);
@@ -65,7 +65,8 @@ export function playerAttack(currentTime) {
       } else {
         const { damage, isCritical } = hero.calculateTotalDamage();
         const lifeStealAmount = damage * (hero.stats.lifeSteal / 100);
-        game.healPlayer(lifeStealAmount);
+        const lifePerHitAmount = hero.stats.lifePerHit * (1 + (hero.stats.lifePerHitPercent || 0) / 100);
+        game.healPlayer(lifeStealAmount + lifePerHitAmount);
         game.damageEnemy(damage);
         createDamageNumber(damage, false, isCritical);
       }
