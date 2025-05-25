@@ -372,10 +372,6 @@ export const formatStatName = (stat) => {
   if (stat === 'itemBonusesPercent') return 'Item Bonuses %';
   if (stat === 'doubleDamageChance') return 'Double Damage Chance';
   if (stat === 'resurrectionChance') return 'Resurrection Chance';
-  if (stat === 'returnFireDamage') return 'Return Fire Damage';
-  if (stat === 'returnColdDamage') return 'Return Cold Damage';
-  if (stat === 'returnAirDamage') return 'Return Air Damage';
-  if (stat === 'returnEarthDamage') return 'Return Earth Damage';
 
   // Fallback: convert camelCase to Title Case with spaces
   return stat
