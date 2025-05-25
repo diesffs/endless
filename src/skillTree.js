@@ -20,7 +20,7 @@ export default class SkillTree {
     Object.entries(this.skills).forEach(([skillId, skillData]) => {
       this.skills[skillId] = {};
       // find skill in SKILL_TREES
-      const skill = SKILL_TREES[this.selectedPath?.name][skillId];
+      const skill = this.getSkill(skillId);
 
       this.skills[skillId] = {
         ...skill,
@@ -64,7 +64,7 @@ export default class SkillTree {
     const bonuses = {};
     // Add skill bonuses
     Object.entries(this.skills).forEach(([skillId, skillData]) => {
-      const skill = SKILL_TREES[this.selectedPath?.name][skillId];
+      const skill = this.getSkill(skillId);
 
       if (!skill) {
         console.error('contact support. skill not found: ', skillId);
@@ -82,24 +82,8 @@ export default class SkillTree {
     return bonuses;
   }
 
-  calculateActiveSkillEffects() {
-    const effects = {};
-
-    Object.entries(this.skills).forEach(([skillId, skillData]) => {
-      const skill = SKILL_TREES[this.selectedPath?.name][skillId];
-      if (skill.type === 'toggle' && this.isSkillActive(skillId)) {
-        const skillEffects = this.getSkillEffect(skillId, skillData.level);
-        Object.entries(skillEffects).forEach(([stat, value]) => {
-          effects[stat] = (effects[stat] || 0) + value;
-        });
-      }
-    });
-
-    return effects;
-  }
-
   isSkillActive(skillId) {
-    const skill = SKILL_TREES[this.selectedPath?.name][skillId];
+    const skill = this.getSkill(skillId);
     return skill && (skill.type === 'toggle' || skill.type === 'buff') && this.skills[skillId]?.active;
   }
 
@@ -134,7 +118,7 @@ export default class SkillTree {
   canUnlockSkill(skillId) {
     if (!this.selectedPath) return false;
 
-    const skill = SKILL_TREES[this.selectedPath?.name][skillId];
+    const skill = this.getSkill(skillId);
     if (!skill) return false;
 
     const currentLevel = this.skills[skillId]?.level || 0;
@@ -157,14 +141,13 @@ export default class SkillTree {
   unlockSkill(skillId) {
     if (!this.canUnlockSkill(skillId)) return false;
 
-    const skill = SKILL_TREES[this.selectedPath?.name][skillId];
+    const skill = this.getSkill(skillId);
     const currentLevel = this.skills[skillId]?.level || 0;
     const nextLevel = currentLevel + 1;
 
     this.skills[skillId] = {
       ...skill,
       level: nextLevel,
-      effect: this.getSkillEffect(skillId, nextLevel),
       active: false,
       slot: skill.type !== 'passive' ? Object.keys(this.skills).length + 1 : null,
     };
@@ -186,7 +169,7 @@ export default class SkillTree {
   toggleSkill(skillId) {
     if (!this.skills[skillId]) return;
 
-    const skill = SKILL_TREES[this.selectedPath?.name][skillId];
+    const skill = this.getSkill(skillId);
 
     // Handle different skill types
     switch (skill.type) {
@@ -214,7 +197,9 @@ export default class SkillTree {
   }
 
   getSkillEffect(skillId, level = 0) {
-    return SKILL_TREES[this.selectedPath?.name][skillId]?.effect(level || this.getSkill(skillId)?.level || 0);
+    console.log(this.getSkill(skillId));
+
+    return this.getSkill(skillId)?.effect(level || this.getSkill(skillId)?.level || 0);
   }
 
   // level is for getting the mana cost for a certain level
@@ -302,7 +287,7 @@ export default class SkillTree {
     let effects = {};
 
     Object.entries(this.skills).forEach(([skillId, skillData]) => {
-      const skill = SKILL_TREES[this.selectedPath?.name][skillId];
+      const skill = this.getSkill(skillId);
       if (skill.type === 'toggle' && skillData.active) {
         if (hero.stats.currentMana >= this.getSkillManaCost(skill)) {
           hero.stats.currentMana -= this.getSkillManaCost(skill);
@@ -322,7 +307,7 @@ export default class SkillTree {
   activateSkill(skillId) {
     if (!game.gameStarted) return false;
 
-    const skill = SKILL_TREES[this.selectedPath?.name][skillId];
+    const skill = this.getSkill(skillId);
     const skillData = this.skills[skillId];
 
     if (skill.type !== 'buff') return false;
