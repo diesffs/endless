@@ -1,7 +1,14 @@
 import { handleSavedData } from './functions.js';
 import Item, { ITEM_RARITY, RARITY_ORDER, SLOT_REQUIREMENTS } from './item.js';
 import { game, hero, statistics } from './globals.js';
-import { hideTooltip, positionTooltip, showToast, showTooltip, updateResources } from './ui.js';
+import {
+  hideTooltip,
+  positionTooltip,
+  showToast,
+  showTooltip,
+  updateResources,
+  updateStatsAndAttributesUI,
+} from './ui.js';
 import { MATERIALS } from './material.js';
 import { STATS } from './stats.js';
 
@@ -264,9 +271,11 @@ export default class Inventory {
         const idx = this.materials.findIndex((m) => m && m.id === mat.id);
         if (idx !== -1) this.materials[idx] = null;
       }
+      hero.recalculateFromAttributes();
       this.updateMaterialsGrid();
       game.saveGame();
       updateResources(); // <-- update the UI after using a material
+      updateStatsAndAttributesUI(); // Update stats and attributes UI
       dialog.remove();
       showToast(`Used ${useQty} ${matDef.name || mat.name || ''}${useQty > 1 ? 's' : ''}`, 'success');
     };

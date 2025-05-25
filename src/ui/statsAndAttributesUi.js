@@ -389,8 +389,9 @@ export function updateStatsAndAttributesUI() {
     attributesContainer.className = 'attributes-container';
     attributesContainer.innerHTML = html`
       <h3 id="attributes">Attributes (+${hero.statPoints})</h3>
-      ${Object.entries(hero.primaryStats)
+      ${Object.entries(hero.stats)
         .map(([stat, value]) => {
+          if (!ATTRIBUTES[stat]) return ''; // Skip if stat is not an attribute
           return `
             <div class="attribute-row">
             <button class="allocate-btn" data-stat="${stat}">+</button>

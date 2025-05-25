@@ -22,11 +22,11 @@ const CRYSTAL_UPGRADE_CONFIG = {
     bonus: 1,
     baseCost: 2,
   },
-  startingGold: {
-    label: 'Starting Gold',
-    bonus: 1000,
-    baseCost: 1,
-  },
+  // startingGold: {
+  //   label: 'Starting Gold',
+  //   bonus: 1000,
+  //   baseCost: 1,
+  // },
   continuousPlay: {
     label: 'Continuous Play',
     bonus: 'Auto-continue after death',
@@ -269,7 +269,8 @@ export default class Prestige {
     const cancelButton = document.getElementById('cancel-prestige');
 
     if (!prestigeButton || !modal || !confirmButton || !cancelButton) {
-      console.error('Prestige modal or buttons are missing.');
+      // TODO: enable error message when prestige works
+      // console.error('Prestige modal or buttons are missing.');
       return;
     }
 

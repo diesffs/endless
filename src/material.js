@@ -106,7 +106,7 @@ export const MATERIALS = {
     dropChance: 10,
     sort: 90,
     onUse: (hero, qty = 1) => {
-      hero.stats.strength += 1 * qty;
+      hero.permaStats.strength += 1 * qty;
     },
   },
 };

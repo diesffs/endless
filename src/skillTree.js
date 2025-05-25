@@ -71,7 +71,7 @@ export default class SkillTree {
       }
 
       if (skill.type === 'passive') {
-        const effects = skill.effect(skillData.level);
+        const effects = this.getSkillEffect(skillId, skillData.level);
         Object.entries(effects).forEach(([stat, value]) => {
           bonuses[stat] = (bonuses[stat] || 0) + value;
         });
@@ -87,7 +87,7 @@ export default class SkillTree {
     Object.entries(this.skills).forEach(([skillId, skillData]) => {
       const skill = SKILL_TREES[this.selectedPath?.name][skillId];
       if (skill.type === 'toggle' && this.isSkillActive(skillId)) {
-        const skillEffects = skill.effect(skillData.level);
+        const skillEffects = this.getSkillEffect(skillId, skillData.level);
         Object.entries(skillEffects).forEach(([stat, value]) => {
           effects[stat] = (effects[stat] || 0) + value;
         });
@@ -163,7 +163,7 @@ export default class SkillTree {
     this.skills[skillId] = {
       ...skill,
       level: nextLevel,
-      effect: skill.effect(nextLevel),
+      effect: this.getSkillEffect(skillId, nextLevel),
       active: false,
       slot: skill.type !== 'passive' ? Object.keys(this.skills).length + 1 : null,
     };
@@ -218,7 +218,7 @@ export default class SkillTree {
 
   // level is for getting the mana cost for a certain level
   getSkillManaCost(skill, level = 0) {
-    let effectiveLevel = level || skill?.level;
+    let effectiveLevel = level || skill?.level || 0;
     if (!skill?.manaCost) return 0;
     return Math.floor(
       skill.manaCost(effectiveLevel) - (skill.manaCost(effectiveLevel) * hero.stats.manaCostReductionPercent) / 100
@@ -226,7 +226,7 @@ export default class SkillTree {
   }
 
   getSkillCooldown(skill, level = 0) {
-    let effectiveLevel = level || skill?.level;
+    let effectiveLevel = level || skill?.level || 0;
     if (!skill?.cooldown) return 0;
     return Math.floor(
       skill.cooldown(effectiveLevel) - (skill.cooldown(effectiveLevel) * hero.stats.cooldownReductionPercent) / 100
@@ -234,7 +234,7 @@ export default class SkillTree {
   }
 
   getSkillDuration(skill, level = 0) {
-    let effectiveLevel = level || skill?.level;
+    let effectiveLevel = level || skill?.level || 0;
     if (!skill?.duration) return 0;
     return Math.floor(
       skill.duration(effectiveLevel) + (skill.duration(effectiveLevel) * hero.stats.buffDurationPercent) / 100
@@ -305,7 +305,7 @@ export default class SkillTree {
       if (skill.type === 'toggle' && skillData.active) {
         if (hero.stats.currentMana >= this.getSkillManaCost(skill)) {
           hero.stats.currentMana -= this.getSkillManaCost(skill);
-          effects = { ...effects, ...skill.effect(skillData.level) };
+          effects = { ...effects, ...this.getSkillEffect(skillId, skillData.level) };
         } else {
           showManaWarning();
           // Deactivate if not enough mana
@@ -341,7 +341,7 @@ export default class SkillTree {
     // Store buff data
     this.activeBuffs.set(skillId, {
       endTime: buffEndTime,
-      effects: skill.effect(skillData.level),
+      effects: this.getSkillEffect(skillId, skillData.level),
     });
 
     // Set cooldown and active state

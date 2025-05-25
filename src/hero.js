@@ -119,6 +119,12 @@ export default class Hero {
       dexterity: 0,
     };
 
+    // persistent stats, that are not being reset (usually from elixirs, achievements, etc.)
+    this.permaStats = {};
+    for (const [stat, config] of Object.entries(STATS)) {
+      this.permaStats[stat] = 0;
+    }
+
     // Gets recalculated every time something changes
     this.stats = {};
     for (const [stat, config] of Object.entries(STATS)) {
@@ -187,11 +193,12 @@ export default class Hero {
     shop.updateShopBonuses();
 
     const skillTreeBonuses = skillTree.getAllSkillTreeBonuses();
+    const equipmentBonuses = inventory.equipmentBonuses;
 
-    this.calculatePrimaryStats(skillTreeBonuses);
+    this.calculatePrimaryStats(skillTreeBonuses, equipmentBonuses);
     const attributeEffects = this.calculateAttributeEffects();
-    const flatValues = this.calculateFlatValues(attributeEffects, skillTreeBonuses);
-    const percentBonuses = this.calculatePercentBonuses(attributeEffects, skillTreeBonuses);
+    const flatValues = this.calculateFlatValues(attributeEffects, skillTreeBonuses, equipmentBonuses);
+    const percentBonuses = this.calculatePercentBonuses(attributeEffects, skillTreeBonuses, equipmentBonuses);
 
     this.applyFinalCalculations(flatValues, percentBonuses);
 
@@ -199,19 +206,37 @@ export default class Hero {
     updateStatsAndAttributesUI();
   }
 
-  calculatePrimaryStats(skillTreeBonuses) {
+  calculatePrimaryStats(skillTreeBonuses, equipmentBonuses) {
     this.stats.strength =
-      this.primaryStats.strength + (inventory.equipmentBonuses.strength || 0) + (skillTreeBonuses.strength || 0);
+      this.primaryStats.strength +
+      this.permaStats.strength +
+      (equipmentBonuses.strength || 0) +
+      (skillTreeBonuses.strength || 0);
     this.stats.agility =
-      this.primaryStats.agility + (inventory.equipmentBonuses.agility || 0) + (skillTreeBonuses.agility || 0);
+      this.primaryStats.agility +
+      this.permaStats.agility +
+      (equipmentBonuses.agility || 0) +
+      (skillTreeBonuses.agility || 0);
     this.stats.vitality =
-      this.primaryStats.vitality + (inventory.equipmentBonuses.vitality || 0) + (skillTreeBonuses.vitality || 0);
+      this.primaryStats.vitality +
+      this.permaStats.vitality +
+      (equipmentBonuses.vitality || 0) +
+      (skillTreeBonuses.vitality || 0);
     this.stats.wisdom =
-      this.primaryStats.wisdom + (inventory.equipmentBonuses.wisdom || 0) + (skillTreeBonuses.wisdom || 0);
+      this.primaryStats.wisdom +
+      this.permaStats.wisdom +
+      (equipmentBonuses.wisdom || 0) +
+      (skillTreeBonuses.wisdom || 0);
     this.stats.endurance =
-      this.primaryStats.endurance + (inventory.equipmentBonuses.endurance || 0) + (skillTreeBonuses.endurance || 0);
+      this.primaryStats.endurance +
+      this.permaStats.endurance +
+      (equipmentBonuses.endurance || 0) +
+      (skillTreeBonuses.endurance || 0);
     this.stats.dexterity =
-      this.primaryStats.dexterity + (inventory.equipmentBonuses.dexterity || 0) + (skillTreeBonuses.dexterity || 0);
+      this.primaryStats.dexterity +
+      this.permaStats.dexterity +
+      (equipmentBonuses.dexterity || 0) +
+      (skillTreeBonuses.dexterity || 0);
   }
 
   calculateAttributeEffects() {
@@ -255,33 +280,35 @@ export default class Hero {
     return effects;
   }
 
-  calculateFlatValues(attributeEffects, skillTreeBonuses) {
+  calculateFlatValues(attributeEffects, skillTreeBonuses, equipmentBonuses) {
     const flatValues = {};
 
     for (const stat in STATS) {
       // Sum all sources for each stat
       flatValues[stat] =
         (this.primaryStats[stat] ?? 0) +
+        (this.permaStats[stat] ?? 0) +
         (STATS[stat].base ?? 0) +
         (attributeEffects[stat] ?? 0) +
         (STATS[stat].levelUpBonus ?? 0) * (this.level - 1) +
         (shop.shopBonuses[stat] ?? 0) +
-        (inventory.equipmentBonuses[stat] ?? 0) +
+        (equipmentBonuses[stat] ?? 0) +
         (skillTreeBonuses[stat] ?? 0);
     }
 
     return flatValues;
   }
 
-  calculatePercentBonuses(attributeEffects, skillTreeBonuses) {
+  calculatePercentBonuses(attributeEffects, skillTreeBonuses, equipmentBonuses) {
     const percentBonuses = {};
 
     for (const stat in STATS) {
       if (stat.endsWith('Percent')) {
         percentBonuses[stat] =
           (attributeEffects[stat] || 0) +
+          (this.permaStats[stat] || 0) / 100 +
           (skillTreeBonuses[stat] || 0) / 100 +
-          (inventory.equipmentBonuses[stat] || 0) / 100 +
+          (equipmentBonuses[stat] || 0) / 100 +
           (shop.shopBonuses[stat] || 0) / 100;
       }
     }

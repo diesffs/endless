@@ -2,7 +2,15 @@ import { STATS } from '../stats.js';
 import { CLASS_PATHS, SKILL_TREES } from '../skills.js';
 import { REQ_LEVEL_FOR_SKILL_TREE, SKILL_LEVEL_TIERS } from '../skillTree.js';
 import { skillTree, hero } from '../globals.js';
-import { hideTooltip, positionTooltip } from '../ui.js';
+import {
+  formatStatName,
+  hideTooltip,
+  positionTooltip,
+  showConfirmDialog,
+  showToast,
+  showTooltip,
+  updateResources,
+} from '../ui.js';
 
 const html = String.raw;
 
@@ -286,15 +294,20 @@ const updateTooltipContent = (skillId) => {
     skillDescription += `<br />Mana Cost: ${skillManaCost} (+${skillManaCostNextLevel - skillManaCost})`;
   }
   const skillCooldown = skillTree.getSkillCooldown(skill);
-
   const skillCooldownNextLevel = skillTree.getSkillCooldown(skill, nextLevel);
+  console.log(skillCooldown, skillCooldownNextLevel);
+
   if (skillCooldown) {
-    skillDescription += `<br />Cooldown: ${skillCooldown / 1000}s (-${skillCooldownNextLevel - skillCooldown / 1000}s)`;
+    skillDescription += `<br />Cooldown: ${skillCooldown / 1000}s (${
+      (skillCooldownNextLevel - skillCooldown) / 1000
+    }s)`;
   }
   const skillDuration = skillTree.getSkillDuration(skill);
   const skillDurationNextLevel = skillTree.getSkillDuration(skill, nextLevel);
   if (skillDuration) {
-    skillDescription += `<br />Duration: ${skillDuration / 1000}s (+${skillDurationNextLevel - skillDuration / 1000}s)`;
+    skillDescription += `<br />Duration: ${skillDuration / 1000}s (+${
+      (skillDurationNextLevel - skillDuration) / 1000
+    }s)`;
   }
 
   // Calculate effects at current level
