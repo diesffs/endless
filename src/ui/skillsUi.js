@@ -168,6 +168,64 @@ export function initializeSkillTreeStructure() {
     }
   });
   updateSkillTreeValues();
+  // --- Auto-cast toggles for instant/buff skills ---
+  renderAutoCastToggles();
+}
+
+function renderAutoCastToggles() {
+  const container = document.getElementById('skill-tree-container');
+  let autoCastSection = document.getElementById('auto-cast-section');
+  if (autoCastSection) autoCastSection.remove();
+
+  // Only show if there are any instant/buff skills unlocked
+  const eligibleSkills = Object.entries(skillTree.skills)
+    .filter(([skillId, skill]) => {
+      const base = SKILL_TREES[skillTree.selectedPath?.name]?.[skillId];
+      return base && (base.type === 'instant' || base.type === 'buff') && skill.level > 0;
+    })
+    .map(([skillId, skill]) => {
+      const base = SKILL_TREES[skillTree.selectedPath?.name][skillId];
+      return { ...base, id: skillId };
+    });
+
+  if (eligibleSkills.length === 0) return;
+
+  autoCastSection = document.createElement('div');
+  autoCastSection.id = 'auto-cast-section';
+  autoCastSection.style.marginTop = '32px';
+  autoCastSection.innerHTML = `<h3 style="margin-bottom:8px;">Auto-Cast Settings</h3>`;
+
+  eligibleSkills.forEach((skill) => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'auto-cast-switch';
+    wrapper.style.alignItems = 'center';
+    wrapper.style.marginBottom = '6px';
+
+    const icon = document.createElement('div');
+    icon.className = 'skill-icon';
+    icon.style.width = '28px';
+    icon.style.height = '28px';
+    icon.style.backgroundImage = `url('${import.meta.env.BASE_URL}skills/${skill.icon}.jpg')`;
+    icon.style.marginRight = '8px';
+    wrapper.appendChild(icon);
+
+    const label = document.createElement('label');
+    label.textContent = skill.name;
+    label.style.marginRight = '8px';
+    wrapper.appendChild(label);
+
+    const toggle = document.createElement('input');
+    toggle.type = 'checkbox';
+    toggle.checked = skillTree.isAutoCastEnabled(skill.id);
+    toggle.addEventListener('change', (e) => {
+      skillTree.setAutoCast(skill.id, e.target.checked);
+    });
+    wrapper.appendChild(toggle);
+
+    autoCastSection.appendChild(wrapper);
+  });
+
+  container.appendChild(autoCastSection);
 }
 
 export function updateSkillTreeValues() {
@@ -222,6 +280,9 @@ export function updateSkillTreeValues() {
     node.classList.toggle('available', canUnlock);
     node.classList.toggle('unlocked', !!skillTree.skills[skillId]);
   });
+
+  // --- Auto-cast toggles for instant/buff skills ---
+  renderAutoCastToggles();
 }
 
 function showSkillTree() {

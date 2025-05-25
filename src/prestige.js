@@ -33,6 +33,12 @@ const CRYSTAL_UPGRADE_CONFIG = {
     baseCost: 50,
     oneTime: true, // Add this to mark as one-time purchase
   },
+  autoSpellCast: {
+    label: 'Auto Spell Cast',
+    bonus: 'Automatically casts instant and buff skills',
+    baseCost: 100,
+    oneTime: true,
+  },
 };
 
 export default class Prestige {
@@ -216,6 +222,7 @@ export default class Prestige {
       } else if (stat === 'startingGold') {
         hero.startingGold = this.crystalUpgrades[stat] * 1000;
       }
+      // No extra logic needed for autoSpellCast, just purchase
 
       updateResources();
       this.initializePrestigeUI();
@@ -307,5 +314,9 @@ export default class Prestige {
         modal.style.display = 'none';
       }
     };
+  }
+
+  hasAutoSpellCastUpgrade() {
+    return !!this.crystalUpgrades.autoSpellCast;
   }
 }

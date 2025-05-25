@@ -1,6 +1,6 @@
 import { createDamageNumber } from './combat.js';
 import { handleSavedData } from './functions.js';
-import { game, hero } from './globals.js';
+import { game, hero, prestige } from './globals.js';
 import { CLASS_PATHS, SKILL_TREES } from './skills.js';
 import { showManaWarning, showToast, updateActionBar, updatePlayerLife, updateSkillTreeValues } from './ui.js';
 
@@ -13,6 +13,7 @@ export default class SkillTree {
     this.skillPoints = 0;
     this.selectedPath = null;
     this.skills = {};
+    this.autoCastSettings = {};
 
     handleSavedData(savedData, this);
     // add methods for all skills from SKILL_TREES
@@ -415,5 +416,39 @@ export default class SkillTree {
     updateActionBar();
     updateSkillTreeValues();
     game.saveGame();
+  }
+
+  setAutoCast(skillId, enabled) {
+    this.autoCastSettings[skillId] = enabled;
+    game.saveGame();
+  }
+
+  isAutoCastEnabled(skillId) {
+    return !!this.autoCastSettings[skillId];
+  }
+
+  autoCastEligibleSkills() {
+    // Only run if prestige.hasAutoSpellCastUpgrade() is true
+    if (!prestige.hasAutoSpellCastUpgrade()) return;
+    if (!game.gameStarted) return;
+    Object.entries(this.skills).forEach(([skillId, skillData]) => {
+      const skill = SKILL_TREES[this.selectedPath?.name]?.[skillId];
+      if (!skill || !this.isAutoCastEnabled(skillId)) return;
+      if (skill.type === 'instant') {
+        // Only cast if not on cooldown and enough mana
+        if (!skillData.cooldownEndTime || skillData.cooldownEndTime <= Date.now()) {
+          if (hero.stats.currentMana >= this.getSkillManaCost(skill)) {
+            this.useInstantSkill(skillId);
+          }
+        }
+      } else if (skill.type === 'buff') {
+        // Only cast if not active, not on cooldown, and enough mana
+        if (!skillData.active && (!skillData.cooldownEndTime || skillData.cooldownEndTime <= Date.now())) {
+          if (hero.stats.currentMana >= this.getSkillManaCost(skill)) {
+            this.activateSkill(skillId);
+          }
+        }
+      }
+    });
   }
 }

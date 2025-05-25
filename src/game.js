@@ -123,6 +123,9 @@ class Game {
     if (currentTime % 30000 < 16) {
       game.saveGame();
     }
+
+    // Auto-cast logic: run every game loop
+    skillTree.autoCastEligibleSkills();
   }
 
   toggle() {
