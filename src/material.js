@@ -4,37 +4,11 @@ export const MATERIALS = {
     id: 'experience_potion',
     name: 'Experience Potion',
     icon: '🧪',
-    description: 'Grants 100 experience when used.',
+    description: 'Grants 1000 experience when used.',
     dropChance: 5,
     sort: 10,
     onUse: (hero, qty = 1) => {
-      hero.gainExp(100 * qty);
-    },
-  },
-  TINY_GOLD_COINS: {
-    id: 'tiny_gold_coins',
-    name: 'Tiny Gold Coins',
-    icon: '🪙',
-    get description() {
-      return `Adds ${100} gold per coin to your total.`;
-    },
-    dropChance: 100,
-    sort: 20,
-    onUse: (hero, qty = 1) => {
-      hero.gainGold(100 * qty);
-    },
-  },
-  SMALL_GOLD_COINS: {
-    id: 'small_gold_coins',
-    name: 'Small Gold Coins',
-    icon: '🪙',
-    get description() {
-      return `Adds ${500} gold per coin to your total.`;
-    },
-    dropChance: 50,
-    sort: 30,
-    onUse: (hero, qty = 1) => {
-      hero.gainGold(500 * qty);
+      hero.gainExp(1000 * qty);
     },
   },
   MEDIUM_GOLD_COINS: {
@@ -44,7 +18,7 @@ export const MATERIALS = {
     get description() {
       return `Adds ${1000} gold per coin to your total.`;
     },
-    dropChance: 20,
+    dropChance: 40,
     sort: 40,
     onUse: (hero, qty = 1) => {
       hero.gainGold(1000 * qty);
@@ -55,12 +29,12 @@ export const MATERIALS = {
     name: 'Large Gold Coins',
     icon: '🪙',
     get description() {
-      return `Adds ${5000} gold per coin to your total.`;
+      return `Adds ${10000} gold per coin to your total.`;
     },
-    dropChance: 10,
+    dropChance: 20,
     sort: 50,
     onUse: (hero, qty = 1) => {
-      hero.gainGold(5000 * qty);
+      hero.gainGold(10000 * qty);
     },
   },
   ENORMOUS_GOLD_COINS: {
@@ -70,7 +44,7 @@ export const MATERIALS = {
     get description() {
       return `Adds ${50000} gold per coin to your total.`;
     },
-    dropChance: 2,
+    dropChance: 1,
     sort: 60,
     onUse: (hero, qty = 1) => {
       hero.gainGold(50000 * qty);

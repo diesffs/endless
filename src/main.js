@@ -90,11 +90,20 @@ export let dev = false;
   }, 60000);
 
   if (dev) {
-    document.addEventListener('DOMContentLoaded', () => {
-      // Create debug UI
-      createDebugUI();
-      createModifyUI();
-    });
+    log('Dev mode is enabled.');
+    document.body.classList.add('dev-active');
+    createDebugUI();
+    createModifyUI();
+  } else {
+    document.body.classList.remove('dev-active');
+    const debugDiv = document.querySelector('.debug-ui');
+    const modifyUI = document.querySelector('.modify-ui');
+    if (debugDiv) {
+      debugDiv.remove();
+    }
+    if (modifyUI) {
+      modifyUI.remove();
+    }
   }
 
   let keySequence = [];
@@ -109,9 +118,11 @@ export let dev = false;
       dev = !dev;
       console.log(`Dev mode is now ${dev ? 'enabled' : 'disabled'}.`);
       if (dev) {
+        document.body.classList.add('dev-active');
         createDebugUI();
         createModifyUI();
       } else {
+        document.body.classList.remove('dev-active');
         const debugDiv = document.querySelector('.debug-ui');
         const modifyUI = document.querySelector('.modify-ui');
         if (debugDiv) {
