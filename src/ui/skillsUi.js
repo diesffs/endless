@@ -356,7 +356,6 @@ const updateTooltipContent = (skillId) => {
   }
   const skillCooldown = skillTree.getSkillCooldown(skill);
   const skillCooldownNextLevel = skillTree.getSkillCooldown(skill, nextLevel);
-  console.log(skillCooldown, skillCooldownNextLevel);
 
   if (skillCooldown) {
     skillDescription += `<br />Cooldown: ${skillCooldown / 1000}s (${

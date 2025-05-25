@@ -77,41 +77,12 @@ export const RARITY_ORDER = [
   ITEM_RARITY.MYTHIC.name,
 ];
 
-export const DECIMAL_STATS = ['critDamage', 'attackSpeed', 'critChance'];
-
-export const AVAILABLE_STATS = {
-  damage: { min: 3, max: 10, scaling: 'full' },
-  armor: { min: 3, max: 10, scaling: 'full' },
-  strength: { min: 1, max: 5, scaling: 'full' },
-  agility: { min: 1, max: 5, scaling: 'full' },
-  vitality: { min: 1, max: 5, scaling: 'full' },
-  critChance: { min: 0.5, max: 1.5, scaling: 'capped' },
-  critDamage: { min: 0.02, max: 0.1, scaling: 'full' },
-  attackSpeed: { min: 0.05, max: 0.2, scaling: 'capped' },
-  life: { min: 30, max: 75, scaling: 'full' },
-  blockChance: { min: 2, max: 6, scaling: 'capped' },
-  attackRating: { min: 50, max: 150, scaling: 'full' },
-  lifeSteal: { min: 0.01, max: 0.1, scaling: 'capped' },
-  fireDamage: { min: 20, max: 50, scaling: 'full' },
-  coldDamage: { min: 20, max: 50, scaling: 'full' },
-  airDamage: { min: 20, max: 50, scaling: 'full' },
-  earthDamage: { min: 20, max: 50, scaling: 'full' },
-  attackRatingPercent: { min: 5, max: 15, scaling: 'capped' },
-  damagePercent: { min: 2, max: 8, scaling: 'capped' },
-
-  wisdom: { min: 1, max: 5, scaling: 'full' },
-  endurance: { min: 1, max: 5, scaling: 'full' },
-  dexterity: { min: 1, max: 5, scaling: 'full' },
-  mana: { min: 5, max: 15, scaling: 'capped' },
-  manaRegen: { min: 0.5, max: 2, scaling: 'capped' },
-  lifeRegen: { min: 0.5, max: 1.5, scaling: 'full' },
-  lifePercent: { min: 2, max: 8, scaling: 'capped' },
-  manaPercent: { min: 2, max: 5, scaling: 'capped' },
-  armorPercent: { min: 3, max: 8, scaling: 'capped' },
-  elementalDamagePercent: { min: 5, max: 10, scaling: 'capped' },
-  bonusGold: { min: 5, max: 15, scaling: 'capped' },
-  bonusExperience: { min: 5, max: 15, scaling: 'capped' },
-};
+// Dynamically generate AVAILABLE_STATS from STATS
+export const AVAILABLE_STATS = Object.fromEntries(
+  Object.entries(STATS)
+    .filter(([_, config]) => config.item)
+    .map(([stat, config]) => [stat, config.item])
+);
 
 const DEFENSIVE_STATS = [
   'armor',
@@ -182,7 +153,7 @@ export const ITEM_STAT_POOLS = {
   },
   BOOTS: {
     mandatory: [],
-    possible: [...DEFENSIVE_STATS, 'attackSpeed', 'agility'],
+    possible: [...DEFENSIVE_STATS, 'agility'],
   },
   SWORD: {
     mandatory: ['damage'],

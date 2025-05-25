@@ -1,4 +1,4 @@
-import { updateResources, updateStatsAndAttributesUI } from './ui.js';
+import { formatStatName, updateResources, updateStatsAndAttributesUI } from './ui.js';
 
 import { showToast } from './ui.js';
 import { game, hero } from './globals.js';
@@ -7,103 +7,28 @@ import { STATS } from './stats.js';
 
 const html = String.raw;
 
-const UPGRADE_CONFIG = {
-  // Existing stats
-  damage: { label: 'Damage', bonus: 1 },
-  attackSpeed: { label: 'Attack Speed', bonus: 0.01, suffix: '' },
-  life: { label: 'Life', bonus: 10 },
-  armor: { label: 'Armor', bonus: 1 },
-  critChance: { label: 'Crit Chance', bonus: 0.1, suffix: '%' },
-  critDamage: { label: 'Crit Damage', bonus: 0.01, suffix: '%' },
-  mana: { label: 'Mana', bonus: 5 },
-  lifeRegen: { label: 'Life Regen', bonus: 0.1 },
-  manaRegen: { label: 'Mana Regen', bonus: 0.1 },
-
-  // New stats to add
-  blockChance: { label: 'Block Chance', bonus: 0.1, suffix: '%' },
-  attackRating: { label: 'Attack Rating', bonus: 10 },
-  lifeSteal: { label: 'Life Steal', bonus: 0.01, suffix: '%' },
-  fireDamage: { label: 'Fire Damage', bonus: 1 },
-  coldDamage: { label: 'Cold Damage', bonus: 1 },
-  airDamage: { label: 'Air Damage', bonus: 1 },
-  earthDamage: { label: 'Earth Damage', bonus: 1 },
-};
-
-export const BASE_UPGRADE_COSTS = {
-  damage: 60,
-  attackSpeed: 200,
-  life: 80,
-  armor: 60,
-  critChance: 140,
-  critDamage: 200,
-  mana: 100,
-  lifeRegen: 80,
-  manaRegen: 80,
-  blockChance: 150,
-  attackRating: 60,
-  lifeSteal: 500,
-  fireDamage: 30,
-  coldDamage: 30,
-  airDamage: 30,
-  earthDamage: 30,
-};
 export default class Shop {
   constructor(savedData = null) {
-    this.upgradeCosts = { ...BASE_UPGRADE_COSTS };
-    this.upgradeLevels = {
-      damage: 0,
-      attackSpeed: 0,
-      life: 0,
-      armor: 0,
-      critChance: 0,
-      critDamage: 0,
-      mana: 0,
-      lifeRegen: 0,
-      manaRegen: 0,
-
-      blockChance: 0,
-      attackRating: 0,
-      lifeSteal: 0,
-      fireDamage: 0,
-      coldDamage: 0,
-      airDamage: 0,
-      earthDamage: 0,
-    };
-
-    this.shopBonuses = {
-      ...this.upgradeLevels,
-    };
+    this.upgradeLevels = {};
+    this.shopBonuses = {};
+    Object.entries(STATS).forEach(([stat, config]) => {
+      if (config.shop && config.shop.available) {
+        this.upgradeLevels[stat] = 0;
+        this.shopBonuses[stat] = 0;
+      }
+    });
 
     handleSavedData(savedData, this);
-
     this.initializeShopUI();
   }
 
   reset() {
-    this.upgradeCosts = { ...BASE_UPGRADE_COSTS };
-    this.upgradeLevels = {
-      damage: 0,
-      attackSpeed: 0,
-      life: 0,
-      armor: 0,
-      critChance: 0,
-      critDamage: 0,
-      mana: 0,
-      lifeRegen: 0,
-      manaRegen: 0,
-
-      blockChance: 0,
-      attackRating: 0,
-      lifeSteal: 0,
-      fireDamage: 0,
-      coldDamage: 0,
-      airDamage: 0,
-      earthDamage: 0,
-    };
-
-    this.shopBonuses = {
-      ...this.upgradeLevels,
-    };
+    Object.keys(this.upgradeLevels).forEach((stat) => {
+      this.upgradeLevels[stat] = 0;
+    });
+    Object.keys(this.shopBonuses).forEach((stat) => {
+      this.shopBonuses[stat] = 0;
+    });
   }
 
   initializeShopUI() {
@@ -165,28 +90,35 @@ export default class Shop {
     const shopGrid = document.querySelector(`#${subTab} .shop-grid`);
     if (!shopGrid) return;
 
-    shopGrid.innerHTML = Object.entries(UPGRADE_CONFIG)
+    shopGrid.innerHTML = Object.entries(STATS)
+      .filter(([stat, config]) => config.shop && config.shop.available)
       .map(([stat, config]) => this.createUpgradeButton(stat, config))
       .join('');
   }
 
   createUpgradeButton(stat, config) {
-    const cost = this.upgradeCosts[stat] || 0;
+    const cost = config.shop ? config.shop.cost : 0;
     const level = this.upgradeLevels[stat] || 0;
-    const bonus = this.getBonusText(stat, config, level);
+    const bonus = this.getBonusText(stat, config.shop, level);
 
     return html`
       <button data-stat="${stat}">
-        <span class="upgrade-name">${config.label} (Lvl ${level})</span>
+        <span class="upgrade-name">${formatStatName(stat)} (Lvl ${level})</span>
         <span class="upgrade-bonus"> ${bonus} </span>
         <span class="upgrade-cost">${cost} ${'Gold'}</span>
       </button>
     `;
   }
+  getBonusText(stat, config, level) {
+    const value = config.bonus * level;
+    const decimals = STATS[stat].decimalPlaces || 0;
+    const formattedValue = value.toFixed(decimals);
+    return `+${formattedValue}${config.suffix || ''} ${formatStatName(stat)}`;
+  }
 
   buyUpgrade(stat) {
     const currency = 'gold';
-    const cost = this.upgradeCosts[stat];
+    const cost = STATS[stat].shop.cost;
 
     // Check if player has enough currency
     if (hero[currency] < cost) {
@@ -197,7 +129,7 @@ export default class Shop {
     // Deduct cost and increase level
     hero[currency] -= cost;
     this.upgradeLevels[stat] = (this.upgradeLevels[stat] || 0) + 1;
-    this.upgradeCosts[stat] += BASE_UPGRADE_COSTS[stat];
+    this.upgradeCosts[stat] += STATS[stat].shop.cost;
 
     // Update UI
     this.updateShopUI('gold-upgrades');
@@ -207,13 +139,6 @@ export default class Shop {
     game.saveGame();
   }
 
-  getBonusText(stat, config, level) {
-    const value = config.bonus * level;
-    const decimals = STATS[stat].decimalPlaces || 0;
-    const formattedValue = value.toFixed(decimals);
-    return `+${formattedValue}${config.suffix || ''} ${config.label}`;
-  }
-
   updateShopBonuses() {
     // Reset equipment bonuses
     Object.keys(this.shopBonuses).forEach((stat) => {
@@ -221,9 +146,9 @@ export default class Shop {
     });
 
     // Only calculate bonuses for upgrades defined in UPGRADE_CONFIG
-    Object.keys(UPGRADE_CONFIG).forEach((upg) => {
+    Object.keys(STATS).forEach((upg) => {
       if (this.shopBonuses[upg] !== undefined && this.upgradeLevels[upg] !== undefined) {
-        this.shopBonuses[upg] += this.upgradeLevels[upg] * UPGRADE_CONFIG[upg].bonus;
+        this.shopBonuses[upg] += this.upgradeLevels[upg] * STATS[upg].shop?.bonus;
       }
     });
   }

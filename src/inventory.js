@@ -237,14 +237,19 @@ export default class Inventory {
     dialog.style.zIndex = 10000;
     dialog.style.boxShadow = '0 4px 32px #000a';
 
-    dialog.innerHTML = `
+    dialog.innerHTML = html`
       <div style="font-size:2em;text-align:center;">${matDef.icon || mat.icon || '🔹'}</div>
       <div style="font-size:1.2em;margin-bottom:8px;text-align:center;">${matDef.name || mat.name || ''}</div>
       <div style="margin-bottom:8px;text-align:center;">${matDef.description || ''}</div>
       <div style="margin-bottom:8px;text-align:center;">You have <b>${mat.qty}</b></div>
-      <input id="material-use-qty" type="number" min="1" max="${mat.qty}" value="${
-      mat.qty
-    }" style="width:60px;text-align:center;">
+      <input
+        id="material-use-qty"
+        type="number"
+        min="1"
+        max="${mat.qty}"
+        value="${mat.qty}"
+        style="width:60px;text-align:center;"
+      />
       <button id="material-use-btn" style="margin-left:10px;">Use</button>
       <button id="material-use-cancel" style="margin-left:10px;">Cancel</button>
     `;

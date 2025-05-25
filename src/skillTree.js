@@ -197,8 +197,6 @@ export default class SkillTree {
   }
 
   getSkillEffect(skillId, level = 0) {
-    console.log(this.getSkill(skillId));
-
     return this.getSkill(skillId)?.effect(level || this.getSkill(skillId)?.level || 0);
   }
 
