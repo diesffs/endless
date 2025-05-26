@@ -12,6 +12,8 @@ import {
 import { MATERIALS } from './material.js';
 import { STATS } from './stats.js';
 
+const html = String.raw;
+
 export const ITEM_SLOTS = 200;
 export const PERSISTENT_SLOTS = 30;
 export const MATERIALS_SLOTS = 50;

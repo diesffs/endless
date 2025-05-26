@@ -97,8 +97,8 @@ export default class Shop {
   }
 
   createUpgradeButton(stat, config) {
-    const cost = config.shop ? config.shop.cost : 0;
     const level = this.upgradeLevels[stat] || 0;
+    const cost = this.getUpgradeCost(stat);
     const bonus = this.getBonusText(stat, config.shop, level);
 
     return html`
@@ -116,9 +116,15 @@ export default class Shop {
     return `+${formattedValue}${config.suffix || ''} ${formatStatName(stat)}`;
   }
 
+  getUpgradeCost(stat) {
+    const level = this.upgradeLevels[stat] || 0;
+    const cost = STATS[stat].shop ? STATS[stat].shop.cost * (level + 1) : 0;
+    return cost;
+  }
+
   buyUpgrade(stat) {
     const currency = 'gold';
-    const cost = STATS[stat].shop.cost;
+    const cost = this.getUpgradeCost(stat);
 
     // Check if player has enough currency
     if (hero[currency] < cost) {
@@ -129,7 +135,6 @@ export default class Shop {
     // Deduct cost and increase level
     hero[currency] -= cost;
     this.upgradeLevels[stat] = (this.upgradeLevels[stat] || 0) + 1;
-    this.upgradeCosts[stat] += STATS[stat].shop.cost;
 
     // Update UI
     this.updateShopUI('gold-upgrades');
