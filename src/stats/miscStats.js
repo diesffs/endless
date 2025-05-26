@@ -19,7 +19,7 @@ export const MISC_STATS = {
     base: 0,
     decimalPlaces: 1,
     levelUpBonus: 0,
-    shop: { available: true, cost: 80, bonus: 0.1 },
+    shop: { available: true, cost: 300, bonus: 0.1 },
     item: { min: 0.5, max: 2, scaling: 'capped' },
   },
   manaRegenPercent: {

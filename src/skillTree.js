@@ -32,7 +32,7 @@ export default class SkillTree {
   }
 
   getPathBonuses() {
-    return CLASS_PATHS[this.selectedPath?.name]?.baseStats || {};
+    return CLASS_PATHS[this.selectedPath?.name]?.baseStats() || {};
   }
 
   getAllSkillTreeBonuses() {
@@ -71,7 +71,7 @@ export default class SkillTree {
         return;
       }
 
-      if (skill.type === 'passive') {
+      if (skill.type() === 'passive') {
         const effects = this.getSkillEffect(skillId, skillData.level);
         Object.entries(effects).forEach(([stat, value]) => {
           bonuses[stat] = (bonuses[stat] || 0) + value;
@@ -84,7 +84,7 @@ export default class SkillTree {
 
   isSkillActive(skillId) {
     const skill = this.getSkill(skillId);
-    return skill && (skill.type === 'toggle' || skill.type === 'buff') && this.skills[skillId]?.active;
+    return skill && (skill.type() === 'toggle' || skill.type() === 'buff') && this.skills[skillId]?.active;
   }
 
   addSkillPoints(points) {
@@ -102,13 +102,16 @@ export default class SkillTree {
 
     this.selectedPath = {
       name: pathName,
-      baseStats: CLASS_PATHS[pathName].baseStats,
-      avatar: CLASS_PATHS[pathName].avatar,
-      description: CLASS_PATHS[pathName].description,
     };
     hero.recalculateFromAttributes();
     game.saveGame();
     return true;
+  }
+
+  getSelectedPath() {
+    return {
+      ...CLASS_PATHS[this.selectedPath?.name],
+    };
   }
 
   getSkillsForPath(pathName) {
@@ -124,8 +127,8 @@ export default class SkillTree {
     const currentLevel = this.skills[skillId]?.level || 0;
     return (
       this.skillPoints >= 1 &&
-      currentLevel < (skill.maxLevel || DEFAULT_MAX_SKILL_LEVEL) &&
-      hero.level >= skill.requiredLevel
+      currentLevel < (skill.maxLevel() || DEFAULT_MAX_SKILL_LEVEL) &&
+      hero.level >= skill.requiredLevel()
     );
   }
 
@@ -149,13 +152,13 @@ export default class SkillTree {
       ...skill,
       level: nextLevel,
       active: false,
-      slot: skill.type !== 'passive' ? Object.keys(this.skills).length + 1 : null,
+      slot: skill.type() !== 'passive' ? Object.keys(this.skills).length + 1 : null,
     };
 
     this.skillPoints -= 1;
     hero.recalculateFromAttributes();
 
-    if (skill.type !== 'passive') {
+    if (skill.type() !== 'passive') {
       updateActionBar();
     }
 
@@ -172,7 +175,7 @@ export default class SkillTree {
     const skill = this.getSkill(skillId);
 
     // Handle different skill types
-    switch (skill.type) {
+    switch (skill.type()) {
       case 'buff':
         this.activateSkill(skillId);
         break;
@@ -286,7 +289,7 @@ export default class SkillTree {
 
     Object.entries(this.skills).forEach(([skillId, skillData]) => {
       const skill = this.getSkill(skillId);
-      if (skill.type === 'toggle' && skillData.active) {
+      if (skill.type() === 'toggle' && skillData.active) {
         if (hero.stats.currentMana >= this.getSkillManaCost(skill)) {
           hero.stats.currentMana -= this.getSkillManaCost(skill);
           effects = { ...effects, ...this.getSkillEffect(skillId, skillData.level) };
@@ -308,7 +311,7 @@ export default class SkillTree {
     const skill = this.getSkill(skillId);
     const skillData = this.skills[skillId];
 
-    if (skill.type !== 'buff') return false;
+    if (skill.type() !== 'buff') return false;
     if (hero.stats.currentMana < this.getSkillManaCost(skill)) {
       showManaWarning();
       return false;
@@ -417,14 +420,14 @@ export default class SkillTree {
     Object.entries(this.skills).forEach(([skillId, skillData]) => {
       const skill = SKILL_TREES[this.selectedPath?.name]?.[skillId];
       if (!skill || !this.isAutoCastEnabled(skillId)) return;
-      if (skill.type === 'instant') {
+      if (skill.type() === 'instant') {
         // Only cast if not on cooldown and enough mana
         if (!skillData.cooldownEndTime || skillData.cooldownEndTime <= Date.now()) {
           if (hero.stats.currentMana >= this.getSkillManaCost(skill)) {
             this.useInstantSkill(skillId);
           }
         }
-      } else if (skill.type === 'buff') {
+      } else if (skill.type() === 'buff') {
         // Only cast if not active, not on cooldown, and enough mana
         if (!skillData.active && (!skillData.cooldownEndTime || skillData.cooldownEndTime <= Date.now())) {
           if (hero.stats.currentMana >= this.getSkillManaCost(skill)) {

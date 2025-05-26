@@ -80,17 +80,17 @@ function showClassSelection() {
     pathElement.innerHTML = html`
       <div style="display: flex; align-items: flex-start; gap: 18px;">
         <img
-          src="${import.meta.env.BASE_URL}avatars/${pathData.avatar}"
-          alt="${pathData.name} Avatar"
+          src="${import.meta.env.BASE_URL}avatars/${pathData.avatar()}"
+          alt="${pathData.name()} Avatar"
           style="width: 72px; height: 72px; border-radius: 8px; object-fit: cover; background: #222;"
         />
         <div style="flex: 1;">
-          <h3>${pathData.name}</h3>
-          <p>${pathData.description}</p>
+          <h3>${pathData.name()}</h3>
+          <p>${pathData.description()}</p>
         </div>
       </div>
       <div class="base-stats" style="margin-top: 15px;">
-        ${Object.entries(pathData.baseStats)
+        ${Object.entries(pathData.baseStats())
           .map(([stat, value]) => {
             let readableStat = stat.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
             let displayValue = value;
@@ -144,8 +144,8 @@ export function initializeSkillTreeStructure() {
   }, {});
 
   Object.entries(skills).forEach(([skillId, skillData]) => {
-    if (noLvlRestriction || (skillData.requiredLevel <= hero.level && levelGroups[skillData.requiredLevel])) {
-      levelGroups[skillData.requiredLevel].push({ id: skillId, ...skillData });
+    if (noLvlRestriction || (skillData.requiredLevel() <= hero.level && levelGroups[skillData.requiredLevel()])) {
+      levelGroups[skillData.requiredLevel()].push({ id: skillId, ...skillData });
     }
   });
 
@@ -205,12 +205,12 @@ function renderAutoCastToggles() {
     icon.className = 'skill-icon';
     icon.style.width = '28px';
     icon.style.height = '28px';
-    icon.style.backgroundImage = `url('${import.meta.env.BASE_URL}skills/${skill.icon}.jpg')`;
+    icon.style.backgroundImage = `url('${import.meta.env.BASE_URL}skills/${skill.icon()}.jpg')`;
     icon.style.marginRight = '8px';
     wrapper.appendChild(icon);
 
     const label = document.createElement('label');
-    label.textContent = skill.name;
+    label.textContent = skill.name();
     label.style.marginRight = '8px';
     wrapper.appendChild(label);
 
@@ -245,16 +245,17 @@ export function updateSkillTreeValues() {
     return;
   }
 
-  if (characterAvatarEl && skillTree.selectedPath?.avatar) {
+  const selectedPath = skillTree.getSelectedPath();
+  if (characterAvatarEl && selectedPath?.avatar) {
     // Remove any previous img
     let img = characterAvatarEl.querySelector('img');
     if (!img) {
       img = document.createElement('img');
-      img.alt = skillTree.selectedPath.name + ' avatar';
+      img.alt = selectedPath.name() + ' avatar';
       characterAvatarEl.innerHTML = '';
       characterAvatarEl.appendChild(img);
     }
-    img.src = `${import.meta.env.BASE_URL}avatars/${skillTree.selectedPath.avatar}`;
+    img.src = `${import.meta.env.BASE_URL}avatars/${selectedPath.avatar()}`;
   }
 
   const characterName =
@@ -275,7 +276,7 @@ export function updateSkillTreeValues() {
     const levelDisplay = node.querySelector('.skill-level');
     const skill = SKILL_TREES[skillTree.selectedPath.name][skillId];
 
-    levelDisplay.textContent = skill.maxLevel == Infinity ? `${currentLevel}` : `${currentLevel}/${skill.maxLevel}`;
+    levelDisplay.textContent = skill.maxLevel() == Infinity ? `${currentLevel}` : `${currentLevel}/${skill.maxLevel()}`;
 
     node.classList.toggle('available', canUnlock);
     node.classList.toggle('unlocked', !!skillTree.skills[skillId]);
@@ -303,9 +304,12 @@ function createSkillElement(baseSkill) {
   skillElement.dataset.skillType = skill.type;
 
   skillElement.innerHTML = html`
-    <div class="skill-icon" style="background-image: url('${import.meta.env.BASE_URL}skills/${skill.icon}.jpg')"></div>
+    <div
+      class="skill-icon"
+      style="background-image: url('${import.meta.env.BASE_URL}skills/${skill.icon()}.jpg')"
+    ></div>
     <div class="skill-level">
-      ${skillTree.skills[skill.id]?.level || 0}${skill.maxLevel !== Infinity ? `/${skill.maxLevel}` : ''}
+      ${skillTree.skills[skill.id]?.level || 0}${skill.maxLevel() !== Infinity ? `/${skill.maxLevel()}` : ''}
     </div>
   `;
 
@@ -335,18 +339,19 @@ const updateTooltipContent = (skillId) => {
   const effectsCurrent = skillTree.getSkillEffect(skill.id);
 
   // Calculate effects at next level (if not maxed out)
-  const nextLevel = currentLevel < skill.maxLevel ? currentLevel + 1 : currentLevel;
+  const nextLevel = currentLevel < skill.maxLevel() ? currentLevel + 1 : currentLevel;
   const effectsNext = skillTree.getSkillEffect(skill.id, nextLevel);
 
   let skillDescription = `
-      <strong>${skill.name} [${skill.type.toUpperCase()}]</strong><br>
-      ${skill.description
+      <strong>${skill.name()} [${skill.type().toUpperCase()}]</strong><br>
+      ${skill
+        .description()
         .split('\n')
         .map((line) => line.trim())
         .filter((line) => line)
         .join('<br>')}
       <br>
-      Level: ${currentLevel}${skill.maxLevel !== Infinity ? `/${skill.maxLevel}` : ''}
+      Level: ${currentLevel}${skill.maxLevel() !== Infinity ? `/${skill.maxLevel()}` : ''}
     `;
 
   const skillManaCost = skillTree.getSkillManaCost(skill);
@@ -382,7 +387,7 @@ const updateTooltipContent = (skillId) => {
   }
 
   // If not at max level, show next level effects and the bonus
-  if (currentLevel < skill.maxLevel || skill.maxLevel === Infinity) {
+  if (currentLevel < skill.maxLevel() || skill.maxLevel() === Infinity) {
     skillDescription += '<br /><u>Next Level Effects:</u><br />';
     Object.entries(effectsNext).forEach(([stat, value]) => {
       const decimals = STATS[stat].decimalPlaces || 0;
@@ -407,7 +412,7 @@ export function updateActionBar() {
   let slotNumber = 1;
 
   Object.entries(skillTree.skills).forEach(([skillId, skill]) => {
-    if (skill.type === 'passive') return;
+    if (skill.type() === 'passive') return;
 
     const skillSlot = document.createElement('div');
     skillSlot.className = 'skill-slot';
@@ -427,7 +432,7 @@ export function updateActionBar() {
     // Add skill icon
     const iconDiv = document.createElement('div');
     iconDiv.className = 'skill-icon';
-    iconDiv.style.backgroundImage = `url('${import.meta.env.BASE_URL}skills/${skill.icon}.jpg')`;
+    iconDiv.style.backgroundImage = `url('${import.meta.env.BASE_URL}skills/${skill.icon()}.jpg')`;
     skillSlot.appendChild(iconDiv);
 
     // Show active state
@@ -457,8 +462,8 @@ function createSkillTooltip(skillId) {
   const effects = skillTree.getSkillEffect(skillId, level);
 
   let tooltip = `
-      <div class="tooltip-header">${skill.name}</div>
-      <div class="tooltip-type">${skill.type.toUpperCase()}</div>
+      <div class="tooltip-header">${skill.name()}</div>
+      <div class="tooltip-type">${skill.type().toUpperCase()}</div>
       <div class="tooltip-level">Level: ${level}</div>
       <div class="tooltip-mana">Mana Cost: ${skillTree.getSkillManaCost(skill)}</div>
   `;
@@ -507,12 +512,12 @@ export function updateBuffIndicators() {
 
     // Handle active states for all skill types
     const isActive =
-      (skill.type === 'buff' && skillTree.activeBuffs.has(skillId)) || (skill.type === 'toggle' && skill.active);
+      (skill.type() === 'buff' && skillTree.activeBuffs.has(skillId)) || (skill.type() === 'toggle' && skill.active);
 
     slot.classList.toggle('active', isActive);
 
     // Show cooldown for both buff and instant skills
-    if ((skill.type === 'buff' || skill.type === 'instant') && skill?.cooldownEndTime) {
+    if ((skill.type() === 'buff' || skill.type() === 'instant') && skill?.cooldownEndTime) {
       const remaining = skill.cooldownEndTime - Date.now();
       if (remaining > 0) {
         const percentage = (remaining / skillTree.getSkillCooldown(skill)) * 100;
