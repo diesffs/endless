@@ -1,6 +1,7 @@
 import { game, hero, inventory, prestige, shop, skillTree } from './globals.js';
 import { showToast, updatePlayerLife, updateResources } from './ui.js';
 import { MATERIALS, getRandomMaterial } from './material.js';
+import { ITEM_TYPES, ITEM_RARITY } from './item.js';
 
 export const handleSavedData = (savedData, self) => {
   if (savedData) {
@@ -274,15 +275,59 @@ export function createModifyUI() {
   inventorySection.innerHTML = `<h3>Inventory</h3>`;
   modifyDiv.appendChild(inventorySection);
 
+  // --- Add Random Item with controls ---
+  const addItemControlsDiv = document.createElement('div');
+  addItemControlsDiv.style.display = 'flex';
+  addItemControlsDiv.style.alignItems = 'center';
+  addItemControlsDiv.style.gap = '8px';
+
+  // Item type dropdown
+  const itemTypeSelect = document.createElement('select');
+  itemTypeSelect.id = 'item-type-select';
+  // Use ITEM_TYPES for dropdown
+  Object.keys(ITEM_TYPES).forEach((type) => {
+    const option = document.createElement('option');
+    option.value = ITEM_TYPES[type];
+    option.textContent = ITEM_TYPES[type];
+    itemTypeSelect.appendChild(option);
+  });
+  addItemControlsDiv.appendChild(itemTypeSelect);
+
+  // Item level input
+  const itemLevelInput = document.createElement('input');
+  itemLevelInput.type = 'number';
+  itemLevelInput.min = '1';
+  itemLevelInput.max = '100';
+  itemLevelInput.value = '1';
+  itemLevelInput.style.width = '50px';
+  itemLevelInput.title = 'Item Level';
+  addItemControlsDiv.appendChild(itemLevelInput);
+
+  // Item rarity dropdown
+  const raritySelect = document.createElement('select');
+  raritySelect.id = 'item-rarity-select';
+  Object.keys(ITEM_RARITY).forEach((rarityKey) => {
+    const option = document.createElement('option');
+    option.value = ITEM_RARITY[rarityKey].name;
+    option.textContent = ITEM_RARITY[rarityKey].name;
+    raritySelect.appendChild(option);
+  });
+  addItemControlsDiv.appendChild(raritySelect);
+
+  // Add Random Item button
   const addItemBtn = document.createElement('button');
   addItemBtn.textContent = 'Add Random Item';
   addItemBtn.addEventListener('click', () => {
-    const itemType = game.currentEnemy.getRandomItemType();
-    const newItem = inventory.createItem(itemType, Math.floor(Math.random() * 101), 'RARE');
+    const itemType = itemTypeSelect.value;
+    const itemLevel = parseInt(itemLevelInput.value, 10) || 1;
+    const rarity = raritySelect.value;
+    const newItem = inventory.createItem(itemType, itemLevel, rarity);
     inventory.addItemToInventory(newItem);
-    showToast(`Added ${itemType} to inventory`);
+    showToast(`Added ${itemType} (level ${itemLevel}, ${rarity}) to inventory`);
   });
-  inventorySection.appendChild(addItemBtn);
+  addItemControlsDiv.appendChild(addItemBtn);
+
+  inventorySection.appendChild(addItemControlsDiv);
 
   // --- Add Material Buttons ---
   // Add Random Material
