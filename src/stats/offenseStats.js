@@ -6,11 +6,13 @@ export const OFFENSE_STATS = {
     decimalPlaces: 0,
     shop: { available: true, cost: 60, bonus: 1 },
     item: { min: 3, max: 10, scaling: 'full' },
+    itemTags: ['offense', 'weapon'],
   },
   damagePercent: {
     base: 0,
     decimalPlaces: 0,
     item: { min: 2, max: 8, scaling: 'capped' },
+    itemTags: ['offense', 'weapon', 'axe'],
   },
   // ATTACK SPEED
   attackSpeed: {
@@ -18,10 +20,13 @@ export const OFFENSE_STATS = {
     decimalPlaces: 2,
     shop: { available: true, cost: 200, bonus: 0.01 },
     item: { min: 0.05, max: 0.2, scaling: 'capped' },
+    itemTags: ['offense', 'weapon'],
   },
   attackSpeedPercent: {
     base: 0,
     decimalPlaces: 0,
+    item: { min: 0.01, max: 0.05, scaling: 'capped' },
+    itemTags: ['offense', 'weapon'],
   },
   // CRIT CHANCE
   critChance: {
@@ -29,10 +34,13 @@ export const OFFENSE_STATS = {
     decimalPlaces: 2,
     shop: { available: true, cost: 140, bonus: 0.1 },
     item: { min: 0.5, max: 1.5, scaling: 'capped' },
+    itemTags: ['offense', 'weapon', 'jewelry'],
   },
   critChancePercent: {
     base: 0,
     decimalPlaces: 0,
+    item: { min: 0.1, max: 0.5, scaling: 'capped' },
+    itemTags: ['offense', 'weapon', 'jewelry'],
   },
   // CRIT DAMAGE
   critDamage: {
@@ -40,10 +48,13 @@ export const OFFENSE_STATS = {
     decimalPlaces: 2,
     shop: { available: true, cost: 200, bonus: 0.01 },
     item: { min: 0.02, max: 0.1, scaling: 'full' },
+    itemTags: ['offense', 'weapon', 'jewelry'],
   },
   critDamagePercent: {
     base: 0,
     decimalPlaces: 0,
+    item: { min: 0.01, max: 0.05, scaling: 'capped' },
+    itemTags: ['offense', 'weapon', 'jewelry'],
   },
   // ATTACK RATING
   attackRating: {
@@ -51,11 +62,13 @@ export const OFFENSE_STATS = {
     decimalPlaces: 0,
     shop: { available: true, cost: 60, bonus: 10 },
     item: { min: 50, max: 150, scaling: 'full' },
+    itemTags: ['offense', 'weapon', 'jewelry'],
   },
   attackRatingPercent: {
     base: 0,
     decimalPlaces: 0,
     item: { min: 5, max: 15, scaling: 'capped' },
+    itemTags: ['offense', 'weapon', 'jewelry'],
   },
   // LIFE STEAL
   lifeSteal: {
@@ -63,18 +76,26 @@ export const OFFENSE_STATS = {
     decimalPlaces: 2,
     shop: { available: true, cost: 500, bonus: 0.01 },
     item: { min: 0.01, max: 0.1, scaling: 'capped' },
+    itemTags: ['offense', 'weapon', 'jewelry'],
   },
   lifeStealPercent: {
     base: 0,
     decimalPlaces: 0,
+    item: { min: 0.01, max: 0.05, scaling: 'capped' },
+    itemTags: ['offense', 'weapon', 'jewelry'],
   },
+  // LIFE PER HIT
   lifePerHit: {
     base: 0,
     decimalPlaces: 0,
+    item: { min: 1, max: 5, scaling: 'capped' },
+    itemTags: ['offense', 'weapon', 'jewelry'],
   },
   lifePerHitPercent: {
     base: 0,
     decimalPlaces: 0,
+    item: { min: 0.1, max: 0.5, scaling: 'capped' },
+    itemTags: ['offense', 'weapon', 'jewelry'],
   },
   // FIRE DAMAGE
   fireDamage: {
@@ -82,6 +103,7 @@ export const OFFENSE_STATS = {
     decimalPlaces: 0,
     shop: { available: true, cost: 30, bonus: 1 },
     item: { min: 20, max: 50, scaling: 'full' },
+    itemTags: ['elemental', 'offense', 'weapon', 'jewelry'],
   },
   fireDamagePercent: {
     base: 0,
@@ -93,6 +115,7 @@ export const OFFENSE_STATS = {
     decimalPlaces: 0,
     shop: { available: true, cost: 30, bonus: 1 },
     item: { min: 20, max: 50, scaling: 'full' },
+    itemTags: ['elemental', 'offense', 'weapon', 'jewelry'],
   },
   coldDamagePercent: {
     base: 0,
@@ -104,6 +127,7 @@ export const OFFENSE_STATS = {
     decimalPlaces: 0,
     shop: { available: true, cost: 30, bonus: 1 },
     item: { min: 20, max: 50, scaling: 'full' },
+    itemTags: ['elemental', 'offense', 'weapon', 'jewelry'],
   },
   airDamagePercent: {
     base: 0,
@@ -115,6 +139,7 @@ export const OFFENSE_STATS = {
     decimalPlaces: 0,
     shop: { available: true, cost: 30, bonus: 1 },
     item: { min: 20, max: 50, scaling: 'full' },
+    itemTags: ['elemental', 'offense', 'weapon', 'jewelry'],
   },
   earthDamagePercent: {
     base: 0,
@@ -124,10 +149,13 @@ export const OFFENSE_STATS = {
   doubleDamageChance: {
     base: 0,
     decimalPlaces: 1,
+    item: { min: 0.1, max: 1, scaling: 'capped' },
+    itemTags: ['offense', 'weapon', 'jewelry'],
   },
   // ELEMENTAL DAMAGE PERCENT
   elementalDamagePercent: {
     base: 0,
     decimalPlaces: 0,
+    itemTags: ['elemental', 'offense', 'weapon', 'jewelry'],
   },
 };

@@ -180,11 +180,11 @@ function renderAutoCastToggles() {
   // Only show if there are any instant/buff skills unlocked
   const eligibleSkills = Object.entries(skillTree.skills)
     .filter(([skillId, skill]) => {
-      const base = SKILL_TREES[skillTree.selectedPath?.name]?.[skillId];
-      return base && (base.type === 'instant' || base.type === 'buff') && skill.level > 0;
+      const base = skillTree.getSkill(skillId);
+      return base && (base.type() === 'instant' || base.type() === 'buff') && skill.level > 0;
     })
     .map(([skillId, skill]) => {
-      const base = SKILL_TREES[skillTree.selectedPath?.name][skillId];
+      const base = skillTree.getSkill(skillId);
       return { ...base, id: skillId };
     });
 
@@ -274,7 +274,7 @@ export function updateSkillTreeValues() {
     const canUnlock = skillTree.canUnlockSkill(skillId);
 
     const levelDisplay = node.querySelector('.skill-level');
-    const skill = SKILL_TREES[skillTree.selectedPath.name][skillId];
+    const skill = skillTree.getSkill(skillId);
 
     levelDisplay.textContent = skill.maxLevel() == Infinity ? `${currentLevel}` : `${currentLevel}/${skill.maxLevel()}`;
 

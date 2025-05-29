@@ -540,13 +540,15 @@ export default class Inventory {
   }
 
   generateRarity() {
-    const rand = Math.random() * 100;
-    let total = 0;
-
+    // Sum all rarity chances
+    const rarities = Object.values(ITEM_RARITY);
+    const totalChance = rarities.reduce((sum, r) => sum + r.chance, 0);
+    let roll = Math.random() * totalChance;
     for (const [rarity, config] of Object.entries(ITEM_RARITY)) {
-      total += config.chance;
-      if (rand <= total) return rarity;
+      if (roll < config.chance) return rarity;
+      roll -= config.chance;
     }
+    // fallback (shouldn't happen)
     return ITEM_RARITY.NORMAL.name;
   }
 

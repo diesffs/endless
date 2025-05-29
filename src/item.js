@@ -60,12 +60,12 @@ export const ITEM_ICONS = {
 };
 
 export const ITEM_RARITY = {
-  NORMAL: { name: 'NORMAL', color: '#ffffff', chance: 66.5, statMultiplier: 1, totalStats: 3 },
-  MAGIC: { name: 'MAGIC', color: '#4287f5', chance: 20, statMultiplier: 1.5, totalStats: 3 },
-  RARE: { name: 'RARE', color: '#ffd700', chance: 9, statMultiplier: 2, totalStats: 4 },
-  UNIQUE: { name: 'UNIQUE', color: '#ff8c00', chance: 3, statMultiplier: 3, totalStats: 5 },
-  LEGENDARY: { name: 'LEGENDARY', color: '#e65a27', chance: 1, statMultiplier: 3.5, totalStats: 6 },
-  MYTHIC: { name: 'MYTHIC', color: '#ff0033', chance: 0.5, statMultiplier: 4, totalStats: 7 },
+  NORMAL: { name: 'NORMAL', color: '#ffffff', chance: 130, statMultiplier: 1, totalStats: 3 },
+  MAGIC: { name: 'MAGIC', color: '#4287f5', chance: 40, statMultiplier: 1.5, totalStats: 3 },
+  RARE: { name: 'RARE', color: '#ffd700', chance: 18, statMultiplier: 2, totalStats: 4 },
+  UNIQUE: { name: 'UNIQUE', color: '#ff8c00', chance: 6, statMultiplier: 3, totalStats: 5 },
+  LEGENDARY: { name: 'LEGENDARY', color: '#e65a27', chance: 2, statMultiplier: 3.5, totalStats: 6 },
+  MYTHIC: { name: 'MYTHIC', color: '#ff0033', chance: 1, statMultiplier: 4, totalStats: 7 },
 };
 
 export const RARITY_ORDER = [
@@ -84,55 +84,26 @@ export const AVAILABLE_STATS = Object.fromEntries(
     .map(([stat, config]) => [stat, config.item])
 );
 
-const DEFENSIVE_STATS = [
-  'armor',
-  'strength',
-  'agility',
-  'vitality',
-  'wisdom',
-  'endurance',
-  'dexterity',
-  'life',
-  'lifeRegen',
-  'endurance',
-  'armorPercent',
-  'mana',
-  'manaRegen',
-  'manaPercent',
-  'lifePercent',
-  'strength',
-  'agility',
-  'dexterity',
-];
+// Helper to get stats by tag
+function getStatsByTag(tag) {
+  return Object.entries(STATS)
+    .filter(([_, config]) => config.itemTags && config.itemTags.includes(tag) && config.item)
+    .map(([stat]) => stat);
+}
 
-const OFFENSIVE_STATS = [
-  'critChance',
-  'critDamage',
-  'attackSpeed',
-  'attackRating',
-  'damagePercent',
-  'attackRatingPercent',
-  'lifeSteal',
-];
+// Helper to get stats by multiple tags (union)
+function getStatsByTags(tags) {
+  const stats = new Set();
+  tags.forEach((tag) => {
+    getStatsByTag(tag).forEach((stat) => stats.add(stat));
+  });
+  return Array.from(stats);
+}
 
-const OFFENSIVE_JEWELRY_STATS = [
-  'critChance',
-  'critDamage',
-  'attackRating',
-  'damagePercent',
-  'attackRatingPercent',
-  'lifeSteal',
-];
-
-const ELEMENTAL_STATS = ['fireDamage', 'coldDamage', 'airDamage', 'earthDamage', 'elementalDamagePercent'];
-
-const JEWELRY_STATS = [
-  ...OFFENSIVE_JEWELRY_STATS,
-  ...DEFENSIVE_STATS,
-  ...ELEMENTAL_STATS,
-  'bonusGold',
-  'bonusExperience',
-];
+const DEFENSIVE_STATS = getStatsByTag('defense');
+const OFFENSIVE_STATS = getStatsByTag('offense');
+const ELEMENTAL_STATS = getStatsByTag('elemental');
+const JEWELRY_STATS = getStatsByTags(['jewelry', 'offense', 'defense', 'elemental', 'misc']);
 
 export const ITEM_STAT_POOLS = {
   HELMET: {
@@ -141,7 +112,7 @@ export const ITEM_STAT_POOLS = {
   },
   ARMOR: {
     mandatory: ['armor'],
-    possible: [...DEFENSIVE_STATS],
+    possible: [...getStatsByTag('armor')],
   },
   BELT: {
     mandatory: [],
