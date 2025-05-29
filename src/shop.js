@@ -74,52 +74,136 @@ export default class Shop {
     const goldGrid = document.querySelector('#gold-upgrades .shop-grid');
     if (goldGrid) this.attachGridListeners(goldGrid);
     this.updateShopUI('gold-upgrades');
+
+    // Create modal for bulk upgrades if not exists
+    if (!this.modal) {
+      const modal = document.createElement('div');
+      modal.className = 'shop-modal hidden';
+      modal.innerHTML = html`
+        <div class="shop-modal-content">
+          <button class="shop-modal-close">&times;</button>
+          <h2 class="modal-title"></h2>
+          <p>Current Level: <span class="modal-level"></span></p>
+          <p>Current Bonus: <span class="modal-bonus"></span></p>
+          <p>Next Level Bonus: <span class="modal-next-bonus"></span></p>
+          <p>Total Bonus: <span class="modal-total-bonus"></span></p>
+          <p>Total Cost: <span class="modal-total-cost"></span> Gold (<span class="modal-qty">1</span>)</p>
+          <div class="modal-controls">
+            <button data-qty="1">+1</button>
+            <button data-qty="10">+10</button>
+            <button data-qty="50">+50</button>
+            <button data-qty="max">Max</button>
+          </div>
+          <button class="modal-buy">Buy</button>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      modal.querySelector('.shop-modal-close').onclick = () => this.closeModal();
+      // Quantity controls: set selectedQty and preview totals
+      modal.querySelectorAll('.modal-controls button').forEach((btn) => {
+        btn.onclick = () => {
+          this.selectedQty = btn.dataset.qty === 'max' ? 'max' : parseInt(btn.dataset.qty, 10);
+          this.updateModalDetails();
+        };
+      });
+      // Buy button: perform bulk purchase
+      modal.querySelector('.modal-buy').onclick = () => {
+        this.buyBulk(this.currentStat, this.selectedQty);
+      };
+      this.modal = modal;
+      // Default quantity will be set when opening the modal
+
+      // Close modal when clicking outside the content (on overlay)
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) this.closeModal();
+      });
+    }
   }
 
   attachGridListeners(grid) {
-    grid.addEventListener('mousedown', (e) => {
+    grid.addEventListener('click', (e) => {
       const button = e.target.closest('button[data-stat]');
       if (button) {
         const stat = button.dataset.stat;
-        this.buyUpgrade(stat);
-
-        let intervalId;
-        let holdingTimeout;
-
-        const startHolding = () => {
-          // Clear any existing interval to prevent multiple timers
-          clearInterval(intervalId);
-          intervalId = setInterval(() => {
-            this.buyUpgrade(stat);
-          }, 100); // Adjust the interval as needed
-        };
-
-        const stopHolding = () => {
-          // Clear both the interval and the timeout
-          clearTimeout(holdingTimeout);
-          clearInterval(intervalId);
-          document.removeEventListener('mouseup', stopHolding);
-          document.removeEventListener('mouseleave', stopHolding);
-        };
-
-        // Set up the timeout for holding
-        holdingTimeout = setTimeout(startHolding, 500); // Start holding after 500ms
-
-        // Add event listeners to stop holding
-        document.addEventListener('mouseup', stopHolding);
-        document.addEventListener('mouseleave', stopHolding);
+        this.openModal(stat);
       }
     });
   }
 
-  switchSubTab(subTab) {
-    document.querySelectorAll('.sub-tab-btn').forEach((btn) => btn.classList.remove('active'));
-    document.querySelectorAll('.sub-tab-panel').forEach((panel) => panel.classList.remove('active'));
+  openModal(stat) {
+    const shopConfig = STATS[stat].shop;
+    if (!shopConfig || !shopConfig.available) return;
+    this.currentStat = stat;
+    // Set title and base info
+    const m = this.modal;
+    m.querySelector('.modal-title').textContent = stat.charAt(0).toUpperCase() + stat.slice(1);
+    m.querySelector('.modal-level').textContent = this.upgradeLevels[stat] || 0;
+    m.querySelector('.modal-bonus').textContent = this.getBonusText(
+      stat,
+      STATS[stat].shop,
+      this.upgradeLevels[stat] || 0
+    );
+    m.querySelector('.modal-next-bonus').textContent = this.getBonusText(
+      stat,
+      STATS[stat].shop,
+      (this.upgradeLevels[stat] || 0) + 1
+    );
+    // Reset to default quantity
+    this.selectedQty = 1;
+    this.updateModalDetails();
+    m.classList.remove('hidden');
+  }
 
-    document.querySelector(`button[data-sub-tab="${subTab}"]`).classList.add('active');
-    document.getElementById(subTab).classList.add('active');
+  closeModal() {
+    this.modal.classList.add('hidden');
+  }
 
-    this.updateShopUI(subTab);
+  updateModalDetails() {
+    // Guard against missing currentStat
+    if (!this.currentStat) return;
+    const stat = this.currentStat;
+    const shopConfig = STATS[stat].shop;
+    if (!shopConfig || !shopConfig.available) {
+      this.closeModal();
+      return;
+    }
+    const config = shopConfig;
+    const baseLevel = this.upgradeLevels[stat] || 0;
+    const goldAvailable = hero.gold;
+    // Determine numeric qty
+    let qty = this.selectedQty === 'max' ? 0 : this.selectedQty;
+    let totalCost = 0;
+    // If max, compute max purchasable without mutating state
+    if (this.selectedQty === 'max') {
+      let lvl = baseLevel;
+      let gold = goldAvailable;
+      while (true) {
+        const cost = config.cost * (lvl + 1);
+        if (gold < cost) break;
+        gold -= cost;
+        totalCost += cost;
+        lvl++;
+        qty++;
+      }
+    } else {
+      for (let i = 0; i < qty; i++) {
+        const cost = config.cost * (baseLevel + i + 1);
+        totalCost += cost;
+      }
+    }
+    // Compute total bonus gained
+    const bonusValue = (config.bonus || 0) * qty;
+    const decimals = STATS[stat].decimalPlaces || 0;
+    // Update modal fields
+    this.modal.querySelector('.modal-qty').textContent = qty;
+    this.modal.querySelector('.modal-total-cost').textContent = totalCost;
+    this.modal.querySelector('.modal-total-bonus').textContent = `+${bonusValue.toFixed(decimals)} ${formatStatName(
+      stat
+    )}`;
+
+    // Enable/disable Buy button based on quantity and affordability
+    const buyBtn = this.modal.querySelector('.modal-buy');
+    buyBtn.disabled = qty <= 0 || totalCost > goldAvailable;
   }
 
   updateShopUI(subTab) {
@@ -134,14 +218,12 @@ export default class Shop {
 
   createUpgradeButton(stat, config) {
     const level = this.upgradeLevels[stat] || 0;
-    const cost = this.getUpgradeCost(stat);
     const bonus = this.getBonusText(stat, config.shop, level);
 
     return html`
       <button data-stat="${stat}">
         <span class="upgrade-name">${formatStatName(stat)} (Lvl ${level})</span>
-        <span class="upgrade-bonus"> ${bonus} </span>
-        <span class="upgrade-cost">${cost} ${'Gold'}</span>
+        <span class="upgrade-bonus">${bonus}</span>
       </button>
     `;
   }
@@ -192,5 +274,37 @@ export default class Shop {
         this.shopBonuses[upg] += this.upgradeLevels[upg] * STATS[upg].shop?.bonus;
       }
     });
+  }
+
+  buyBulk(stat, qty) {
+    const currency = 'gold';
+    let count = 0;
+    if (qty === 'max') {
+      while (true) {
+        const cost = this.getUpgradeCost(stat);
+        if (hero[currency] < cost) break;
+        hero[currency] -= cost;
+        this.upgradeLevels[stat]++;
+        count++;
+      }
+    } else {
+      for (let i = 0; i < qty; i++) {
+        const cost = this.getUpgradeCost(stat);
+        if (hero[currency] < cost) break;
+        hero[currency] -= cost;
+        this.upgradeLevels[stat]++;
+        count++;
+      }
+    }
+    if (count > 0) {
+      showToast(`Upgraded ${formatStatName(stat)} by ${count} levels!`);
+    } else {
+      showToast(`Not enough gold to upgrade ${formatStatName(stat)}!`, 'error');
+    }
+    this.updateShopUI('gold-upgrades');
+    hero.recalculateFromAttributes();
+    updateStatsAndAttributesUI();
+    updateResources();
+    game.saveGame();
   }
 }

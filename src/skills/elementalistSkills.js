@@ -95,6 +95,21 @@ export const ELEMENTALIST_SKILLS = {
       airDamagePercent: level * 8,
     }),
   },
+  fireShield: {
+    id: 'fireShield',
+    name: () => 'Fire Shield',
+    type: () => 'buff',
+    manaCost: (level) => 40 + level * 2,
+    cooldown: (level) => 5000,
+    duration: (level) => 60000,
+    requiredLevel: () => SKILL_LEVEL_TIERS[2],
+    icon: () => 'fire-shield',
+    description: () => 'Surrounds the caster with a shield of fire. Deals only fire damage.',
+    maxLevel: () => DEFAULT_MAX_SKILL_LEVEL,
+    effect: (level) => ({
+      reflectFireDamage: level * 38,
+    }),
+  },
   arcaneWisdom: {
     id: 'arcaneWisdom',
     name: () => 'Arcane Wisdom',

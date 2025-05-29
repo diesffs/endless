@@ -77,4 +77,8 @@ export const DEFENSE_STATS = {
     item: { min: 0.1, max: 1, scaling: 'capped' },
     itemTags: ['defense', 'armor', 'jewelry'],
   },
+  reflectFireDamage: {
+    base: 0,
+    decimalPlaces: 0,
+  },
 };

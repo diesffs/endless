@@ -7,14 +7,15 @@
 }
 
 .shop-grid button {
-  background-color: var(--bg-element);
-  color: var(--text);
-  border: 2px solid var(--accent);
-  padding: 1rem 0.3rem;
-  border-radius: 0.5rem;
+  background: linear-gradient(145deg, #2d303c, #23252f);
+  color: var(--text, #fff);
+  border: 1px solid var(--accent, #3b82f6);
+  padding: 0.75rem 0.5rem;
+  border-radius: 0.6rem;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5), -2px -2px 6px rgba(59, 130, 246, 0.1);
   cursor: pointer;
-  transition: all 0.3s ease;
-  min-height: 80px;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  min-height: 60px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -22,10 +23,10 @@
   text-align: center;
 }
 
-.shop-grid button:hover {
-  background-color: var(--accent);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+.shop-grid button:hover:not(:disabled) {
+  background: linear-gradient(145deg, #34374d, #292c3a);
+  transform: translateY(-1px);
+  box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.6), 0 0 8px var(--accent, #3b82f6);
 }
 
 .shop-grid button:active {
@@ -33,26 +34,24 @@
 }
 
 .shop-grid button:disabled {
-  background-color: var(--bg-element);
+  background: #1f2128;
   border-color: #4b5563;
+  color: #6b7280;
   cursor: not-allowed;
-  opacity: 0.7;
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.6);
 }
 
 .shop-grid .upgrade-name {
-  font-weight: bold;
-  font-size: 1.1rem;
-  margin-bottom: 0.5rem;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
 }
 
-.shop-grid .upgrade-cost {
-  font-size: 0.9rem;
-  color: #fcd34d;
-}
-
-.upgrade-bonus {
-  color: #4caf50;
-  margin: 2px 0;
+.shop-grid .upgrade-bonus {
+  color: #9ee69e;
+  font-size: 0.85rem;
+  margin: 0;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
 }
 
 .shop-section-nav {
@@ -88,4 +87,98 @@
   background: #2d3340;
   color: var(--accent, #3b82f6);
   border-color: var(--accent, #3b82f6);
+}
+
+.shop-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.shop-modal.hidden {
+  display: none;
+}
+
+.shop-modal-content {
+  background: var(--bg-element, #1e2127);
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  width: 400px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.shop-modal-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--text, #fff);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.shop-modal-content h2 {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  color: var(--accent, #3b82f6);
+}
+
+.shop-modal-content p {
+  margin: 0.5rem 0;
+  color: var(--text, #fff);
+}
+
+.shop-modal-content .modal-controls {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.shop-modal-content .modal-controls button {
+  background: var(--accent, #3b82f6);
+  color: #fff;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.shop-modal-content .modal-controls button:hover {
+  background: #2563eb;
+}
+
+.shop-modal-content .modal-buy {
+  background: var(--accent, #3b82f6);
+  color: #fff;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  width: 100%;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background 0.2s, opacity 0.2s;
+}
+
+.shop-modal-content .modal-buy:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.shop-modal-content .modal-buy:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

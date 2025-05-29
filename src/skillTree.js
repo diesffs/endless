@@ -200,6 +200,7 @@ export default class SkillTree {
   }
 
   getSkillEffect(skillId, level = 0) {
+    const skill = this.getSkill(skillId);
     return this.getSkill(skillId)?.effect(level || this.getSkill(skillId)?.level || 0);
   }
 
@@ -309,7 +310,6 @@ export default class SkillTree {
     if (!game.gameStarted) return false;
 
     const skill = this.getSkill(skillId);
-    const skillData = this.skills[skillId];
 
     if (skill.type() !== 'buff') return false;
     if (hero.stats.currentMana < this.getSkillManaCost(skill)) {
@@ -318,7 +318,7 @@ export default class SkillTree {
     }
 
     // Check if skill is on cooldown
-    if (skillData.cooldownEndTime && skillData.cooldownEndTime > Date.now()) return false;
+    if (skill.cooldownEndTime && skill.cooldownEndTime > Date.now()) return false;
 
     // Apply buff
     hero.stats.currentMana -= this.getSkillManaCost(skill);
@@ -328,7 +328,7 @@ export default class SkillTree {
     // Store buff data
     this.activeBuffs.set(skillId, {
       endTime: buffEndTime,
-      effects: this.getSkillEffect(skillId, skillData.level),
+      effects: this.getSkillEffect(skillId, skill.level),
     });
 
     // Set cooldown and active state

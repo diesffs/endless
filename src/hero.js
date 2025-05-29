@@ -366,6 +366,10 @@ export default class Hero {
     this.stats.earthDamage = Math.floor(
       flatValues.earthDamage * (1 + this.stats.elementalDamagePercent + percentBonuses.earthDamagePercent)
     );
+    this.stats.reflectFireDamage = (() => {
+      const base = flatValues.fireDamage + flatValues.reflectFireDamage;
+      return Math.floor(base * (1 + this.stats.elementalDamagePercent + percentBonuses.fireDamagePercent));
+    })();
   }
 
   calculateArmorReduction() {

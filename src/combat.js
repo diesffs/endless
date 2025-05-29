@@ -38,6 +38,16 @@ export function enemyAttack(currentTime) {
         createDamageNumber(thornsDamage, false);
       }
 
+      // check currently applied buffs and if fireShield is active, return its damage to the attacker.
+      if (skillTree.activeBuffs.has('fireShield')) {
+        const fireReflect = hero.stats.reflectFireDamage || 0;
+        if (fireReflect > 0) {
+          game.damageEnemy(fireReflect);
+          createDamageNumber(fireReflect, false);
+          updateEnemyLife();
+        }
+      }
+
       game.damagePlayer(effectiveDamage);
       createDamageNumber(Math.floor(effectiveDamage), true);
     }
