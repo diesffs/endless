@@ -2,7 +2,7 @@
 // Handles region data, selection, unlocking, and UI
 
 import { game, hero } from './globals.js';
-import { showConfirmDialog } from './ui.js';
+import { showConfirmDialog, toggleGame, updateStageUI } from './ui.js';
 import Enemy from './enemy.js';
 // Tooltip imports
 import { showTooltip, positionTooltip, hideTooltip } from './ui.js';
@@ -155,12 +155,18 @@ export async function setCurrentRegion(regionId) {
   if (!confirmed) return;
   currentRegionId = regionId;
   // Reset stage progress and enemy as if the hero died
-  if (game) {
-    game.stage = game.hero?.startingStage || 1;
-    game.currentEnemy = new Enemy(game.stage);
-    game.resetAllLife();
-    if (typeof game.saveGame === 'function') game.saveGame();
+
+  if (game.gameStarted) {
+    toggleGame();
+    updateRegionUI();
+    return;
   }
+  game.stage = game.hero?.startingStage || 1;
+  game.currentEnemy = new Enemy(game.stage);
+  game.resetAllLife();
+  game.saveGame();
+
+  updateStageUI();
   updateRegionUI();
 }
 
