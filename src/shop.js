@@ -4,8 +4,17 @@ import { showToast } from './ui.js';
 import { game, hero } from './globals.js';
 import { handleSavedData } from './functions.js';
 import { STATS } from './stats.js';
+import { OFFENSE_STATS } from './stats/offenseStats.js';
+import { DEFENSE_STATS } from './stats/defenseStats.js';
+import { MISC_STATS } from './stats/miscStats.js';
 
 const html = String.raw;
+
+const SECTION_DEFS = [
+  { key: 'offense', label: 'Offense', stats: Object.keys(OFFENSE_STATS) },
+  { key: 'defense', label: 'Defense', stats: Object.keys(DEFENSE_STATS) },
+  { key: 'misc', label: 'Misc', stats: Object.keys(MISC_STATS) },
+];
 
 export default class Shop {
   constructor(savedData = null) {
@@ -19,6 +28,7 @@ export default class Shop {
     });
 
     handleSavedData(savedData, this);
+    this.activeSection = SECTION_DEFS[0].key;
     this.initializeShopUI();
   }
 
@@ -34,6 +44,32 @@ export default class Shop {
   initializeShopUI() {
     const shopGrid = document.querySelector('.shop-grid');
     if (!shopGrid) return;
+
+    // Section navigation
+    let nav = document.querySelector('.shop-section-nav');
+    if (!nav) {
+      nav = document.createElement('div');
+      nav.className = 'shop-section-nav';
+      nav.style.display = 'flex';
+      nav.style.gap = '8px';
+      nav.style.marginBottom = '12px';
+      shopGrid.parentElement.insertBefore(nav, shopGrid);
+    }
+    nav.innerHTML = SECTION_DEFS.map(
+      (sec) => `
+      <button class="shop-section-btn${this.activeSection === sec.key ? ' active' : ''}" data-section="${sec.key}">${
+        sec.label
+      }</button>
+    `
+    ).join('');
+    nav.querySelectorAll('button[data-section]').forEach((btn) => {
+      btn.onclick = () => {
+        this.activeSection = btn.dataset.section;
+        this.updateShopUI('gold-upgrades');
+        nav.querySelectorAll('button').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+      };
+    });
 
     const goldGrid = document.querySelector('#gold-upgrades .shop-grid');
     if (goldGrid) this.attachGridListeners(goldGrid);
@@ -89,9 +125,9 @@ export default class Shop {
   updateShopUI(subTab) {
     const shopGrid = document.querySelector(`#${subTab} .shop-grid`);
     if (!shopGrid) return;
-
+    const section = SECTION_DEFS.find((s) => s.key === this.activeSection);
     shopGrid.innerHTML = Object.entries(STATS)
-      .filter(([stat, config]) => config.shop && config.shop.available)
+      .filter(([stat, config]) => config.shop && config.shop.available && section.stats.includes(stat))
       .map(([stat, config]) => this.createUpgradeButton(stat, config))
       .join('');
   }
