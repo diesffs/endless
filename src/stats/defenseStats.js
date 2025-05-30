@@ -8,6 +8,7 @@ export const DEFENSE_STATS = {
     training: { available: true, cost: 80, bonus: 10 },
     item: { min: 30, max: 75, scaling: 'full' },
     itemTags: ['defense', 'armor', 'jewelry'],
+    showInUI: true,
   },
   lifePercent: {
     base: 0,
@@ -22,6 +23,7 @@ export const DEFENSE_STATS = {
     training: { available: true, cost: 60, bonus: 1 },
     item: { min: 3, max: 10, scaling: 'full' },
     itemTags: ['defense', 'armor', 'shield'],
+    showInUI: true,
   },
   armorPercent: {
     base: 0,
@@ -36,6 +38,7 @@ export const DEFENSE_STATS = {
     training: { available: true, cost: 150, bonus: 0.1 },
     item: { min: 2, max: 6, scaling: 'capped' },
     itemTags: ['defense', 'shield'],
+    showInUI: true,
   },
   blockChancePercent: {
     base: 0,
@@ -50,6 +53,7 @@ export const DEFENSE_STATS = {
     training: { available: true, cost: 80, bonus: 0.1 },
     item: { min: 0.5, max: 1.5, scaling: 'full' },
     itemTags: ['defense', 'armor', 'jewelry'],
+    showInUI: true,
   },
   lifeRegenPercent: {
     base: 0,

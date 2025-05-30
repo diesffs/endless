@@ -3,6 +3,10 @@ import { hero, game } from '../globals.js';
 import { ATTRIBUTES } from '../hero.js';
 import { STATS } from '../stats.js';
 import { hideTooltip, positionTooltip, showTooltip } from '../ui.js';
+import { OFFENSE_STATS } from '../stats/offenseStats.js';
+import { DEFENSE_STATS } from '../stats/defenseStats.js';
+import { MISC_STATS } from '../stats/miscStats.js';
+import { formatStatName } from '../ui.js';
 
 const html = String.raw;
 
@@ -144,24 +148,24 @@ export const ATTRIBUTE_TOOLTIPS = {
     Percentage of damage dealt recovered as life.
   `,
 
-  getMaxLifeTooltip: () => html`
+  getLifeTooltip: () => html`
     <strong>Life</strong><br />
     Maximum life points.<br />
     Increased by Vitality and level ups.
   `,
 
-  getLifeRegenTooltip: () => html`
+  getLifeRegenerationTooltip: () => html`
     <strong>Life Regeneration</strong><br />
     Amount of life recovered per second.
   `,
 
-  getMaxManaTooltip: () => html`
+  getManaTooltip: () => html`
     <strong>Mana</strong><br />
     Maximum mana points.<br />
     Increased by Wisdom and level ups.
   `,
 
-  getManaRegenTooltip: () => html`
+  getManaRegenerationTooltip: () => html`
     <strong>Mana Regeneration</strong><br />
     Amount of mana recovered per second.
   `,
@@ -191,160 +195,136 @@ export function updateStatsAndAttributesUI() {
   if (!statsContainer) {
     statsContainer = document.createElement('div');
     statsContainer.className = 'stats-container';
-    statsContainer.innerHTML = html`
-      <!-- xp, lvl, stage -->
+    // Header: level, EXP, highest stage
+    const headerHtml = html`
       <div><strong>Level:</strong> <span id="level-value">${hero.level || 1}</span></div>
       <div>
         <strong>EXP:</strong> <span id="exp-value">${hero.exp || 0}</span> /
         <span id="exp-to-next-level-value">${hero.expToNextLevel || 100}</span>
         (<span id="exp-progress">${((hero.exp / hero.expToNextLevel) * 100).toFixed(1)}%</span>)
       </div>
-
       <div><strong>Highest Stage:</strong><span id="highest-stage-value">${hero.highestStage}</span></div>
-
-      <!-- OFFENSE -->
-
-      <hr style="margin: 5px 1px" />
-      <div><strong>Damage:</strong> <span id="damage-value">${hero.stats.damage}</span></div>
-
-      <div>
-        <strong>Attack Speed:</strong>
-        <span id="attack-speed-value"
-          >${hero.stats.attackSpeed.toFixed(STATS.attackSpeed.decimalPlaces).replace(/\./g, ',')}</span
-        >
-        attacks/sec
-      </div>
-
-      <div>
-        <strong>Attack Rating:</strong>
-        <span id="attack-rating-value">${hero.stats.attackRating}</span> (<span id="hit-chance-value">
-          ${calculateHitChance(hero.stats.attackRating, game.stage).toFixed(2)}%</span
-        >)
-      </div>
-
-      <div>
-        <strong>Crit Chance:</strong>
-        <span id="crit-chance-value"
-          >${hero.stats.critChance.toFixed(STATS.critChance.decimalPlaces).replace(/\./g, ',')}%</span
-        >
-      </div>
-
-      <div>
-        <strong>Crit Damage:</strong>
-        <span id="crit-damage-value"
-          >${hero.stats.critDamage.toFixed(STATS.critDamage.decimalPlaces).replace(/\./g, ',')}x</span
-        >
-      </div>
-
-      <div>
-        <strong>Life Steal:</strong>
-        <span id="life-steal-value"
-          >${hero.stats.lifeSteal.toFixed(STATS.lifeSteal.decimalPlaces).replace(/\./g, ',')}%</span
-        >
-      </div>
-      <div class="elemental-damage">
-        <div><strong>🔥 Fire Damage:</strong> <span id="fire-damage-value">${hero.stats.fireDamage}</span></div>
-        <div><strong>❄️ Cold Damage:</strong> <span id="cold-damage-value">${hero.stats.coldDamage}</span></div>
-        <div><strong>☁️ Air Damage:</strong> <span id="air-damage-value">${hero.stats.airDamage}</span></div>
-        <div><strong>🌍 Earth Damage:</strong> <span id="earth-damage-value">${hero.stats.earthDamage}</span></div>
-      </div>
-
-      <!-- DEFENSE -->
-      <hr style="margin: 5px 1px" />
-
-      <div><strong>Life:</strong> <span id="max-life-value">${hero.stats.life}</span></div>
-      <div>
-        <strong>Life Regen:</strong>
-        <span id="life-regen-value"
-          >${hero.stats.lifeRegen.toFixed(STATS.lifeRegen.decimalPlaces).replace(/\./g, ',')}</span
-        >/s
-      </div>
-      <div><strong>Mana:</strong> <span id="max-mana-value">${hero.stats.mana}</span></div>
-      <div>
-        <strong>Mana Regen:</strong>
-        <span id="mana-regen-value"
-          >${hero.stats.manaRegen.toFixed(STATS.manaRegen.decimalPlaces).replace(/\./g, ',')}</span
-        >/s
-      </div>
-
-      <div>
-        <strong>Armor:</strong> <span id="armor-value">${hero.stats.armor || 0}</span> (
-        <span id="armor-reduction-value"> ${hero.calculateArmorReduction().toFixed(2).replace(/\./g, ',')} </span>
-        reduction)
-      </div>
-
-      <div>
-        <strong>Block Chance:</strong>
-        <span id="block-chance-value"
-          >${hero.stats.blockChance.toFixed(STATS.blockChance.decimalPlaces).replace(/\./g, ',')}%</span
-        >
+      <hr style="border: none; border-top: 1px solid #fff; margin: 10px 0;" />
+    `;
+    // Create tab buttons
+    const tabsHtml = html`
+      <div class="stats-tabs">
+        <button class="subtab-btn active" data-subtab="offense">Offense</button>
+        <button class="subtab-btn" data-subtab="defense">Defense</button>
+        <button class="subtab-btn" data-subtab="misc">Misc</button>
       </div>
     `;
-
-    const addTooltipToElement = (element, tooltipFunction) => {
-      element.addEventListener('mouseenter', (e) => showTooltip(tooltipFunction(), e));
-      element.addEventListener('mousemove', positionTooltip);
-      element.addEventListener('mouseleave', hideTooltip);
+    // Combine header and tabs
+    statsContainer.innerHTML = headerHtml + tabsHtml;
+    // Create panels
+    const createPanel = (name) => {
+      const panel = document.createElement('div');
+      panel.className = 'stats-panel';
+      if (name === 'offense') panel.classList.add('active');
+      panel.id = `${name}-panel`;
+      return panel;
     };
-
-    // Combat stats
-    addTooltipToElement(
-      statsContainer.querySelector('#damage-value').previousElementSibling,
-      ATTRIBUTE_TOOLTIPS.getDamageTooltip
-    );
-    addTooltipToElement(
-      statsContainer.querySelector('#attack-speed-value').previousElementSibling,
-      ATTRIBUTE_TOOLTIPS.getAttackSpeedTooltip
-    );
-    addTooltipToElement(
-      statsContainer.querySelector('#attack-rating-value').previousElementSibling,
-      ATTRIBUTE_TOOLTIPS.getAttackRatingTooltip
-    );
-    addTooltipToElement(
-      statsContainer.querySelector('#crit-chance-value').previousElementSibling,
-      ATTRIBUTE_TOOLTIPS.getCritChanceTooltip
-    );
-    addTooltipToElement(
-      statsContainer.querySelector('#crit-damage-value').previousElementSibling,
-      ATTRIBUTE_TOOLTIPS.getCritDamageTooltip
-    );
-    addTooltipToElement(
-      statsContainer.querySelector('#life-steal-value').previousElementSibling,
-      ATTRIBUTE_TOOLTIPS.getLifeStealTooltip
-    );
-
-    // Elemental damage section
-    addTooltipToElement(
-      statsContainer.querySelector('.elemental-damage'),
-      ATTRIBUTE_TOOLTIPS.getElementalDamageTooltip
-    );
-
-    // Defense stats
-    addTooltipToElement(
-      statsContainer.querySelector('#max-life-value').previousElementSibling,
-      ATTRIBUTE_TOOLTIPS.getMaxLifeTooltip
-    );
-    addTooltipToElement(
-      statsContainer.querySelector('#life-regen-value').previousElementSibling,
-      ATTRIBUTE_TOOLTIPS.getLifeRegenTooltip
-    );
-    addTooltipToElement(
-      statsContainer.querySelector('#max-mana-value').previousElementSibling,
-      ATTRIBUTE_TOOLTIPS.getMaxManaTooltip
-    );
-    addTooltipToElement(
-      statsContainer.querySelector('#mana-regen-value').previousElementSibling,
-      ATTRIBUTE_TOOLTIPS.getManaRegenTooltip
-    );
-    addTooltipToElement(
-      statsContainer.querySelector('#armor-value').previousElementSibling,
-      ATTRIBUTE_TOOLTIPS.getArmorTooltip
-    );
-    addTooltipToElement(
-      statsContainer.querySelector('#block-chance-value').previousElementSibling,
-      ATTRIBUTE_TOOLTIPS.getBlockChanceTooltip
-    );
-
+    const offensePanel = createPanel('offense');
+    const defensePanel = createPanel('defense');
+    const miscPanel = createPanel('misc');
+    // Populate panels based on showInUI flags
+    const addStatsToPanel = (panel, statsDef) => {
+      const elementalKeys = ['fireDamage', 'coldDamage', 'airDamage', 'earthDamage'];
+      const collectedElementals = [];
+      Object.keys(statsDef).forEach((key) => {
+        if (!statsDef[key].showInUI) return;
+        // Collect elementals separately for offense panel
+        if (panel === offensePanel && elementalKeys.includes(key)) {
+          collectedElementals.push(key);
+          return;
+        }
+        const row = document.createElement('div');
+        row.className = 'stat-row';
+        const lbl = document.createElement('span');
+        lbl.className = 'stat-label';
+        lbl.textContent = formatStatName(key);
+        const span = document.createElement('span');
+        span.id = `${key}-value`;
+        let val = hero.stats[key];
+        if (typeof val === 'number' && statsDef[key].decimalPlaces !== undefined) {
+          val = val.toFixed(statsDef[key].decimalPlaces);
+        }
+        span.textContent = val;
+        row.appendChild(lbl);
+        row.appendChild(document.createTextNode(' '));
+        row.appendChild(span);
+        // Append computed stats in parentheses for special cases
+        if (key === 'attackRating') {
+          const hitPct = calculateHitChance(hero.stats.attackRating, game.stage).toFixed(2) + '%';
+          row.appendChild(document.createTextNode(` (${hitPct})`));
+        }
+        if (key === 'armor') {
+          const ar = hero.calculateArmorReduction().toFixed(2) + '%';
+          row.appendChild(document.createTextNode(` (${ar})`));
+        }
+        panel.appendChild(row);
+        // Add tooltip if defined (special-case elemental stats)
+        const baseKey = lbl.textContent.replace(/[^a-zA-Z]/g, '');
+        let tooltipFn = ATTRIBUTE_TOOLTIPS[`get${baseKey}Tooltip`];
+        // For offense elementals override tooltip
+        if (panel === offensePanel && ['fireDamage', 'coldDamage', 'airDamage', 'earthDamage'].includes(key)) {
+          tooltipFn = ATTRIBUTE_TOOLTIPS.getElementalDamageTooltip;
+        }
+        if (tooltipFn) {
+          lbl.addEventListener('mouseenter', (e) => showTooltip(tooltipFn(), e));
+          lbl.addEventListener('mousemove', positionTooltip);
+          lbl.addEventListener('mouseleave', hideTooltip);
+        }
+      });
+      // After other stats, render elemental grid in offense panel
+      if (panel === offensePanel && collectedElementals.length) {
+        const iconMap = { fireDamage: '🔥', coldDamage: '❄️', airDamage: '☁️', earthDamage: '🌍' };
+        const grid = document.createElement('div');
+        grid.className = 'elemental-stats-grid';
+        ['fireDamage', 'coldDamage', 'airDamage', 'earthDamage'].forEach((key) => {
+          if (!collectedElementals.includes(key)) return;
+          const row = document.createElement('div');
+          row.className = 'elemental-row';
+          const icon = document.createElement('span');
+          icon.textContent = iconMap[key];
+          const lbl = document.createElement('strong');
+          lbl.textContent = formatStatName(key);
+          // Add tooltip for elemental damage
+          lbl.addEventListener('mouseenter', (e) => showTooltip(ATTRIBUTE_TOOLTIPS.getElementalDamageTooltip(), e));
+          lbl.addEventListener('mousemove', positionTooltip);
+          lbl.addEventListener('mouseleave', hideTooltip);
+          const span = document.createElement('span');
+          span.id = `${key}-value`;
+          let val = hero.stats[key];
+          span.textContent = val;
+          row.appendChild(icon);
+          row.appendChild(lbl);
+          row.appendChild(document.createTextNode(' '));
+          row.appendChild(span);
+          grid.appendChild(row);
+        });
+        panel.appendChild(grid);
+      }
+    };
+    addStatsToPanel(offensePanel, OFFENSE_STATS);
+    addStatsToPanel(defensePanel, DEFENSE_STATS);
+    addStatsToPanel(miscPanel, MISC_STATS);
+    statsContainer.appendChild(offensePanel);
+    statsContainer.appendChild(defensePanel);
+    statsContainer.appendChild(miscPanel);
+    // Tab switching logic
+    statsContainer.querySelectorAll('.subtab-btn').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        // mark button active
+        statsContainer.querySelectorAll('.subtab-btn').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        const sub = btn.dataset.subtab;
+        // toggle panels
+        statsContainer.querySelectorAll('.stats-panel').forEach((p) => p.classList.remove('active'));
+        const target = statsContainer.querySelector(`#${sub}-panel`);
+        if (target) target.classList.add('active');
+      });
+    });
     statsGrid.appendChild(statsContainer);
   } else {
     // Update dynamic stats values
@@ -354,36 +334,32 @@ export function updateStatsAndAttributesUI() {
     document.getElementById('exp-to-next-level-value').textContent = hero.expToNextLevel || 100;
     document.getElementById('highest-stage-value').textContent = hero.highestStage;
     document.getElementById('damage-value').textContent = hero.stats.damage;
-    document.getElementById('attack-speed-value').textContent = hero.stats.attackSpeed
+    document.getElementById('attackSpeed-value').textContent = hero.stats.attackSpeed
       .toFixed(STATS.attackSpeed.decimalPlaces)
       .replace(/\./g, ',');
-    document.getElementById('attack-rating-value').textContent = hero.stats.attackRating;
-    document.getElementById('hit-chance-value').textContent =
-      calculateHitChance(hero.stats.attackRating, game.stage).toFixed(2) + '%';
-    document.getElementById('crit-chance-value').textContent =
+    document.getElementById('attackRating-value').textContent = hero.stats.attackRating;
+    document.getElementById('critChance-value').textContent =
       hero.stats.critChance.toFixed(STATS.critChance.decimalPlaces).replace(/\./g, ',') + '%';
-    document.getElementById('crit-damage-value').textContent =
+    document.getElementById('critDamage-value').textContent =
       hero.stats.critDamage.toFixed(STATS.critDamage.decimalPlaces).replace(/\./g, ',') + 'x';
 
-    document.getElementById('life-steal-value').textContent =
+    document.getElementById('lifeSteal-value').textContent =
       hero.stats.lifeSteal.toFixed(STATS.lifeSteal.decimalPlaces).replace(/\./g, ',') + '%';
-    document.getElementById('fire-damage-value').textContent = hero.stats.fireDamage;
-    document.getElementById('cold-damage-value').textContent = hero.stats.coldDamage;
-    document.getElementById('air-damage-value').textContent = hero.stats.airDamage;
-    document.getElementById('earth-damage-value').textContent = hero.stats.earthDamage;
+    document.getElementById('fireDamage-value').textContent = hero.stats.fireDamage;
+    document.getElementById('coldDamage-value').textContent = hero.stats.coldDamage;
+    document.getElementById('airDamage-value').textContent = hero.stats.airDamage;
+    document.getElementById('earthDamage-value').textContent = hero.stats.earthDamage;
 
-    document.getElementById('max-life-value').textContent = hero.stats.life;
-    document.getElementById('life-regen-value').textContent = hero.stats.lifeRegen
+    document.getElementById('life-value').textContent = hero.stats.life;
+    document.getElementById('lifeRegen-value').textContent = hero.stats.lifeRegen
       .toFixed(STATS.lifeRegen.decimalPlaces)
       .replace(/\./g, ',');
-    document.getElementById('max-mana-value').textContent = hero.stats.mana;
-    document.getElementById('mana-regen-value').textContent = hero.stats.manaRegen
+    document.getElementById('mana-value').textContent = hero.stats.mana;
+    document.getElementById('manaRegen-value').textContent = hero.stats.manaRegen
       .toFixed(STATS.manaRegen.decimalPlaces)
       .replace(/\./g, ',');
     document.getElementById('armor-value').textContent = hero.stats.armor || 0;
-    document.getElementById('armor-reduction-value').textContent =
-      hero.calculateArmorReduction().toFixed(2).replace(/\./g, ',') + '%';
-    document.getElementById('block-chance-value').textContent =
+    document.getElementById('blockChance-value').textContent =
       hero.stats.blockChance.toFixed(STATS.blockChance.decimalPlaces).replace(/\./g, ',') + '%';
   }
 
@@ -395,7 +371,7 @@ export function updateStatsAndAttributesUI() {
         <h3 id="attributes">Attributes (+${hero.statPoints})</h3>
         <div class="allocate-modes" style="margin-bottom:8px;">
           <button class="mode-btn" data-amount="1">+1</button>
-          <button class="mode-btn" data-amount="12">+12</button>
+          <button class="mode-btn" data-amount="30">+30</button>
           <button class="mode-btn" data-amount="60">+60</button>
           <button class="mode-btn" data-amount="120">+120</button>
           <button class="mode-btn" data-amount="max">MAX</button>

@@ -7,6 +7,7 @@ export const OFFENSE_STATS = {
     training: { available: true, cost: 60, bonus: 1 },
     item: { min: 3, max: 10, scaling: 'full' },
     itemTags: ['offense', 'weapon'],
+    showInUI: true,
   },
   damagePercent: {
     base: 0,
@@ -21,6 +22,7 @@ export const OFFENSE_STATS = {
     training: { available: true, cost: 200, bonus: 0.01 },
     item: { min: 0.05, max: 0.2, scaling: 'capped' },
     itemTags: ['offense', 'weapon'],
+    showInUI: true,
   },
   attackSpeedPercent: {
     base: 0,
@@ -35,6 +37,7 @@ export const OFFENSE_STATS = {
     training: { available: true, cost: 140, bonus: 0.1 },
     item: { min: 0.5, max: 1.5, scaling: 'capped' },
     itemTags: ['offense', 'weapon', 'jewelry'],
+    showInUI: true,
   },
   critChancePercent: {
     base: 0,
@@ -49,6 +52,7 @@ export const OFFENSE_STATS = {
     training: { available: true, cost: 200, bonus: 0.01 },
     item: { min: 0.02, max: 0.1, scaling: 'full' },
     itemTags: ['offense', 'weapon', 'jewelry'],
+    showInUI: true,
   },
   critDamagePercent: {
     base: 0,
@@ -63,6 +67,7 @@ export const OFFENSE_STATS = {
     training: { available: true, cost: 60, bonus: 10 },
     item: { min: 50, max: 150, scaling: 'full' },
     itemTags: ['offense', 'weapon', 'jewelry'],
+    showInUI: true,
   },
   attackRatingPercent: {
     base: 0,
@@ -77,6 +82,7 @@ export const OFFENSE_STATS = {
     training: { available: true, cost: 500, bonus: 0.01 },
     item: { min: 0.01, max: 0.1, scaling: 'capped' },
     itemTags: ['offense', 'weapon', 'jewelry'],
+    showInUI: true,
   },
   lifeStealPercent: {
     base: 0,
@@ -104,6 +110,7 @@ export const OFFENSE_STATS = {
     training: { available: true, cost: 30, bonus: 1 },
     item: { min: 20, max: 50, scaling: 'full' },
     itemTags: ['elemental', 'offense', 'weapon', 'jewelry'],
+    showInUI: true,
   },
   fireDamagePercent: {
     base: 0,
@@ -116,6 +123,7 @@ export const OFFENSE_STATS = {
     training: { available: true, cost: 30, bonus: 1 },
     item: { min: 20, max: 50, scaling: 'full' },
     itemTags: ['elemental', 'offense', 'weapon', 'jewelry'],
+    showInUI: true,
   },
   coldDamagePercent: {
     base: 0,
@@ -128,6 +136,7 @@ export const OFFENSE_STATS = {
     training: { available: true, cost: 30, bonus: 1 },
     item: { min: 20, max: 50, scaling: 'full' },
     itemTags: ['elemental', 'offense', 'weapon', 'jewelry'],
+    showInUI: true,
   },
   airDamagePercent: {
     base: 0,
@@ -140,6 +149,7 @@ export const OFFENSE_STATS = {
     training: { available: true, cost: 30, bonus: 1 },
     item: { min: 20, max: 50, scaling: 'full' },
     itemTags: ['elemental', 'offense', 'weapon', 'jewelry'],
+    showInUI: true,
   },
   earthDamagePercent: {
     base: 0,

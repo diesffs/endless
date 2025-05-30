@@ -17,6 +17,7 @@
 
 .stats-container {
   margin-bottom: 1em;
+  min-height: 300px; /* reserve enough space to keep height stable when switching tabs */
 }
 
 .stats-container h3,
@@ -90,4 +91,53 @@
 
 .attributes-container .mode-btn.active {
   background-color: #059669;
+}
+
+/* Tab panels: hide all by default, show only when active */
+.stats-panel {
+  display: none;
+}
+.stats-panel.active {
+  display: block;
+}
+
+/* Tab button styling */
+.stats-tabs {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+.stats-tabs .subtab-btn {
+  padding: 5px 10px;
+  background-color: #4b5563;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.stats-tabs .subtab-btn.active {
+  background-color: #059669;
+}
+.stats-tabs .subtab-btn:hover {
+  background-color: #6b7280;
+}
+
+/* Elemental stats grid: 2 columns, 2 rows */
+.elemental-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+.elemental-stats-grid .elemental-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.stat-row .stat-label {
+  display: inline-block;
+  /* width: 180px; */
+  font-weight: bold;
 }

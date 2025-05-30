@@ -8,6 +8,7 @@ export const MISC_STATS = {
     training: { available: true, cost: 100, bonus: 5 },
     item: { min: 5, max: 15, scaling: 'capped' },
     itemTags: ['misc', 'jewelry'],
+    showInUI: true,
   },
   manaPercent: {
     base: 0,
@@ -22,6 +23,7 @@ export const MISC_STATS = {
     training: { available: true, cost: 300, bonus: 0.1 },
     item: { min: 0.5, max: 2, scaling: 'capped' },
     itemTags: ['misc', 'jewelry'],
+    showInUI: true,
   },
   manaRegenPercent: {
     base: 0,
