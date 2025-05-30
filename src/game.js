@@ -6,6 +6,7 @@ import {
   updateBuffIndicators,
   showToast,
   initializeSkillTreeUI,
+  updateStatsAndAttributesUI,
 } from './ui.js';
 import { playerAttack, enemyAttack, playerDeath, defeatEnemy } from './combat.js';
 import { game, hero, inventory, prestige, training, skillTree, statistics } from './globals.js';
@@ -143,6 +144,7 @@ class Game {
 
       this.stage = hero.startingStage; // Reset stage
       updateStageUI();
+      updateStatsAndAttributesUI(); // Update stats and attributes UI when start/stop game
       this.currentEnemy = new Enemy(this.stage);
 
       hero.stats.currentLife = hero.stats.life; // Reset player life

@@ -253,15 +253,6 @@ export function updateStatsAndAttributesUI() {
         row.appendChild(lbl);
         row.appendChild(document.createTextNode(' '));
         row.appendChild(span);
-        // Append computed stats in parentheses for special cases
-        if (key === 'attackRating') {
-          const hitPct = calculateHitChance(hero.stats.attackRating, game.stage).toFixed(2) + '%';
-          row.appendChild(document.createTextNode(` (${hitPct})`));
-        }
-        if (key === 'armor') {
-          const ar = hero.calculateArmorReduction().toFixed(2) + '%';
-          row.appendChild(document.createTextNode(` (${ar})`));
-        }
         panel.appendChild(row);
         // Add tooltip if defined (special-case elemental stats)
         const baseKey = lbl.textContent.replace(/[^a-zA-Z]/g, '');
@@ -337,7 +328,12 @@ export function updateStatsAndAttributesUI() {
     document.getElementById('attackSpeed-value').textContent = hero.stats.attackSpeed
       .toFixed(STATS.attackSpeed.decimalPlaces)
       .replace(/\./g, ',');
+
     document.getElementById('attackRating-value').textContent = hero.stats.attackRating;
+    // add hit chance percentage
+    const hitPct = calculateHitChance(hero.stats.attackRating, game.stage).toFixed(2) + '%';
+    document.getElementById('attackRating-value').appendChild(document.createTextNode(` (${hitPct})`));
+
     document.getElementById('critChance-value').textContent =
       hero.stats.critChance.toFixed(STATS.critChance.decimalPlaces).replace(/\./g, ',') + '%';
     document.getElementById('critDamage-value').textContent =
@@ -358,7 +354,12 @@ export function updateStatsAndAttributesUI() {
     document.getElementById('manaRegen-value').textContent = hero.stats.manaRegen
       .toFixed(STATS.manaRegen.decimalPlaces)
       .replace(/\./g, ',');
+
     document.getElementById('armor-value').textContent = hero.stats.armor || 0;
+    // add armor reduction percentage
+    const ar = hero.calculateArmorReduction().toFixed(2) + '%';
+    document.getElementById('armor-value').appendChild(document.createTextNode(` (${ar})`));
+
     document.getElementById('blockChance-value').textContent =
       hero.stats.blockChance.toFixed(STATS.blockChance.decimalPlaces).replace(/\./g, ',') + '%';
   }
