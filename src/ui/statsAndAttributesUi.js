@@ -6,6 +6,9 @@ import { hideTooltip, positionTooltip, showTooltip } from '../ui.js';
 
 const html = String.raw;
 
+// allocation mode selector (global for attribute buttons)
+let allocationMode = 1;
+
 export const ATTRIBUTE_TOOLTIPS = {
   getStrengthTooltip: () => html`
     <strong>Strength</strong><br />
@@ -388,20 +391,43 @@ export function updateStatsAndAttributesUI() {
     attributesContainer = document.createElement('div');
     attributesContainer.className = 'attributes-container';
     attributesContainer.innerHTML = html`
-      <h3 id="attributes">Attributes (+${hero.statPoints})</h3>
-      ${Object.entries(hero.stats)
-        .map(([stat, value]) => {
-          if (!ATTRIBUTES[stat]) return ''; // Skip if stat is not an attribute
-          return `
+      <div class="attributes-header">
+        <h3 id="attributes">Attributes (+${hero.statPoints})</h3>
+        <div class="allocate-modes" style="margin-bottom:8px;">
+          <button class="mode-btn" data-amount="1">+1</button>
+          <button class="mode-btn" data-amount="12">+12</button>
+          <button class="mode-btn" data-amount="60">+60</button>
+          <button class="mode-btn" data-amount="120">+120</button>
+          <button class="mode-btn" data-amount="max">MAX</button>
+        </div>
+      </div>
+      <div class="attributes-body">
+        ${Object.entries(hero.stats)
+          .map(([stat, value]) => {
+            if (!ATTRIBUTES[stat]) return '';
+            const displayName = stat.charAt(0).toUpperCase() + stat.slice(1);
+            return `
             <div class="attribute-row">
-            <button class="allocate-btn" data-stat="${stat}">+</button>
-            <strong>${stat.charAt(0).toUpperCase() + stat.slice(1)}:</strong>
-            <span id="${stat}-value">${hero.stats[stat]}</span>
+              <button class="allocate-btn" data-stat="${stat}">+</button>
+              <strong>${displayName}:</strong>
+              <span id="${stat}-value">${hero.stats[stat]}</span>
             </div>
-            `;
-        })
-        .join('')}
+          `;
+          })
+          .join('')}
+      </div>
     `;
+
+    // mode button handlers
+    attributesContainer.querySelectorAll('.mode-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        allocationMode = btn.dataset.amount;
+        attributesContainer.querySelectorAll('.mode-btn').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+    // set default active mode
+    attributesContainer.querySelector(`.mode-btn[data-amount="${allocationMode}"]`).classList.add('active');
 
     attributesContainer.querySelectorAll('.attribute-row').forEach((row) => {
       const stat = row.querySelector('button').dataset.stat;
@@ -412,43 +438,51 @@ export function updateStatsAndAttributesUI() {
       row.addEventListener('mouseleave', hideTooltip);
     });
 
-    statsGrid.appendChild(attributesContainer);
-
-    // Attach event listeners for allocation buttons (only once)
+    // attach allocate handler
     attributesContainer.querySelectorAll('.allocate-btn').forEach((btn) => {
       btn.addEventListener('mousedown', (e) => {
         const stat = e.target.dataset.stat;
-        hero.allocateStat(stat);
+        // allocate based on allocationMode
+        if (allocationMode === 'max') {
+          while (hero.statPoints > 0) hero.allocateStat(stat);
+        } else {
+          const count = parseInt(allocationMode, 10) || 1;
+          for (let i = 0; i < count && hero.statPoints > 0; i++) {
+            hero.allocateStat(stat);
+          }
+        }
         updateStatsAndAttributesUI();
 
-        let intervalId;
-        let holdingTimeout;
-
+        let intervalId, holdingTimeout;
         const startHolding = () => {
           clearInterval(intervalId);
           intervalId = setInterval(() => {
             if (hero.statPoints > 0) {
-              hero.allocateStat(stat);
+              if (allocationMode === 'max') {
+                while (hero.statPoints > 0) hero.allocateStat(stat);
+              } else {
+                for (let i = 0; i < (parseInt(allocationMode, 10) || 1) && hero.statPoints > 0; i++) {
+                  hero.allocateStat(stat);
+                }
+              }
               updateStatsAndAttributesUI();
-            } else {
-              stopHolding();
-            }
+            } else stopHolding();
           }, 100);
         };
-
         const stopHolding = () => {
           clearTimeout(holdingTimeout);
           clearInterval(intervalId);
           document.removeEventListener('mouseup', stopHolding);
           document.removeEventListener('mouseleave', stopHolding);
         };
-
         holdingTimeout = setTimeout(startHolding, 500);
-
         document.addEventListener('mouseup', stopHolding);
         document.addEventListener('mouseleave', stopHolding);
       });
     });
+
+    // Add attributes container to the grid
+    statsGrid.appendChild(attributesContainer);
   } else {
     document.getElementById(`attributes`).textContent = `Attributes (+${hero.statPoints})`;
     // Update dynamic attribute values

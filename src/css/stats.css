@@ -8,7 +8,6 @@
 
 .attributes-container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
   grid-gap: 5px;
 }
 
@@ -51,4 +50,44 @@
 .attributes-container .allocate-btn:disabled {
   background-color: #4b5563;
   cursor: not-allowed;
+}
+.attributes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-basis: 100%;
+}
+
+.attributes-body {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+/* Allocation mode toolbar styling */
+.attributes-container .allocate-modes {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.attributes-container .mode-btn {
+  padding: 5px 10px;
+  font-size: 14px;
+  background-color: #4b5563;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.attributes-container .mode-btn:hover {
+  background-color: #6b7280;
+}
+
+.attributes-container .mode-btn.active {
+  background-color: #059669;
 }
