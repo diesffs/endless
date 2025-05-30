@@ -152,6 +152,8 @@ class Enemy {
     this.xpMultiplier = region.xpMultiplier || 1.0;
     this.goldMultiplier = region.goldMultiplier || 1.0;
     this.itemDropMultiplier = region.itemDropMultiplier || 1.0;
+    this.materialDropMultiplier = region.materialDropMultiplier || 1.0;
+    this.materialWeights = region.materialDropWeights || {};
 
     // Get enemy section element
     const enemySection = document.querySelector('.enemy-section');
@@ -274,7 +276,8 @@ class Enemy {
   }
 
   rollForMaterialDrop() {
-    return Math.random() < 0.05; // 5% chance to drop a material
+    const baseChance = 0.05;
+    return Math.random() < baseChance * this.materialDropMultiplier;
   }
 }
 export default Enemy;

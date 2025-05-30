@@ -85,15 +85,22 @@ export const MATERIALS = {
   },
 };
 
-// Utility to get a random material (weighted by dropChance)
+import { getCurrentRegion } from './region.js';
+
+/* Utility to get a random material (weighted by dropChance) */
 export function getRandomMaterial() {
+  const region = getCurrentRegion();
   const materials = Object.values(MATERIALS).filter((m) => m.dropChance > 0);
-  const total = materials.reduce((sum, m) => sum + m.dropChance, 0);
+  const multiplier = region.materialDropMultiplier || 1.0;
+  const weights = region.materialDropWeights || {};
+  // Calculate total weighted drop chances
+  const total = materials.reduce((sum, m) => sum + m.dropChance * multiplier * (weights[m.id] || 1), 0);
   let roll = Math.random() * total;
   for (const mat of materials) {
-    if (roll < mat.dropChance) return mat;
-    roll -= mat.dropChance;
+    const weight = mat.dropChance * multiplier * (weights[mat.id] || 1);
+    if (roll < weight) return mat;
+    roll -= weight;
   }
-  // fallback (shouldn't happen)
+  // fallback
   return materials[0];
 }

@@ -31,6 +31,10 @@ export const REGIONS = [
     xpMultiplier: 1.0,
     goldMultiplier: 1.3,
     itemDropMultiplier: 1.0,
+    materialDropMultiplier: 1,
+    materialDropWeights: {
+      crystalized_rock: 1,
+    },
   },
   {
     id: 'volcano',
@@ -53,6 +57,8 @@ export const REGIONS = [
     xpMultiplier: 1.5,
     goldMultiplier: 1.3,
     itemDropMultiplier: 1.1,
+    materialDropMultiplier: 1.0,
+    materialDropWeights: {},
   },
   {
     id: 'tundra',
@@ -75,6 +81,8 @@ export const REGIONS = [
     xpMultiplier: 1,
     goldMultiplier: 1,
     itemDropMultiplier: 2,
+    materialDropMultiplier: 1.0,
+    materialDropWeights: {},
   },
   {
     id: 'desert',
@@ -97,6 +105,8 @@ export const REGIONS = [
     xpMultiplier: 1.8,
     goldMultiplier: 1.8,
     itemDropMultiplier: 2.5,
+    materialDropMultiplier: 1.0,
+    materialDropWeights: {},
   },
   {
     id: 'swamp',
@@ -119,6 +129,8 @@ export const REGIONS = [
     xpMultiplier: 4,
     goldMultiplier: 1.5,
     itemDropMultiplier: 1,
+    materialDropMultiplier: 1.0,
+    materialDropWeights: {},
   },
   {
     id: 'skyrealm',
@@ -141,6 +153,8 @@ export const REGIONS = [
     xpMultiplier: 2,
     goldMultiplier: 11,
     itemDropMultiplier: 1,
+    materialDropMultiplier: 1.0,
+    materialDropWeights: {},
   },
 ];
 
@@ -209,6 +223,9 @@ function getRegionTooltip(region) {
       : ''}
     ${region.itemDropMultiplier != 1
       ? `<div><strong>Item Drop bonus:</strong> ${((region.itemDropMultiplier - 1) * 100).toFixed(0)}%</div>`
+      : ''}
+    ${region.materialDropMultiplier && region.materialDropMultiplier != 1
+      ? `<div><strong>Material Drop bonus:</strong> ${((region.materialDropMultiplier - 1) * 100).toFixed(0)}%</div>`
       : ''}
   `;
 }
