@@ -156,6 +156,7 @@ export const OFFENSE_STATS = {
   elementalDamagePercent: {
     base: 0,
     decimalPlaces: 0,
+    item: { min: 0.1, max: 0.5, scaling: 'capped' },
     itemTags: ['elemental', 'offense', 'weapon', 'jewelry'],
   },
 };
