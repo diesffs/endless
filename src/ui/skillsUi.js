@@ -348,6 +348,27 @@ let skillModal;
 let currentSkillId;
 let selectedSkillQty = 1;
 
+// Helper to calculate SP cost for buying qty levels from currentLevel
+function calculateSkillPointCost(currentLevel, qty) {
+  let cost = 0;
+  for (let i = 0; i < qty; i++) {
+    cost += 1 + Math.floor((currentLevel + i) / 50);
+  }
+  return cost;
+}
+// Calculate max levels you can afford given SP and maxLevel
+function calculateMaxPurchasable(currentLevel, availableSP, maxLevel) {
+  let n = 0,
+    total = 0;
+  while (currentLevel + n < maxLevel) {
+    const c = 1 + Math.floor((currentLevel + n) / 50);
+    if (total + c > availableSP) break;
+    total += c;
+    n++;
+  }
+  return n;
+}
+
 function initializeSkillModal() {
   if (skillModal) return;
   skillModal = document.createElement('div');
@@ -362,6 +383,7 @@ function initializeSkillModal() {
       <div class="modal-skill-stats">
         <p>Level: <span class="modal-level"></span>/<span class="modal-max-level"></span></p>
         <p>Available Points: <span class="modal-available-points"></span></p>
+        <p>Skill Point Cost: <span class="modal-sp-cost"></span></p>
         <p class="modal-mana-row">
           Mana Cost: <span class="modal-current-mana-cost"></span> (<span class="modal-next-mana-cost"></span>)
         </p>
@@ -380,7 +402,7 @@ function initializeSkillModal() {
         <button data-qty="1">+1</button>
         <button data-qty="5">+5</button>
         <button data-qty="10">+10</button>
-        <button data-qty="max">Max</button>
+        <button class="max-btn" data-qty="max">Max</button>
       </div>
       <button class="modal-buy">Buy</button>
     </div>
@@ -479,9 +501,24 @@ function updateSkillModalDetails() {
   const qty = selectedSkillQty === 'max' ? Infinity : parseInt(selectedSkillQty, 10);
   const currentLevel = skillTree.skills[currentSkillId]?.level || 0;
   const maxLevel = skillTree.getSkill(currentSkillId).maxLevel() || Infinity;
+  const availableSP = skillTree.skillPoints;
+  const maxQty = calculateMaxPurchasable(currentLevel, availableSP, maxLevel);
   const effectiveQty = selectedSkillQty === 'max' ? maxLevel - currentLevel : qty;
-  const futureLevel = Math.min(currentLevel + effectiveQty, maxLevel);
+  const actualQty = selectedSkillQty === 'max' ? maxQty : Math.min(qty, maxQty);
+  const futureLevel = currentLevel + actualQty;
   const skill = skillTree.getSkill(currentSkillId);
+
+  // Update SP cost display and button labels
+  const totalCost = calculateSkillPointCost(currentLevel, actualQty);
+  skillModal.querySelector('.modal-sp-cost').textContent = totalCost + ' SP';
+  skillModal.querySelectorAll('.modal-controls button').forEach((btn) => {
+    const v = btn.dataset.qty;
+    let btnQty;
+    if (v === 'max') btnQty = maxQty;
+    else btnQty = Math.min(parseInt(v, 10), maxQty);
+    const btnCost = calculateSkillPointCost(currentLevel, btnQty);
+    btn.textContent = (v === 'max' ? 'Max' : '+' + v) + ' (' + btnCost + ' SP)';
+  });
 
   // Update cost and stats
   const currMana = skillTree.getSkillManaCost(skill, currentLevel);
@@ -520,15 +557,15 @@ function updateSkillModalDetails() {
     }${diff.toFixed(decimals)})</p>`;
   });
 
-  // Update buy button with affordable count
+  // Update buy button with affordable count and cost
   const affordable = Math.min(
     skillTree.skillPoints,
     maxLevel - currentLevel,
-    effectiveQty === Infinity ? skillTree.skillPoints : effectiveQty
+    actualQty === Infinity ? skillTree.skillPoints : actualQty
   );
   const buyBtn = skillModal.querySelector('.modal-buy');
-  buyBtn.disabled = affordable <= 0;
-  buyBtn.textContent = `Buy ${affordable}`;
+  buyBtn.disabled = actualQty <= 0;
+  buyBtn.textContent = `Buy ${actualQty} for ${totalCost} SP`;
 }
 
 function buySkillBulk() {
@@ -545,7 +582,7 @@ function buySkillBulk() {
   }
   updateSkillTreeValues();
   updateActionBar();
-  closeSkillModal();
+  updateSkillModalDetails();
 }
 
 function createSkillElement(baseSkill) {

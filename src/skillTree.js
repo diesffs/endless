@@ -4,8 +4,8 @@ import { game, hero, prestige } from './globals.js';
 import { CLASS_PATHS, SKILL_TREES } from './skills.js';
 import { showManaWarning, showToast, updateActionBar, updatePlayerLife, updateSkillTreeValues } from './ui.js';
 
-export const SKILL_LEVEL_TIERS = [10, 25, 60, 150, 400, 750, 1500];
-export const DEFAULT_MAX_SKILL_LEVEL = 100;
+export const SKILL_LEVEL_TIERS = [10, 25, 60, 150, 400, 750, 1200, 2000, 3000, 5000, 10000];
+export const DEFAULT_MAX_SKILL_LEVEL = 10000;
 export const REQ_LEVEL_FOR_SKILL_TREE = 10;
 
 export default class SkillTree {
@@ -126,8 +126,9 @@ export default class SkillTree {
     if (!skill) return false;
 
     const currentLevel = this.skills[skillId]?.level || 0;
+    const cost = 1 + Math.floor(currentLevel / 50);
     return (
-      this.skillPoints >= 1 &&
+      this.skillPoints >= cost &&
       currentLevel < (skill.maxLevel() || DEFAULT_MAX_SKILL_LEVEL) &&
       hero.level >= skill.requiredLevel()
     );
@@ -147,6 +148,7 @@ export default class SkillTree {
 
     const skill = this.getSkill(skillId);
     const currentLevel = this.skills[skillId]?.level || 0;
+    const cost = 1 + Math.floor(currentLevel / 50);
     const nextLevel = currentLevel + 1;
 
     this.skills[skillId] = {
@@ -156,7 +158,7 @@ export default class SkillTree {
       slot: skill.type() !== 'passive' ? Object.keys(this.skills).length + 1 : null,
     };
 
-    this.skillPoints -= 1;
+    this.skillPoints -= cost;
     hero.recalculateFromAttributes();
 
     if (skill.type() !== 'passive') {
