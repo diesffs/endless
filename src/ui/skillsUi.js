@@ -295,6 +295,193 @@ function showSkillTree() {
   }
 }
 
+let skillModal;
+let currentSkillId;
+let selectedSkillQty = 1;
+
+function initializeSkillModal() {
+  if (skillModal) return;
+  skillModal = document.createElement('div');
+  skillModal.id = 'skill-modal';
+  skillModal.className = 'skill-modal hidden';
+  skillModal.innerHTML = html`
+    <div class="skill-modal-content">
+      <span class="skill-modal-close">&times;</span>
+      <div class="modal-skill-icon"></div>
+      <h2 class="modal-skill-name"></h2>
+      <p class="modal-skill-desc"></p>
+      <div class="modal-skill-stats">
+        <p>Level: <span class="modal-level"></span>/<span class="modal-max-level"></span></p>
+        <p>Available Points: <span class="modal-available-points"></span></p>
+        <p>Mana Cost: <span class="modal-current-mana-cost"></span> (<span class="modal-next-mana-cost"></span>)</p>
+        <p class="modal-cooldown-row">
+          Cooldown: <span class="modal-current-cooldown"></span> (<span class="modal-next-cooldown"></span>)
+        </p>
+        <p class="modal-duration-row">
+          Duration: <span class="modal-current-duration"></span> (<span class="modal-next-duration"></span>)
+        </p>
+      </div>
+      <div class="modal-skill-effects">
+        <h3>Effects</h3>
+        <div class="effects-list"></div>
+      </div>
+      <div class="modal-controls">
+        <button data-qty="1">+1</button>
+        <button data-qty="5">+5</button>
+        <button data-qty="10">+10</button>
+        <button data-qty="max">Max</button>
+      </div>
+      <button class="modal-buy">Buy</button>
+    </div>
+  `;
+  document.body.appendChild(skillModal);
+  skillModal.querySelector('.skill-modal-close').onclick = closeSkillModal;
+  skillModal.addEventListener('click', (e) => {
+    if (e.target === skillModal) closeSkillModal();
+  });
+  skillModal.querySelectorAll('.modal-controls button').forEach((btn) => {
+    btn.onclick = () => {
+      selectedSkillQty = btn.dataset.qty;
+      updateSkillModalDetails();
+    };
+  });
+  skillModal.querySelector('.modal-buy').onclick = () => buySkillBulk();
+}
+
+function openSkillModal(skillId) {
+  initializeSkillModal();
+  currentSkillId = skillId;
+  const skill = skillTree.getSkill(skillId);
+
+  // Set skill icon in modal
+  const iconEl = skillModal.querySelector('.modal-skill-icon');
+  iconEl.style.backgroundImage = `url('${import.meta.env.BASE_URL}skills/${skill.icon()}.jpg')`;
+
+  const currentLevel = skillTree.skills[skillId]?.level || 0;
+  const nextLevel = currentLevel + 1;
+  skillModal.querySelector('.modal-skill-name').textContent = skill.name();
+  skillModal.querySelector('.modal-skill-desc').innerHTML = skill.description().replace(/\n/g, '<br>');
+  skillModal.querySelector('.modal-level').textContent = currentLevel;
+  skillModal.querySelector('.modal-max-level').textContent = skill.maxLevel() === Infinity ? '∞' : skill.maxLevel();
+  skillModal.querySelector('.modal-available-points').textContent = skillTree.skillPoints;
+  const currMana = skillTree.getSkillManaCost(skill, currentLevel);
+  const nextMana = skillTree.getSkillManaCost(skill, nextLevel);
+  skillModal.querySelector('.modal-current-mana-cost').textContent = currMana;
+  skillModal.querySelector('.modal-next-mana-cost').textContent = nextMana;
+  const currCd = skillTree.getSkillCooldown(skill, currentLevel);
+  const nextCd = skillTree.getSkillCooldown(skill, nextLevel);
+  skillModal.querySelector('.modal-current-cooldown').textContent = currCd / 1000 + 's';
+  skillModal.querySelector('.modal-next-cooldown').textContent = nextCd / 1000 + 's';
+  const currDur = skillTree.getSkillDuration(skill, currentLevel);
+  const nextDur = skillTree.getSkillDuration(skill, nextLevel);
+  skillModal.querySelector('.modal-current-duration').textContent = currDur / 1000 + 's';
+  skillModal.querySelector('.modal-next-duration').textContent = nextDur / 1000 + 's';
+
+  // Show or hide cooldown row
+  const cdRow = skillModal.querySelector('.modal-cooldown-row');
+  if (skill.cooldown) {
+    cdRow.style.display = '';
+  } else {
+    cdRow.style.display = 'none';
+  }
+
+  // Show or hide duration row
+  const durRow = skillModal.querySelector('.modal-duration-row');
+  if (skill.duration) {
+    durRow.style.display = '';
+  } else {
+    durRow.style.display = 'none';
+  }
+
+  // Populate effects
+  const effectsCurrent = skillTree.getSkillEffect(skillId, currentLevel);
+  const effectsNext = skillTree.getSkillEffect(skillId, nextLevel);
+  const effectsEl = skillModal.querySelector('.effects-list');
+  effectsEl.innerHTML = '';
+  Object.entries(effectsNext).forEach(([stat, nextVal]) => {
+    const currVal = effectsCurrent[stat] || 0;
+    const diff = nextVal - currVal;
+    const decimals = STATS[stat].decimalPlaces || 0;
+    effectsEl.innerHTML += `
+      <p>${formatStatName(stat)}: ${currVal.toFixed(decimals)} (${diff >= 0 ? '+' : ''}${diff.toFixed(decimals)})</p>
+    `;
+  });
+
+  selectedSkillQty = 1;
+  updateSkillModalDetails();
+  skillModal.classList.remove('hidden');
+}
+
+function closeSkillModal() {
+  if (skillModal) skillModal.classList.add('hidden');
+}
+
+function updateSkillModalDetails() {
+  const qty = selectedSkillQty === 'max' ? Infinity : parseInt(selectedSkillQty, 10);
+  const currentLevel = skillTree.skills[currentSkillId]?.level || 0;
+  const maxLevel = skillTree.getSkill(currentSkillId).maxLevel() || Infinity;
+  const effectiveQty = selectedSkillQty === 'max' ? maxLevel - currentLevel : qty;
+  const futureLevel = Math.min(currentLevel + effectiveQty, maxLevel);
+  const skill = skillTree.getSkill(currentSkillId);
+
+  // Update cost and stats
+  const currMana = skillTree.getSkillManaCost(skill, currentLevel);
+  const nextMana = skillTree.getSkillManaCost(skill, futureLevel);
+  skillModal.querySelector('.modal-current-mana-cost').textContent = currMana;
+  skillModal.querySelector('.modal-next-mana-cost').textContent = nextMana;
+
+  const currCd = skillTree.getSkillCooldown(skill, currentLevel) / 1000;
+  const nextCd = skillTree.getSkillCooldown(skill, futureLevel) / 1000;
+  skillModal.querySelector('.modal-current-cooldown').textContent = currCd + 's';
+  skillModal.querySelector('.modal-next-cooldown').textContent = nextCd + 's';
+
+  const currDur = skillTree.getSkillDuration(skill, currentLevel) / 1000;
+  const nextDur = skillTree.getSkillDuration(skill, futureLevel) / 1000;
+  skillModal.querySelector('.modal-current-duration').textContent = currDur + 's';
+  skillModal.querySelector('.modal-next-duration').textContent = nextDur + 's';
+
+  // Update effects list to show delta for selected qty
+  const effectsCurrent = skillTree.getSkillEffect(currentSkillId, currentLevel);
+  const effectsFuture = skillTree.getSkillEffect(currentSkillId, futureLevel);
+  const effectsEl = skillModal.querySelector('.effects-list');
+  effectsEl.innerHTML = '';
+  Object.entries(effectsFuture).forEach(([stat, futureVal]) => {
+    const currVal = effectsCurrent[stat] || 0;
+    const diff = futureVal - currVal;
+    const decimals = STATS[stat].decimalPlaces || 0;
+    effectsEl.innerHTML += `<p>${formatStatName(stat)}: ${currVal.toFixed(decimals)} (${
+      diff >= 0 ? '+' : ''
+    }${diff.toFixed(decimals)})</p>`;
+  });
+
+  // Update buy button with affordable count
+  const affordable = Math.min(
+    skillTree.skillPoints,
+    maxLevel - currentLevel,
+    effectiveQty === Infinity ? skillTree.skillPoints : effectiveQty
+  );
+  const buyBtn = skillModal.querySelector('.modal-buy');
+  buyBtn.disabled = affordable <= 0;
+  buyBtn.textContent = `Buy ${affordable}`;
+}
+
+function buySkillBulk() {
+  let count = selectedSkillQty === 'max' ? Infinity : parseInt(selectedSkillQty, 10);
+  const currentLevel = skillTree.skills[currentSkillId]?.level || 0;
+  const maxLevel = skillTree.getSkill(currentSkillId).maxLevel() || Infinity;
+  const toBuy = Math.min(
+    skillTree.skillPoints,
+    maxLevel - currentLevel,
+    count === Infinity ? skillTree.skillPoints : count
+  );
+  for (let i = 0; i < toBuy; i++) {
+    skillTree.unlockSkill(currentSkillId);
+  }
+  updateSkillTreeValues();
+  updateActionBar();
+  closeSkillModal();
+}
+
 function createSkillElement(baseSkill) {
   let skill = skillTree.getSkill(baseSkill.id);
 
@@ -318,11 +505,7 @@ function createSkillElement(baseSkill) {
   skillElement.addEventListener('mouseleave', hideTooltip);
 
   skillElement.addEventListener('click', (e) => {
-    if (skillTree.unlockSkill(skill.id)) {
-      updateSkillTreeValues();
-      // Update tooltip content after skill upgrade
-      showTooltip(updateTooltipContent(skill.id), { clientX: e.clientX, clientY: e.clientY });
-    }
+    openSkillModal(skill.id);
   });
 
   return skillElement;

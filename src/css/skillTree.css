@@ -252,3 +252,100 @@
 #class-selection .class-path {
   margin-bottom: 0;
 }
+
+/* Skill Modal Styling */
+.skill-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.skill-modal.hidden {
+  display: none;
+}
+.skill-modal-content {
+  background: var(--bg-element, #1e2127);
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  width: 400px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+.skill-modal-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--text, #fff);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.skill-modal-content h2 {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  color: var(--accent, #3b82f6);
+}
+.skill-modal-content p {
+  margin: 0.5rem 0;
+  color: var(--text, #fff);
+}
+.skill-modal-content .modal-skill-stats p {
+  margin: 0.75rem 0;
+}
+.skill-modal-content .modal-controls {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+.skill-modal-content .modal-controls button {
+  background: var(--accent, #3b82f6);
+  color: #fff;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.skill-modal-content .modal-controls button:hover {
+  background: #2563eb;
+}
+.skill-modal-content .modal-buy {
+  background: var(--accent, #3b82f6);
+  color: #fff;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  width: 100%;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background 0.2s, opacity 0.2s;
+}
+.skill-modal-content .modal-buy:hover:not(:disabled) {
+  background: #2563eb;
+}
+.skill-modal-content .modal-buy:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.skill-modal-content .modal-skill-icon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 1rem;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 8px;
+}

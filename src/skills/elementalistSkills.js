@@ -37,8 +37,6 @@ export const ELEMENTALIST_SKILLS = {
     id: 'warmth',
     name: () => 'Warmth',
     type: () => 'passive',
-    cooldown: (level) => 8000,
-    duration: (level) => 10000,
     requiredLevel: () => SKILL_LEVEL_TIERS[0],
     icon: () => 'storm',
     description: () => 'Increases mana and mana regeneration',
