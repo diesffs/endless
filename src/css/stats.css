@@ -138,6 +138,6 @@
 
 .stat-row .stat-label {
   display: inline-block;
-  /* width: 180px; */
+  width: 180px;
   font-weight: bold;
 }
