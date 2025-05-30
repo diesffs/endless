@@ -322,7 +322,7 @@ export default class SkillTree {
 
     // Apply buff
     hero.stats.currentMana -= this.getSkillManaCost(skill);
-    const buffEndTime = Date.now() + skill.duration;
+    const buffEndTime = Date.now() + this.getSkillDuration(skill);
     const cooldownEndTime = Date.now() + this.getSkillCooldown(skill);
 
     // Store buff data
