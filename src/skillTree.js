@@ -5,7 +5,7 @@ import { CLASS_PATHS, SKILL_TREES } from './skills.js';
 import { showManaWarning, showToast, updateActionBar, updatePlayerLife, updateSkillTreeValues } from './ui.js';
 
 export const SKILL_LEVEL_TIERS = [10, 25, 60, 150, 400, 750, 1200, 2000, 3000, 5000, 10000];
-export const DEFAULT_MAX_SKILL_LEVEL = 10000;
+export const DEFAULT_MAX_SKILL_LEVEL = Infinity;
 export const REQ_LEVEL_FOR_SKILL_TREE = 10;
 
 export default class SkillTree {

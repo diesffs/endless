@@ -500,13 +500,17 @@ function closeSkillModal() {
 function updateSkillModalDetails() {
   const qty = selectedSkillQty === 'max' ? Infinity : parseInt(selectedSkillQty, 10);
   const currentLevel = skillTree.skills[currentSkillId]?.level || 0;
-  const maxLevel = skillTree.getSkill(currentSkillId).maxLevel() || Infinity;
+  const skill = skillTree.getSkill(currentSkillId);
+  const maxLevel = skill.maxLevel() || Infinity;
   const availableSP = skillTree.skillPoints;
   const maxQty = calculateMaxPurchasable(currentLevel, availableSP, maxLevel);
-  const effectiveQty = selectedSkillQty === 'max' ? maxLevel - currentLevel : qty;
   const actualQty = selectedSkillQty === 'max' ? maxQty : Math.min(qty, maxQty);
   const futureLevel = currentLevel + actualQty;
-  const skill = skillTree.getSkill(currentSkillId);
+
+  // Update modal fields
+  skillModal.querySelector('.modal-level').textContent = currentLevel;
+  skillModal.querySelector('.modal-max-level').textContent = maxLevel === Infinity ? '∞' : maxLevel;
+  skillModal.querySelector('.modal-available-points').textContent = skillTree.skillPoints;
 
   // Update SP cost display and button labels
   const totalCost = calculateSkillPointCost(currentLevel, actualQty);
@@ -525,6 +529,7 @@ function updateSkillModalDetails() {
   const nextMana = skillTree.getSkillManaCost(skill, futureLevel);
   skillModal.querySelector('.modal-current-mana-cost').textContent = currMana;
   skillModal.querySelector('.modal-next-mana-cost').textContent = nextMana;
+
   // Show or hide mana cost row
   const manaRow = skillModal.querySelector('.modal-mana-row');
   if (skill.manaCost) {
@@ -533,17 +538,19 @@ function updateSkillModalDetails() {
     manaRow.style.display = 'none';
   }
 
+  // Cooldown
   const currCd = skillTree.getSkillCooldown(skill, currentLevel) / 1000;
   const nextCd = skillTree.getSkillCooldown(skill, futureLevel) / 1000;
   skillModal.querySelector('.modal-current-cooldown').textContent = currCd + 's';
   skillModal.querySelector('.modal-next-cooldown').textContent = nextCd + 's';
 
+  // Duration
   const currDur = skillTree.getSkillDuration(skill, currentLevel) / 1000;
   const nextDur = skillTree.getSkillDuration(skill, futureLevel) / 1000;
   skillModal.querySelector('.modal-current-duration').textContent = currDur + 's';
   skillModal.querySelector('.modal-next-duration').textContent = nextDur + 's';
 
-  // Update effects list to show delta for selected qty
+  // Effects list
   const effectsCurrent = skillTree.getSkillEffect(currentSkillId, currentLevel);
   const effectsFuture = skillTree.getSkillEffect(currentSkillId, futureLevel);
   const effectsEl = skillModal.querySelector('.effects-list');
@@ -557,12 +564,7 @@ function updateSkillModalDetails() {
     }${diff.toFixed(decimals)})</p>`;
   });
 
-  // Update buy button with affordable count and cost
-  const affordable = Math.min(
-    skillTree.skillPoints,
-    maxLevel - currentLevel,
-    actualQty === Infinity ? skillTree.skillPoints : actualQty
-  );
+  // Update buy button
   const buyBtn = skillModal.querySelector('.modal-buy');
   buyBtn.disabled = actualQty <= 0;
   buyBtn.textContent = `Buy ${actualQty} for ${totalCost} SP`;
@@ -582,7 +584,7 @@ function buySkillBulk() {
   }
   updateSkillTreeValues();
   updateActionBar();
-  updateSkillModalDetails();
+  updateSkillModalDetails(); // <-- Ensure modal updates live after purchase
 }
 
 function createSkillElement(baseSkill) {
