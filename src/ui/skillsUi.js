@@ -582,6 +582,15 @@ function buySkillBulk() {
   for (let i = 0; i < toBuy; i++) {
     skillTree.unlockSkill(currentSkillId);
   }
+  // After leveling up in bulk
+  if (typeof gtag === 'function') {
+    gtag('event', 'skill_leveled_up_bulk', {
+      event_category: 'SkillTree',
+      event_label: currentSkillId,
+      value: toBuy, // total levels gained in this action
+      final_level: currentLevel + toBuy, // you can add custom params like this
+    });
+  }
   updateSkillTreeValues();
   updateActionBar();
   updateSkillModalDetails(); // <-- Ensure modal updates live after purchase

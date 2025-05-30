@@ -177,15 +177,6 @@ export default class SkillTree {
     updateSkillTreeValues(); // Ensure this function updates the tooltip content
     game.saveGame();
 
-    // Google Analytics event: skill leveled up
-    if (typeof gtag === 'function') {
-      gtag('event', 'skill_leveled_up', {
-        event_category: 'SkillTree',
-        event_label: skillId,
-        value: nextLevel,
-      });
-    }
-
     return true;
   }
 
@@ -414,7 +405,7 @@ export default class SkillTree {
     Object.values(this.skills).forEach((skill) => {
       spentPoints += skill.level || 0;
     });
-    this.skillPoints += spentPoints;
+    this.skillPoints = hero.level - 1;
     this.selectedPath = null;
     this.skills = {};
     this.activeBuffs.clear();
