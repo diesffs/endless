@@ -112,7 +112,7 @@ export const ITEM_STAT_POOLS = {
   },
   ARMOR: {
     mandatory: ['armor'],
-    possible: [...getStatsByTag('armor')],
+    possible: [...getStatsByTag('defense')],
   },
   BELT: {
     mandatory: [],

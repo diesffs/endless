@@ -40,6 +40,8 @@ export const MISC_STATS = {
   strength: {
     base: 0,
     decimalPlaces: 0,
+    item: { min: 2, max: 5, scaling: 'capped' },
+    itemTags: ['misc'],
   },
   strengthPercent: {
     base: 0,
@@ -48,6 +50,8 @@ export const MISC_STATS = {
   agility: {
     base: 0,
     decimalPlaces: 0,
+    item: { min: 2, max: 5, scaling: 'capped' },
+    itemTags: ['misc'],
   },
   agilityPercent: {
     base: 0,
@@ -56,6 +60,8 @@ export const MISC_STATS = {
   vitality: {
     base: 0,
     decimalPlaces: 0,
+    item: { min: 2, max: 5, scaling: 'capped' },
+    itemTags: ['misc'],
   },
   vitalityPercent: {
     base: 0,
