@@ -349,3 +349,72 @@
   background-position: center;
   border-radius: 8px;
 }
+
+/* Toggle Sections Styling */
+#auto-cast-section,
+#display-section {
+  margin-top: 32px;
+  background: var(--bg-panel);
+  border-radius: 8px;
+  padding: 12px;
+}
+#auto-cast-section h3,
+#display-section h3 {
+  margin-bottom: 8px;
+  color: var(--accent);
+  font-size: 1.1em;
+}
+.auto-cast-switch,
+.display-switch {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.auto-cast-switch .skill-icon,
+.display-switch .skill-icon {
+  width: 28px;
+  height: 28px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 4px;
+  margin-right: 8px;
+}
+.auto-cast-switch label,
+.display-switch label {
+  flex: 1;
+  color: var(--text);
+  font-size: 0.95em;
+}
+.auto-cast-switch input[type='checkbox'],
+.display-switch input[type='checkbox'] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 40px;
+  height: 20px;
+  background: var(--bg-element);
+  border-radius: 10px;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.2s;
+}
+.auto-cast-switch input[type='checkbox']::before,
+.display-switch input[type='checkbox']::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+.auto-cast-switch input[type='checkbox']:checked,
+.display-switch input[type='checkbox']:checked {
+  background: var(--accent);
+}
+.auto-cast-switch input[type='checkbox']:checked::before,
+.display-switch input[type='checkbox']:checked::before {
+  transform: translateX(20px);
+}

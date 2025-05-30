@@ -170,6 +170,8 @@ export function initializeSkillTreeStructure() {
   updateSkillTreeValues();
   // --- Auto-cast toggles for instant/buff skills ---
   renderAutoCastToggles();
+  // --- Slot Display Toggles ---
+  renderDisplayToggles();
 }
 
 function renderAutoCastToggles() {
@@ -228,6 +230,51 @@ function renderAutoCastToggles() {
   container.appendChild(autoCastSection);
 }
 
+// --- Slot Display Toggles ---
+function renderDisplayToggles() {
+  const container = document.getElementById('skill-tree-container');
+  let displaySection = document.getElementById('display-section');
+  if (displaySection) displaySection.remove();
+
+  const eligibleSkills = Object.entries(skillTree.skills)
+    .filter(([id, data]) => {
+      const base = skillTree.getSkill(id);
+      return base && base.type() !== 'passive' && data.level > 0;
+    })
+    .map(([id]) => ({ ...skillTree.getSkill(id), id }));
+  if (eligibleSkills.length === 0) return;
+
+  displaySection = document.createElement('div');
+  displaySection.id = 'display-section';
+  displaySection.innerHTML = `<h3 style="margin-bottom:8px;">Slot Display Settings</h3>`;
+
+  eligibleSkills.forEach((skill) => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'display-switch';
+    const icon = document.createElement('div');
+    icon.className = 'skill-icon';
+    icon.style.width = '28px';
+    icon.style.height = '28px';
+    icon.style.backgroundImage = `url('${import.meta.env.BASE_URL}skills/${skill.icon()}.jpg')`;
+    icon.style.marginRight = '8px';
+    wrapper.appendChild(icon);
+    const label = document.createElement('label');
+    label.textContent = skill.name();
+    label.style.marginRight = '8px';
+    wrapper.appendChild(label);
+    const toggle = document.createElement('input');
+    toggle.type = 'checkbox';
+    toggle.checked = skillTree.isDisplayEnabled(skill.id);
+    toggle.addEventListener('change', (e) => {
+      skillTree.setDisplay(skill.id, e.target.checked);
+      updateActionBar();
+    });
+    wrapper.appendChild(toggle);
+    displaySection.appendChild(wrapper);
+  });
+  container.appendChild(displaySection);
+}
+
 export function updateSkillTreeValues() {
   const characterAvatarEl = document.getElementById('character-avatar');
   const characterNameEl = document.getElementById('character-name');
@@ -284,6 +331,8 @@ export function updateSkillTreeValues() {
 
   // --- Auto-cast toggles for instant/buff skills ---
   renderAutoCastToggles();
+  // --- Slot display toggles ---
+  renderDisplayToggles();
 }
 
 function showSkillTree() {
@@ -313,7 +362,9 @@ function initializeSkillModal() {
       <div class="modal-skill-stats">
         <p>Level: <span class="modal-level"></span>/<span class="modal-max-level"></span></p>
         <p>Available Points: <span class="modal-available-points"></span></p>
-        <p>Mana Cost: <span class="modal-current-mana-cost"></span> (<span class="modal-next-mana-cost"></span>)</p>
+        <p class="modal-mana-row">
+          Mana Cost: <span class="modal-current-mana-cost"></span> (<span class="modal-next-mana-cost"></span>)
+        </p>
         <p class="modal-cooldown-row">
           Cooldown: <span class="modal-current-cooldown"></span> (<span class="modal-next-cooldown"></span>)
         </p>
@@ -377,6 +428,14 @@ function openSkillModal(skillId) {
   skillModal.querySelector('.modal-current-duration').textContent = currDur / 1000 + 's';
   skillModal.querySelector('.modal-next-duration').textContent = nextDur / 1000 + 's';
 
+  // Show or hide mana cost row
+  const manaRow = skillModal.querySelector('.modal-mana-row');
+  if (skill.manaCost) {
+    manaRow.style.display = '';
+  } else {
+    manaRow.style.display = 'none';
+  }
+
   // Show or hide cooldown row
   const cdRow = skillModal.querySelector('.modal-cooldown-row');
   if (skill.cooldown) {
@@ -429,6 +488,13 @@ function updateSkillModalDetails() {
   const nextMana = skillTree.getSkillManaCost(skill, futureLevel);
   skillModal.querySelector('.modal-current-mana-cost').textContent = currMana;
   skillModal.querySelector('.modal-next-mana-cost').textContent = nextMana;
+  // Show or hide mana cost row
+  const manaRow = skillModal.querySelector('.modal-mana-row');
+  if (skill.manaCost) {
+    manaRow.style.display = '';
+  } else {
+    manaRow.style.display = 'none';
+  }
 
   const currCd = skillTree.getSkillCooldown(skill, currentLevel) / 1000;
   const nextCd = skillTree.getSkillCooldown(skill, futureLevel) / 1000;
@@ -595,7 +661,7 @@ export function updateActionBar() {
   let slotNumber = 1;
 
   Object.entries(skillTree.skills).forEach(([skillId, skill]) => {
-    if (skill.type() === 'passive') return;
+    if (skill.type() === 'passive' || !skillTree.isDisplayEnabled(skillId)) return;
 
     const skillSlot = document.createElement('div');
     skillSlot.className = 'skill-slot';

@@ -14,6 +14,7 @@ export default class SkillTree {
     this.selectedPath = null;
     this.skills = {};
     this.autoCastSettings = {};
+    this.displaySettings = {};
 
     handleSavedData(savedData, this);
     // add methods for all skills from SKILL_TREES
@@ -413,6 +414,17 @@ export default class SkillTree {
     return !!this.autoCastSettings[skillId];
   }
 
+  // --- Slot display settings (default ON) ---
+  setDisplay(skillId, enabled) {
+    this.displaySettings[skillId] = enabled;
+    game.saveGame();
+  }
+
+  isDisplayEnabled(skillId) {
+    // Default ON unless explicitly disabled
+    return skillId in this.displaySettings ? !!this.displaySettings[skillId] : true;
+  }
+
   autoCastEligibleSkills() {
     // Only run if prestige.hasAutoSpellCastUpgrade() is true
     if (!prestige.hasAutoSpellCastUpgrade()) return;
@@ -420,6 +432,8 @@ export default class SkillTree {
     Object.entries(this.skills).forEach(([skillId, skillData]) => {
       const skill = SKILL_TREES[this.selectedPath?.name]?.[skillId];
       if (!skill || !this.isAutoCastEnabled(skillId)) return;
+      // Do not auto-cast skills hidden from display
+      if (!this.isDisplayEnabled(skillId)) return;
       if (skill.type() === 'instant') {
         // Only cast if not on cooldown and enough mana
         if (!skillData.cooldownEndTime || skillData.cooldownEndTime <= Date.now()) {
