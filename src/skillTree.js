@@ -106,6 +106,14 @@ export default class SkillTree {
     };
     hero.recalculateFromAttributes();
     game.saveGame();
+
+    // Google Analytics event: class path chosen
+    if (typeof gtag === 'function') {
+      gtag('event', 'class_path_chosen', {
+        event_category: 'SkillTree',
+        event_label: pathName,
+      });
+    }
     return true;
   }
 
@@ -168,6 +176,15 @@ export default class SkillTree {
     // Trigger tooltip update
     updateSkillTreeValues(); // Ensure this function updates the tooltip content
     game.saveGame();
+
+    // Google Analytics event: skill leveled up
+    if (typeof gtag === 'function') {
+      gtag('event', 'skill_leveled_up', {
+        event_category: 'SkillTree',
+        event_label: skillId,
+        value: nextLevel,
+      });
+    }
 
     return true;
   }
@@ -405,6 +422,13 @@ export default class SkillTree {
     updateActionBar();
     updateSkillTreeValues();
     game.saveGame();
+
+    // Google Analytics event: skill tree reset
+    if (typeof gtag === 'function') {
+      gtag('event', 'skill_tree_reset', {
+        event_category: 'SkillTree',
+      });
+    }
   }
 
   setAutoCast(skillId, enabled) {
