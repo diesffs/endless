@@ -194,12 +194,16 @@ export default class Training {
     // Compute total bonus gained
     const bonusValue = (config.bonus || 0) * qty;
     const decimals = STATS[stat].decimalPlaces || 0;
-    // Update modal fields
+
+    // --- Update ALL modal fields ---
     this.modal.querySelector('.modal-qty').textContent = qty;
     this.modal.querySelector('.modal-total-cost').textContent = totalCost;
     this.modal.querySelector('.modal-total-bonus').textContent = `+${bonusValue.toFixed(decimals)} ${formatStatName(
       stat
     )}`;
+    this.modal.querySelector('.modal-level').textContent = baseLevel;
+    this.modal.querySelector('.modal-bonus').textContent = this.getBonusText(stat, config, baseLevel);
+    this.modal.querySelector('.modal-next-bonus').textContent = this.getBonusText(stat, config, baseLevel + 1);
 
     // Enable/disable Buy button based on quantity and affordability
     const buyBtn = this.modal.querySelector('.modal-buy');
@@ -260,6 +264,11 @@ export default class Training {
     updateStatsAndAttributesUI();
     updateResources();
     game.saveGame();
+
+    // Update modal details live
+    if (this.modal && !this.modal.classList.contains('hidden') && this.currentStat === stat) {
+      this.updateModalDetails();
+    }
   }
 
   updateTrainingBonuses() {
@@ -306,5 +315,10 @@ export default class Training {
     updateStatsAndAttributesUI();
     updateResources();
     game.saveGame();
+
+    // Update modal details live
+    if (this.modal && !this.modal.classList.contains('hidden') && this.currentStat === stat) {
+      this.updateModalDetails();
+    }
   }
 }
