@@ -1,6 +1,6 @@
 import Hero from './hero.js';
 import Game from './game.js';
-import Shop from './shop.js';
+import Training from './training.js';
 import {
   initializeSkillTreeUI,
   initializeUI,
@@ -17,7 +17,7 @@ import SkillTree from './skillTree.js';
 import { createDebugUI, createModifyUI } from './functions.js';
 import Statistics from './statistics.js';
 import { apiFetch, loadGameData, saveGameData } from './api.js';
-import { game, hero, inventory, shop, skillTree, prestige, statistics, setGlobals } from './globals.js';
+import { game, hero, inventory, training, skillTree, prestige, statistics, setGlobals } from './globals.js';
 import crypt from './encrypt.js';
 import './region.js';
 import { initializeRegionSystem, updateRegionUI } from './region.js';
@@ -38,14 +38,14 @@ export let dev = false;
   const _inventory = new Inventory(savedData?.inventory);
   const _skillTree = new SkillTree(savedData?.skillTree);
   const _prestige = new Prestige(savedData?.prestige);
-  const _shop = new Shop(savedData?.shop);
+  const _training = new Training(savedData?.training);
   const _statistics = new Statistics(savedData?.statistics);
 
   setGlobals({
     game: _game,
     hero: _hero,
     inventory: _inventory,
-    shop: _shop,
+    training: _training,
     skillTree: _skillTree,
     prestige: _prestige,
     statistics: _statistics,
@@ -219,7 +219,7 @@ export let dev = false;
       await saveGameData(
         userSession.id,
         {
-          data_json: crypt.encrypt(JSON.stringify({ hero, skillTree, prestige, shop, inventory, statistics })),
+          data_json: crypt.encrypt(JSON.stringify({ hero, skillTree, prestige, training, inventory, statistics })),
           game_name: gameName,
         },
         userSession.token

@@ -16,72 +16,72 @@ const SECTION_DEFS = [
   { key: 'misc', label: 'Misc', stats: Object.keys(MISC_STATS) },
 ];
 
-export default class Shop {
+export default class Training {
   constructor(savedData = null) {
     this.upgradeLevels = {};
-    this.shopBonuses = {};
+    this.trainingBonuses = {};
     Object.entries(STATS).forEach(([stat, config]) => {
-      if (config.shop && config.shop.available) {
+      if (config.training && config.training.available) {
         this.upgradeLevels[stat] = 0;
-        this.shopBonuses[stat] = 0;
+        this.trainingBonuses[stat] = 0;
       }
     });
 
     handleSavedData(savedData, this);
     this.activeSection = SECTION_DEFS[0].key;
-    this.initializeShopUI();
+    this.initializeTrainingUI();
   }
 
   reset() {
     Object.keys(this.upgradeLevels).forEach((stat) => {
       this.upgradeLevels[stat] = 0;
     });
-    Object.keys(this.shopBonuses).forEach((stat) => {
-      this.shopBonuses[stat] = 0;
+    Object.keys(this.trainingBonuses).forEach((stat) => {
+      this.trainingBonuses[stat] = 0;
     });
   }
 
-  initializeShopUI() {
-    const shopGrid = document.querySelector('.shop-grid');
-    if (!shopGrid) return;
+  initializeTrainingUI() {
+    const trainingGrid = document.querySelector('.training-grid');
+    if (!trainingGrid) return;
 
     // Section navigation
-    let nav = document.querySelector('.shop-section-nav');
+    let nav = document.querySelector('.training-section-nav');
     if (!nav) {
       nav = document.createElement('div');
-      nav.className = 'shop-section-nav';
+      nav.className = 'training-section-nav';
       nav.style.display = 'flex';
       nav.style.gap = '8px';
       nav.style.marginBottom = '12px';
-      shopGrid.parentElement.insertBefore(nav, shopGrid);
+      trainingGrid.parentElement.insertBefore(nav, trainingGrid);
     }
     nav.innerHTML = SECTION_DEFS.map(
       (sec) => `
-      <button class="shop-section-btn${this.activeSection === sec.key ? ' active' : ''}" data-section="${sec.key}">${
-        sec.label
-      }</button>
+      <button class="training-section-btn${this.activeSection === sec.key ? ' active' : ''}" data-section="${
+        sec.key
+      }">${sec.label}</button>
     `
     ).join('');
     nav.querySelectorAll('button[data-section]').forEach((btn) => {
       btn.onclick = () => {
         this.activeSection = btn.dataset.section;
-        this.updateShopUI('gold-upgrades');
+        this.updateTrainingUI('gold-upgrades');
         nav.querySelectorAll('button').forEach((b) => b.classList.remove('active'));
         btn.classList.add('active');
       };
     });
 
-    const goldGrid = document.querySelector('#gold-upgrades .shop-grid');
+    const goldGrid = document.querySelector('#gold-upgrades .training-grid');
     if (goldGrid) this.attachGridListeners(goldGrid);
-    this.updateShopUI('gold-upgrades');
+    this.updateTrainingUI('gold-upgrades');
 
     // Create modal for bulk upgrades if not exists
     if (!this.modal) {
       const modal = document.createElement('div');
-      modal.className = 'shop-modal hidden';
+      modal.className = 'training-modal hidden';
       modal.innerHTML = html`
-        <div class="shop-modal-content">
-          <button class="shop-modal-close">&times;</button>
+        <div class="training-modal-content">
+          <button class="training-modal-close">&times;</button>
           <h2 class="modal-title"></h2>
           <p>Current Level: <span class="modal-level"></span></p>
           <p>Current Bonus: <span class="modal-bonus"></span></p>
@@ -98,7 +98,7 @@ export default class Shop {
         </div>
       `;
       document.body.appendChild(modal);
-      modal.querySelector('.shop-modal-close').onclick = () => this.closeModal();
+      modal.querySelector('.training-modal-close').onclick = () => this.closeModal();
       // Quantity controls: set selectedQty and preview totals
       modal.querySelectorAll('.modal-controls button').forEach((btn) => {
         btn.onclick = () => {
@@ -131,8 +131,8 @@ export default class Shop {
   }
 
   openModal(stat) {
-    const shopConfig = STATS[stat].shop;
-    if (!shopConfig || !shopConfig.available) return;
+    const trainingConfig = STATS[stat].training;
+    if (!trainingConfig || !trainingConfig.available) return;
     this.currentStat = stat;
     // Set title and base info
     const m = this.modal;
@@ -140,12 +140,12 @@ export default class Shop {
     m.querySelector('.modal-level').textContent = this.upgradeLevels[stat] || 0;
     m.querySelector('.modal-bonus').textContent = this.getBonusText(
       stat,
-      STATS[stat].shop,
+      STATS[stat].training,
       this.upgradeLevels[stat] || 0
     );
     m.querySelector('.modal-next-bonus').textContent = this.getBonusText(
       stat,
-      STATS[stat].shop,
+      STATS[stat].training,
       (this.upgradeLevels[stat] || 0) + 1
     );
     // Reset to default quantity
@@ -162,12 +162,12 @@ export default class Shop {
     // Guard against missing currentStat
     if (!this.currentStat) return;
     const stat = this.currentStat;
-    const shopConfig = STATS[stat].shop;
-    if (!shopConfig || !shopConfig.available) {
+    const trainingConfig = STATS[stat].training;
+    if (!trainingConfig || !trainingConfig.available) {
       this.closeModal();
       return;
     }
-    const config = shopConfig;
+    const config = trainingConfig;
     const baseLevel = this.upgradeLevels[stat] || 0;
     const goldAvailable = hero.gold;
     // Determine numeric qty
@@ -206,19 +206,19 @@ export default class Shop {
     buyBtn.disabled = qty <= 0 || totalCost > goldAvailable;
   }
 
-  updateShopUI(subTab) {
-    const shopGrid = document.querySelector(`#${subTab} .shop-grid`);
-    if (!shopGrid) return;
+  updateTrainingUI(subTab) {
+    const trainingGrid = document.querySelector(`#${subTab} .training-grid`);
+    if (!trainingGrid) return;
     const section = SECTION_DEFS.find((s) => s.key === this.activeSection);
-    shopGrid.innerHTML = Object.entries(STATS)
-      .filter(([stat, config]) => config.shop && config.shop.available && section.stats.includes(stat))
+    trainingGrid.innerHTML = Object.entries(STATS)
+      .filter(([stat, config]) => config.training && config.training.available && section.stats.includes(stat))
       .map(([stat, config]) => this.createUpgradeButton(stat, config))
       .join('');
   }
 
   createUpgradeButton(stat, config) {
     const level = this.upgradeLevels[stat] || 0;
-    const bonus = this.getBonusText(stat, config.shop, level);
+    const bonus = this.getBonusText(stat, config.training, level);
 
     return html`
       <button data-stat="${stat}">
@@ -236,7 +236,7 @@ export default class Shop {
 
   getUpgradeCost(stat) {
     const level = this.upgradeLevels[stat] || 0;
-    const cost = STATS[stat].shop ? STATS[stat].shop.cost * (level + 1) : 0;
+    const cost = STATS[stat].training ? STATS[stat].training.cost * (level + 1) : 0;
     return cost;
   }
 
@@ -255,23 +255,23 @@ export default class Shop {
     this.upgradeLevels[stat] = (this.upgradeLevels[stat] || 0) + 1;
 
     // Update UI
-    this.updateShopUI('gold-upgrades');
+    this.updateTrainingUI('gold-upgrades');
     hero.recalculateFromAttributes();
     updateStatsAndAttributesUI();
     updateResources();
     game.saveGame();
   }
 
-  updateShopBonuses() {
+  updateTrainingBonuses() {
     // Reset equipment bonuses
-    Object.keys(this.shopBonuses).forEach((stat) => {
-      this.shopBonuses[stat] = 0;
+    Object.keys(this.trainingBonuses).forEach((stat) => {
+      this.trainingBonuses[stat] = 0;
     });
 
     // Only calculate bonuses for upgrades defined in UPGRADE_CONFIG
     Object.keys(STATS).forEach((upg) => {
-      if (this.shopBonuses[upg] !== undefined && this.upgradeLevels[upg] !== undefined) {
-        this.shopBonuses[upg] += this.upgradeLevels[upg] * STATS[upg].shop?.bonus;
+      if (this.trainingBonuses[upg] !== undefined && this.upgradeLevels[upg] !== undefined) {
+        this.trainingBonuses[upg] += this.upgradeLevels[upg] * STATS[upg].training?.bonus;
       }
     });
   }
@@ -301,7 +301,7 @@ export default class Shop {
     } else {
       showToast(`Not enough gold to upgrade ${formatStatName(stat)}!`, 'error');
     }
-    this.updateShopUI('gold-upgrades');
+    this.updateTrainingUI('gold-upgrades');
     hero.recalculateFromAttributes();
     updateStatsAndAttributesUI();
     updateResources();

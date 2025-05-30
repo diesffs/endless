@@ -4,7 +4,7 @@ export const OFFENSE_STATS = {
   damage: {
     base: 10,
     decimalPlaces: 0,
-    shop: { available: true, cost: 60, bonus: 1 },
+    training: { available: true, cost: 60, bonus: 1 },
     item: { min: 3, max: 10, scaling: 'full' },
     itemTags: ['offense', 'weapon'],
   },
@@ -18,7 +18,7 @@ export const OFFENSE_STATS = {
   attackSpeed: {
     base: 1.0,
     decimalPlaces: 2,
-    shop: { available: true, cost: 200, bonus: 0.01 },
+    training: { available: true, cost: 200, bonus: 0.01 },
     item: { min: 0.05, max: 0.2, scaling: 'capped' },
     itemTags: ['offense', 'weapon'],
   },
@@ -32,7 +32,7 @@ export const OFFENSE_STATS = {
   critChance: {
     base: 5,
     decimalPlaces: 2,
-    shop: { available: true, cost: 140, bonus: 0.1 },
+    training: { available: true, cost: 140, bonus: 0.1 },
     item: { min: 0.5, max: 1.5, scaling: 'capped' },
     itemTags: ['offense', 'weapon', 'jewelry'],
   },
@@ -46,7 +46,7 @@ export const OFFENSE_STATS = {
   critDamage: {
     base: 1.5,
     decimalPlaces: 2,
-    shop: { available: true, cost: 200, bonus: 0.01 },
+    training: { available: true, cost: 200, bonus: 0.01 },
     item: { min: 0.02, max: 0.1, scaling: 'full' },
     itemTags: ['offense', 'weapon', 'jewelry'],
   },
@@ -60,7 +60,7 @@ export const OFFENSE_STATS = {
   attackRating: {
     base: 100,
     decimalPlaces: 0,
-    shop: { available: true, cost: 60, bonus: 10 },
+    training: { available: true, cost: 60, bonus: 10 },
     item: { min: 50, max: 150, scaling: 'full' },
     itemTags: ['offense', 'weapon', 'jewelry'],
   },
@@ -74,7 +74,7 @@ export const OFFENSE_STATS = {
   lifeSteal: {
     base: 0,
     decimalPlaces: 2,
-    shop: { available: true, cost: 500, bonus: 0.01 },
+    training: { available: true, cost: 500, bonus: 0.01 },
     item: { min: 0.01, max: 0.1, scaling: 'capped' },
     itemTags: ['offense', 'weapon', 'jewelry'],
   },
@@ -101,7 +101,7 @@ export const OFFENSE_STATS = {
   fireDamage: {
     base: 0,
     decimalPlaces: 0,
-    shop: { available: true, cost: 30, bonus: 1 },
+    training: { available: true, cost: 30, bonus: 1 },
     item: { min: 20, max: 50, scaling: 'full' },
     itemTags: ['elemental', 'offense', 'weapon', 'jewelry'],
   },
@@ -113,7 +113,7 @@ export const OFFENSE_STATS = {
   coldDamage: {
     base: 0,
     decimalPlaces: 0,
-    shop: { available: true, cost: 30, bonus: 1 },
+    training: { available: true, cost: 30, bonus: 1 },
     item: { min: 20, max: 50, scaling: 'full' },
     itemTags: ['elemental', 'offense', 'weapon', 'jewelry'],
   },
@@ -125,7 +125,7 @@ export const OFFENSE_STATS = {
   airDamage: {
     base: 0,
     decimalPlaces: 0,
-    shop: { available: true, cost: 30, bonus: 1 },
+    training: { available: true, cost: 30, bonus: 1 },
     item: { min: 20, max: 50, scaling: 'full' },
     itemTags: ['elemental', 'offense', 'weapon', 'jewelry'],
   },
@@ -137,7 +137,7 @@ export const OFFENSE_STATS = {
   earthDamage: {
     base: 0,
     decimalPlaces: 0,
-    shop: { available: true, cost: 30, bonus: 1 },
+    training: { available: true, cost: 30, bonus: 1 },
     item: { min: 20, max: 50, scaling: 'full' },
     itemTags: ['elemental', 'offense', 'weapon', 'jewelry'],
   },

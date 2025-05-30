@@ -1,5 +1,5 @@
 import { initializeSkillTreeStructure, updateStatsAndAttributesUI } from './ui.js';
-import { game, inventory, shop, skillTree, statistics } from './globals.js';
+import { game, inventory, training, skillTree, statistics } from './globals.js';
 import { updatePlayerLife } from './ui.js';
 import { createCombatText } from './combat.js';
 import { handleSavedData } from './functions.js';
@@ -190,7 +190,7 @@ export default class Hero {
 
   recalculateFromAttributes() {
     inventory.updateItemBonuses();
-    shop.updateShopBonuses();
+    training.updateTrainingBonuses();
 
     const skillTreeBonuses = skillTree.getAllSkillTreeBonuses();
     const equipmentBonuses = inventory.equipmentBonuses;
@@ -291,7 +291,7 @@ export default class Hero {
         (STATS[stat].base ?? 0) +
         (attributeEffects[stat] ?? 0) +
         (STATS[stat].levelUpBonus ?? 0) * (this.level - 1) +
-        (shop.shopBonuses[stat] ?? 0) +
+        (training.trainingBonuses[stat] ?? 0) +
         (equipmentBonuses[stat] ?? 0) +
         (skillTreeBonuses[stat] ?? 0);
     }
@@ -309,7 +309,7 @@ export default class Hero {
           (this.permaStats[stat] || 0) / 100 +
           (skillTreeBonuses[stat] || 0) / 100 +
           (equipmentBonuses[stat] || 0) / 100 +
-          (shop.shopBonuses[stat] || 0) / 100;
+          (training.trainingBonuses[stat] || 0) / 100;
       }
     }
 

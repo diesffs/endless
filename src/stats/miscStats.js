@@ -5,7 +5,7 @@ export const MISC_STATS = {
     base: 50,
     decimalPlaces: 0,
     levelUpBonus: 5,
-    shop: { available: true, cost: 100, bonus: 5 },
+    training: { available: true, cost: 100, bonus: 5 },
     item: { min: 5, max: 15, scaling: 'capped' },
     itemTags: ['misc', 'jewelry'],
   },
@@ -19,7 +19,7 @@ export const MISC_STATS = {
   manaRegen: {
     base: 0,
     decimalPlaces: 1,
-    shop: { available: true, cost: 300, bonus: 0.1 },
+    training: { available: true, cost: 300, bonus: 0.1 },
     item: { min: 0.5, max: 2, scaling: 'capped' },
     itemTags: ['misc', 'jewelry'],
   },

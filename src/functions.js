@@ -1,4 +1,4 @@
-import { game, hero, inventory, prestige, shop, skillTree } from './globals.js';
+import { game, hero, inventory, prestige, training, skillTree } from './globals.js';
 import { showToast, updatePlayerLife, updateResources } from './ui.js';
 import { MATERIALS, getRandomMaterial } from './material.js';
 import { ITEM_TYPES, ITEM_RARITY } from './item.js';
@@ -396,21 +396,21 @@ export function createModifyUI() {
   });
   skillTreeSection.appendChild(addSkillPointBtn);
 
-  // Example: Add buttons to modify shop
-  const shopSection = document.createElement('div');
-  shopSection.innerHTML = `<h3>Shop</h3>`;
-  modifyDiv.appendChild(shopSection);
+  // Example: Add buttons to modify training
+  const trainingSection = document.createElement('div');
+  trainingSection.innerHTML = `<h3>Training</h3>`;
+  modifyDiv.appendChild(trainingSection);
 
-  const resetShopBtn = document.createElement('button');
-  resetShopBtn.textContent = 'Reset Shop';
-  resetShopBtn.addEventListener('click', () => {
-    shop.reset();
-    shop.updateShopUI('gold-upgrades');
-    shop.updateShopUI('crystal-upgrades');
+  const resetTrainingBtn = document.createElement('button');
+  resetTrainingBtn.textContent = 'Reset Training';
+  resetTrainingBtn.addEventListener('click', () => {
+    training.reset();
+    training.updateTrainingUI('gold-upgrades');
+    training.updateTrainingUI('crystal-upgrades');
     hero.recalculateFromAttributes();
     updatePlayerLife();
   });
-  shopSection.appendChild(resetShopBtn);
+  trainingSection.appendChild(resetTrainingBtn);
 
   // Button to reset all progress
   const resetProgressBtn = document.createElement('button');

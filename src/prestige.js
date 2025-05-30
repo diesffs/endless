@@ -1,4 +1,4 @@
-import { game, hero, shop, skillTree, statistics } from './globals.js';
+import { game, hero, training, skillTree, statistics } from './globals.js';
 import {
   updateStageUI,
   updateResources,
@@ -83,8 +83,8 @@ export default class Prestige {
     skillTree.selectedPath = null;
     skillTree.skills = {};
 
-    // reset shop
-    shop.reset();
+    // reset training
+    training.reset();
 
     // Restore crystal-related values
     hero.crystals = savedValues.crystals;
@@ -118,8 +118,8 @@ export default class Prestige {
 
     this.initializePrestigeUI(); // Ensure UI reflects reset state
 
-    shop.updateShopUI('gold-upgrades');
-    shop.updateShopUI('crystal-upgrades');
+    training.updateTrainingUI('gold-upgrades');
+    training.updateTrainingUI('crystal-upgrades');
     statistics.updateStatisticsUI();
   }
 

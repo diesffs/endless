@@ -8,7 +8,7 @@ import {
   initializeSkillTreeUI,
 } from './ui.js';
 import { playerAttack, enemyAttack, playerDeath, defeatEnemy } from './combat.js';
-import { game, hero, inventory, prestige, shop, skillTree, statistics } from './globals.js';
+import { game, hero, inventory, prestige, training, skillTree, statistics } from './globals.js';
 import Enemy from './enemy.js';
 import { ITEM_SLOTS, MATERIALS_SLOTS } from './inventory.js';
 
@@ -159,7 +159,7 @@ class Game {
       hero: hero,
       skillTree: skillTree,
       prestige: prestige,
-      shop: shop,
+      training: training,
       inventory: inventory,
       statistics: statistics,
     };
