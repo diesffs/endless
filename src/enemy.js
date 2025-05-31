@@ -234,7 +234,7 @@ class Enemy {
     let dmgVal = 4;
     const segLenDmg = 10,
       initialIncDmg = 0.3,
-      incStepDmg = 0.2;
+      incStepDmg = 0.1;
     for (let lvl = 1; lvl <= stage; lvl++) {
       dmgVal += initialIncDmg + Math.floor((lvl - 1) / segLenDmg) * incStepDmg;
     }

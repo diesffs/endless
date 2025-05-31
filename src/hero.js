@@ -101,7 +101,7 @@ export default class Hero {
     this.gold = 0;
     this.crystals = 0;
     this.exp = 0;
-    this.expToNextLevel = 20;
+    this.expToNextLevel = 50;
 
     this.statPoints = 0;
     this.souls = 0;
@@ -159,8 +159,6 @@ export default class Hero {
     this.statPoints += STATS_ON_LEVEL_UP;
     this.expToNextLevel += this.level * 20 - 20;
     this.recalculateFromAttributes();
-    this.stats.currentLife = this.stats.life; // Full heal on level up
-    this.stats.currentMana = this.stats.mana; // Full heal on level up
 
     // Add level up notification
     createCombatText(`LEVEL UP! (${this.level})`);
