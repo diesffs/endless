@@ -6,16 +6,6 @@
   border-radius: 0.5rem;
 }
 
-#sort-inventory {
-  background-color: #4a4a4a;
-  color: white;
-  border: 1px solid #666;
-}
-
-#sort-inventory:hover {
-  background-color: #5a5a5a;
-}
-
 .equipment-container {
   background: var(--bg-element);
   border-radius: 0.5rem;
@@ -396,13 +386,6 @@
   width: fit-content;
   overflow-y: auto;
   margin-bottom: 10px;
-}
-
-#sort-inventory {
-  background-color: #4a4a4a;
-  color: white;
-  border: 1px solid #666;
-  min-width: 120px; /* Optional: keeps button width stable when text changes */
 }
 
 .material-item {

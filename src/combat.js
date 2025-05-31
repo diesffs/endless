@@ -150,10 +150,15 @@ export function defeatEnemy() {
   }
 
   // Drop material (new, separate chance)
-  if (enemy.rollForMaterialDrop && enemy.rollForMaterialDrop()) {
-    const mat = getRandomMaterial();
-    inventory.addMaterial({ id: mat.id, icon: mat.icon, qty: 1 });
-    showMaterialNotification(mat);
+  const materialDropRolls = Math.floor(game.stage / 30) + 1;
+  if (enemy.rollForMaterialDrop) {
+    for (let i = 0; i < materialDropRolls; i++) {
+      if (enemy.rollForMaterialDrop()) {
+        const mat = getRandomMaterial();
+        inventory.addMaterial({ id: mat.id, icon: mat.icon, qty: 1 });
+        showMaterialNotification(mat);
+      }
+    }
   }
 
   game.incrementStage();

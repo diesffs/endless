@@ -90,7 +90,7 @@ export default class Inventory {
     // Update button text on tab switch
     function updateSortBtnText() {
       if (itemsTab.classList.contains('active')) {
-        sortBtn.textContent = 'Sort Items';
+        sortBtn.textContent = '🔃';
       } else {
         sortBtn.textContent = 'Sort Materials';
       }
@@ -231,7 +231,14 @@ export default class Inventory {
         <p>${matDef.description || ''}</p>
         <p>You have <b>${mat.qty}</b></p>
         <label for="material-use-qty">Quantity:</label>
-        <input id="material-use-qty" style="padding: 5px; border-radius: 10px;" type="number" min="1" max="${mat.qty}" value="${mat.qty}" />
+        <input
+          id="material-use-qty"
+          style="padding: 5px; border-radius: 10px;"
+          type="number"
+          min="1"
+          max="${mat.qty}"
+          value="${mat.qty}"
+        />
         <div class="modal-controls">
           <button class="modal-buy" id="material-use-btn">Use</button>
           <button id="material-use-cancel">Cancel</button>

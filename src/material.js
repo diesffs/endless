@@ -73,15 +73,70 @@ export const MATERIALS = {
       hero.crystals += 1 * qty;
     },
   },
-  POTION_OF_POWER: {
-    id: 'potion_of_power',
-    name: 'Potion of Power',
+  POTION_OF_STRENGTH: {
+    id: 'potion_of_strength',
+    name: 'Potion of Strength ',
     icon: '💥',
     description: 'Increases strength by 1.',
     dropChance: 10,
     sort: 90,
     onUse: (hero, qty = 1) => {
       hero.permaStats.strength += 1 * qty;
+    },
+  },
+  POTION_OF_AGILITY: {
+    id: 'potion_of_agility',
+    name: 'Potion of Agility',
+    icon: '🏃',
+    description: 'Increases agility by 1.',
+    dropChance: 10,
+    sort: 100,
+    onUse: (hero, qty = 1) => {
+      hero.permaStats.agility += 1 * qty;
+    },
+  },
+  POTION_OF_VITALITY: {
+    id: 'potion_of_vitality',
+    name: 'Potion of Vitality',
+    icon: '❤️',
+    description: 'Increases vitality by 1.',
+    dropChance: 10,
+    sort: 110,
+    onUse: (hero, qty = 1) => {
+      hero.permaStats.vitality += 1 * qty;
+    },
+  },
+  POTION_OF_ENDURANCE: {
+    id: 'potion_of_endurance',
+    name: 'Potion of Endurance',
+    icon: '🛡️',
+    description: 'Increases endurance by 1.',
+    dropChance: 10,
+    sort: 120,
+    onUse: (hero, qty = 1) => {
+      hero.permaStats.endurance += 1 * qty;
+    },
+  },
+  POTION_OF_WISDOM: {
+    id: 'potion_of_wisdom',
+    name: 'Potion of Wisdom',
+    icon: '🧠',
+    description: 'Increases wisdom by 1.',
+    dropChance: 10,
+    sort: 130,
+    onUse: (hero, qty = 1) => {
+      hero.permaStats.wisdom += 1 * qty;
+    },
+  },
+  POTION_OF_DEXTERITY: {
+    id: 'potion_of_dexterity',
+    name: 'Potion of Dexterity',
+    icon: '🎯',
+    description: 'Increases dexterity by 1.',
+    dropChance: 10,
+    sort: 140,
+    onUse: (hero, qty = 1) => {
+      hero.permaStats.dexterity += 1 * qty;
     },
   },
 };
