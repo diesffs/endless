@@ -8,6 +8,9 @@ import {
   showTooltip,
   hideTooltip,
   initializeSkillTreeUI,
+  updateActionBar,
+  updateSkillTreeValues,
+  showConfirmDialog,
 } from './ui.js';
 import Enemy from './enemy.js';
 import { showToast } from './ui.js';
@@ -38,6 +41,12 @@ const CRYSTAL_UPGRADE_CONFIG = {
     bonus: 'Automatically casts instant and buff skills',
     baseCost: 100,
     oneTime: true,
+  },
+  resetSkillTree: {
+    label: 'Reset Skill Tree',
+    bonus: 'Refund all skill points and reset path',
+    baseCost: 10,
+    multiple: true,
   },
 };
 
@@ -176,11 +185,13 @@ export default class Prestige {
 
   createCrystalUpgradeButton(stat, config) {
     const isOneTime = config.oneTime;
-    const alreadyPurchased = isOneTime && this.crystalUpgrades[stat];
-    const level = isOneTime ? '' : `(Lvl ${this.crystalUpgrades[stat] || 0})`;
-    const bonus = isOneTime ? config.bonus : `+${config.bonus * (this.crystalUpgrades[stat] || 0)} ${config.label}`;
+    const isMultiple = config.multiple;
+    let alreadyPurchased = isOneTime && this.crystalUpgrades[stat];
+    const level = isOneTime || isMultiple ? '' : `(Lvl ${this.crystalUpgrades[stat] || 0})`;
+    const bonus =
+      isOneTime || isMultiple ? config.bonus : `+${config.bonus * (this.crystalUpgrades[stat] || 0)} ${config.label}`;
 
-    const cost = isOneTime ? config.baseCost : config.baseCost * (this.crystalUpgrades[stat] + 1);
+    const cost = isOneTime || isMultiple ? config.baseCost : config.baseCost * (this.crystalUpgrades[stat] + 1);
     return `
       <button class="crystal-upgrade-btn ${alreadyPurchased ? 'purchased' : ''}" data-stat="${stat}">
         <span class="upgrade-name">${config.label} ${level}</span>
@@ -200,9 +211,10 @@ export default class Prestige {
     });
   }
 
-  buyCrystalUpgrade(stat) {
+  async buyCrystalUpgrade(stat) {
     const config = CRYSTAL_UPGRADE_CONFIG[stat];
-    const cost = config.oneTime ? config.baseCost : config.baseCost * (this.crystalUpgrades[stat] + 1);
+    const cost =
+      config.oneTime || config.multiple ? config.baseCost : config.baseCost * (this.crystalUpgrades[stat] + 1);
 
     if (config.oneTime && this.crystalUpgrades[stat]) {
       showToast('Already purchased!', 'info');
@@ -210,7 +222,6 @@ export default class Prestige {
     }
 
     if (hero.crystals >= cost) {
-      hero.crystals -= cost;
       if (config.oneTime) {
         this.crystalUpgrades[stat] = true;
       } else {
@@ -219,11 +230,28 @@ export default class Prestige {
 
       if (stat === 'startingStage') {
         hero.startingStage = 1 + this.crystalUpgrades[stat];
-      } else if (stat === 'startingGold') {
-        hero.startingGold = this.crystalUpgrades[stat] * 1000;
-      }
-      // No extra logic needed for autoSpellCast, just purchase
+      } else if (stat === 'resetSkillTree') {
+        if (!skillTree.selectedPath) {
+          showToast('No skill path selected to reset!', 'error');
+          return;
+        }
 
+        const confirmed = await showConfirmDialog(
+          'Are you sure you want to reset your class and refund all skill points?<br>This will cost <strong>10 crystals</strong> and cannot be undone.'
+        );
+        if (confirmed) {
+          skillTree.resetSkillTree();
+          updateSkillTreeValues();
+          updateActionBar();
+          initializeSkillTreeUI();
+          updateResources();
+          showToast('Class has been reset and all points refunded.', 'success');
+        }
+      }
+
+      // No extra logic needed for autoSpellCast or continuousPlay, just purchase
+
+      hero.crystals -= cost;
       updateResources();
       this.initializePrestigeUI();
       game.saveGame();
