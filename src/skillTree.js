@@ -408,6 +408,8 @@ export default class SkillTree {
     this.skillPoints = hero.level - 1;
     this.selectedPath = null;
     this.skills = {};
+    this.autoCastSettings = {};
+    this.displaySettings = {};
     this.activeBuffs.clear();
     hero.recalculateFromAttributes();
     updateActionBar();

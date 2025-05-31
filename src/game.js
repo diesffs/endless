@@ -199,8 +199,7 @@ class Game {
       startingGold: 0,
       continuousPlay: false,
     };
-    // skill tree reset
-    skillTree.selectedPath = null;
+    skillTree.resetSkillTree();
 
     // Reset inventory and equipped items
     inventory.equippedItems = {};
