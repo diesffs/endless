@@ -159,4 +159,10 @@ export const MISC_STATS = {
     item: { min: 0.1, max: 0.5, scaling: 'capped' },
     itemTags: ['misc', 'jewelry'],
   },
+  // Only from materials. permanent skill points
+  skillPoints: {
+    base: 0,
+    decimalPlaces: 0,
+    showInUI: true,
+  },
 };

@@ -10,7 +10,7 @@ import { STATS } from './stats.js';
 export const ATTRIBUTES = {
   strength: {
     effects: {
-      damagePerPoint: 1,
+      damagePerPoint: 0.5,
       damagePercentPer: {
         enabled: false,
         points: 5,
@@ -65,7 +65,7 @@ export const ATTRIBUTES = {
   },
   endurance: {
     effects: {
-      armorPerPoint: 3,
+      armorPerPoint: 5,
       armorPercentPer: {
         enabled: false,
         points: 5,

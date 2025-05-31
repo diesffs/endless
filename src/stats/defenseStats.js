@@ -20,7 +20,7 @@ export const DEFENSE_STATS = {
   armor: {
     base: 0,
     decimalPlaces: 0,
-    training: { available: true, cost: 60, bonus: 1 },
+    training: { available: true, cost: 50, bonus: 2 },
     item: { min: 3, max: 10, scaling: 'full' },
     itemTags: ['defense', 'armor', 'shield'],
     showInUI: true,

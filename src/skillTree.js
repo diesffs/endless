@@ -400,12 +400,8 @@ export default class SkillTree {
     const container = document.getElementById('skill-tree-container');
     if (container) container.innerHTML = '';
 
-    // Refund all spent skill points
-    let spentPoints = 0;
-    Object.values(this.skills).forEach((skill) => {
-      spentPoints += skill.level || 0;
-    });
-    this.skillPoints = hero.level - 1;
+    // Refund all skill points
+    this.skillPoints = hero.level - 1 + hero.permaStats.skillPoints;
     this.selectedPath = null;
     this.skills = {};
     this.autoCastSettings = {};

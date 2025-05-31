@@ -58,7 +58,8 @@ export const MATERIALS = {
     dropChance: 1,
     sort: 70,
     onUse: (hero, qty = 1) => {
-      hero.skillPoints = (hero.skillPoints || 0) + 1 * qty;
+      hero.permaStats.skillPoints = hero.permaStats.skillPoints + 1 * qty;
+      skillTree.addSkillPoints(1 * qty); // Add to skill tree, is correct!
     },
   },
   CRYSTALIZED_ROCK: {
@@ -85,6 +86,7 @@ export const MATERIALS = {
   },
 };
 
+import { skillTree } from './globals.js';
 import { getCurrentRegion } from './region.js';
 
 /* Utility to get a random material (weighted by dropChance) */
