@@ -1,4 +1,5 @@
 import { handleSavedData } from './functions.js';
+import { showConfirmDialog } from './ui.js';
 import { game, hero } from './globals.js';
 
 export default class Statistics {
@@ -46,27 +47,13 @@ export default class Statistics {
 
   initializeStatisticsUI() {
     const resetButton = document.getElementById('reset-progress');
-    const modal = document.getElementById('reset-modal');
-    const confirmButton = document.getElementById('confirm-reset');
-    const cancelButton = document.getElementById('cancel-reset');
-
-    if (resetButton && modal && confirmButton && cancelButton) {
-      resetButton.onclick = () => {
-        modal.style.display = 'block';
-      };
-      confirmButton.onclick = () => {
-        modal.style.display = 'none';
+    // Show confirm dialog for resetting progress
+    resetButton.onclick = async () => {
+      const confirmed = await showConfirmDialog('Are you sure you want to reset all progress? This cannot be undone!');
+      if (confirmed) {
         game.resetAllProgress();
-      };
-      cancelButton.onclick = () => {
-        modal.style.display = 'none';
-      };
-      modal.onclick = (e) => {
-        if (e.target === modal) {
-          modal.style.display = 'none';
-        }
-      };
-    }
+      }
+    };
 
     this.updateStatisticsUI();
   }
