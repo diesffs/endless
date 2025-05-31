@@ -304,8 +304,6 @@ export default class Prestige {
     const cancelButton = document.getElementById('cancel-prestige');
 
     if (!prestigeButton || !modal || !confirmButton || !cancelButton) {
-      // TODO: enable error message when prestige works
-      // console.error('Prestige modal or buttons are missing.');
       return;
     }
 
@@ -321,26 +319,24 @@ export default class Prestige {
       if (modalSoulsAmount) {
         modalSoulsAmount.textContent = `${earnedSouls}`;
       }
-      modal.style.display = 'block';
+      modal.classList.remove('hidden');
     };
 
     // Confirm Prestige action
     confirmButton.onclick = () => {
-      modal.style.display = 'none';
+      closeModal('prestige-modal');
       this.performPrestige(); // Perform the prestige logic
       this.initializePrestigeUI(); // Re-initialize UI to reflect reset
     };
 
     // Cancel Prestige action
     cancelButton.onclick = () => {
-      modal.style.display = 'none';
+      closeModal('prestige-modal');
     };
 
     // Close modal when clicking outside
     modal.onclick = (e) => {
-      if (e.target === modal) {
-        modal.style.display = 'none';
-      }
+      if (e.target === modal) closeModal('prestige-modal');
     };
   }
 

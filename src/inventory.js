@@ -11,6 +11,7 @@ import {
 } from './ui.js';
 import { MATERIALS } from './material.js';
 import { STATS } from './stats.js';
+import { createModal, closeModal } from './ui/modal.js';
 
 const html = String.raw;
 
@@ -219,51 +220,34 @@ export default class Inventory {
   }
 
   openMaterialDialog(mat) {
-    // Remove any existing dialog
-    let dialog = document.getElementById('material-use-dialog');
-    if (dialog) dialog.remove();
-
     // Always get the full definition from MATERIALS
     const matDef = Object.values(MATERIALS).find((m) => m.id === mat.id) || {};
 
-    dialog = document.createElement('div');
-    dialog.id = 'material-use-dialog';
-    dialog.style.position = 'fixed';
-    dialog.style.left = '50%';
-    dialog.style.top = '50%';
-    dialog.style.transform = 'translate(-50%, -50%)';
-    dialog.style.background = '#222';
-    dialog.style.color = '#fff';
-    dialog.style.padding = '24px 32px';
-    dialog.style.borderRadius = '10px';
-    dialog.style.zIndex = 10000;
-    dialog.style.boxShadow = '0 4px 32px #000a';
-
-    dialog.innerHTML = html`
-      <div style="font-size:2em;text-align:center;">${matDef.icon || mat.icon || '🔹'}</div>
-      <div style="font-size:1.2em;margin-bottom:8px;text-align:center;">${matDef.name || mat.name || ''}</div>
-      <div style="margin-bottom:8px;text-align:center;">${matDef.description || ''}</div>
-      <div style="margin-bottom:8px;text-align:center;">You have <b>${mat.qty}</b></div>
-      <input
-        id="material-use-qty"
-        type="number"
-        min="1"
-        max="${mat.qty}"
-        value="${mat.qty}"
-        style="width:60px;text-align:center;"
-      />
-      <button id="material-use-btn" style="margin-left:10px;">Use</button>
-      <button id="material-use-cancel" style="margin-left:10px;">Cancel</button>
+    // Build and show material-use modal
+    const content = html`
+      <div class="training-modal-content">
+        <button class="training-modal-close">&times;</button>
+        <h2>${matDef.name || mat.name || ''}</h2>
+        <p>${matDef.description || ''}</p>
+        <p>You have <b>${mat.qty}</b></p>
+        <label for="material-use-qty">Quantity:</label>
+        <input id="material-use-qty" style="padding: 5px; border-radius: 10px;" type="number" min="1" max="${mat.qty}" value="${mat.qty}" />
+        <div class="modal-controls">
+          <button class="modal-buy" id="material-use-btn">Use</button>
+          <button id="material-use-cancel">Cancel</button>
+        </div>
+      </div>
     `;
-
-    document.body.appendChild(dialog);
-
+    const dialog = createModal({
+      id: 'material-use-dialog',
+      className: 'training-modal',
+      content,
+    });
     // Focus input
     const qtyInput = dialog.querySelector('#material-use-qty');
     qtyInput.focus();
     qtyInput.select();
-
-    // Use button
+    // Use
     dialog.querySelector('#material-use-btn').onclick = () => {
       let useQty = parseInt(qtyInput.value, 10);
       if (isNaN(useQty) || useQty < 1) useQty = 1;
@@ -274,23 +258,20 @@ export default class Inventory {
       }
       mat.qty -= useQty;
       if (mat.qty <= 0) {
-        // Remove from inventory
         const idx = this.materials.findIndex((m) => m && m.id === mat.id);
         if (idx !== -1) this.materials[idx] = null;
       }
       hero.recalculateFromAttributes();
       this.updateMaterialsGrid();
       game.saveGame();
-      updateResources(); // <-- update the UI after using a material
-      updateStatsAndAttributesUI(); // Update stats and attributes UI
-      dialog.remove();
+      updateResources();
+      updateStatsAndAttributesUI();
+      closeModal('material-use-dialog');
       showToast(`Used ${useQty} ${matDef.name || mat.name || ''}${useQty > 1 ? 's' : ''}`, 'success');
     };
 
-    // Cancel button
-    dialog.querySelector('#material-use-cancel').onclick = () => {
-      dialog.remove();
-    };
+    // Cancel button handler
+    dialog.querySelector('#material-use-cancel').onclick = () => closeModal('material-use-dialog');
   }
 
   salvageItemsByRarity(rarity) {

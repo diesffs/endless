@@ -7,6 +7,7 @@ import { STATS } from './stats.js';
 import { OFFENSE_STATS } from './stats/offenseStats.js';
 import { DEFENSE_STATS } from './stats/defenseStats.js';
 import { MISC_STATS } from './stats/miscStats.js';
+import { createModal } from './ui/modal.js';
 
 const html = String.raw;
 
@@ -77,9 +78,8 @@ export default class Training {
 
     // Create modal for bulk upgrades if not exists
     if (!this.modal) {
-      const modal = document.createElement('div');
-      modal.className = 'training-modal hidden';
-      modal.innerHTML = html`
+      // Build markup for bulk-buy modal
+      const content = html`
         <div class="training-modal-content">
           <button class="training-modal-close">&times;</button>
           <h2 class="modal-title"></h2>
@@ -97,26 +97,22 @@ export default class Training {
           <button class="modal-buy">Buy</button>
         </div>
       `;
-      document.body.appendChild(modal);
-      modal.querySelector('.training-modal-close').onclick = () => this.closeModal();
-      // Quantity controls: set selectedQty and preview totals
-      modal.querySelectorAll('.modal-controls button').forEach((btn) => {
+      // Use shared modal helper
+      this.modal = createModal({
+        id: 'training-modal',
+        className: 'training-modal hidden',
+        content,
+        onClose: () => this.closeModal(),
+      });
+      // Attach quantity buttons
+      this.modal.querySelectorAll('.modal-controls button').forEach((btn) => {
         btn.onclick = () => {
           this.selectedQty = btn.dataset.qty === 'max' ? 'max' : parseInt(btn.dataset.qty, 10);
           this.updateModalDetails();
         };
       });
-      // Buy button: perform bulk purchase
-      modal.querySelector('.modal-buy').onclick = () => {
-        this.buyBulk(this.currentStat, this.selectedQty);
-      };
-      this.modal = modal;
-      // Default quantity will be set when opening the modal
-
-      // Close modal when clicking outside the content (on overlay)
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) this.closeModal();
-      });
+      // Buy button
+      this.modal.querySelector('.modal-buy').onclick = () => this.buyBulk(this.currentStat, this.selectedQty);
     }
   }
 

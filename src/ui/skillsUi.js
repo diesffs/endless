@@ -11,6 +11,7 @@ import {
   showTooltip,
   updateResources,
 } from '../ui.js';
+import { createModal } from './modal.js';
 
 const html = String.raw;
 
@@ -337,10 +338,8 @@ function calculateMaxPurchasable(currentLevel, availableSP, maxLevel) {
 
 function initializeSkillModal() {
   if (skillModal) return;
-  skillModal = document.createElement('div');
-  skillModal.id = 'skill-modal';
-  skillModal.className = 'skill-modal hidden';
-  skillModal.innerHTML = html`
+  // Build skill modal content
+  const content = html`
     <div class="skill-modal-content">
       <span class="skill-modal-close">&times;</span>
       <div class="modal-skill-icon"></div>
@@ -373,11 +372,14 @@ function initializeSkillModal() {
       <button class="modal-buy">Buy</button>
     </div>
   `;
-  document.body.appendChild(skillModal);
-  skillModal.querySelector('.skill-modal-close').onclick = closeSkillModal;
-  skillModal.addEventListener('click', (e) => {
-    if (e.target === skillModal) closeSkillModal();
+  // Create via shared helper
+  skillModal = createModal({
+    id: 'skill-modal',
+    className: 'skill-modal hidden',
+    content,
+    onClose: closeSkillModal,
   });
+  // Attach quantity controls and buy handler
   skillModal.querySelectorAll('.modal-controls button').forEach((btn) => {
     btn.onclick = () => {
       selectedSkillQty = btn.dataset.qty;

@@ -1,0 +1,30 @@
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal.hidden {
+  display: none;
+}
+.modal-content {
+  background: var(--bg-element);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  position: relative;
+  width: 90%;
+  max-width: 400px;
+}
+.modal-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
