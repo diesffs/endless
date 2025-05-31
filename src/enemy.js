@@ -209,7 +209,15 @@ class Enemy {
   }
 
   calculateLife(stage, rarity) {
-    const baseLife = 49 + Math.pow(stage, 1.75);
+    // Arithmetic progression scaling: initial 49, increment grows every 10 levels
+    let life = 40;
+    const segLen = 10,
+      initialInc = 10,
+      incStep = 5;
+    for (let lvl = 1; lvl <= stage; lvl++) {
+      life += initialInc + Math.floor((lvl - 1) / segLen) * incStep;
+    }
+    const baseLife = life;
     const rarityMap = {
       [ENEMY_RARITY.NORMAL.type]: ENEMY_RARITY.NORMAL.lifeBonus,
       [ENEMY_RARITY.RARE.type]: ENEMY_RARITY.RARE.lifeBonus,
@@ -222,7 +230,15 @@ class Enemy {
   }
 
   calculateDamage(stage, rarity) {
-    const baseDamage = 4 + Math.pow(stage, 1.15);
+    // Arithmetic progression scaling: initial 4, increment grows every 10 levels
+    let dmgVal = 4;
+    const segLenDmg = 10,
+      initialIncDmg = 0.3,
+      incStepDmg = 0.2;
+    for (let lvl = 1; lvl <= stage; lvl++) {
+      dmgVal += initialIncDmg + Math.floor((lvl - 1) / segLenDmg) * incStepDmg;
+    }
+    const baseDamage = dmgVal;
     const rarityMap = {
       [ENEMY_RARITY.NORMAL.type]: ENEMY_RARITY.NORMAL.bonusDamage,
       [ENEMY_RARITY.RARE.type]: ENEMY_RARITY.RARE.bonusDamage,
