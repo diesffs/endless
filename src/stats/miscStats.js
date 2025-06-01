@@ -33,6 +33,9 @@ export const MISC_STATS = {
   manaPerHit: {
     base: 0,
     decimalPlaces: 0,
+    item: { min: 1, max: 2, scaling: 'capped' },
+    itemTags: ['misc', 'jewelry'],
+    showInUI: true,
   },
   manaPerHitPercent: {
     base: 0,
@@ -42,67 +45,73 @@ export const MISC_STATS = {
   strength: {
     base: 0,
     decimalPlaces: 0,
-    item: { min: 2, max: 5, scaling: 'capped' },
+    item: { min: 3, max: 10, scaling: 'full' },
     itemTags: ['misc'],
   },
   strengthPercent: {
     base: 0,
     decimalPlaces: 0,
+    item: { min: 0.5, max: 3, scaling: 'capped' },
+    itemTags: ['misc'],
   },
   agility: {
     base: 0,
     decimalPlaces: 0,
-    item: { min: 2, max: 5, scaling: 'capped' },
+    item: { min: 3, max: 10, scaling: 'full' },
     itemTags: ['misc'],
   },
   agilityPercent: {
     base: 0,
     decimalPlaces: 0,
+    item: { min: 0.5, max: 3, scaling: 'capped' },
+    itemTags: ['misc'],
   },
   vitality: {
     base: 0,
     decimalPlaces: 0,
-    item: { min: 2, max: 5, scaling: 'capped' },
+    item: { min: 3, max: 10, scaling: 'full' },
     itemTags: ['misc'],
   },
   vitalityPercent: {
     base: 0,
     decimalPlaces: 0,
+    item: { min: 0.5, max: 3, scaling: 'capped' },
+    itemTags: ['misc'],
   },
   wisdom: {
     base: 0,
     decimalPlaces: 0,
-    item: { min: 1, max: 5, scaling: 'full' },
+    item: { min: 3, max: 10, scaling: 'full' },
     itemTags: ['misc', 'jewelry'],
   },
   wisdomPercent: {
     base: 0,
     decimalPlaces: 0,
-    item: { min: 0.1, max: 0.5, scaling: 'capped' },
+    item: { min: 0.5, max: 3, scaling: 'capped' },
     itemTags: ['misc', 'jewelry'],
   },
   endurance: {
     base: 0,
     decimalPlaces: 0,
-    item: { min: 2, max: 8, scaling: 'full' },
+    item: { min: 3, max: 10, scaling: 'full' },
     itemTags: ['misc', 'jewelry'],
   },
   endurancePercent: {
     base: 0,
     decimalPlaces: 0,
-    item: { min: 0.1, max: 0.5, scaling: 'capped' },
+    item: { min: 0.5, max: 3, scaling: 'capped' },
     itemTags: ['misc', 'jewelry'],
   },
   dexterity: {
     base: 0,
     decimalPlaces: 0,
-    item: { min: 1, max: 5, scaling: 'full' },
+    item: { min: 3, max: 10, scaling: 'full' },
     itemTags: ['misc', 'jewelry'],
   },
   dexterityPercent: {
     base: 0,
     decimalPlaces: 0,
-    item: { min: 0.1, max: 0.5, scaling: 'capped' },
+    item: { min: 0.5, max: 3, scaling: 'capped' },
     itemTags: ['misc', 'jewelry'],
   },
   // BONUS GOLD
@@ -111,12 +120,7 @@ export const MISC_STATS = {
     decimalPlaces: 0,
     item: { min: 5, max: 15, scaling: 'capped' },
     itemTags: ['misc', 'jewelry'],
-  },
-  bonusGoldPercent: {
-    base: 0,
-    decimalPlaces: 0,
-    item: { min: 0.1, max: 0.5, scaling: 'capped' },
-    itemTags: ['misc', 'jewelry'],
+    showInUI: true,
   },
   // BONUS EXPERIENCE
   bonusExperience: {
@@ -124,40 +128,27 @@ export const MISC_STATS = {
     decimalPlaces: 0,
     item: { min: 5, max: 15, scaling: 'capped' },
     itemTags: ['misc', 'jewelry'],
-  },
-  bonusExperiencePercent: {
-    base: 0,
-    decimalPlaces: 0,
-    item: { min: 0.1, max: 0.5, scaling: 'capped' },
-    itemTags: ['misc', 'jewelry'],
+    showInUI: true,
   },
   // COOLDOWN REDUCTION
   cooldownReductionPercent: {
     base: 0,
     decimalPlaces: 0,
-    item: { min: 0.1, max: 0.5, scaling: 'capped' },
-    itemTags: ['misc', 'jewelry'],
   },
   // MANA COST REDUCTION
   manaCostReductionPercent: {
     base: 0,
     decimalPlaces: 0,
-    item: { min: 0.1, max: 0.5, scaling: 'capped' },
-    itemTags: ['misc', 'jewelry'],
   },
   // BUFF DURATION
   buffDurationPercent: {
     base: 0,
     decimalPlaces: 0,
-    item: { min: 0.1, max: 0.5, scaling: 'capped' },
-    itemTags: ['misc', 'jewelry'],
   },
   // ITEM BONUSES
   itemBonusesPercent: {
     base: 0,
     decimalPlaces: 0,
-    item: { min: 0.1, max: 0.5, scaling: 'capped' },
-    itemTags: ['misc', 'jewelry'],
   },
   // Only from materials. permanent skill points
   skillPoints: {

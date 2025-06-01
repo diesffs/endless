@@ -100,59 +100,54 @@ function getStatsByTags(tags) {
   return Array.from(stats);
 }
 
-const DEFENSIVE_STATS = getStatsByTag('defense');
-const OFFENSIVE_STATS = getStatsByTag('offense');
-const ELEMENTAL_STATS = getStatsByTag('elemental');
-const JEWELRY_STATS = getStatsByTags(['jewelry', 'offense', 'defense', 'elemental', 'misc']);
-
 export const ITEM_STAT_POOLS = {
   HELMET: {
     mandatory: [],
-    possible: [...DEFENSIVE_STATS, 'blockChance'],
+    possible: [...getStatsByTags(['defense', 'helmet'])],
   },
   ARMOR: {
     mandatory: ['armor'],
-    possible: [...getStatsByTag('defense')],
+    possible: [...getStatsByTags(['defense', 'armor'])],
   },
   BELT: {
     mandatory: [],
-    possible: [...DEFENSIVE_STATS],
+    possible: [...getStatsByTags(['defense', 'belt', 'misc'])],
   },
   PANTS: {
-    mandatory: ['armor'],
-    possible: [...DEFENSIVE_STATS],
+    mandatory: [],
+    possible: [...getStatsByTags(['defense', 'pants'])],
   },
   BOOTS: {
     mandatory: [],
-    possible: [...DEFENSIVE_STATS, 'agility'],
+    possible: [...getStatsByTags(['defense', 'boots'])],
   },
   SWORD: {
-    mandatory: ['damage'],
-    possible: [...OFFENSIVE_STATS, ...ELEMENTAL_STATS],
+    mandatory: ['attackSpeed'],
+    possible: [...getStatsByTags(['offense', 'sword'])],
   },
   AXE: {
-    mandatory: ['damage', 'damagePercent'],
-    possible: [...OFFENSIVE_STATS],
+    mandatory: [],
+    possible: [...getStatsByTags(['offense', 'axe'])],
   },
   MACE: {
-    mandatory: ['damage', 'strength'],
-    possible: [...OFFENSIVE_STATS],
+    mandatory: [],
+    possible: [...getStatsByTags(['offense', 'mace'])],
   },
   SHIELD: {
-    mandatory: ['armor', 'blockChance'],
-    possible: [...DEFENSIVE_STATS],
+    mandatory: ['blockChance'],
+    possible: [...getStatsByTags(['defense', 'shield'])],
   },
   GLOVES: {
     mandatory: [],
-    possible: [...OFFENSIVE_STATS, ...DEFENSIVE_STATS, ...ELEMENTAL_STATS],
+    possible: [...getStatsByTags(['gloves'])],
   },
   AMULET: {
     mandatory: [],
-    possible: [...JEWELRY_STATS],
+    possible: [...getStatsByTags(['jewelry', 'amulet', 'misc'])],
   },
   RING: {
     mandatory: [],
-    possible: [...JEWELRY_STATS],
+    possible: [...getStatsByTags(['jewelry', 'ring', 'misc'])],
   },
 };
 
@@ -198,6 +193,8 @@ export default class Item {
       const randomIndex = Math.floor(Math.random() * availableStats.length);
       const stat = availableStats.splice(randomIndex, 1)[0];
       const range = AVAILABLE_STATS[stat];
+      console.log(`Generating stat ${stat} with range:`, range);
+
       const baseValue = Math.random() * (range.max - range.min) + range.min;
       stats[stat] = calculateStatValue(stat, baseValue);
     }

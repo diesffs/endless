@@ -358,8 +358,6 @@ export const formatStatName = (stat) => {
   if (stat === 'endurancePercent') return 'Endurance %';
   if (stat === 'dexterity') return 'Dexterity';
   if (stat === 'dexterityPercent') return 'Dexterity %';
-  if (stat === 'bonusGoldPercent') return 'Bonus Gold %';
-  if (stat === 'bonusExperiencePercent') return 'Bonus Experience %';
   if (stat === 'lifePerHit') return 'Life Per Hit';
   if (stat === 'lifePerHitPercent') return 'Life Per Hit %';
   if (stat === 'manaPerHit') return 'Mana Per Hit';
