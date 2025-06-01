@@ -344,6 +344,7 @@ export default class Hero {
         if (stat === 'blockChance') value = Math.min(value, 75);
         if (stat === 'critChance') value = Math.min(value, 100);
         if (stat === 'attackSpeed') value = Math.min(value, 5);
+        if (stat === 'resurrectionChance') value = Math.min(value, 50);
 
         this.stats[stat] = value;
       } else {
