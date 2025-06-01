@@ -1,6 +1,6 @@
 #region-selector {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
   gap: 6px;
   margin-bottom: 16px;
   margin-top: 8px;
@@ -37,4 +37,7 @@
   background: linear-gradient(90deg, #2563eb 60%, #1e40af 100%);
   color: #fff;
   border-color: #2563eb;
+}
+.region-btn.hidden {
+  display: none;
 }

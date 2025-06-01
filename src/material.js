@@ -50,6 +50,19 @@ export const MATERIALS = {
       hero.gainGold(50000 * qty);
     },
   },
+  FREAKY_GOLD_COINS: {
+    id: 'freaky_gold_coins',
+    name: 'Freaky Gold Coins',
+    icon: '🪙',
+    get description() {
+      return `Adds ${5000000} gold per coin to your total.`;
+    },
+    dropChance: 0.001,
+    sort: 60,
+    onUse: (hero, qty = 1) => {
+      hero.gainGold(5000000 * qty);
+    },
+  },
   ELIXIR: {
     id: 'elixir',
     name: 'Elixir',
@@ -59,7 +72,7 @@ export const MATERIALS = {
     sort: 70,
     onUse: (hero, qty = 1) => {
       hero.permaStats.skillPoints = hero.permaStats.skillPoints + 1 * qty;
-      skillTree.addSkillPoints(1 * qty); // Add to skill tree, is correct!
+      skillTree.addSkillPoints(1 * qty);
     },
   },
   CRYSTALIZED_ROCK: {
@@ -75,7 +88,7 @@ export const MATERIALS = {
   },
   POTION_OF_STRENGTH: {
     id: 'potion_of_strength',
-    name: 'Potion of Strength ',
+    name: 'Potion of Strength',
     icon: '💥',
     description: 'Increases strength by 1.',
     dropChance: 10,
