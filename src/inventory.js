@@ -1,6 +1,7 @@
 import { handleSavedData } from './functions.js';
 import Item, { ITEM_RARITY, RARITY_ORDER, SLOT_REQUIREMENTS } from './item.js';
 import { game, hero, statistics } from './globals.js';
+import { ENEMY_RARITY } from './enemy.js';
 import {
   hideTooltip,
   positionTooltip,
@@ -528,15 +529,28 @@ export default class Inventory {
   }
 
   generateRarity() {
-    // Sum all rarity chances
-    const rarities = Object.values(ITEM_RARITY);
-    const totalChance = rarities.reduce((sum, r) => sum + r.chance, 0);
-    let roll = Math.random() * totalChance;
-    for (const [rarity, config] of Object.entries(ITEM_RARITY)) {
-      if (roll < config.chance) return rarity;
-      roll -= config.chance;
+    // Determine enemy rarity index to bias item drops
+    const ENEMY_RARITY_ORDER = Object.keys(ENEMY_RARITY);
+    const enemy = game.currentEnemy;
+    const enemyRank = enemy?.rarity ? ENEMY_RARITY_ORDER.indexOf(enemy.rarity) : 0;
+    const maxRank = ENEMY_RARITY_ORDER.length - 1;
+    const boostFactor = enemyRank / maxRank;
+
+    // Build weighted chances with bias: rarer items get extra weight based on enemy strength
+    const entries = Object.entries(ITEM_RARITY).map(([key, config]) => {
+      const rarityIndex = RARITY_ORDER.indexOf(config.name);
+      const weight = config.chance * (1 + boostFactor * rarityIndex);
+      return { key, weight };
+    });
+
+    // Sum weights and roll
+    const total = entries.reduce((sum, e) => sum + e.weight, 0);
+    let roll = Math.random() * total;
+    for (const { key, weight } of entries) {
+      if (roll < weight) return key;
+      roll -= weight;
     }
-    // fallback (shouldn't happen)
+    // fallback
     return ITEM_RARITY.NORMAL.name;
   }
 

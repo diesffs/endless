@@ -91,7 +91,7 @@ export const PALADIN_SKILLS = {
     description: () => 'Creates a shield that absorbs damage.',
     maxLevel: () => DEFAULT_MAX_SKILL_LEVEL,
     effect: (level) => ({
-      blockChance: level * 15,
+      blockChance: level * 0.5,
     }),
   },
   auraOfLight: {

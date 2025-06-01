@@ -4,7 +4,7 @@ import { getCurrentRegion } from './region.js';
 export const ENEMY_RARITY = {
   NORMAL: {
     type: 'NORMAL',
-    itemDropChance: 2,
+    itemDropChance: 1,
     color: 'gray',
     threshold: 80,
     lifeBonus: 1,
@@ -33,7 +33,7 @@ export const ENEMY_RARITY = {
     type: 'LEGENDARY',
     itemDropChance: 2,
     color: 'orange',
-    threshold: 99,
+    threshold: 99.5,
     lifeBonus: 2,
     bonusDamage: 2,
     bonusAttackSpeed: 0.7,
@@ -292,7 +292,7 @@ class Enemy {
   }
 
   rollForMaterialDrop() {
-    const baseChance = 0.05;
+    const baseChance = 0.025;
     return Math.random() < baseChance * this.materialDropMultiplier;
   }
 }

@@ -193,8 +193,6 @@ export default class Item {
       const randomIndex = Math.floor(Math.random() * availableStats.length);
       const stat = availableStats.splice(randomIndex, 1)[0];
       const range = AVAILABLE_STATS[stat];
-      console.log(`Generating stat ${stat} with range:`, range);
-
       const baseValue = Math.random() * (range.max - range.min) + range.min;
       stats[stat] = calculateStatValue(stat, baseValue);
     }

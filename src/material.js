@@ -5,7 +5,7 @@ export const MATERIALS = {
     name: 'Experience Potion',
     icon: '🧪',
     description: 'Grants 1000 experience when used.',
-    dropChance: 5,
+    dropChance: 30,
     sort: 10,
     onUse: (hero, qty = 1) => {
       hero.gainExp(1000 * qty);
@@ -57,7 +57,7 @@ export const MATERIALS = {
     get description() {
       return `Adds ${5000000} gold per coin to your total.`;
     },
-    dropChance: 0.001,
+    dropChance: 0.01,
     sort: 60,
     onUse: (hero, qty = 1) => {
       hero.gainGold(5000000 * qty);
@@ -80,7 +80,7 @@ export const MATERIALS = {
     name: 'Crystalized Rock',
     icon: '💎',
     description: 'Gives 1 crystal.',
-    dropChance: 40,
+    dropChance: 30,
     sort: 80,
     onUse: (hero, qty = 1) => {
       hero.crystals += 1 * qty;
@@ -91,7 +91,7 @@ export const MATERIALS = {
     name: 'Potion of Strength',
     icon: '💥',
     description: 'Increases strength by 1.',
-    dropChance: 10,
+    dropChance: 5,
     sort: 90,
     onUse: (hero, qty = 1) => {
       hero.permaStats.strength += 1 * qty;
@@ -102,7 +102,7 @@ export const MATERIALS = {
     name: 'Potion of Agility',
     icon: '🏃',
     description: 'Increases agility by 1.',
-    dropChance: 10,
+    dropChance: 5,
     sort: 100,
     onUse: (hero, qty = 1) => {
       hero.permaStats.agility += 1 * qty;
@@ -113,7 +113,7 @@ export const MATERIALS = {
     name: 'Potion of Vitality',
     icon: '❤️',
     description: 'Increases vitality by 1.',
-    dropChance: 10,
+    dropChance: 5,
     sort: 110,
     onUse: (hero, qty = 1) => {
       hero.permaStats.vitality += 1 * qty;
@@ -124,7 +124,7 @@ export const MATERIALS = {
     name: 'Potion of Endurance',
     icon: '🛡️',
     description: 'Increases endurance by 1.',
-    dropChance: 10,
+    dropChance: 5,
     sort: 120,
     onUse: (hero, qty = 1) => {
       hero.permaStats.endurance += 1 * qty;
@@ -135,7 +135,7 @@ export const MATERIALS = {
     name: 'Potion of Wisdom',
     icon: '🧠',
     description: 'Increases wisdom by 1.',
-    dropChance: 10,
+    dropChance: 5,
     sort: 130,
     onUse: (hero, qty = 1) => {
       hero.permaStats.wisdom += 1 * qty;
@@ -146,7 +146,7 @@ export const MATERIALS = {
     name: 'Potion of Dexterity',
     icon: '🎯',
     description: 'Increases dexterity by 1.',
-    dropChance: 10,
+    dropChance: 5,
     sort: 140,
     onUse: (hero, qty = 1) => {
       hero.permaStats.dexterity += 1 * qty;
