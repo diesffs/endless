@@ -485,4 +485,14 @@ export default class Hero {
     }
     return 0;
   }
+
+  /**
+   * Sets the startingStage, capped at 75% of highestStage.
+   * @param {number} stage - Desired starting stage before cap.
+   */
+  setStartingStage(stage) {
+    const cap = Math.floor(this.highestStage * 0.75);
+    // If cap is at least 1, apply cap; otherwise allow minimum stage
+    this.startingStage = cap >= 1 ? Math.min(stage, cap) : stage;
+  }
 }

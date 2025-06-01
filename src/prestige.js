@@ -23,7 +23,8 @@ const CRYSTAL_UPGRADE_CONFIG = {
   startingStage: {
     label: 'Starting Stage',
     bonus: 1,
-    baseCost: 2,
+    baseCost: 1,
+    costIncrement: 0, // specify cost increase per level
   },
   // startingGold: {
   //   label: 'Starting Gold',
@@ -191,7 +192,10 @@ export default class Prestige {
     const bonus =
       isOneTime || isMultiple ? config.bonus : `+${config.bonus * (this.crystalUpgrades[stat] || 0)} ${config.label}`;
 
-    const cost = isOneTime || isMultiple ? config.baseCost : config.baseCost * (this.crystalUpgrades[stat] + 1);
+    const cost =
+      isOneTime || isMultiple
+        ? config.baseCost
+        : config.baseCost + (config.costIncrement || 0) * this.crystalUpgrades[stat];
     return `
       <button class="crystal-upgrade-btn ${alreadyPurchased ? 'purchased' : ''}" data-stat="${stat}">
         <span class="upgrade-name">${config.label} ${level}</span>
@@ -214,7 +218,20 @@ export default class Prestige {
   async buyCrystalUpgrade(stat) {
     const config = CRYSTAL_UPGRADE_CONFIG[stat];
     const cost =
-      config.oneTime || config.multiple ? config.baseCost : config.baseCost * (this.crystalUpgrades[stat] + 1);
+      config.oneTime || config.multiple
+        ? config.baseCost
+        : config.baseCost + (config.costIncrement || 0) * this.crystalUpgrades[stat];
+
+    // prevent startingStage upgrade from exceeding 75% of highestStage
+    if (stat === 'startingStage') {
+      const nextLevel = (this.crystalUpgrades[stat] || 0) + 1;
+      const cap = Math.floor(hero.highestStage * 0.75);
+      const newStage = 1 + nextLevel;
+      if (newStage > cap) {
+        showToast(`Cannot increase starting stage above ${cap}`, 'error');
+        return;
+      }
+    }
 
     if (config.oneTime && this.crystalUpgrades[stat]) {
       showToast('Already purchased!', 'info');
@@ -229,7 +246,7 @@ export default class Prestige {
       }
 
       if (stat === 'startingStage') {
-        hero.startingStage = 1 + this.crystalUpgrades[stat];
+        hero.setStartingStage(1 + this.crystalUpgrades[stat]);
       } else if (stat === 'resetSkillTree') {
         if (!skillTree.selectedPath) {
           showToast('No skill path selected to reset!', 'error');
