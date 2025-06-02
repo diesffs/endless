@@ -7,6 +7,7 @@ import { DEFENSE_STATS } from '../constants/stats/defenseStats.js';
 import { MISC_STATS } from '../constants/stats/miscStats.js';
 import { formatStatName } from '../ui/ui.js';
 import { ATTRIBUTE_TOOLTIPS, ATTRIBUTES } from '../constants/stats/attributes.js';
+import { ELEMENTS } from '../constants/common.js';
 
 const html = String.raw;
 
@@ -99,7 +100,12 @@ export function updateStatsAndAttributesUI() {
       });
       // After other stats, render elemental grid in offense panel
       if (panel === offensePanel && collectedElementals.length) {
-        const iconMap = { fireDamage: '🔥', coldDamage: '❄️', airDamage: '☁️', earthDamage: '🌍' };
+        const iconMap = {
+          fireDamage: ELEMENTS.fire.icon,
+          coldDamage: ELEMENTS.cold.icon,
+          airDamage: ELEMENTS.air.icon,
+          earthDamage: ELEMENTS.earth.icon,
+        };
         const grid = document.createElement('div');
         grid.className = 'elemental-stats-grid';
         ['fireDamage', 'coldDamage', 'airDamage', 'earthDamage'].forEach((key) => {

@@ -1,5 +1,7 @@
 // List of unique enemies for the game
 
+import { ELEMENTS } from './common.js';
+
 export const ENEMY_RARITY = {
   NORMAL: {
     type: 'NORMAL',
@@ -45,25 +47,6 @@ export const ENEMY_RARITY = {
     lifeBonus: 3,
     damageBonus: 3,
     bonusAttackSpeed: 0.5,
-  },
-};
-
-const ELEMENTS = {
-  fire: {
-    id: 'fire',
-    icon: '🔥',
-  },
-  cold: {
-    id: 'cold',
-    icon: '❄️',
-  },
-  air: {
-    id: 'air',
-    icon: '☁️',
-  },
-  earth: {
-    id: 'earth',
-    icon: '🌍',
   },
 };
 
@@ -340,5 +323,61 @@ export const ENEMY_LIST = [
     materialDropMultiplier: 1.0,
     materialDropWeights: {},
     tags: ['venom', 'spider'],
+  },
+  {
+    name: 'Mossback',
+    icon: '🪵',
+    element: 'earth',
+    image: 'enemies/mossback.jpg',
+    lifeMultiplier: 1.2,
+    damageMultiplier: 1.0,
+    xpMultiplier: 1.1,
+    goldMultiplier: 1.1,
+    itemDropMultiplier: 1.0,
+    materialDropMultiplier: 1.0,
+    materialDropWeights: {},
+    tags: ['forest'],
+  },
+  {
+    name: 'Thornling',
+    icon: '🌱',
+    element: 'earth',
+    image: 'enemies/thornling.jpg',
+    lifeMultiplier: 1.0,
+    damageMultiplier: 1.2,
+    xpMultiplier: 1.0,
+    goldMultiplier: 1.2,
+    itemDropMultiplier: 1.1,
+    materialDropMultiplier: 1.0,
+    materialDropWeights: {},
+    tags: ['forest'],
+  },
+  {
+    name: 'Barkhide',
+    icon: '🌳',
+    element: 'earth',
+    image: 'enemies/barkhide.jpg',
+    lifeMultiplier: 1.3,
+    damageMultiplier: 1.0,
+    xpMultiplier: 1.0,
+    goldMultiplier: 1.0,
+    itemDropMultiplier: 1.0,
+    materialDropMultiplier: 1.1,
+    materialDropWeights: {},
+    tags: ['forest'],
+  },
+  {
+    name: 'Sylvan Wisp',
+    icon: '✨',
+    element: 'air',
+    image: 'enemies/sylvan-wisp.jpg',
+    lifeMultiplier: 0.9,
+    damageMultiplier: 1.3,
+    xpMultiplier: 1.2,
+    goldMultiplier: 1.0,
+    itemDropMultiplier: 1.2,
+    materialDropMultiplier: 1.0,
+    materialDropWeights: {},
+    tags: ['forest'],
   },
 ];

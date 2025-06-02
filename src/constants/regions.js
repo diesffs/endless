@@ -3,6 +3,7 @@ import { ENEMY_LIST } from './enemies.js';
 export const REGIONS = [
   {
     id: 'forest',
+    unlockLevel: 1,
     name: 'Enchanted Forest',
     description: 'A mystical forest teeming with elemental creatures.',
     allowedTags: ['forest'],
@@ -21,6 +22,7 @@ export const REGIONS = [
   },
   {
     id: 'crystal_cave',
+    unlockLevel: 25,
     name: 'Crystal Cave',
     description: 'A shimmering cave filled with crystalized rocks.',
     allowedTags: ['cave', 'crystal'],
@@ -39,6 +41,7 @@ export const REGIONS = [
   },
   {
     id: 'tundra',
+    unlockLevel: 50,
     name: 'Frozen Tundra',
     description: 'A land of ice and snow, home to cold and air enemies.',
     allowedTags: ['tundra', 'ice'],
@@ -59,6 +62,7 @@ export const REGIONS = [
   },
   {
     id: 'desert',
+    unlockLevel: 150,
     name: 'Scorching Desert',
     description: 'A vast desert with relentless heat and dangerous creatures.',
     allowedTags: ['desert', 'sand'],
@@ -77,6 +81,7 @@ export const REGIONS = [
   },
   {
     id: 'swamp',
+    unlockLevel: 350,
     name: 'Murky Swamp',
     description: 'A dark and damp swamp filled with poisonous creatures.',
     allowedTags: ['swamp', 'poison'],
@@ -96,6 +101,7 @@ export const REGIONS = [
   },
   {
     id: 'skyrealm',
+    unlockLevel: 660,
     name: 'Skyrealm Peaks',
     description: 'A floating realm high above the clouds, home to air and lightning creatures.',
     allowedTags: ['sky', 'air'],
@@ -119,6 +125,7 @@ export const REGIONS = [
   },
   {
     id: 'abyss',
+    unlockLevel: 1000,
     name: 'Abyssal Depths',
     description: 'A dark and mysterious region filled with ancient horrors.',
     allowedTags: ['abyss', 'dark'],

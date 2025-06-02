@@ -46,25 +46,12 @@ export function loadRegionSelection() {
   currentRegionId = REGIONS[0].id;
 }
 
-// Helper to get emoji for element
-const ELEMENT_EMOJIS = {
-  fire: '🔥',
-  cold: '❄️',
-  air: '☁️',
-  earth: '🌍',
-};
-
 function getRegionTooltip(region) {
   const html = String.raw;
   return html`
     <div class="tooltip-header">${region.name}</div>
     <div class="tooltip-content">${region.description}</div>
     <div><strong>Unlock Level:</strong> ${region.unlockLevel}</div>
-    <div>
-      <strong>Elements:</strong> ${region.allowedElements
-        .map((el) => `${ELEMENT_EMOJIS[el] || ''} ${el.charAt(0).toUpperCase() + el.slice(1)}`)
-        .join(', ')}
-    </div>
     ${region.xpMultiplier != 1
       ? `<div><strong>XP bonus:</strong> ${((region.xpMultiplier - 1) * 100).toFixed(0)}%</div>`
       : ''}

@@ -1,3 +1,5 @@
+import { ELEMENTS } from '../common.js';
+
 const html = String.raw;
 
 export const ATTRIBUTES = {
@@ -177,10 +179,10 @@ export const ATTRIBUTE_TOOLTIPS = {
     • 0% damage vs same element<br />
     • 25% damage vs other elements<br /><br />
     Element Strengths:<br />
-    🔥 Fire → ☁️ Air<br />
-    🌍 Earth → ❄️ Cold<br />
-    ❄️ Cold → 🔥 Fire<br />
-    ☁️ Air → 🌍 Earth
+    ${ELEMENTS.fire.icon} Fire → ${ELEMENTS.air.icon} Air<br />
+    ${ELEMENTS.earth.icon} Earth → ${ELEMENTS.cold.icon} Cold<br />
+    ${ELEMENTS.cold.icon} Cold → ${ELEMENTS.fire.icon} Fire<br />
+    ${ELEMENTS.air.icon} Air → ${ELEMENTS.earth.icon} Earth
   `,
 
   getDamageTooltip: () => html`
