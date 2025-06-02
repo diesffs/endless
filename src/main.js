@@ -14,7 +14,7 @@ import Prestige from './prestige.js';
 import Inventory from './inventory.js';
 import SkillTree from './skillTree.js';
 import { createDebugUI, createModifyUI, crypt } from './functions.js';
-import Statistics from './constants/statistics.js';
+import Statistics from './statistics.js';
 import { apiFetch, loadGameData, saveGameData } from './api.js';
 import { game, hero, inventory, training, skillTree, prestige, statistics, setGlobals } from './globals.js';
 import { initializeRegionSystem, updateRegionUI } from './region.js';
