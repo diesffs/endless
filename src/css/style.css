@@ -145,8 +145,9 @@ body {
 .enemy-main-row {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: stretch;
   justify-content: flex-start;
+  height: 100%;
 }
 
 .enemy-avatar {
@@ -166,8 +167,9 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
+  justify-content: space-between;
+  height: 8rem;
 }
 
 .enemy-life-bar {

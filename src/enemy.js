@@ -11,7 +11,7 @@ class Enemy {
     this.element = enemyData.element;
     this.image = enemyData.image;
     this.lifeBonus = enemyData.lifeBonus;
-    this.dmgBonus = enemyData.dmgBonus;
+    this.damageBonus = enemyData.damageBonus;
 
     // REGION-AWARE ENEMY GENERATION
     const region = getCurrentRegion();
@@ -20,7 +20,7 @@ class Enemy {
     // Use region multipliers for life and damage, and apply unique enemy bonuses
     this.life = this.calculateLife(stage, this.rarity) * (region.enemyLifeMultiplier || 1) * this.lifeBonus;
     this.currentLife = this.life;
-    this.damage = this.calculateDamage(stage, this.rarity) * (region.enemyDamageMultiplier || 1) * this.dmgBonus;
+    this.damage = this.calculateDamage(stage, this.rarity) * (region.enemyDamageMultiplier || 1) * this.damageBonus;
     this.attackSpeed = this.calculateAttackSpeed(this.rarity);
     this.lastAttack = Date.now();
     this.setEnemyName();
