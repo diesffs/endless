@@ -379,18 +379,29 @@ export default class Inventory {
   getRandomMaterial() {
     const region = getCurrentRegion();
     const enemy = game.currentEnemy;
-    const allowedExclusive = [...(enemy.canDrop || []), ...(region.canDrop || [])];
+    // Determine allowed exclusives from both enemy and region
+    const allowedExclusive = [...(enemy?.canDrop || []), ...(region.canDrop || [])];
+    // Filter materials by dropChance and exclusivity
     const materials = Object.values(MATERIALS)
       .filter((m) => m.dropChance > 0)
-      // if material.exclusive, only allow if listed in enemy.canDrop or region.canDrop
       .filter((m) => !m.exclusive || allowedExclusive.includes(m.id));
-    const multiplier = region.materialDropMultiplier || 1.0;
-    const weights = region.materialDropWeights || {};
+    // Combine region and enemy drop multipliers
+    const regionMultiplier = region.materialDropMultiplier || 1.0;
+    const enemyMultiplier = enemy?.enemyData?.materialDropMultiplier || 1.0;
+    const multiplier = regionMultiplier * enemyMultiplier;
+    // Merge region and enemy weights (additive; default to 1 if none)
+    const regionWeights = region.materialDropWeights || {};
+    const enemyWeights = enemy?.enemyData?.materialDropWeights || {};
+    const combinedWeights = {};
+    materials.forEach((m) => {
+      const w = (regionWeights[m.id] || 0) + (enemyWeights[m.id] || 0);
+      combinedWeights[m.id] = w > 0 ? w : 1;
+    });
     // Calculate total weighted drop chances
-    const total = materials.reduce((sum, m) => sum + m.dropChance * multiplier * (weights[m.id] || 1), 0);
+    const total = materials.reduce((sum, m) => sum + m.dropChance * multiplier * combinedWeights[m.id], 0);
     let roll = Math.random() * total;
     for (const mat of materials) {
-      const weight = mat.dropChance * multiplier * (weights[mat.id] || 1);
+      const weight = mat.dropChance * multiplier * combinedWeights[mat.id];
       if (roll < weight) return mat;
       roll -= weight;
     }

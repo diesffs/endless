@@ -111,7 +111,9 @@ export const ENEMY_LIST = [
     goldMultiplier: 1.0,
     itemDropMultiplier: 1.0,
     materialDropMultiplier: 1.0,
-    materialDropWeights: {},
+    materialDropWeights: {
+      crystalized_rock: 4,
+    },
     tags: ['golem', 'crystal'],
   },
   {

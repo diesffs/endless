@@ -29,11 +29,6 @@ class Enemy {
     this.goldMultiplier = (region.goldMultiplier || 1) * (enemyData.goldMultiplier || 1);
     this.itemDropMultiplier = (region.itemDropMultiplier || 1) * (enemyData.itemDropMultiplier || 1);
     this.materialDropMultiplier = (region.materialDropMultiplier || 1) * (enemyData.materialDropMultiplier || 1);
-    // Combine materialDropWeights (additive for each key)
-    this.materialDropWeights = { ...region.materialDropWeights };
-    for (const [k, v] of Object.entries(enemyData.materialDropWeights || {})) {
-      this.materialDropWeights[k] = (this.materialDropWeights[k] || 0) + v;
-    }
 
     this.rarity = this.generateRarity();
     this.color = this.getRarityColor(this.rarity);
@@ -44,13 +39,6 @@ class Enemy {
     this.lastAttack = Date.now();
     this.setEnemyName();
     this.updateEnemyStats();
-
-    // Store region drop/reward multipliers
-    this.xpMultiplier = region.xpMultiplier || 1.0;
-    this.goldMultiplier = region.goldMultiplier || 1.0;
-    this.itemDropMultiplier = region.itemDropMultiplier || 1.0;
-    this.materialDropMultiplier = region.materialDropMultiplier || 1.0;
-    this.materialWeights = region.materialDropWeights || {};
 
     // Get enemy section element
     const enemySection = document.querySelector('.enemy-section');
