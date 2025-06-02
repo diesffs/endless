@@ -1,6 +1,5 @@
 import Item from './item.js';
 import { game, hero, statistics } from './globals.js';
-import { ENEMY_RARITY } from './enemy.js';
 import { showToast, updateResources } from './ui/ui.js';
 import { createModal, closeModal } from './ui/modal.js';
 import { initializeInventoryUI, updateInventoryGrid, updateMaterialsGrid } from './ui/inventoryUi.js';
@@ -9,6 +8,7 @@ import { MATERIALS } from './constants/materials.js';
 import { STATS } from './constants/stats/stats.js';
 import { ITEM_RARITY, RARITY_ORDER, SLOT_REQUIREMENTS } from './constants/items.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
+import { ENEMY_RARITY } from './constants/enemies.js';
 
 const html = String.raw;
 

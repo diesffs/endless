@@ -2,11 +2,11 @@ import { initializeSkillTreeStructure, updatePlayerLife } from './ui/ui.js';
 import { game, inventory, training, skillTree, statistics } from './globals.js';
 import { createCombatText } from './combat.js';
 import { handleSavedData } from './functions.js';
-import { ELEMENT_OPPOSITES } from './enemy.js';
 import { updateRegionUI } from './region.js';
 import { STATS } from './constants/stats/stats.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 import { ATTRIBUTES } from './constants/stats/attributes.js';
+import { ELEMENT_OPPOSITES } from './constants/enemies.js';
 
 export const STATS_ON_LEVEL_UP = 3;
 export default class Hero {
@@ -304,7 +304,7 @@ export default class Hero {
   }
 
   // calculated when hit is successful
-  calculateTotalDamage(bonusDamage = 0) {
+  calculateTotalDamage(damageBonus = 0) {
     // Hit - existing damage calculation code
     const isCritical = Math.random() * 100 < this.stats.critChance;
     // Calculate physical damage
@@ -314,7 +314,7 @@ export default class Hero {
     const enemyElement = game.currentEnemy.element;
 
     // Calculate total damage before crit
-    let totalDamage = physicalDamage + bonusDamage; // more dmg added later
+    let totalDamage = physicalDamage + damageBonus; // more dmg added later
 
     // Add toggle skill effects
     const toggleEffects = skillTree.applyToggleEffects();

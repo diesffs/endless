@@ -243,21 +243,23 @@
           <div id="region-selector"></div>
 
           <div class="enemy-section">
-            <div class="enemy-info-left">
-              <h3 class="enemy-name"></h3>
+            <div class="enemy-main-row">
               <div class="enemy-avatar">⚔️</div>
-            </div>
-            <div class="enemy-info-right">
-              <div class="enemy-stats">
-                <div class="enemy-damage">
-                  <span class="stat-label">Damage:</span> <span class="stat-value" id="enemy-damage-value">0</span>
+              <div class="enemy-life-and-stats">
+                <div class="enemy-name-row">
+                  <h3 class="enemy-name"></h3>
                 </div>
-                <!-- More stats can be added here in the future -->
+                <div class="enemy-life-bar">
+                  <div id="enemy-life-fill" style="width: 100%"></div>
+                  <div id="enemy-life-text" class="life-text">50/50</div>
+                </div>
+                <div class="enemy-stats">
+                  <div class="enemy-damage">
+                    <span class="stat-label">Damage:</span> <span class="stat-value" id="enemy-damage-value">0</span>
+                  </div>
+                  <!-- More stats can be added here in the future -->
+                </div>
               </div>
-            </div>
-            <div class="enemy-life-bar">
-              <div id="enemy-life-fill" style="width: 100%"></div>
-              <div id="enemy-life-text" class="life-text">50/50</div>
             </div>
           </div>
         </div>

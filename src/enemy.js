@@ -1,244 +1,16 @@
 import { ITEM_TYPES } from './constants/items.js';
 import { getCurrentRegion } from './region.js';
-
-export const ENEMY_RARITY = {
-  NORMAL: {
-    type: 'NORMAL',
-    itemDropChance: 1,
-    color: 'gray',
-    threshold: 80,
-    lifeBonus: 1,
-    bonusDamage: 1,
-    bonusAttackSpeed: 1,
-  },
-  RARE: {
-    type: 'RARE',
-    itemDropChance: 1,
-    color: 'blue',
-    threshold: 90,
-    lifeBonus: 1.2,
-    bonusDamage: 1.2,
-    bonusAttackSpeed: 0.9,
-  },
-  EPIC: {
-    type: 'EPIC',
-    itemDropChance: 2,
-    color: 'purple',
-    threshold: 96,
-    lifeBonus: 1.5,
-    bonusDamage: 1.5,
-    bonusAttackSpeed: 0.8,
-  },
-  LEGENDARY: {
-    type: 'LEGENDARY',
-    itemDropChance: 2,
-    color: 'orange',
-    threshold: 99.5,
-    lifeBonus: 2,
-    bonusDamage: 2,
-    bonusAttackSpeed: 0.7,
-  },
-  MYTHIC: {
-    type: 'MYTHIC',
-    itemDropChance: 3,
-    color: 'red',
-    threshold: 100,
-    lifeBonus: 3,
-    bonusDamage: 3,
-    bonusAttackSpeed: 0.5,
-  },
-};
-
-const ELEMENTS = {
-  fire: {
-    id: 'fire',
-    icon: '🔥',
-  },
-  cold: {
-    id: 'cold',
-    icon: '❄️',
-  },
-  air: {
-    id: 'air',
-    icon: '☁️',
-  },
-  earth: {
-    id: 'earth',
-    icon: '🌍',
-  },
-};
-
-export const ELEMENT_OPPOSITES = {
-  [ELEMENTS.fire.id]: ELEMENTS.air.id,
-  [ELEMENTS.earth.id]: ELEMENTS.cold.id,
-  [ELEMENTS.cold.id]: ELEMENTS.fire.id,
-  [ELEMENTS.air.id]: ELEMENTS.earth.id,
-};
+import { ENEMY_LIST, ENEMY_RARITY } from './constants/enemies.js';
 
 class Enemy {
-  static ENEMY_LIST = [
-    {
-      name: 'Abyssal Wraith',
-      icon: '👻',
-      element: 'cold',
-      image: 'public/enemies/Abyssal Wraith.jpg',
-      hpBonus: 1.2,
-      dmgBonus: 1.1,
-    },
-    {
-      name: 'Boglurker',
-      icon: '🐸',
-      element: 'earth',
-      image: 'public/enemies/Boglurker.jpg',
-      hpBonus: 1.1,
-      dmgBonus: 1.0,
-    },
-    {
-      name: 'Cloudstrider',
-      icon: '☁️',
-      element: 'air',
-      image: 'public/enemies/Cloudstrider.jpg',
-      hpBonus: 1.0,
-      dmgBonus: 1.2,
-    },
-    {
-      name: 'Crystal Golem',
-      icon: '🪨',
-      element: 'earth',
-      image: 'public/enemies/Crystal Golem.jpg',
-      hpBonus: 1.4,
-      dmgBonus: 0.9,
-    },
-    {
-      name: 'Dreadfang',
-      icon: '🐺',
-      element: 'air',
-      image: 'public/enemies/Dreadfang.jpg',
-      hpBonus: 1.0,
-      dmgBonus: 1.3,
-    },
-    {
-      name: 'Dunewraith',
-      icon: '💀',
-      element: 'earth',
-      image: 'public/enemies/Dunewraith.jpg',
-      hpBonus: 1.1,
-      dmgBonus: 1.1,
-    },
-    {
-      name: 'Frostbite',
-      icon: '❄️',
-      element: 'cold',
-      image: 'public/enemies/Frostbite.jpg',
-      hpBonus: 1.0,
-      dmgBonus: 1.2,
-    },
-    {
-      name: 'Frostfury',
-      icon: '🧊',
-      element: 'cold',
-      image: 'public/enemies/Frostfury.jpg',
-      hpBonus: 1.1,
-      dmgBonus: 1.1,
-    },
-    {
-      name: 'Frostweaver',
-      icon: '🕸️',
-      element: 'cold',
-      image: 'public/enemies/Frostweaver.jpg',
-      hpBonus: 1.2,
-      dmgBonus: 1.0,
-    },
-    {
-      name: 'Gem Guardian',
-      icon: '💎',
-      element: 'earth',
-      image: 'public/enemies/Gem Guardian.jpg',
-      hpBonus: 1.3,
-      dmgBonus: 1.0,
-    },
-    {
-      name: 'Grimspike',
-      icon: '🦔',
-      element: 'earth',
-      image: 'public/enemies/Grimspike.jpg',
-      hpBonus: 1.2,
-      dmgBonus: 1.1,
-    },
-    {
-      name: 'Sandstalker',
-      icon: '🦂',
-      element: 'earth',
-      image: 'public/enemies/Sandstalker.jpg',
-      hpBonus: 1.1,
-      dmgBonus: 1.2,
-    },
-    {
-      name: 'Shadowclaw',
-      icon: '🐾',
-      element: 'air',
-      image: 'public/enemies/Shadowclaw.jpg',
-      hpBonus: 1.0,
-      dmgBonus: 1.3,
-    },
-    {
-      name: 'Shardling',
-      icon: '🔹',
-      element: 'earth',
-      image: 'public/enemies/Shardling.jpg',
-      hpBonus: 1.1,
-      dmgBonus: 1.1,
-    },
-    {
-      name: 'Stormbringer',
-      icon: '⚡',
-      element: 'air',
-      image: 'public/enemies/Stormbringer.jpg',
-      hpBonus: 1.0,
-      dmgBonus: 1.3,
-    },
-    {
-      name: 'Stormsoul',
-      icon: '🌩️',
-      element: 'air',
-      image: 'public/enemies/Stormsoul.jpg',
-      hpBonus: 1.1,
-      dmgBonus: 1.2,
-    },
-    {
-      name: 'Thunderwing',
-      icon: '🦅',
-      element: 'air',
-      image: 'public/enemies/Thunderwing.jpg',
-      hpBonus: 1.0,
-      dmgBonus: 1.3,
-    },
-    {
-      name: 'Toxictoad',
-      icon: '🐸',
-      element: 'earth',
-      image: 'public/enemies/Toxictoad.jpg',
-      hpBonus: 1.2,
-      dmgBonus: 1.0,
-    },
-    {
-      name: 'Venomspitter',
-      icon: '🕷️',
-      element: 'earth',
-      image: 'public/enemies/Venomspitter.jpg',
-      hpBonus: 1.1,
-      dmgBonus: 1.1,
-    },
-  ];
-
   constructor(stage) {
     // Pick a unique enemy
-    const enemyData = Enemy.ENEMY_LIST[Math.floor(Math.random() * Enemy.ENEMY_LIST.length)];
+    const enemyData = ENEMY_LIST[Math.floor(Math.random() * ENEMY_LIST.length)];
     this.enemyData = enemyData;
     this.name = `${enemyData.icon} ${enemyData.name}`;
     this.element = enemyData.element;
     this.image = enemyData.image;
-    this.hpBonus = enemyData.hpBonus;
+    this.lifeBonus = enemyData.lifeBonus;
     this.dmgBonus = enemyData.dmgBonus;
 
     // REGION-AWARE ENEMY GENERATION
@@ -246,7 +18,7 @@ class Enemy {
     this.rarity = this.generateRarity();
     this.color = this.getRarityColor(this.rarity);
     // Use region multipliers for life and damage, and apply unique enemy bonuses
-    this.life = this.calculateLife(stage, this.rarity) * (region.enemyLifeMultiplier || 1) * this.hpBonus;
+    this.life = this.calculateLife(stage, this.rarity) * (region.enemyLifeMultiplier || 1) * this.lifeBonus;
     this.currentLife = this.life;
     this.damage = this.calculateDamage(stage, this.rarity) * (region.enemyDamageMultiplier || 1) * this.dmgBonus;
     this.attackSpeed = this.calculateAttackSpeed(this.rarity);
@@ -279,9 +51,23 @@ class Enemy {
   setEnemyName() {
     const enemyNameElement = document.querySelector('.enemy-name');
     enemyNameElement.textContent = this.name;
-    // Optionally set the enemy image if an element exists
-    const enemyImg = document.querySelector('.enemy-image');
-    if (enemyImg) enemyImg.src = this.image;
+    // Set the enemy image in .enemy-avatar (like hero)
+    const enemyAvatar = document.querySelector('.enemy-avatar');
+    if (enemyAvatar) {
+      let img = enemyAvatar.querySelector('img');
+      if (!img) {
+        img = document.createElement('img');
+        img.alt = this.name + ' avatar';
+        enemyAvatar.innerHTML = '';
+        enemyAvatar.appendChild(img);
+      }
+      // Use Vite's BASE_URL if available, else fallback
+      let baseUrl = '';
+      try {
+        baseUrl = import.meta.env.BASE_URL || '';
+      } catch (e) {}
+      img.src = baseUrl + this.image;
+    }
   }
 
   updateEnemyStats() {
@@ -348,14 +134,14 @@ class Enemy {
     }
     const baseDamage = dmgVal;
     const rarityMap = {
-      [ENEMY_RARITY.NORMAL.type]: ENEMY_RARITY.NORMAL.bonusDamage,
-      [ENEMY_RARITY.RARE.type]: ENEMY_RARITY.RARE.bonusDamage,
-      [ENEMY_RARITY.EPIC.type]: ENEMY_RARITY.EPIC.bonusDamage,
-      [ENEMY_RARITY.LEGENDARY.type]: ENEMY_RARITY.LEGENDARY.bonusDamage,
-      [ENEMY_RARITY.MYTHIC.type]: ENEMY_RARITY.MYTHIC.bonusDamage,
+      [ENEMY_RARITY.NORMAL.type]: ENEMY_RARITY.NORMAL.damageBonus,
+      [ENEMY_RARITY.RARE.type]: ENEMY_RARITY.RARE.damageBonus,
+      [ENEMY_RARITY.EPIC.type]: ENEMY_RARITY.EPIC.damageBonus,
+      [ENEMY_RARITY.LEGENDARY.type]: ENEMY_RARITY.LEGENDARY.damageBonus,
+      [ENEMY_RARITY.MYTHIC.type]: ENEMY_RARITY.MYTHIC.damageBonus,
     };
 
-    return baseDamage * (rarityMap[rarity] || ENEMY_RARITY.NORMAL.bonusDamage);
+    return baseDamage * (rarityMap[rarity] || ENEMY_RARITY.NORMAL.damageBonus);
   }
 
   calculateAttackSpeed(rarity) {
