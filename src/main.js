@@ -19,6 +19,7 @@ import { apiFetch, loadGameData, saveGameData } from './api.js';
 import { game, hero, inventory, training, skillTree, prestige, statistics, setGlobals } from './globals.js';
 import { initializeRegionSystem, updateRegionUI } from './region.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
+import { ENEMY_LIST } from './constants/enemies.js';
 
 window.qwe = console.log;
 window.qw = console.log;
@@ -65,6 +66,9 @@ export let dev = false;
   updateStatsAndAttributesUI();
   updateStageUI();
   updateEnemyLife();
+
+  // Preload all enemy avatar images to warm browser cache
+  preloadEnemyImages();
 
   window.addEventListener('DOMContentLoaded', () => {
     initializeRegionSystem();
@@ -263,4 +267,14 @@ export let dev = false;
   // Check session on load and every 60m
   checkSession();
   setInterval(checkSession, 60000 * 60); // 60 minutes
+
+  // Preload function for enemy images
+  function preloadEnemyImages() {
+    const baseUrl = import.meta.env.BASE_URL || '';
+    const urls = Array.from(new Set(ENEMY_LIST.map((e) => baseUrl + e.image)));
+    urls.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }
 })();
