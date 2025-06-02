@@ -2,6 +2,7 @@ import { updatePlayerLife, updateEnemyLife, updateResources, updateStageUI, upda
 import Enemy from './enemy.js';
 import { hero, game, inventory, prestige, statistics, skillTree } from './globals.js';
 import { ITEM_RARITY } from './constants/items.js';
+import { ENEMY_RARITY } from './constants/enemies.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 
 export function enemyAttack(currentTime) {
@@ -121,14 +122,19 @@ export function playerDeath() {
 
 export function defeatEnemy() {
   const enemy = game.currentEnemy;
+  const rarityData = ENEMY_RARITY[enemy.rarity] || {};
   // const droppedItem = dropLoot(enemy);
 
   const baseExpGained = 10 + game.stage * 2;
   const baseGoldGained = 10 + game.stage * 4;
 
   // Apply bonus experience and gold (include region multipliers)
-  const expGained = Math.floor(baseExpGained * (1 + hero.stats.bonusExperience / 100) * (enemy.xpMultiplier || 1));
-  const goldGained = Math.floor(baseGoldGained * (1 + hero.stats.bonusGold / 100) * (enemy.goldMultiplier || 1));
+  const expGained = Math.floor(
+    baseExpGained * (1 + hero.stats.bonusExperience / 100) * (enemy.xpMultiplier || 1) * (rarityData.xpBonus || 1)
+  );
+  const goldGained = Math.floor(
+    baseGoldGained * (1 + hero.stats.bonusGold / 100) * (enemy.goldMultiplier || 1) * (rarityData.goldBonus || 1)
+  );
 
   hero.gainGold(goldGained);
   hero.gainExp(expGained);

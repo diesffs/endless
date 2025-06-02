@@ -26,7 +26,6 @@ export default class Hero {
     this.highestStage = 1;
 
     this.startingStage = 1;
-    this.startingGold = 0;
 
     this.primaryStats = {
       strength: 0,

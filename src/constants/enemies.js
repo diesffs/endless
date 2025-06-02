@@ -11,6 +11,8 @@ export const ENEMY_RARITY = {
     lifeBonus: 1,
     damageBonus: 1,
     bonusAttackSpeed: 1,
+    xpBonus: 1,
+    goldBonus: 1,
   },
   RARE: {
     type: 'RARE',
@@ -20,6 +22,8 @@ export const ENEMY_RARITY = {
     lifeBonus: 1.2,
     damageBonus: 1.2,
     bonusAttackSpeed: 0.9,
+    xpBonus: 1.1,
+    goldBonus: 1.05,
   },
   EPIC: {
     type: 'EPIC',
@@ -29,6 +33,8 @@ export const ENEMY_RARITY = {
     lifeBonus: 1.5,
     damageBonus: 1.5,
     bonusAttackSpeed: 0.8,
+    xpBonus: 1.25,
+    goldBonus: 1.1,
   },
   LEGENDARY: {
     type: 'LEGENDARY',
@@ -38,6 +44,8 @@ export const ENEMY_RARITY = {
     lifeBonus: 2,
     damageBonus: 2,
     bonusAttackSpeed: 0.7,
+    xpBonus: 1.5,
+    goldBonus: 1.2,
   },
   MYTHIC: {
     type: 'MYTHIC',
@@ -47,6 +55,8 @@ export const ENEMY_RARITY = {
     lifeBonus: 3,
     damageBonus: 3,
     bonusAttackSpeed: 0.5,
+    xpBonus: 2,
+    goldBonus: 1.5,
   },
 };
 

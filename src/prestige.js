@@ -26,11 +26,6 @@ const CRYSTAL_UPGRADE_CONFIG = {
     baseCost: 1,
     costIncrement: 0, // specify cost increase per level
   },
-  // startingGold: {
-  //   label: 'Starting Gold',
-  //   bonus: 1000,
-  //   baseCost: 1,
-  // },
   continuousPlay: {
     label: 'Continuous Play',
     bonus: 'Auto-continue after death',
@@ -53,11 +48,7 @@ const CRYSTAL_UPGRADE_CONFIG = {
 
 export default class Prestige {
   constructor(savedData = null) {
-    this.crystalUpgrades = {
-      startingStage: 0,
-      startingGold: 0,
-      continuousPlay: false,
-    };
+    this.crystalUpgrades = {};
 
     handleSavedData(savedData, this);
   }
@@ -76,10 +67,8 @@ export default class Prestige {
     const savedValues = {
       crystals: hero.crystals,
       startingStage: hero.startingStage,
-      startingGold: hero.startingGold,
       crystalUpgrades: {
         startingStage: this.crystalUpgrades.startingStage,
-        startingGold: this.crystalUpgrades.startingGold,
         continuousPlay: this.crystalUpgrades.continuousPlay,
       },
     };
@@ -99,9 +88,7 @@ export default class Prestige {
     // Restore crystal-related values
     hero.crystals = savedValues.crystals;
     hero.startingStage = savedValues.startingStage;
-    hero.startingGold = savedValues.startingGold;
     this.crystalUpgrades.startingStage = savedValues.crystalUpgrades.startingStage;
-    this.crystalUpgrades.startingGold = savedValues.crystalUpgrades.startingGold;
     this.crystalUpgrades.continuousPlay = savedValues.crystalUpgrades.continuousPlay;
 
     // Reset skill tree
@@ -140,7 +127,6 @@ export default class Prestige {
     }
 
     game.stage = hero.startingStage;
-    hero.gold = hero.startingGold;
     game.gameStarted = false;
     game.currentEnemy = new Enemy(game.stage);
     updateStageUI();

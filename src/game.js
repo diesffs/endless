@@ -193,12 +193,9 @@ class Game {
     hero.souls = 0;
     hero.crystals = 0;
     hero.startingStage = 1;
-    hero.startingGold = 0;
     // reset prestige upgrades
     prestige.crystalUpgrades = {
       startingStage: 0,
-      startingGold: 0,
-      continuousPlay: false,
     };
     skillTree.resetSkillTree();
 
