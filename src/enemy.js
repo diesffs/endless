@@ -4,23 +4,42 @@ import { ENEMY_LIST, ENEMY_RARITY } from './constants/enemies.js';
 
 class Enemy {
   constructor(stage) {
-    // Pick a unique enemy
-    const enemyData = ENEMY_LIST[Math.floor(Math.random() * ENEMY_LIST.length)];
+    const region = getCurrentRegion();
+    // Select enemies by region tags
+    const allowedTags = region.allowedTags;
+    let regionEnemies = ENEMY_LIST.filter((e) => e.tags && allowedTags.some((tag) => e.tags.includes(tag)));
+    if (regionEnemies.length === 0) {
+      console.error('No enemies found for region tags:', allowedTags, 'Region:', region);
+      // Fallback: use all enemies
+      regionEnemies = ENEMY_LIST;
+    }
+    const enemyData = regionEnemies[Math.floor(Math.random() * regionEnemies.length)];
+    if (!enemyData) {
+      throw new Error('No enemy could be selected for region: ' + region.id);
+    }
     this.enemyData = enemyData;
     this.name = `${enemyData.icon} ${enemyData.name}`;
     this.element = enemyData.element;
     this.image = enemyData.image;
-    this.lifeBonus = enemyData.lifeBonus;
-    this.damageBonus = enemyData.damageBonus;
 
-    // REGION-AWARE ENEMY GENERATION
-    const region = getCurrentRegion();
+    // Combine multipliers (region * enemy)
+    this.lifeMultiplier = (region.lifeMultiplier || 1) * (enemyData.lifeMultiplier || 1);
+    this.damageMultiplier = (region.damageMultiplier || 1) * (enemyData.damageMultiplier || 1);
+    this.xpMultiplier = (region.xpMultiplier || 1) * (enemyData.xpMultiplier || 1);
+    this.goldMultiplier = (region.goldMultiplier || 1) * (enemyData.goldMultiplier || 1);
+    this.itemDropMultiplier = (region.itemDropMultiplier || 1) * (enemyData.itemDropMultiplier || 1);
+    this.materialDropMultiplier = (region.materialDropMultiplier || 1) * (enemyData.materialDropMultiplier || 1);
+    // Combine materialDropWeights (additive for each key)
+    this.materialDropWeights = { ...region.materialDropWeights };
+    for (const [k, v] of Object.entries(enemyData.materialDropWeights || {})) {
+      this.materialDropWeights[k] = (this.materialDropWeights[k] || 0) + v;
+    }
+
     this.rarity = this.generateRarity();
     this.color = this.getRarityColor(this.rarity);
-    // Use region multipliers for life and damage, and apply unique enemy bonuses
-    this.life = this.calculateLife(stage, this.rarity) * (region.enemyLifeMultiplier || 1) * this.lifeBonus;
+    this.life = this.calculateLife(stage, this.rarity) * this.lifeMultiplier;
     this.currentLife = this.life;
-    this.damage = this.calculateDamage(stage, this.rarity) * (region.enemyDamageMultiplier || 1) * this.damageBonus;
+    this.damage = this.calculateDamage(stage, this.rarity) * this.damageMultiplier;
     this.attackSpeed = this.calculateAttackSpeed(this.rarity);
     this.lastAttack = Date.now();
     this.setEnemyName();
