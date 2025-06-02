@@ -1,94 +1,12 @@
-import { initializeSkillTreeStructure, updateStatsAndAttributesUI } from './ui.js';
+import { initializeSkillTreeStructure, updatePlayerLife } from './ui/ui.js';
 import { game, inventory, training, skillTree, statistics } from './globals.js';
-import { updatePlayerLife } from './ui.js';
 import { createCombatText } from './combat.js';
 import { handleSavedData } from './functions.js';
 import { ELEMENT_OPPOSITES } from './enemy.js';
 import { updateRegionUI } from './region.js';
-import { STATS } from './stats.js';
-
-export const ATTRIBUTES = {
-  strength: {
-    effects: {
-      damagePerPoint: 0.5,
-      damagePercentPer: {
-        enabled: false,
-        points: 5,
-        value: 0.01,
-      },
-    },
-  },
-  agility: {
-    effects: {
-      attackRatingPerPoint: 10,
-      attackRatingPercentPer: {
-        enabled: false,
-        points: 5,
-        value: 0.01,
-      },
-      attackSpeedPer: {
-        enabled: false,
-        points: 25,
-        value: 0.01,
-      },
-    },
-  },
-  vitality: {
-    effects: {
-      lifePerPoint: 10,
-      lifePercentPer: {
-        enabled: false,
-        points: 5,
-        value: 0.01,
-      },
-      regenPercentPer: {
-        enabled: false,
-        points: 10,
-        value: 0.01,
-      },
-    },
-  },
-  wisdom: {
-    effects: {
-      manaPerPoint: 5,
-      manaPercentPer: {
-        enabled: false,
-        points: 5,
-        value: 0.01,
-      },
-      regenPercentPer: {
-        enabled: false,
-        points: 10,
-        value: 0.1,
-      },
-    },
-  },
-  endurance: {
-    effects: {
-      armorPerPoint: 5,
-      armorPercentPer: {
-        enabled: false,
-        points: 5,
-        value: 0.01,
-      },
-    },
-  },
-  dexterity: {
-    effects: {
-      critDamagePerPoint: 0.005,
-      critChancePer: {
-        enabled: false,
-        points: 25,
-        value: 0.01,
-      },
-      critDamagePer: {
-        enabled: false,
-        points: 10,
-        value: 0.01,
-      },
-    },
-  },
-};
+import { STATS } from './constants/stats/stats.js';
+import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
+import { ATTRIBUTES } from './constants/stats/attributes.js';
 
 export const STATS_ON_LEVEL_UP = 3;
 export default class Hero {

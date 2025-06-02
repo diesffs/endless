@@ -1,6 +1,6 @@
-import { handleSavedData } from './functions.js';
-import { showConfirmDialog } from './ui.js';
-import { game, hero } from './globals.js';
+import { game } from '../globals.js';
+import { handleSavedData } from '../functions.js';
+import { showConfirmDialog } from '../ui/ui.js';
 
 export default class Statistics {
   constructor(savedData = null) {

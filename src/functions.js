@@ -1,7 +1,10 @@
-import { game, hero, inventory, prestige, training, skillTree } from './globals.js';
-import { showToast, updatePlayerLife, updateResources } from './ui.js';
-import { MATERIALS, getRandomMaterial } from './material.js';
-import { ITEM_TYPES, ITEM_RARITY } from './item.js';
+import { game, hero, inventory, training, skillTree } from './globals.js';
+import { MATERIALS } from './constants/materials.js';
+import SimpleCrypto from 'simple-crypto-js';
+import { showToast, updatePlayerLife, updateResources } from './ui/ui.js';
+import { ITEM_RARITY, ITEM_TYPES } from './constants/items.js';
+
+export const crypt = new SimpleCrypto(import.meta.env.VITE_ENCRYPT_KEY);
 
 export const handleSavedData = (savedData, self) => {
   if (savedData) {
@@ -334,7 +337,7 @@ export function createModifyUI() {
   const addRandomMaterialBtn = document.createElement('button');
   addRandomMaterialBtn.textContent = 'Add Random Material';
   addRandomMaterialBtn.addEventListener('click', () => {
-    const mat = getRandomMaterial();
+    const mat = inventory.getRandomMaterial();
     inventory.addMaterial({ id: mat.id, icon: mat.icon, qty: 1 });
     showToast(`Added 1 ${mat.name} to materials`);
   });

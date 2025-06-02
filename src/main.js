@@ -7,20 +7,18 @@ import {
   updateEnemyLife,
   updatePlayerLife,
   updateResources,
-  updateStatsAndAttributesUI,
   updateStageUI,
   showConfirmDialog,
-} from './ui.js';
+} from './ui/ui.js';
 import Prestige from './prestige.js';
 import Inventory from './inventory.js';
 import SkillTree from './skillTree.js';
-import { createDebugUI, createModifyUI } from './functions.js';
-import Statistics from './statistics.js';
+import { createDebugUI, createModifyUI, crypt } from './functions.js';
+import Statistics from './constants/statistics.js';
 import { apiFetch, loadGameData, saveGameData } from './api.js';
 import { game, hero, inventory, training, skillTree, prestige, statistics, setGlobals } from './globals.js';
-import crypt from './encrypt.js';
-import './region.js';
 import { initializeRegionSystem, updateRegionUI } from './region.js';
+import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 
 window.qwe = console.log;
 window.qw = console.log;

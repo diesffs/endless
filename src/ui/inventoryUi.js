@@ -1,8 +1,8 @@
 import { hero, inventory, game } from '../globals.js';
 import { ITEM_SLOTS, MATERIALS_SLOTS, PERSISTENT_SLOTS } from '../inventory.js';
-import { ITEM_RARITY, RARITY_ORDER, SLOT_REQUIREMENTS } from '../item.js';
-import { MATERIALS } from '../material.js';
-import { hideTooltip, positionTooltip, showToast, showTooltip } from '../ui.js';
+import { MATERIALS } from '../constants/materials.js';
+import { hideTooltip, positionTooltip, showToast, showTooltip } from '../ui/ui.js';
+import { ITEM_RARITY, RARITY_ORDER, SLOT_REQUIREMENTS } from '../constants/items.js';
 
 export function initializeInventoryUI(inv) {
   const gridContainer = document.querySelector('.grid-container');

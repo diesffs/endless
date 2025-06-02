@@ -1,16 +1,8 @@
-import { STATS } from '../stats.js';
-import { CLASS_PATHS, SKILL_TREES } from '../skills.js';
+import { STATS } from '../constants/stats/stats.js';
+import { CLASS_PATHS, SKILL_TREES } from '../constants/skills.js';
 import { REQ_LEVEL_FOR_SKILL_TREE, SKILL_LEVEL_TIERS } from '../skillTree.js';
 import { skillTree, hero } from '../globals.js';
-import {
-  formatStatName,
-  hideTooltip,
-  positionTooltip,
-  showConfirmDialog,
-  showToast,
-  showTooltip,
-  updateResources,
-} from '../ui.js';
+import { formatStatName, hideTooltip, positionTooltip, showToast, showTooltip } from '../ui/ui.js';
 import { createModal } from './modal.js';
 
 const html = String.raw;

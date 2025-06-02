@@ -1,15 +1,8 @@
-import {
-  updatePlayerLife,
-  updateEnemyLife,
-  updateResources,
-  updateStageUI,
-  updateStatsAndAttributesUI,
-  updateBuffIndicators,
-} from './ui.js';
+import { updatePlayerLife, updateEnemyLife, updateResources, updateStageUI, updateBuffIndicators } from './ui/ui.js';
 import Enemy from './enemy.js';
-import { ITEM_RARITY } from './item.js';
 import { hero, game, inventory, prestige, statistics, skillTree } from './globals.js';
-import { getRandomMaterial } from './material.js';
+import { ITEM_RARITY } from './constants/items.js';
+import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 
 export function enemyAttack(currentTime) {
   if (!game || !hero || !game.currentEnemy) return;
@@ -154,7 +147,7 @@ export function defeatEnemy() {
   if (enemy.rollForMaterialDrop) {
     for (let i = 0; i < materialDropRolls; i++) {
       if (enemy.rollForMaterialDrop()) {
-        const mat = getRandomMaterial();
+        const mat = inventory.getRandomMaterial();
         inventory.addMaterial({ id: mat.id, icon: mat.icon, qty: 1 });
         showMaterialNotification(mat);
       }

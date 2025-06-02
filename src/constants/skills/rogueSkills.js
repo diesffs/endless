@@ -1,4 +1,4 @@
-import { DEFAULT_MAX_SKILL_LEVEL, SKILL_LEVEL_TIERS } from '../skillTree.js';
+import { DEFAULT_MAX_SKILL_LEVEL, SKILL_LEVEL_TIERS } from '../../skillTree.js';
 
 // Rogue skills extracted from skills.js
 export const ROGUE_SKILLS = {

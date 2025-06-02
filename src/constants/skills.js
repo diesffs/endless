@@ -1,9 +1,9 @@
-import { WARRIOR_SKILLS } from './skills/warriorSkills.js';
-import { ROGUE_SKILLS } from './skills/rogueSkills.js';
-import { VAMPIRE_SKILLS } from './skills/vampireSkills.js';
-import { PALADIN_SKILLS } from './skills/paladinSkills.js';
-import { BERSERKER_SKILLS } from './skills/berserkerSkills.js';
-import { ELEMENTALIST_SKILLS } from './skills/elementalistSkills.js';
+import { WARRIOR_SKILLS } from '../constants/skills/warriorSkills.js';
+import { ROGUE_SKILLS } from '../constants/skills/rogueSkills.js';
+import { VAMPIRE_SKILLS } from '../constants/skills/vampireSkills.js';
+import { PALADIN_SKILLS } from '../constants/skills/paladinSkills.js';
+import { BERSERKER_SKILLS } from '../constants/skills/berserkerSkills.js';
+import { ELEMENTALIST_SKILLS } from '../constants/skills/elementalistSkills.js';
 
 export const CLASS_PATHS = {
   WARRIOR: {

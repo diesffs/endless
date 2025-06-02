@@ -1,11 +1,14 @@
-import Item, { ITEM_RARITY, RARITY_ORDER, SLOT_REQUIREMENTS } from './item.js';
+import Item from './item.js';
 import { game, hero, statistics } from './globals.js';
 import { ENEMY_RARITY } from './enemy.js';
-import { showToast, updateResources, updateStatsAndAttributesUI } from './ui.js';
-import { MATERIALS } from './material.js';
-import { STATS } from './stats.js';
+import { showToast, updateResources } from './ui/ui.js';
 import { createModal, closeModal } from './ui/modal.js';
 import { initializeInventoryUI, updateInventoryGrid, updateMaterialsGrid } from './ui/inventoryUi.js';
+import { getCurrentRegion } from './region.js';
+import { MATERIALS } from './constants/materials.js';
+import { STATS } from './constants/stats/stats.js';
+import { ITEM_RARITY, RARITY_ORDER, SLOT_REQUIREMENTS } from './constants/items.js';
+import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 
 const html = String.raw;
 
@@ -370,5 +373,23 @@ export default class Inventory {
         }
       });
     });
+  }
+
+  /* Utility to get a random material (weighted by dropChance) */
+  getRandomMaterial() {
+    const region = getCurrentRegion();
+    const materials = Object.values(MATERIALS).filter((m) => m.dropChance > 0);
+    const multiplier = region.materialDropMultiplier || 1.0;
+    const weights = region.materialDropWeights || {};
+    // Calculate total weighted drop chances
+    const total = materials.reduce((sum, m) => sum + m.dropChance * multiplier * (weights[m.id] || 1), 0);
+    let roll = Math.random() * total;
+    for (const mat of materials) {
+      const weight = mat.dropChance * multiplier * (weights[mat.id] || 1);
+      if (roll < weight) return mat;
+      roll -= weight;
+    }
+    // fallback
+    return materials[0];
   }
 }

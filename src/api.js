@@ -1,8 +1,8 @@
+import { crypt } from './functions.js';
+
 // Set your actual API URL here
 const apiUrl = import.meta.env.VITE_API_URL;
 const gameName = import.meta.env.VITE_GAME_NAME || 'endless';
-
-import crypt from './encrypt.js';
 
 /**
  * Flexible API fetch wrapper for all HTTP methods.

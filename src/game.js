@@ -6,13 +6,13 @@ import {
   updateBuffIndicators,
   showToast,
   initializeSkillTreeUI,
-  updateStatsAndAttributesUI,
-} from './ui.js';
+} from './ui/ui.js';
 import { playerAttack, enemyAttack, playerDeath, defeatEnemy } from './combat.js';
 import { game, hero, inventory, prestige, training, skillTree, statistics } from './globals.js';
 import Enemy from './enemy.js';
 import { ITEM_SLOTS, MATERIALS_SLOTS } from './inventory.js';
 import { updateInventoryGrid } from './ui/inventoryUi.js';
+import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 
 class Game {
   constructor() {

@@ -1,13 +1,14 @@
-import { formatStatName, updateResources, updateStatsAndAttributesUI } from './ui.js';
+import { formatStatName, updateResources } from './ui/ui.js';
 
-import { showToast } from './ui.js';
+import { showToast } from './ui/ui.js';
 import { game, hero } from './globals.js';
 import { handleSavedData } from './functions.js';
-import { STATS } from './stats.js';
-import { OFFENSE_STATS } from './stats/offenseStats.js';
-import { DEFENSE_STATS } from './stats/defenseStats.js';
-import { MISC_STATS } from './stats/miscStats.js';
+import { STATS } from './constants/stats/stats.js';
 import { createModal } from './ui/modal.js';
+import { MISC_STATS } from './constants/stats/miscStats.js';
+import { OFFENSE_STATS } from './constants/stats/offenseStats.js';
+import { DEFENSE_STATS } from './constants/stats/defenseStats.js';
+import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 
 const html = String.raw;
 

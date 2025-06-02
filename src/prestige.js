@@ -3,7 +3,6 @@ import {
   updateStageUI,
   updateResources,
   updatePlayerLife,
-  updateStatsAndAttributesUI,
   positionTooltip,
   showTooltip,
   hideTooltip,
@@ -11,11 +10,12 @@ import {
   updateActionBar,
   updateSkillTreeValues,
   showConfirmDialog,
-} from './ui.js';
+  showToast,
+} from './ui/ui.js';
 import Enemy from './enemy.js';
-import { showToast } from './ui.js';
 import { handleSavedData } from './functions.js';
 import { updateRegionUI } from './region.js';
+import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 
 const html = String.raw;
 

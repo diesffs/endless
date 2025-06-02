@@ -1,4 +1,4 @@
-import { ITEM_TYPES } from './item.js';
+import { ITEM_TYPES } from './constants/items.js';
 import { getCurrentRegion } from './region.js';
 
 export const ENEMY_RARITY = {
@@ -75,76 +75,182 @@ export const ELEMENT_OPPOSITES = {
   [ELEMENTS.air.id]: ELEMENTS.earth.id,
 };
 
-const ENEMY_NAMES = [
-  'Shadowclaw',
-  'Dreadfang',
-  'Grimspike',
-  'Steelcrusher',
-  'Stormbringer',
-  'Frostbite',
-  'Bloodthorn',
-  'Nightshade',
-  'Ironhide',
-  'Thunderfist',
-  'Voidweaver',
-  'Darkspell',
-  'Flamereaper',
-  'Soulrender',
-  'Mistwalker',
-  'Doomhammer',
-  'Skullcrusher',
-  'Stormrage',
-  'Frostweaver',
-  'Shadowmend',
-  'Lightbane',
-  'Deathwhisper',
-  'Bloodseeker',
-  'Wraithborn',
-  'Cinderlord',
-  'Thornheart',
-  'Grimreaper',
-  'Steelborn',
-  'Frostfury',
-  'Stormlord',
-  'Netherbane',
-  'Darkweaver',
-  'Flamelord',
-  'Soulkeeper',
-  'Mistrunner',
-  'Dreadlord',
-  'Skullreaver',
-  'Stormcaller',
-  'Frostlord',
-  'Shadowkeeper',
-  'Lightslayer',
-  'Deathbringer',
-  'Bloodlord',
-  'Wraithkeeper',
-  'Cinderborn',
-  'Thornlord',
-  'Grimwalker',
-  'Steelfury',
-  'Frostborn',
-  'Stormkeeper',
-];
-
 class Enemy {
+  static ENEMY_LIST = [
+    {
+      name: 'Abyssal Wraith',
+      icon: '👻',
+      element: 'cold',
+      image: 'public/enemies/Abyssal Wraith.jpg',
+      hpBonus: 1.2,
+      dmgBonus: 1.1,
+    },
+    {
+      name: 'Boglurker',
+      icon: '🐸',
+      element: 'earth',
+      image: 'public/enemies/Boglurker.jpg',
+      hpBonus: 1.1,
+      dmgBonus: 1.0,
+    },
+    {
+      name: 'Cloudstrider',
+      icon: '☁️',
+      element: 'air',
+      image: 'public/enemies/Cloudstrider.jpg',
+      hpBonus: 1.0,
+      dmgBonus: 1.2,
+    },
+    {
+      name: 'Crystal Golem',
+      icon: '🪨',
+      element: 'earth',
+      image: 'public/enemies/Crystal Golem.jpg',
+      hpBonus: 1.4,
+      dmgBonus: 0.9,
+    },
+    {
+      name: 'Dreadfang',
+      icon: '🐺',
+      element: 'air',
+      image: 'public/enemies/Dreadfang.jpg',
+      hpBonus: 1.0,
+      dmgBonus: 1.3,
+    },
+    {
+      name: 'Dunewraith',
+      icon: '💀',
+      element: 'earth',
+      image: 'public/enemies/Dunewraith.jpg',
+      hpBonus: 1.1,
+      dmgBonus: 1.1,
+    },
+    {
+      name: 'Frostbite',
+      icon: '❄️',
+      element: 'cold',
+      image: 'public/enemies/Frostbite.jpg',
+      hpBonus: 1.0,
+      dmgBonus: 1.2,
+    },
+    {
+      name: 'Frostfury',
+      icon: '🧊',
+      element: 'cold',
+      image: 'public/enemies/Frostfury.jpg',
+      hpBonus: 1.1,
+      dmgBonus: 1.1,
+    },
+    {
+      name: 'Frostweaver',
+      icon: '🕸️',
+      element: 'cold',
+      image: 'public/enemies/Frostweaver.jpg',
+      hpBonus: 1.2,
+      dmgBonus: 1.0,
+    },
+    {
+      name: 'Gem Guardian',
+      icon: '💎',
+      element: 'earth',
+      image: 'public/enemies/Gem Guardian.jpg',
+      hpBonus: 1.3,
+      dmgBonus: 1.0,
+    },
+    {
+      name: 'Grimspike',
+      icon: '🦔',
+      element: 'earth',
+      image: 'public/enemies/Grimspike.jpg',
+      hpBonus: 1.2,
+      dmgBonus: 1.1,
+    },
+    {
+      name: 'Sandstalker',
+      icon: '🦂',
+      element: 'earth',
+      image: 'public/enemies/Sandstalker.jpg',
+      hpBonus: 1.1,
+      dmgBonus: 1.2,
+    },
+    {
+      name: 'Shadowclaw',
+      icon: '🐾',
+      element: 'air',
+      image: 'public/enemies/Shadowclaw.jpg',
+      hpBonus: 1.0,
+      dmgBonus: 1.3,
+    },
+    {
+      name: 'Shardling',
+      icon: '🔹',
+      element: 'earth',
+      image: 'public/enemies/Shardling.jpg',
+      hpBonus: 1.1,
+      dmgBonus: 1.1,
+    },
+    {
+      name: 'Stormbringer',
+      icon: '⚡',
+      element: 'air',
+      image: 'public/enemies/Stormbringer.jpg',
+      hpBonus: 1.0,
+      dmgBonus: 1.3,
+    },
+    {
+      name: 'Stormsoul',
+      icon: '🌩️',
+      element: 'air',
+      image: 'public/enemies/Stormsoul.jpg',
+      hpBonus: 1.1,
+      dmgBonus: 1.2,
+    },
+    {
+      name: 'Thunderwing',
+      icon: '🦅',
+      element: 'air',
+      image: 'public/enemies/Thunderwing.jpg',
+      hpBonus: 1.0,
+      dmgBonus: 1.3,
+    },
+    {
+      name: 'Toxictoad',
+      icon: '🐸',
+      element: 'earth',
+      image: 'public/enemies/Toxictoad.jpg',
+      hpBonus: 1.2,
+      dmgBonus: 1.0,
+    },
+    {
+      name: 'Venomspitter',
+      icon: '🕷️',
+      element: 'earth',
+      image: 'public/enemies/Venomspitter.jpg',
+      hpBonus: 1.1,
+      dmgBonus: 1.1,
+    },
+  ];
+
   constructor(stage) {
+    // Pick a unique enemy
+    const enemyData = Enemy.ENEMY_LIST[Math.floor(Math.random() * Enemy.ENEMY_LIST.length)];
+    this.enemyData = enemyData;
+    this.name = `${enemyData.icon} ${enemyData.name}`;
+    this.element = enemyData.element;
+    this.image = enemyData.image;
+    this.hpBonus = enemyData.hpBonus;
+    this.dmgBonus = enemyData.dmgBonus;
+
     // REGION-AWARE ENEMY GENERATION
     const region = getCurrentRegion();
     this.rarity = this.generateRarity();
     this.color = this.getRarityColor(this.rarity);
-    // Use region multipliers for life and damage
-    this.life = this.calculateLife(stage, this.rarity) * (region.enemyLifeMultiplier || 1);
+    // Use region multipliers for life and damage, and apply unique enemy bonuses
+    this.life = this.calculateLife(stage, this.rarity) * (region.enemyLifeMultiplier || 1) * this.hpBonus;
     this.currentLife = this.life;
-    this.damage = this.calculateDamage(stage, this.rarity) * (region.enemyDamageMultiplier || 1);
+    this.damage = this.calculateDamage(stage, this.rarity) * (region.enemyDamageMultiplier || 1) * this.dmgBonus;
     this.attackSpeed = this.calculateAttackSpeed(this.rarity);
     this.lastAttack = Date.now();
-    // Pick element and name from region
-    this.element = this.generateElement(region.allowedElements);
-    const randomName = region.enemyNames[Math.floor(Math.random() * region.enemyNames.length)];
-    const elementIcon = ELEMENTS[this.element].icon;
-    this.name = `${elementIcon} ${randomName}`;
     this.setEnemyName();
     this.updateEnemyStats();
 
@@ -173,6 +279,9 @@ class Enemy {
   setEnemyName() {
     const enemyNameElement = document.querySelector('.enemy-name');
     enemyNameElement.textContent = this.name;
+    // Optionally set the enemy image if an element exists
+    const enemyImg = document.querySelector('.enemy-image');
+    if (enemyImg) enemyImg.src = this.image;
   }
 
   updateEnemyStats() {
@@ -183,9 +292,8 @@ class Enemy {
   }
 
   generateElement(allowedElements) {
-    // Use region's allowed elements
-    const elements = allowedElements || Object.keys(ELEMENTS);
-    return elements[Math.floor(Math.random() * elements.length)];
+    // No longer used, element is now set per unique enemy
+    return this.element;
   }
 
   generateRarity() {

@@ -1,7 +1,6 @@
-import Enemy from './enemy.js';
-import { game, hero, prestige, skillTree } from './globals.js';
-import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
-export { updateStatsAndAttributesUI, ATTRIBUTE_TOOLTIPS } from './ui/statsAndAttributesUi.js';
+import Enemy from '../enemy.js';
+import { game, hero, prestige } from '../globals.js';
+import { updateStatsAndAttributesUI } from './statsAndAttributesUi.js';
 export {
   initializeSkillTreeUI,
   initializeSkillTreeStructure,
@@ -9,7 +8,7 @@ export {
   updateActionBar,
   updateBuffIndicators,
   showManaWarning,
-} from './ui/skillsUi.js';
+} from './skillsUi.js';
 
 const html = String.raw;
 
