@@ -1,4 +1,4 @@
-import { ITEM_ICONS, ITEM_RARITY } from './constants/items.js';
+import { ITEM_ICONS, ITEM_RARITY, ITEM_STAT_POOLS } from './constants/items.js';
 import { STATS } from './constants/stats/stats.js';
 import { formatStatName } from './ui/ui.js';
 

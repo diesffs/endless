@@ -70,6 +70,7 @@ export const MATERIALS = {
     description: 'Grants 1 skill point.',
     dropChance: 1,
     sort: 70,
+    exclusive: true, // only drops when region or enemy canDrop includes 'elixir'
     onUse: (hero, qty = 1) => {
       hero.permaStats.skillPoints = hero.permaStats.skillPoints + 1 * qty;
       skillTree.addSkillPoints(1 * qty);

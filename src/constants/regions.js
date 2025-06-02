@@ -78,6 +78,7 @@ export const REGIONS = [
     materialDropWeights: {
       elixir: 5,
     },
+    canDrop: ['elixir'],
   },
   {
     id: 'swamp',

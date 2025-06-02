@@ -378,7 +378,12 @@ export default class Inventory {
   /* Utility to get a random material (weighted by dropChance) */
   getRandomMaterial() {
     const region = getCurrentRegion();
-    const materials = Object.values(MATERIALS).filter((m) => m.dropChance > 0);
+    const enemy = game.currentEnemy;
+    const allowedExclusive = [...(enemy.canDrop || []), ...(region.canDrop || [])];
+    const materials = Object.values(MATERIALS)
+      .filter((m) => m.dropChance > 0)
+      // if material.exclusive, only allow if listed in enemy.canDrop or region.canDrop
+      .filter((m) => !m.exclusive || allowedExclusive.includes(m.id));
     const multiplier = region.materialDropMultiplier || 1.0;
     const weights = region.materialDropWeights || {};
     // Calculate total weighted drop chances
