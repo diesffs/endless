@@ -23,19 +23,19 @@ const CRYSTAL_UPGRADE_CONFIG = {
   startingStage: {
     label: 'Starting Stage',
     bonus: 1,
-    baseCost: 1,
+    baseCost: 2,
     costIncrement: 0, // specify cost increase per level
   },
   continuousPlay: {
     label: 'Continuous Play',
     bonus: 'Auto-continue after death',
-    baseCost: 50,
+    baseCost: 5,
     oneTime: true, // Add this to mark as one-time purchase
   },
   autoSpellCast: {
     label: 'Auto Spell Cast',
     bonus: 'Automatically casts instant and buff skills',
-    baseCost: 100,
+    baseCost: 20,
     oneTime: true,
   },
   resetSkillTree: {
