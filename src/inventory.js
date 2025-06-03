@@ -375,6 +375,12 @@ export default class Inventory {
     });
   }
 
+  getEquipmentBonuses() {
+    // Ensure bonuses are up-to-date
+    this.updateItemBonuses();
+    return { ...this.equipmentBonuses };
+  }
+
   /* Utility to get a random material (weighted by dropChance) */
   getRandomMaterial() {
     const region = getCurrentRegion();

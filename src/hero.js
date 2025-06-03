@@ -109,16 +109,19 @@ export default class Hero {
   }
 
   recalculateFromAttributes() {
-    inventory.updateItemBonuses();
-    training.updateTrainingBonuses();
-
     const skillTreeBonuses = skillTree.getAllSkillTreeBonuses();
-    const equipmentBonuses = inventory.equipmentBonuses;
+    const equipmentBonuses = inventory.getEquipmentBonuses();
+    const trainingBonuses = training.getTrainingBonuses();
 
-    this.calculatePrimaryStats(skillTreeBonuses, equipmentBonuses);
+    this.calculatePrimaryStats(skillTreeBonuses, equipmentBonuses, trainingBonuses);
     const attributeEffects = this.calculateAttributeEffects();
-    const flatValues = this.calculateFlatValues(attributeEffects, skillTreeBonuses, equipmentBonuses);
-    const percentBonuses = this.calculatePercentBonuses(attributeEffects, skillTreeBonuses, equipmentBonuses);
+    const flatValues = this.calculateFlatValues(attributeEffects, skillTreeBonuses, equipmentBonuses, trainingBonuses);
+    const percentBonuses = this.calculatePercentBonuses(
+      attributeEffects,
+      skillTreeBonuses,
+      equipmentBonuses,
+      trainingBonuses
+    );
 
     this.applyFinalCalculations(flatValues, percentBonuses);
 
@@ -126,37 +129,43 @@ export default class Hero {
     updateStatsAndAttributesUI();
   }
 
-  calculatePrimaryStats(skillTreeBonuses, equipmentBonuses) {
+  calculatePrimaryStats(skillTreeBonuses, equipmentBonuses, trainingBonuses) {
     this.stats.strength =
       this.primaryStats.strength +
       this.permaStats.strength +
       (equipmentBonuses.strength || 0) +
-      (skillTreeBonuses.strength || 0);
+      (skillTreeBonuses.strength || 0) +
+      (trainingBonuses.strength || 0);
     this.stats.agility =
       this.primaryStats.agility +
       this.permaStats.agility +
       (equipmentBonuses.agility || 0) +
-      (skillTreeBonuses.agility || 0);
+      (skillTreeBonuses.agility || 0) +
+      (trainingBonuses.agility || 0);
     this.stats.vitality =
       this.primaryStats.vitality +
       this.permaStats.vitality +
       (equipmentBonuses.vitality || 0) +
-      (skillTreeBonuses.vitality || 0);
+      (skillTreeBonuses.vitality || 0) +
+      (trainingBonuses.vitality || 0);
     this.stats.wisdom =
       this.primaryStats.wisdom +
       this.permaStats.wisdom +
       (equipmentBonuses.wisdom || 0) +
-      (skillTreeBonuses.wisdom || 0);
+      (skillTreeBonuses.wisdom || 0) +
+      (trainingBonuses.wisdom || 0);
     this.stats.endurance =
       this.primaryStats.endurance +
       this.permaStats.endurance +
       (equipmentBonuses.endurance || 0) +
-      (skillTreeBonuses.endurance || 0);
+      (skillTreeBonuses.endurance || 0) +
+      (trainingBonuses.endurance || 0);
     this.stats.dexterity =
       this.primaryStats.dexterity +
       this.permaStats.dexterity +
       (equipmentBonuses.dexterity || 0) +
-      (skillTreeBonuses.dexterity || 0);
+      (skillTreeBonuses.dexterity || 0) +
+      (trainingBonuses.dexterity || 0);
   }
 
   calculateAttributeEffects() {
@@ -194,7 +203,7 @@ export default class Hero {
     return effects;
   }
 
-  calculateFlatValues(attributeEffects, skillTreeBonuses, equipmentBonuses) {
+  calculateFlatValues(attributeEffects, skillTreeBonuses, equipmentBonuses, trainingBonuses) {
     const flatValues = {};
 
     for (const stat in STATS) {
@@ -205,7 +214,7 @@ export default class Hero {
         (STATS[stat].base ?? 0) +
         (attributeEffects[stat] ?? 0) +
         (STATS[stat].levelUpBonus ?? 0) * (this.level - 1) +
-        (training.trainingBonuses[stat] ?? 0) +
+        (trainingBonuses[stat] ?? 0) +
         (equipmentBonuses[stat] ?? 0) +
         (skillTreeBonuses[stat] ?? 0);
     }
@@ -213,7 +222,7 @@ export default class Hero {
     return flatValues;
   }
 
-  calculatePercentBonuses(attributeEffects, skillTreeBonuses, equipmentBonuses) {
+  calculatePercentBonuses(attributeEffects, skillTreeBonuses, equipmentBonuses, trainingBonuses) {
     const percentBonuses = {};
 
     for (const stat in STATS) {
@@ -223,7 +232,7 @@ export default class Hero {
           (this.permaStats[stat] || 0) / 100 +
           (skillTreeBonuses[stat] || 0) / 100 +
           (equipmentBonuses[stat] || 0) / 100 +
-          (training.trainingBonuses[stat] || 0) / 100;
+          (trainingBonuses[stat] || 0) / 100;
       }
     }
 

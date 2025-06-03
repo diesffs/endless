@@ -268,6 +268,12 @@ export default class Training {
     }
   }
 
+  getTrainingBonuses() {
+    // Ensure training bonuses are up-to-date
+    this.updateTrainingBonuses();
+    return this.trainingBonuses;
+  }
+
   updateTrainingBonuses() {
     // Reset equipment bonuses
     Object.keys(this.trainingBonuses).forEach((stat) => {
