@@ -79,23 +79,23 @@ export const RARITY_ORDER = [
 export const ITEM_STAT_POOLS = {
   HELMET: {
     mandatory: [],
-    possible: [...getStatsByTags(['defense', 'helmet'])],
+    possible: [...getStatsByTags(['defense', 'stat', 'helmet'])],
   },
   ARMOR: {
     mandatory: ['armor'],
-    possible: [...getStatsByTags(['defense', 'armor'])],
+    possible: [...getStatsByTags(['defense', 'stat', 'armor'])],
   },
   BELT: {
     mandatory: [],
-    possible: [...getStatsByTags(['defense', 'belt', 'misc'])],
+    possible: [...getStatsByTags(['defense', 'stat', 'belt', 'misc'])],
   },
   PANTS: {
     mandatory: [],
-    possible: [...getStatsByTags(['defense', 'pants'])],
+    possible: [...getStatsByTags(['defense', 'stat', 'pants'])],
   },
   BOOTS: {
     mandatory: [],
-    possible: [...getStatsByTags(['defense', 'boots'])],
+    possible: [...getStatsByTags(['defense', 'stat', 'boots'])],
   },
   SWORD: {
     mandatory: ['attackSpeed'],
@@ -111,7 +111,7 @@ export const ITEM_STAT_POOLS = {
   },
   SHIELD: {
     mandatory: ['blockChance'],
-    possible: [...getStatsByTags(['defense', 'shield'])],
+    possible: [...getStatsByTags(['defense', 'stat', 'shield'])],
   },
   GLOVES: {
     mandatory: [],

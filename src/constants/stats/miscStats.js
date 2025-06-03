@@ -46,7 +46,7 @@ export const MISC_STATS = {
     base: 0,
     decimalPlaces: 0,
     item: { min: 3, max: 10, scaling: 'full' },
-    itemTags: ['misc'],
+    itemTags: ['misc', 'stat'],
   },
   strengthPercent: {
     base: 0,
@@ -58,7 +58,7 @@ export const MISC_STATS = {
     base: 0,
     decimalPlaces: 0,
     item: { min: 3, max: 10, scaling: 'full' },
-    itemTags: ['misc'],
+    itemTags: ['misc', 'stat'],
   },
   agilityPercent: {
     base: 0,
@@ -70,7 +70,7 @@ export const MISC_STATS = {
     base: 0,
     decimalPlaces: 0,
     item: { min: 3, max: 10, scaling: 'full' },
-    itemTags: ['misc'],
+    itemTags: ['misc', 'stat'],
   },
   vitalityPercent: {
     base: 0,
@@ -82,7 +82,7 @@ export const MISC_STATS = {
     base: 0,
     decimalPlaces: 0,
     item: { min: 3, max: 10, scaling: 'full' },
-    itemTags: ['misc', 'jewelry'],
+    itemTags: ['misc', 'jewelry', 'stat'],
   },
   wisdomPercent: {
     base: 0,
@@ -94,7 +94,7 @@ export const MISC_STATS = {
     base: 0,
     decimalPlaces: 0,
     item: { min: 3, max: 10, scaling: 'full' },
-    itemTags: ['misc', 'jewelry'],
+    itemTags: ['misc', 'jewelry', 'stat'],
   },
   endurancePercent: {
     base: 0,
@@ -106,7 +106,7 @@ export const MISC_STATS = {
     base: 0,
     decimalPlaces: 0,
     item: { min: 3, max: 10, scaling: 'full' },
-    itemTags: ['misc', 'jewelry'],
+    itemTags: ['misc', 'jewelry', 'stat'],
   },
   dexterityPercent: {
     base: 0,
