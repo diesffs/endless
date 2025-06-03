@@ -3,7 +3,7 @@ import { hero, game } from './globals.js';
 import { showToast, updateResources } from './ui/ui.js';
 
 export class Quest {
-  constructor({ id, title, description, type, target, reward, icon }, claimed = false) {
+  constructor({ id, title, description, type, target, reward, icon, category, rarity, resource }, claimed = false) {
     this.id = id;
     this.title = title;
     this.description = description;
@@ -11,6 +11,9 @@ export class Quest {
     this.target = target;
     this.reward = reward;
     this.icon = icon;
+    this.category = category;
+    this.rarity = rarity;
+    this.resource = resource;
     this.claimed = claimed;
   }
 
@@ -19,7 +22,28 @@ export class Quest {
     if (this.type === 'kill') {
       return Math.min(statistics.enemiesKilled.total, this.target);
     }
-    // Add more quest types as needed
+    if (this.type === 'kill_rarity' && this.rarity) {
+      const rarityKey = this.rarity.toLowerCase();
+      return Math.min(statistics.enemiesKilled[rarityKey] || 0, this.target);
+    }
+    if (this.type === 'resource' && this.resource) {
+      // For gold, use statistics.totalGoldEarned; for crystals, use hero.crystals
+      if (this.resource === 'totalGoldEarned') {
+        return Math.min(statistics.totalGoldEarned, this.target);
+      }
+      if (this.resource === 'crystals') {
+        return Math.min(hero.crystals, this.target);
+      }
+    }
+    if (this.type === 'level') {
+      return Math.min(hero.level, this.target);
+    }
+    if (this.type === 'stage') {
+      return Math.min(statistics.highestStageReached, this.target);
+    }
+    if (this.type === 'damage') {
+      return Math.min(statistics.highestDamageDealt, this.target);
+    }
     return 0;
   }
 

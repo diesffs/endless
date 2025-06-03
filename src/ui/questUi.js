@@ -5,28 +5,55 @@ import { quests, statistics } from '../globals.js';
 export function updateQuestsUI() {
   const panel = document.getElementById('quests');
   panel.innerHTML = '';
+
+  // Gather unique categories from quests
+  const categories = Array.from(new Set(quests.quests.map((q) => q.category)));
+  // Use a static variable to remember selected tab
+  if (!updateQuestsUI.selectedCategory || !categories.includes(updateQuestsUI.selectedCategory)) {
+    updateQuestsUI.selectedCategory = categories[0];
+  }
+  const selectedCategory = updateQuestsUI.selectedCategory;
+
+  // Create tabs
+  const tabs = document.createElement('div');
+  tabs.className = 'quest-tabs';
+  categories.forEach((cat) => {
+    const tab = document.createElement('button');
+    tab.className = 'quest-tab' + (cat === selectedCategory ? ' active' : '');
+    tab.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+    tab.onclick = () => {
+      updateQuestsUI.selectedCategory = cat;
+      updateQuestsUI();
+    };
+    tabs.appendChild(tab);
+  });
+  panel.appendChild(tabs);
+
+  // Filter quests by selected category
   const list = document.createElement('div');
   list.className = 'quest-list';
-  quests.quests.forEach((q) => {
-    const progress = q.getProgress(statistics);
-    const item = document.createElement('div');
-    item.className = 'quest-item';
-    if (q.isComplete(statistics) && !q.claimed) item.classList.add('ready');
-    if (q.claimed) item.classList.add('claimed');
-    item.innerHTML = `
+  quests.quests
+    .filter((q) => q.category === selectedCategory)
+    .forEach((q) => {
+      const progress = q.getProgress(statistics);
+      const item = document.createElement('div');
+      item.className = 'quest-item';
+      if (q.isComplete(statistics) && !q.claimed) item.classList.add('ready');
+      if (q.claimed) item.classList.add('claimed');
+      item.innerHTML = `
       <span class="quest-icon">${q.icon}</span>
       <span class="quest-title">${q.title}</span>
       <span class="quest-progress">${progress}/${q.target}</span>
     `;
-    item.title = q.description;
-    // Show tooltip on hover
-    item.addEventListener('mouseenter', (e) => showTooltip(q.description, e));
-    item.addEventListener('mousemove', positionTooltip);
-    item.addEventListener('mouseleave', hideTooltip);
-    // Always open modal on click
-    item.addEventListener('click', () => openQuestModal(q));
-    list.appendChild(item);
-  });
+      item.title = q.description;
+      // Show tooltip on hover
+      item.addEventListener('mouseenter', (e) => showTooltip(q.description, e));
+      item.addEventListener('mousemove', positionTooltip);
+      item.addEventListener('mouseleave', hideTooltip);
+      // Always open modal on click
+      item.addEventListener('click', () => openQuestModal(q));
+      list.appendChild(item);
+    });
   panel.appendChild(list);
 }
 
@@ -43,6 +70,7 @@ export function openQuestModal(quest) {
     <div class="training-modal-content">
       <button class="training-modal-close">&times;</button>
       <h2 id="quest-modal-title"></h2>
+      <div id="quest-modal-category" style="color:#38bdf8;font-size:1em;"></div>
       <p id="quest-modal-desc"></p>
       <p id="quest-modal-reward"></p>
       <button id="quest-claim-btn" class="modal-btn">Claim Reward</button>
@@ -52,6 +80,11 @@ export function openQuestModal(quest) {
 
   // Set quest info
   modal.querySelector('#quest-modal-title').textContent = quest.title;
+  if (modal.querySelector('#quest-modal-category')) {
+    modal.querySelector('#quest-modal-category').textContent = quest.category
+      ? `Category: ${quest.category.charAt(0).toUpperCase() + quest.category.slice(1)}`
+      : '';
+  }
   modal.querySelector('#quest-modal-desc').textContent = quest.description;
   // Add progress display in green
   const progress = quest.getProgress(statistics);
