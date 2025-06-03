@@ -127,6 +127,51 @@ export const ITEM_STAT_POOLS = {
   },
 };
 
+/**
+ * Get all slot names for a given category: 'armor', 'jewelry', or 'weapon'.
+ * @param {'armor'|'jewelry'|'weapon'} category
+ * @returns {string[]}
+ */
+export function getSlotsByCategory(category) {
+  switch (category) {
+    case 'armor':
+      // All slots that are not weapon, amulet, or ring
+      return Object.entries(SLOT_REQUIREMENTS)
+        .filter(([slot, types]) =>
+          types.some((type) => ['HELMET', 'ARMOR', 'BELT', 'PANTS', 'BOOTS', 'SHIELD', 'GLOVES'].includes(type))
+        )
+        .map(([slot]) => slot);
+    case 'jewelry':
+      return Object.entries(SLOT_REQUIREMENTS)
+        .filter(([slot, types]) => types.some((type) => ['AMULET', 'RING'].includes(type)))
+        .map(([slot]) => slot);
+    case 'weapon':
+      return Object.entries(SLOT_REQUIREMENTS)
+        .filter(([slot, types]) => types.some((type) => ['SWORD', 'AXE', 'MACE'].includes(type)))
+        .map(([slot]) => slot);
+    default:
+      return [];
+  }
+}
+
+/**
+ * Get all item types for a given category: 'armor', 'jewelry', or 'weapon'.
+ * @param {'armor'|'jewelry'|'weapon'} category
+ * @returns {string[]}
+ */
+export function getTypesByCategory(category) {
+  switch (category) {
+    case 'armor':
+      return ['HELMET', 'ARMOR', 'BELT', 'PANTS', 'BOOTS', 'SHIELD', 'GLOVES'];
+    case 'jewelry':
+      return ['AMULET', 'RING'];
+    case 'weapon':
+      return ['SWORD', 'AXE', 'MACE'];
+    default:
+      return [];
+  }
+}
+
 // Helper to get stats by tag
 function getStatsByTag(tag) {
   return Object.entries(STATS)

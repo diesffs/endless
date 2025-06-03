@@ -6,7 +6,13 @@ import { initializeInventoryUI, updateInventoryGrid, updateMaterialsGrid } from 
 import { getCurrentRegion } from './region.js';
 import { MATERIALS } from './constants/materials.js';
 import { STATS } from './constants/stats/stats.js';
-import { ITEM_RARITY, RARITY_ORDER, SLOT_REQUIREMENTS } from './constants/items.js';
+import {
+  ITEM_RARITY,
+  RARITY_ORDER,
+  SLOT_REQUIREMENTS,
+  getSlotsByCategory,
+  getTypesByCategory,
+} from './constants/items.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 import { ENEMY_RARITY } from './constants/enemies.js';
 
@@ -86,7 +92,84 @@ export default class Inventory {
     // Always get the full definition from MATERIALS
     const matDef = Object.values(MATERIALS).find((m) => m.id === mat.id) || {};
 
-    // Build and show material-use modal
+    // Check for upgrade material
+    if (matDef.upgradeType) {
+      // Use dynamic helpers for eligible slots/types
+      const eligibleSlots = getSlotsByCategory(matDef.upgradeType);
+      const eligibleTypes = getTypesByCategory(matDef.upgradeType);
+      // Find equipped items matching
+      const equipped = Object.entries(this.equippedItems)
+        .filter(([slot, item]) => eligibleSlots.includes(slot) && item && eligibleTypes.includes(item.type))
+        .map(([slot, item]) => ({ slot, item }));
+      const html = String.raw;
+      let content = html`
+        <div class="training-modal-content">
+          <button class="training-modal-close">&times;</button>
+          <h2>${matDef.name || mat.name || ''}</h2>
+          <p>${matDef.description || ''}</p>
+          <p>You have <b>${mat.qty}</b></p>
+          <div style="margin-bottom:10px;">Select an equipped item to upgrade:</div>
+          <div id="upgrade-item-list">
+            ${equipped.length === 0
+              ? '<div style="color:#f55;">No eligible equipped items.</div>'
+              : equipped
+                  .map(
+                    ({ slot, item }, idx) =>
+                      `<div class="upgrade-item-row" data-slot="${slot}" data-idx="${idx}" style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                        <span style="font-size:1.5em;">${item.getIcon()}</span>
+                        <span><b>${item.type}</b> (Lvl ${item.level})</span>
+                        <span style="color:${ITEM_RARITY[item.rarity].color};">${item.rarity}</span>
+                        <input type="number" class="upgrade-qty-input" data-idx="${idx}" min="1" max="${
+                        mat.qty
+                      }" value="1" style="width:48px;margin-left:8px;" aria-label="Upgrade quantity" />
+                        <button class="upgrade-btn" data-slot="${slot}" data-idx="${idx}">Upgrade</button>
+                      </div>`
+                  )
+                  .join('')}
+          </div>
+          <div class="modal-controls">
+            <button id="material-use-cancel">Cancel</button>
+          </div>
+        </div>
+      `;
+      const dialog = createModal({
+        id: 'material-upgrade-dialog',
+        className: 'training-modal',
+        content,
+      });
+      dialog.querySelector('#material-use-cancel').onclick = () => closeModal('material-upgrade-dialog');
+      dialog.querySelectorAll('.upgrade-btn').forEach((btn) => {
+        btn.onclick = () => {
+          const idx = parseInt(btn.dataset.idx, 10);
+          const { slot, item } = equipped[idx];
+          const qtyInput = dialog.querySelector(`.upgrade-qty-input[data-idx='${idx}']`);
+          let useQty = parseInt(qtyInput.value, 10);
+          if (isNaN(useQty) || useQty < 1) useQty = 1;
+          if (useQty > mat.qty) useQty = mat.qty;
+          // Upgrade logic: increase level and update stats for new level
+          const oldLevel = item.level;
+          const baseValues = item.getBaseStatValues();
+          const newLevel = oldLevel + useQty;
+          item.applyLevelToStats(baseValues, newLevel);
+          mat.qty -= useQty;
+          if (mat.qty <= 0) {
+            const matIdx = this.materials.findIndex((m) => m && m.id === mat.id);
+            if (matIdx !== -1) this.materials[matIdx] = null;
+          }
+          hero.recalculateFromAttributes();
+          updateMaterialsGrid();
+          updateInventoryGrid();
+          game.saveGame();
+          updateResources();
+          updateStatsAndAttributesUI();
+          closeModal('material-upgrade-dialog');
+          showToast(`Upgraded ${item.type} (Lvl ${oldLevel} → ${item.level})`, 'success');
+        };
+      });
+      return;
+    }
+
+    // Default: show quantity modal
     const content = html`
       <div class="training-modal-content">
         <button class="training-modal-close">&times;</button>

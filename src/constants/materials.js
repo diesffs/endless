@@ -153,4 +153,40 @@ export const MATERIALS = {
       hero.permaStats.dexterity += 1 * qty;
     },
   },
+  ARMOR_UPGRADE_STONE: {
+    id: 'armor_upgrade_stone',
+    name: 'Armor Upgrade Stone',
+    icon: '🪨',
+    description: 'Upgrade the level of an equipped armor item by 1.',
+    dropChance: 6,
+    sort: 150,
+    onUse: (hero, qty = 1) => {
+      // Custom modal logic handled in inventory UI
+    },
+    upgradeType: 'armor',
+  },
+  JEWELRY_UPGRADE_GEM: {
+    id: 'jewelry_upgrade_gem',
+    name: 'Jewelry Upgrade Gem',
+    icon: '💍',
+    description: 'Upgrade the level of an equipped jewelry item by 1.',
+    dropChance: 2,
+    sort: 160,
+    onUse: (hero, qty = 1) => {
+      // Custom modal logic handled in inventory UI
+    },
+    upgradeType: 'jewelry',
+  },
+  WEAPON_UPGRADE_CORE: {
+    id: 'weapon_upgrade_core',
+    name: 'Weapon Upgrade Core',
+    icon: '⚡',
+    description: 'Upgrade the level of an equipped weapon by 1.',
+    dropChance: 4,
+    sort: 170,
+    onUse: (hero, qty = 1) => {
+      // Custom modal logic handled in inventory UI
+    },
+    upgradeType: 'weapon',
+  },
 };

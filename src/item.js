@@ -91,4 +91,56 @@ export default class Item {
       </div>
     `;
   }
+
+  /**
+   * Reverse-engineer the base (unscaled) stat values for this item.
+   * @returns {Object} base stat values keyed by stat name
+   */
+  getBaseStatValues() {
+    const baseValues = {};
+    for (const stat of Object.keys(this.stats)) {
+      const statConfig = AVAILABLE_STATS[stat];
+      if (!statConfig) continue;
+      const scaling = statConfig.scaling;
+      const multiplier = ITEM_RARITY[this.rarity].statMultiplier;
+      const value = this.stats[stat];
+      if (scaling === 'capped') {
+        // value = base * multiplier * Math.min(1 + level * (1/200), 2)
+        const scale = Math.min(1 + this.level * (1 / 200), 2);
+        baseValues[stat] = value / (multiplier * scale);
+      } else {
+        // value = base * multiplier * (1 + level * 0.03)
+        const scale = 1 + this.level * 0.03;
+        baseValues[stat] = value / (multiplier * scale);
+      }
+    }
+    return baseValues;
+  }
+
+  /**
+   * Apply a new level to the item, scaling all stats from the provided base values.
+   * @param {Object} baseValues - base stat values keyed by stat name
+   * @param {number} newLevel
+   */
+  applyLevelToStats(baseValues, newLevel) {
+    for (const stat of Object.keys(this.stats)) {
+      const statConfig = AVAILABLE_STATS[stat];
+      if (!statConfig) continue;
+      const scaling = statConfig.scaling;
+      const multiplier = ITEM_RARITY[this.rarity].statMultiplier;
+      const base = baseValues[stat];
+      if (base === undefined) continue;
+      let newValue;
+      if (scaling === 'capped') {
+        const scale = Math.min(1 + newLevel * (1 / 200), 2);
+        newValue = base * multiplier * scale;
+      } else {
+        const scale = 1 + newLevel * 0.03;
+        newValue = base * multiplier * scale;
+      }
+      const decimals = STATS[stat].decimalPlaces || 0;
+      this.stats[stat] = Number(newValue.toFixed(decimals));
+    }
+    this.level = newLevel;
+  }
 }
