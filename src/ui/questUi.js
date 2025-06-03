@@ -45,7 +45,6 @@ export function updateQuestsUI() {
       <span class="quest-title">${q.title}</span>
       <span class="quest-progress">${progress}/${q.target}</span>
     `;
-      item.title = q.description;
       // Show tooltip on hover
       item.addEventListener('mouseenter', (e) => showTooltip(q.description, e));
       item.addEventListener('mousemove', positionTooltip);
