@@ -84,7 +84,7 @@ export const MATERIALS = {
     dropChance: 30,
     sort: 80,
     onUse: (hero, qty = 1) => {
-      hero.crystals += 1 * qty;
+      hero.gainCrystals(1 * qty);
     },
   },
   POTION_OF_STRENGTH: {

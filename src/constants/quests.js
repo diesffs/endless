@@ -6,7 +6,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Defeat 10 enemies.',
     type: 'kill',
     target: 10,
-    reward: { gold: 100 },
+    reward: { gold: 100, crystals: 1 },
     icon: '⚔️',
   },
   {
@@ -16,6 +16,15 @@ export const QUEST_DEFINITIONS = [
     type: 'kill',
     target: 100,
     reward: { gold: 500 },
+    icon: '💥',
+  },
+  {
+    id: 'kill1000',
+    title: 'Rampage',
+    description: 'Defeat 1000 enemies.',
+    type: 'kill',
+    target: 1000,
+    reward: { gold: 5000 },
     icon: '💥',
   },
 ];

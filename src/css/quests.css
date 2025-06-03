@@ -19,11 +19,18 @@
 }
 
 .quest-item.ready {
-  border-color: #06b6d4;
-  background-color: #144;
+  border-color: #22c55e;
+  background-color: #19391e;
+}
+
+.quest-item.claimed {
+  border-color: rgb(0, 0, 0);
+  background-color: rgb(34, 36, 71);
 }
 
 .quest-icon {
+  border: 1px solid #158af1;
+  border-radius: 50%;
   font-size: 1.5em;
 }
 
@@ -52,6 +59,12 @@
 #quest-claim-btn {
   background-color: #06b6d4;
   color: #fff;
+}
+#quest-claim-btn:disabled {
+  background-color: #6b7280 !important;
+  color: #fff !important;
+  cursor: not-allowed !important;
+  opacity: 0.7;
 }
 #quest-modal-close {
   background-color: #4b5563;

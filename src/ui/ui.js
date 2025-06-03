@@ -1,5 +1,6 @@
 import Enemy from '../enemy.js';
-import { game, hero, prestige, quests } from '../globals.js';
+import { game, hero, prestige } from '../globals.js';
+import { updateQuestsUI } from './questUi.js';
 import { updateStatsAndAttributesUI } from './statsAndAttributesUi.js';
 export {
   initializeSkillTreeUI,
@@ -320,70 +321,6 @@ if (!document.getElementById('custom-confirm-dialog-style')) {
     }
   `;
   document.head.appendChild(style);
-}
-
-// Quest UI Rendering
-export function updateQuestsUI() {
-  const panel = document.getElementById('quests');
-  panel.innerHTML = '';
-  const list = document.createElement('div');
-  list.className = 'quest-list';
-  quests.quests.forEach((q) => {
-    const item = document.createElement('div');
-    item.className = 'quest-item';
-    if (q.isComplete() && !q.claimed) item.classList.add('ready');
-    item.innerHTML = `
-      <span class="quest-icon">${q.icon}</span>
-      <span class="quest-title">${q.title}</span>
-      <span class="quest-progress">${q.progress}/${q.target}</span>
-    `;
-    item.title = q.description;
-    // Show tooltip on hover
-    item.addEventListener('mouseenter', (e) => showTooltip(q.description, e));
-    item.addEventListener('mousemove', positionTooltip);
-    item.addEventListener('mouseleave', hideTooltip);
-    item.addEventListener('click', () => {
-      if (q.isComplete() && !q.claimed) {
-        openQuestModal(q);
-      }
-    });
-    list.appendChild(item);
-  });
-  panel.appendChild(list);
-}
-
-function openQuestModal(quest) {
-  let modal = document.getElementById('quest-modal');
-  if (!modal) {
-    modal = document.createElement('div');
-    modal.id = 'quest-modal';
-    modal.className = 'modal hidden';
-    modal.innerHTML = `
-      <div class="modal-content">
-        <h2 id="quest-modal-title"></h2>
-        <p id="quest-modal-desc"></p>
-        <p id="quest-modal-reward"></p>
-        <button id="quest-claim-btn" class="modal-btn">Claim Reward</button>
-        <button id="quest-modal-close" class="modal-btn">Close</button>
-      </div>
-    `;
-    document.body.appendChild(modal);
-    modal.querySelector('#quest-modal-close').addEventListener('click', () => {
-      modal.classList.add('hidden');
-    });
-  }
-  modal.querySelector('#quest-modal-title').textContent = quest.title;
-  modal.querySelector('#quest-modal-desc').textContent = quest.description;
-  modal.querySelector('#quest-modal-reward').textContent = `Reward: ${Object.entries(quest.reward)
-    .map(([k, v]) => `${v} ${k}`)
-    .join(', ')}`;
-  const claimBtn = modal.querySelector('#quest-claim-btn');
-  claimBtn.onclick = () => {
-    quest.claim();
-    modal.classList.add('hidden');
-    updateQuestsUI();
-  };
-  modal.classList.remove('hidden');
 }
 
 // Helper function to convert camelCase to Title Case with spaces

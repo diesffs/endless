@@ -4,7 +4,7 @@ import { hero, game, inventory, prestige, statistics, skillTree, quests } from '
 import { ITEM_RARITY } from './constants/items.js';
 import { ENEMY_RARITY } from './constants/enemies.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
-import { showToast } from './ui/ui.js';
+import { updateQuestsUI } from './ui/questUi.js';
 
 export function enemyAttack(currentTime) {
   if (!game || !hero || !game.currentEnemy) return;
@@ -168,8 +168,7 @@ export function defeatEnemy() {
   statistics.increment('enemiesKilled', 'total');
   statistics.increment('enemiesKilled', enemy.rarity.toLowerCase());
 
-  // Add quest progress
-  quests.addProgress('kill', 1);
+  updateQuestsUI();
 
   // Continue existing UI updates
   updateResources();

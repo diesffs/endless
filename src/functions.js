@@ -267,7 +267,7 @@ export function createModifyUI() {
   addCrystalsBtn.textContent = 'Add Crystals';
   addCrystalsBtn.addEventListener('click', () => {
     const crystalsAmount = 1000; // Amount of crystals to add
-    hero.crystals += crystalsAmount;
+    hero.gainCrystals(crystalsAmount);
     updateResources(); // Assuming there's a function to update the UI
     showToast(`Added ${crystalsAmount} crystals!`);
   });

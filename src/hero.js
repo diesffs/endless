@@ -70,6 +70,11 @@ export default class Hero {
     this.gold += amount;
   }
 
+  gainCrystals(amount) {
+    statistics.increment('totalCrystalsEarned', null, amount);
+    this.crystals += amount;
+  }
+
   levelUp() {
     this.exp -= this.expToNextLevel;
     this.level++;
