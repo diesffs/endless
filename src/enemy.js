@@ -110,8 +110,8 @@ class Enemy {
   }
 
   calculateLife(stage, rarity) {
-    // Arithmetic progression scaling: initial 49, increment grows every 10 levels
-    let life = 40;
+    // Arithmetic progression scaling: initial 20, increment grows every 10 levels
+    let life = 20;
     const segLen = 10,
       initialInc = 10,
       incStep = 5;
@@ -131,8 +131,8 @@ class Enemy {
   }
 
   calculateDamage(stage, rarity) {
-    // Arithmetic progression scaling: initial 4, increment grows every 10 levels
-    let dmgVal = 4;
+    // Arithmetic progression scaling: initial 3, increment grows every 10 levels
+    let dmgVal = 3;
     const segLenDmg = 10,
       initialIncDmg = 0.3,
       incStepDmg = 0.1;
