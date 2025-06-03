@@ -6,6 +6,7 @@ export let training = null;
 export let skillTree = null;
 export let prestige = null;
 export let statistics = null;
+export let quests = null; // Export quests tracker
 
 // Setters for initialization in main.js
 export function setGlobals({
@@ -16,6 +17,7 @@ export function setGlobals({
   skillTree: st,
   prestige: p,
   statistics: stat,
+  quests: q,
 }) {
   game = g;
   hero = h;
@@ -24,4 +26,5 @@ export function setGlobals({
   skillTree = st;
   prestige = p;
   statistics = stat;
+  quests = q;
 }

@@ -15,6 +15,8 @@ import Inventory from './inventory.js';
 import SkillTree from './skillTree.js';
 import { createDebugUI, createModifyUI, crypt } from './functions.js';
 import Statistics from './statistics.js';
+import QuestTracker from './quest.js';
+import { QUEST_DEFINITIONS } from './constants/quests.js';
 import { apiFetch, loadGameData, saveGameData } from './api.js';
 import { game, hero, inventory, training, skillTree, prestige, statistics, setGlobals } from './globals.js';
 import { initializeRegionSystem, updateRegionUI } from './region.js';
@@ -39,6 +41,7 @@ export let dev = false;
   const _prestige = new Prestige(savedData?.prestige);
   const _training = new Training(savedData?.training);
   const _statistics = new Statistics(savedData?.statistics);
+  const _quests = new QuestTracker(QUEST_DEFINITIONS, savedData?.quests);
 
   setGlobals({
     game: _game,
@@ -48,6 +51,7 @@ export let dev = false;
     skillTree: _skillTree,
     prestige: _prestige,
     statistics: _statistics,
+    quests: _quests,
   });
 
   game.stage = hero?.startingStage || 1;

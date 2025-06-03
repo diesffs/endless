@@ -1,0 +1,59 @@
+/* Quest list styling */
+.quest-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+}
+
+.quest-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid #fff;
+  border-radius: 4px;
+  background-color: #222;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.quest-item.ready {
+  border-color: #06b6d4;
+  background-color: #144;
+}
+
+.quest-icon {
+  font-size: 1.5em;
+}
+
+.quest-title {
+  font-weight: bold;
+  color: #fff;
+}
+
+.quest-progress {
+  margin-left: auto;
+  color: #aaa;
+}
+
+/* Modal overrides for quest details */
+#quest-modal .modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+#quest-modal .modal-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+#quest-claim-btn {
+  background-color: #06b6d4;
+  color: #fff;
+}
+#quest-modal-close {
+  background-color: #4b5563;
+  color: #fff;
+}
