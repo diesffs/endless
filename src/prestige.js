@@ -44,6 +44,12 @@ const CRYSTAL_UPGRADE_CONFIG = {
     baseCost: 10,
     multiple: true,
   },
+  resetAttributes: {
+    label: 'Reset Attributes',
+    bonus: 'Refund all allocated attribute points',
+    baseCost: 10,
+    multiple: true,
+  },
 };
 
 export default class Prestige {
@@ -249,6 +255,16 @@ export default class Prestige {
           initializeSkillTreeUI();
           updateResources();
           showToast('Class has been reset and all points refunded.', 'success');
+        }
+      } else if (stat === 'resetAttributes') {
+        const confirmed = await showConfirmDialog(
+          'Are you sure you want to reset all allocated attribute points?\nThis will cost <strong>10 crystals</strong> and cannot be undone.'
+        );
+        if (confirmed) {
+          hero.resetAttributes();
+          updateStatsAndAttributesUI();
+          updateResources();
+          showToast('All attribute points have been refunded.', 'success');
         }
       }
 

@@ -191,12 +191,6 @@ export default class Hero {
       if (percentBonus !== 0) effects[stat + 'Percent'] = percentBonus;
     }
 
-    // Special handling for critDamage, which can have both per-point and per-N-points
-    if ('dexterity' in this.stats && ATTRIBUTES.dexterity?.effects?.critDamagePerPoint) {
-      effects.critDamage =
-        (effects.critDamage || 0) + this.stats.dexterity * ATTRIBUTES.dexterity.effects.critDamagePerPoint;
-    }
-
     return effects;
   }
 
@@ -416,5 +410,19 @@ export default class Hero {
     const cap = Math.floor(this.highestStage * 0.75);
     // If cap is at least 1, apply cap; otherwise allow minimum stage
     this.startingStage = cap >= 1 ? Math.min(stage, cap) : stage;
+  }
+
+  /**
+   * Resets all allocated primary stats and refunds stat points for reallocation.
+   */
+  resetAttributes() {
+    let totalAllocated = 0;
+    for (const stat in this.primaryStats) {
+      totalAllocated += this.primaryStats[stat];
+      this.primaryStats[stat] = 0;
+    }
+    this.statPoints += totalAllocated;
+    this.recalculateFromAttributes();
+    game.saveGame();
   }
 }
