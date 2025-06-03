@@ -154,50 +154,53 @@ export function updateStatsAndAttributesUI() {
     });
     statsGrid.appendChild(statsContainer);
   } else {
-    // Update dynamic stats values
+    // Update all dynamic stats values
+    Object.keys(hero.stats).forEach((key) => {
+      const el = document.getElementById(`${key}-value`);
+      if (el) {
+        // Special formatting for certain stats
+        if (key === 'attackSpeed') {
+          el.textContent = hero.stats.attackSpeed.toFixed(STATS.attackSpeed.decimalPlaces).replace(/\./g, ',');
+        } else if (key === 'critChance') {
+          el.textContent = hero.stats.critChance.toFixed(STATS.critChance.decimalPlaces).replace(/\./g, ',') + '%';
+        } else if (key === 'critDamage') {
+          el.textContent = hero.stats.critDamage.toFixed(STATS.critDamage.decimalPlaces).replace(/\./g, ',') + 'x';
+        } else if (key === 'lifeSteal') {
+          el.textContent = hero.stats.lifeSteal.toFixed(STATS.lifeSteal.decimalPlaces).replace(/\./g, ',') + '%';
+        } else if (key === 'lifeRegen') {
+          el.textContent = hero.stats.lifeRegen.toFixed(STATS.lifeRegen.decimalPlaces).replace(/\./g, ',');
+        } else if (key === 'manaRegen') {
+          el.textContent = hero.stats.manaRegen.toFixed(STATS.manaRegen.decimalPlaces).replace(/\./g, ',');
+        } else if (key === 'blockChance') {
+          el.textContent = hero.stats.blockChance.toFixed(STATS.blockChance.decimalPlaces).replace(/\./g, ',') + '%';
+        } else {
+          el.textContent = hero.stats[key];
+        }
+      }
+    });
+
+    // Update header values
     document.getElementById('level-value').textContent = hero.level || 1;
     document.getElementById('exp-value').textContent = hero.exp || 0;
     document.getElementById('exp-progress').textContent = ((hero.exp / hero.expToNextLevel) * 100).toFixed(1) + '%';
     document.getElementById('exp-to-next-level-value').textContent = hero.expToNextLevel || 100;
     document.getElementById('highest-stage-value').textContent = hero.highestStage;
-    document.getElementById('damage-value').textContent = hero.stats.damage;
-    document.getElementById('attackSpeed-value').textContent = hero.stats.attackSpeed
-      .toFixed(STATS.attackSpeed.decimalPlaces)
-      .replace(/\./g, ',');
 
-    document.getElementById('attackRating-value').textContent = hero.stats.attackRating;
-    // add hit chance percentage
-    const hitPct = calculateHitChance(hero.stats.attackRating, game.stage).toFixed(2) + '%';
-    document.getElementById('attackRating-value').appendChild(document.createTextNode(` (${hitPct})`));
+    // Add hit chance percentage to attackRating
+    const attackRatingEl = document.getElementById('attackRating-value');
+    if (attackRatingEl) {
+      attackRatingEl.textContent = hero.stats.attackRating;
+      const hitPct = calculateHitChance(hero.stats.attackRating, game.stage).toFixed(2) + '%';
+      attackRatingEl.appendChild(document.createTextNode(` (${hitPct})`));
+    }
 
-    document.getElementById('critChance-value').textContent =
-      hero.stats.critChance.toFixed(STATS.critChance.decimalPlaces).replace(/\./g, ',') + '%';
-    document.getElementById('critDamage-value').textContent =
-      hero.stats.critDamage.toFixed(STATS.critDamage.decimalPlaces).replace(/\./g, ',') + 'x';
-
-    document.getElementById('lifeSteal-value').textContent =
-      hero.stats.lifeSteal.toFixed(STATS.lifeSteal.decimalPlaces).replace(/\./g, ',') + '%';
-    document.getElementById('fireDamage-value').textContent = hero.stats.fireDamage;
-    document.getElementById('coldDamage-value').textContent = hero.stats.coldDamage;
-    document.getElementById('airDamage-value').textContent = hero.stats.airDamage;
-    document.getElementById('earthDamage-value').textContent = hero.stats.earthDamage;
-
-    document.getElementById('life-value').textContent = hero.stats.life;
-    document.getElementById('lifeRegen-value').textContent = hero.stats.lifeRegen
-      .toFixed(STATS.lifeRegen.decimalPlaces)
-      .replace(/\./g, ',');
-    document.getElementById('mana-value').textContent = hero.stats.mana;
-    document.getElementById('manaRegen-value').textContent = hero.stats.manaRegen
-      .toFixed(STATS.manaRegen.decimalPlaces)
-      .replace(/\./g, ',');
-
-    document.getElementById('armor-value').textContent = hero.stats.armor || 0;
-    // add armor reduction percentage
-    const ar = hero.calculateArmorReduction().toFixed(2) + '%';
-    document.getElementById('armor-value').appendChild(document.createTextNode(` (${ar})`));
-
-    document.getElementById('blockChance-value').textContent =
-      hero.stats.blockChance.toFixed(STATS.blockChance.decimalPlaces).replace(/\./g, ',') + '%';
+    // Add armor reduction percentage to armor
+    const armorEl = document.getElementById('armor-value');
+    if (armorEl) {
+      armorEl.textContent = hero.stats.armor || 0;
+      const ar = hero.calculateArmorReduction().toFixed(2) + '%';
+      armorEl.appendChild(document.createTextNode(` (${ar})`));
+    }
   }
 
   if (!attributesContainer) {

@@ -355,7 +355,6 @@ export default class Inventory {
 
     // Equip the new item
     this.equippedItems[slot] = item;
-    hero.recalculateFromAttributes();
     game.saveGame(); // Add save
   }
 
