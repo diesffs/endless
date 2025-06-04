@@ -1,7 +1,8 @@
 import Enemy from '../enemy.js';
-import { game, hero, prestige } from '../globals.js';
+import { game, hero, prestige, skillTree, quests, statistics, inventory } from '../globals.js';
 import { updateQuestsUI } from './questUi.js';
 import { updateStatsAndAttributesUI } from './statsAndAttributesUi.js';
+import { TabIndicatorManager } from './tabIndicatorManager.js';
 export {
   initializeSkillTreeUI,
   initializeSkillTreeStructure,
@@ -11,11 +12,18 @@ export {
   showManaWarning,
 } from './skillsUi.js';
 
+// Tab indicator manager instance
+let tabIndicatorManager = null;
+
 const html = String.raw;
 
 export function initializeUI() {
   game.currentEnemy = new Enemy(game.stage);
-  game.activeTab = 'inventory';
+  game.activeTab = 'stats'; // Match the default active tab in HTML
+
+  // Initialize tab indicator manager
+  tabIndicatorManager = new TabIndicatorManager();
+
   document.querySelectorAll('.tab-btn').forEach((btn) => {
     btn.addEventListener('click', () => switchTab(game, btn.dataset.tab));
   });
@@ -74,8 +82,20 @@ export function switchTab(game, tabName) {
   if (tabName === 'quests') {
     updateQuestsUI();
   }
+  if (tabName === 'inventory') {
+    // Clear new items flag when visiting inventory
+    inventory?.clearNewItemsFlag();
+  }
 
   game.activeTab = tabName;
+
+  // Update tab indicator manager - mark this tab as visited
+  if (tabIndicatorManager) {
+    tabIndicatorManager.markTabAsVisited(tabName);
+  }
+
+  // Update indicators after tab switch
+  updateTabIndicators();
 }
 
 export function updateResources() {
@@ -384,3 +404,24 @@ export const formatStatName = (stat) => {
     .replace(/Percent$/, '%')
     .trim();
 };
+
+/**
+ * Update tab indicators based on current game state.
+ * Call this function whenever game state changes that might affect indicators.
+ */
+export function updateTabIndicators() {
+  if (!tabIndicatorManager) return;
+
+  // Count claimable quests
+  const claimableQuests = quests?.quests?.filter((q) => q.isComplete(statistics) && !q.claimed).length || 0;
+
+  const state = {
+    unallocatedStatPoints: hero?.statPoints || 0,
+    hasNewInventoryItems: inventory?.hasNewItems || false,
+    unallocatedSkillPoints: skillTree?.skillPoints || 0,
+    claimableQuests,
+    currentTab: game?.activeTab || 'stats',
+  };
+
+  tabIndicatorManager.updateAll(state);
+}

@@ -2,7 +2,14 @@ import { createDamageNumber } from './combat.js';
 import { handleSavedData } from './functions.js';
 import { game, hero, prestige } from './globals.js';
 import { CLASS_PATHS, SKILL_TREES } from './constants/skills.js';
-import { showManaWarning, showToast, updateActionBar, updatePlayerLife, updateSkillTreeValues } from './ui/ui.js';
+import {
+  showManaWarning,
+  showToast,
+  updateActionBar,
+  updatePlayerLife,
+  updateSkillTreeValues,
+  updateTabIndicators,
+} from './ui/ui.js';
 
 export const SKILL_LEVEL_TIERS = [10, 25, 60, 150, 400, 750, 1200, 2000, 3000, 5000, 10000];
 export const DEFAULT_MAX_SKILL_LEVEL = Infinity;
@@ -150,7 +157,6 @@ export default class SkillTree {
       return preReqLevel > 0;
     });
   }
-
   unlockSkill(skillId) {
     if (!this.canUnlockSkill(skillId)) return false;
 
@@ -174,8 +180,10 @@ export default class SkillTree {
     }
 
     // Trigger tooltip update
-    updateSkillTreeValues(); // Ensure this function updates the tooltip content
-    game.saveGame();
+    updateSkillTreeValues(); // Ensure this function updates the tooltip content    game.saveGame();
+
+    // Update tab indicators for spent skill points
+    updateTabIndicators();
 
     return true;
   }

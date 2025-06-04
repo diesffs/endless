@@ -1,6 +1,6 @@
 import { QUEST_DEFINITIONS } from './constants/quests.js';
 import { hero, game } from './globals.js';
-import { showToast, updateResources } from './ui/ui.js';
+import { showToast, updateResources, updateTabIndicators } from './ui/ui.js';
 
 export class Quest {
   constructor({ id, title, description, type, target, reward, icon, category, rarity, resource }, claimed = false) {
@@ -50,7 +50,6 @@ export class Quest {
   isComplete(statistics) {
     return this.getProgress(statistics) >= this.target;
   }
-
   claim(statistics) {
     if (!this.isComplete(statistics) || this.claimed) return null;
     this.claimed = true;
@@ -59,9 +58,12 @@ export class Quest {
     if (this.reward.gold) hero.gainGold(this.reward.gold);
     if (this.reward.exp) hero.gainExp(this.reward.exp);
     if (this.reward.crystals) hero.gainCrystals(this.reward.crystals);
-
     showToast(`Quest "${this.title}" claimed!`, 'normal');
     updateResources();
+
+    // Update tab indicators for claimed quest rewards
+    updateTabIndicators();
+
     return this.reward;
   }
 

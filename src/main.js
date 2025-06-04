@@ -9,6 +9,7 @@ import {
   updateResources,
   updateStageUI,
   showConfirmDialog,
+  updateTabIndicators,
 } from './ui/ui.js';
 import Prestige from './prestige.js';
 import Inventory from './inventory.js';
@@ -70,6 +71,7 @@ export let dev = false;
   updateStatsAndAttributesUI();
   updateStageUI();
   updateEnemyLife();
+  updateTabIndicators();
 
   // Preload all enemy avatar images to warm browser cache
   preloadEnemyImages();

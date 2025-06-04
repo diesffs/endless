@@ -77,10 +77,28 @@ body {
   border-radius: 0.5rem;
   cursor: pointer;
   transition: background-color 0.3s;
+  position: relative; /* Add position relative for indicator dot */
 }
 
 .tab-btn.active {
   background-color: var(--accent);
+}
+
+/* Tab indicator dot styles */
+.tab-btn .indicator-dot {
+  position: absolute;
+  top: 4px;
+  right: 2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444; /* Red dot for notifications */
+  display: none;
+  z-index: 10;
+}
+
+.tab-btn.has-indicator .indicator-dot {
+  display: block;
 }
 
 .tab-content {

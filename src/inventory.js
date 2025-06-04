@@ -25,6 +25,7 @@ export const MATERIALS_SLOTS = 50;
 export default class Inventory {
   constructor(savedData = null) {
     this.equipmentBonuses = {};
+    this.hasNewItems = false; // Flag to track new items for tab indicator
 
     for (const stat in STATS) {
       this.equipmentBonuses[stat] = 0;
@@ -71,7 +72,6 @@ export default class Inventory {
       if (e.relatedTarget === null) this.removeTooltip();
     });
   }
-
   addMaterial(material) {
     // material: { id, icon, qty }
     let slot = this.materials.findIndex((m) => m && m.id === material.id);
@@ -84,6 +84,7 @@ export default class Inventory {
         this.materials[slot] = { ...material, qty: material.qty || 1 };
       }
     }
+    this.hasNewItems = true; // Set flag when new material is added
     updateMaterialsGrid();
     game.saveGame();
   }
@@ -372,7 +373,6 @@ export default class Inventory {
     // fallback
     return ITEM_RARITY.NORMAL.name;
   }
-
   addItemToInventory(item, specificPosition = null) {
     if (!item) {
       console.error('Attempted to add null item to inventory');
@@ -380,6 +380,7 @@ export default class Inventory {
     }
 
     statistics.increment('totalItemsFound', null, 1);
+    this.hasNewItems = true; // Set flag when new item is added
 
     if (specificPosition !== null && specificPosition < ITEM_SLOTS && !this.inventoryItems[specificPosition]) {
       this.inventoryItems[specificPosition] = item;
@@ -495,5 +496,12 @@ export default class Inventory {
     }
     // fallback
     return materials[0];
+  }
+
+  /**
+   * Clear the new items flag (called when player visits inventory tab)
+   */
+  clearNewItemsFlag() {
+    this.hasNewItems = false;
   }
 }

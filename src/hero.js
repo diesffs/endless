@@ -1,4 +1,4 @@
-import { initializeSkillTreeStructure, updatePlayerLife } from './ui/ui.js';
+import { initializeSkillTreeStructure, updatePlayerLife, updateTabIndicators } from './ui/ui.js';
 import { game, inventory, training, skillTree, statistics } from './globals.js';
 import { createCombatText } from './combat.js';
 import { handleSavedData } from './functions.js';
@@ -74,7 +74,6 @@ export default class Hero {
     statistics.increment('totalCrystalsEarned', null, amount);
     this.crystals += amount;
   }
-
   levelUp() {
     this.exp -= this.expToNextLevel;
     this.level++;
@@ -92,8 +91,10 @@ export default class Hero {
     initializeSkillTreeStructure();
     game.saveGame();
     updateRegionUI(); // Update region UI to unlock new regions if level requirement is met
-  }
 
+    // Update tab indicators for newly gained stat and skill points
+    updateTabIndicators();
+  }
   allocateStat(stat) {
     if (this.statPoints > 0 && this.primaryStats[stat] !== undefined) {
       this.primaryStats[stat]++;
@@ -103,6 +104,10 @@ export default class Hero {
         this.stats.currentLife = this.stats.life;
       }
       game.saveGame();
+
+      // Update tab indicators for spent attribute points
+      updateTabIndicators();
+
       return true;
     }
     return false;

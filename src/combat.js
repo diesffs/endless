@@ -1,4 +1,11 @@
-import { updatePlayerLife, updateEnemyLife, updateResources, updateStageUI, updateBuffIndicators } from './ui/ui.js';
+import {
+  updatePlayerLife,
+  updateEnemyLife,
+  updateResources,
+  updateStageUI,
+  updateBuffIndicators,
+  updateTabIndicators,
+} from './ui/ui.js';
 import Enemy from './enemy.js';
 import { hero, game, inventory, prestige, statistics, skillTree, quests } from './globals.js';
 import { ITEM_RARITY } from './constants/items.js';
@@ -147,7 +154,6 @@ export function defeatEnemy() {
 
     showLootNotification(newItem);
   }
-
   // Drop material (new, separate chance)
   const materialDropRolls = Math.floor(game.stage / 30) + 1;
   if (enemy.rollForMaterialDrop) {
@@ -166,8 +172,10 @@ export function defeatEnemy() {
 
   statistics.increment('enemiesKilled', 'total');
   statistics.increment('enemiesKilled', enemy.rarity.toLowerCase());
-
   updateQuestsUI();
+
+  // Update tab indicators for new items/materials dropped
+  updateTabIndicators();
 
   // Continue existing UI updates
   updateResources();
