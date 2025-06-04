@@ -306,13 +306,15 @@ export default class SkillTree {
           hero.stats.currentMana -= this.getSkillManaCost(skill);
           effects = { ...effects, ...this.getSkillEffect(skillId, skillData.level) };
         } else {
-          showManaWarning();
+          // showManaWarning();
           // Deactivate if not enough mana
-          skillData.active = false;
-          updateActionBar();
+          // skillData.active = false;
+          // updateActionBar();
         }
       }
     });
+
+    updateActionBar();
 
     return effects;
   }
@@ -388,7 +390,7 @@ export default class SkillTree {
       if (skill.cooldownEndTime) {
         skill.cooldownEndTime = 0;
       }
-      skill.active = false; // Reset active state
+      if (skill.type() !== 'toggle') skill.active = false; // Reset active state except for toggles
     });
     hero.recalculateFromAttributes();
     updateActionBar(); // Update UI to reset all visual states

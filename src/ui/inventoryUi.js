@@ -27,7 +27,7 @@ export function initializeInventoryUI(inv) {
     if (itemsTab.classList.contains('active')) {
       sortBtn.textContent = '🔃';
     } else {
-      sortBtn.textContent = 'Sort Materials';
+      sortBtn.textContent = '🔃';
     }
   }
   updateSortBtnText(inv);
@@ -79,6 +79,15 @@ export function initializeInventoryUI(inv) {
       materialsContainer.appendChild(cell);
     }
   }
+
+  // Add tooltip for sort button
+  sortBtn.addEventListener('mouseenter', (e) => {
+    const tooltipText = itemsTab.classList.contains('active') ? 'Sort items by rarity then level' : 'Sort materials';
+    const tooltipContent = `<div class="item-tooltip"><b>${tooltipText}</b></div>`;
+    showTooltip(tooltipContent, e, 'flex-tooltip');
+  });
+  sortBtn.addEventListener('mousemove', positionTooltip);
+  sortBtn.addEventListener('mouseleave', hideTooltip);
 }
 
 export function updateInventoryGrid(inv) {
