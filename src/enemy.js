@@ -80,13 +80,8 @@ class Enemy {
   updateEnemyStats() {
     // Update the right-side stats (damage, extensible)
     const dmg = document.getElementById('enemy-damage-value');
-    if (dmg) dmg.textContent = Math.round(this.damage);
+    if (dmg) dmg.textContent = Math.floor(this.damage);
     // Add more stats here as needed
-  }
-
-  generateElement(allowedElements) {
-    // No longer used, element is now set per unique enemy
-    return this.element;
   }
 
   generateRarity() {

@@ -64,8 +64,7 @@ export function playerAttack(currentTime) {
 
       if (roll > hitChance) {
         // to take up mana even when missing. (for toggle skills)
-        // Instant skills always hit
-        hero.calculateTotalDamage();
+        skillTree.applyToggleEffects();
         createDamageNumber('MISS', false, false, false, true);
       } else {
         const { damage, isCritical } = hero.calculateTotalDamage();
@@ -126,7 +125,7 @@ export function defeatEnemy() {
   const rarityData = ENEMY_RARITY[enemy.rarity] || {};
   // const droppedItem = dropLoot(enemy);
 
-  const baseExpGained = 10 + game.stage * 2;
+  const baseExpGained = Math.floor(10 + game.stage * 2.25);
   const baseGoldGained = 10 + game.stage * 4;
 
   // Apply bonus experience and gold (include region multipliers)
