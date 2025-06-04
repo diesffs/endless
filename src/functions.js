@@ -221,7 +221,7 @@ export function createModifyUI() {
   const giveExpBtn = document.createElement('button');
   giveExpBtn.textContent = 'Give Experience for Level Up';
   giveExpBtn.addEventListener('click', () => {
-    const expNeeded = hero.expToNextLevel - hero.exp;
+    const expNeeded = hero.getExpToNextLevel() - hero.exp;
     hero.gainExp(expNeeded);
     showToast(`Gave ${expNeeded} experience to level up!`);
   });
@@ -232,7 +232,7 @@ export function createModifyUI() {
   giveExp10Btn.textContent = 'Give Experience for 10 Level Ups';
   giveExp10Btn.addEventListener('click', () => {
     for (let i = 0; i < 10; i++) {
-      const expNeeded = hero.expToNextLevel - hero.exp;
+      const expNeeded = hero.getExpToNextLevel() - hero.exp;
       hero.gainExp(expNeeded);
     }
     showToast(`Gave experience for 10 level ups!`);
@@ -244,7 +244,7 @@ export function createModifyUI() {
   giveExp100Btn.textContent = 'Give Experience for 100 Level Ups';
   giveExp100Btn.addEventListener('click', () => {
     for (let i = 0; i < 100; i++) {
-      const expNeeded = hero.expToNextLevel - hero.exp;
+      const expNeeded = hero.getExpToNextLevel() - hero.exp;
       hero.gainExp(expNeeded);
     }
     showToast(`Gave experience for 100 level ups!`);

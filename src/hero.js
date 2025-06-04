@@ -19,7 +19,6 @@ export default class Hero {
     this.gold = 0;
     this.crystals = 0;
     this.exp = 0;
-    this.expToNextLevel = 66;
 
     this.statPoints = 0;
     this.souls = 0;
@@ -54,13 +53,22 @@ export default class Hero {
     handleSavedData(savedData, this);
   }
 
+  /**
+   * Calculates the experience required to reach the next level.
+   * @returns {number} EXP required for next level
+   */
+  getExpToNextLevel() {
+    // Original: starts at 66, increases by 84 per level up
+    return 66 + 84 * (this.level - 1);
+  }
+
   gainSoul(amount) {
     this.souls += amount;
   }
 
   gainExp(amount) {
     this.exp += amount;
-    while (this.exp >= this.expToNextLevel) {
+    while (this.exp >= this.getExpToNextLevel()) {
       this.levelUp();
     }
   }
@@ -75,10 +83,9 @@ export default class Hero {
     this.crystals += amount;
   }
   levelUp() {
-    this.exp -= this.expToNextLevel;
+    this.exp -= this.getExpToNextLevel();
     this.level++;
     this.statPoints += STATS_ON_LEVEL_UP;
-    this.expToNextLevel += 84;
     this.recalculateFromAttributes();
 
     // Add level up notification

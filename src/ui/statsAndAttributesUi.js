@@ -31,8 +31,8 @@ export function updateStatsAndAttributesUI() {
       <div><strong>Level:</strong> <span id="level-value">${hero.level || 1}</span></div>
       <div>
         <strong>EXP:</strong> <span id="exp-value">${hero.exp || 0}</span> /
-        <span id="exp-to-next-level-value">${hero.expToNextLevel || 100}</span>
-        (<span id="exp-progress">${((hero.exp / hero.expToNextLevel) * 100).toFixed(1)}%</span>)
+        <span id="exp-to-next-level-value">${hero.getExpToNextLevel() || 100}</span>
+        (<span id="exp-progress">${((hero.exp / hero.getExpToNextLevel()) * 100).toFixed(1)}%</span>)
       </div>
       <div><strong>Highest Stage:</strong><span id="highest-stage-value">${hero.highestStage}</span></div>
       <hr style="border: none; border-top: 1px solid #fff; margin: 10px 0;" />
@@ -182,8 +182,9 @@ export function updateStatsAndAttributesUI() {
     // Update header values
     document.getElementById('level-value').textContent = hero.level || 1;
     document.getElementById('exp-value').textContent = hero.exp || 0;
-    document.getElementById('exp-progress').textContent = ((hero.exp / hero.expToNextLevel) * 100).toFixed(1) + '%';
-    document.getElementById('exp-to-next-level-value').textContent = hero.expToNextLevel || 100;
+    document.getElementById('exp-progress').textContent =
+      ((hero.exp / hero.getExpToNextLevel()) * 100).toFixed(1) + '%';
+    document.getElementById('exp-to-next-level-value').textContent = hero.getExpToNextLevel() || 100;
     document.getElementById('highest-stage-value').textContent = hero.highestStage;
 
     // Add hit chance percentage to attackRating
