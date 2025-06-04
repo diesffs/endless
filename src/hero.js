@@ -19,7 +19,7 @@ export default class Hero {
     this.gold = 0;
     this.crystals = 0;
     this.exp = 0;
-    this.expToNextLevel = 50;
+    this.expToNextLevel = 66;
 
     this.statPoints = 0;
     this.souls = 0;
@@ -78,7 +78,7 @@ export default class Hero {
     this.exp -= this.expToNextLevel;
     this.level++;
     this.statPoints += STATS_ON_LEVEL_UP;
-    this.expToNextLevel += this.level * 20 - 20;
+    this.expToNextLevel += 84;
     this.recalculateFromAttributes();
 
     // Add level up notification
