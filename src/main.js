@@ -149,7 +149,7 @@ export let dev = false;
   const cloudLoadBtn = document.getElementById('cloud-load-btn');
   let lastCloudSave = null;
   let userSession = null;
-  const isLocal = import.meta.env.VITE_IS_LOCAL || false;
+  const isLocal = import.meta.env.VITE_IS_LOCAL === 'true';
   const gameName = import.meta.env.VITE_GAME_NAME || 'endless';
 
   async function checkSession() {
