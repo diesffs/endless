@@ -17,7 +17,7 @@ export const REGIONS = [
     itemDropMultiplier: 1.0,
     materialDropMultiplier: 1.0,
     materialDropWeights: {
-      crystalized_rock: 1,
+      crystalized_rock: 1.1,
     },
   },
   {
@@ -141,6 +141,119 @@ export const REGIONS = [
     materialDropMultiplier: 1.0,
     materialDropWeights: {
       freaky_gold_coins: 15,
+    },
+  },
+  {
+    id: 'volcanic_rift',
+    unlockLevel: 1400,
+    name: 'Volcanic Rift',
+    description: 'A searing landscape of molten rock and fire elementals.',
+    allowedTags: ['volcano', 'fire'],
+    get enemyNames() {
+      return ENEMY_LIST.filter((e) => e.tags && (e.tags.includes('volcano') || e.tags.includes('fire'))).map(
+        (e) => e.name
+      );
+    },
+    lifeMultiplier: 6.0,
+    damageMultiplier: 3.0,
+    xpMultiplier: 4.0,
+    goldMultiplier: 2.5,
+    itemDropMultiplier: 1.0,
+    materialDropMultiplier: 1.5,
+    materialDropWeights: {
+      potion_of_strength: 4,
+      armor_upgrade_stone: 2.2,
+      weapon_upgrade_core: 1.2,
+    },
+  },
+  {
+    id: 'sunken_ruins',
+    unlockLevel: 1800,
+    name: 'Sunken Ruins',
+    description: 'Ancient ruins submerged beneath the waves, teeming with aquatic mysteries.',
+    allowedTags: ['ruins', 'water'],
+    get enemyNames() {
+      return ENEMY_LIST.filter((e) => e.tags && (e.tags.includes('ruins') || e.tags.includes('water'))).map(
+        (e) => e.name
+      );
+    },
+    lifeMultiplier: 7.0,
+    damageMultiplier: 3.2,
+    xpMultiplier: 4.5,
+    goldMultiplier: 2.0,
+    itemDropMultiplier: 1.2,
+    materialDropMultiplier: 1.3,
+    materialDropWeights: {
+      potion_of_vitality: 3.1,
+      crystalized_rock: 2.2,
+    },
+  },
+  {
+    id: 'haunted_moor',
+    unlockLevel: 2200,
+    name: 'Haunted Moor',
+    description: 'A fog-laden moor haunted by restless spirits and lost souls.',
+    allowedTags: ['haunted', 'spirit'],
+    get enemyNames() {
+      return ENEMY_LIST.filter((e) => e.tags && (e.tags.includes('haunted') || e.tags.includes('spirit'))).map(
+        (e) => e.name
+      );
+    },
+    lifeMultiplier: 8.0,
+    damageMultiplier: 3.5,
+    xpMultiplier: 5.0,
+    goldMultiplier: 2.2,
+    itemDropMultiplier: 1.0,
+    materialDropMultiplier: 1.1,
+    materialDropWeights: {
+      potion_of_wisdom: 3.2,
+      elixir: 1.3,
+    },
+    canDrop: ['elixir'],
+  },
+  {
+    id: 'golden_steppe',
+    unlockLevel: 2600,
+    name: 'Golden Steppe',
+    description: 'Vast golden grasslands where fortune favors the bold.',
+    allowedTags: ['steppe', 'gold'],
+    get enemyNames() {
+      return ENEMY_LIST.filter((e) => e.tags && (e.tags.includes('steppe') || e.tags.includes('gold'))).map(
+        (e) => e.name
+      );
+    },
+    lifeMultiplier: 9.0,
+    damageMultiplier: 3.8,
+    xpMultiplier: 5.5,
+    goldMultiplier: 5.0,
+    itemDropMultiplier: 1.0,
+    materialDropMultiplier: 1.0,
+    materialDropWeights: {
+      medium_gold_coins: 3.2,
+      large_gold_coins: 1.2,
+    },
+  },
+  {
+    id: 'obsidian_spire',
+    unlockLevel: 3000,
+    name: 'Obsidian Spire',
+    description: 'A towering spire of black glass, pulsing with arcane energy.',
+    allowedTags: ['obsidian', 'arcane'],
+    get enemyNames() {
+      return ENEMY_LIST.filter((e) => e.tags && (e.tags.includes('obsidian') || e.tags.includes('arcane'))).map(
+        (e) => e.name
+      );
+    },
+    lifeMultiplier: 10.0,
+    damageMultiplier: 4.2,
+    xpMultiplier: 6.0,
+    goldMultiplier: 3.0,
+    itemDropMultiplier: 1.0,
+    materialDropMultiplier: 1.4,
+    materialDropWeights: {
+      jewelry_upgrade_gem: 2.2,
+      potion_of_dexterity: 2.1,
+      weapon_upgrade_core: 1.3,
     },
   },
 ];
