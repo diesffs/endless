@@ -1,6 +1,7 @@
 import { ITEM_TYPES } from './constants/items.js';
 import { getCurrentRegion } from './region.js';
 import { ENEMY_LIST, ENEMY_RARITY } from './constants/enemies.js';
+import { ELEMENTS } from './constants/common.js';
 
 class Enemy {
   constructor(stage) {
@@ -8,17 +9,9 @@ class Enemy {
     // Select enemies by region tags
     const allowedTags = region.allowedTags;
     let regionEnemies = ENEMY_LIST.filter((e) => e.tags && allowedTags.some((tag) => e.tags.includes(tag)));
-    if (regionEnemies.length === 0) {
-      console.error('No enemies found for region tags:', allowedTags, 'Region:', region);
-      // Fallback: use all enemies
-      regionEnemies = ENEMY_LIST;
-    }
     const enemyData = regionEnemies[Math.floor(Math.random() * regionEnemies.length)];
-    if (!enemyData) {
-      throw new Error('No enemy could be selected for region: ' + region.id);
-    }
     this.enemyData = enemyData;
-    this.name = `${enemyData.icon} ${enemyData.name}`;
+    this.name = `${ELEMENTS[enemyData.element].icon} ${enemyData.name}`;
     this.element = enemyData.element;
     this.image = enemyData.image;
 
