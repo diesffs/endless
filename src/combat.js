@@ -7,11 +7,12 @@ import {
   updateTabIndicators,
 } from './ui/ui.js';
 import Enemy from './enemy.js';
-import { hero, game, inventory, prestige, statistics, skillTree, quests } from './globals.js';
+import { hero, game, inventory, prestige, statistics, skillTree } from './globals.js';
 import { ITEM_RARITY } from './constants/items.js';
 import { ENEMY_RARITY } from './constants/enemies.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 import { updateQuestsUI } from './ui/questUi.js';
+import { updateBossUI } from './ui/bossUi.js';
 
 export function enemyAttack(currentTime) {
   if (!game || !hero || !game.currentEnemy) return;
@@ -63,6 +64,28 @@ export function playerAttack(currentTime) {
   if (!game || !game.currentEnemy) return;
   const timeBetweenAttacks = 1000 / hero.stats.attackSpeed;
 
+  // Boss combat: direct boss hits
+  if (game.activeRegion === 'arena' && game.currentBoss) {
+    if (currentTime - game.lastPlayerAttack >= timeBetweenAttacks) {
+      // Calculate if attack hits
+      const hitChance = calculateHitChance(hero.stats.attackRating, game.bossLevel);
+      const roll = Math.random() * 100;
+      if (roll <= hitChance) {
+        const { damage, isCritical } = hero.calculateTotalDamage();
+        const isDead = game.currentBoss.takeDamage(damage);
+        updateBossUI(game.currentBoss);
+        createDamageNumber(damage, false, isCritical);
+        if (isDead) {
+          // Rewards and toast handled in Game.damageEnemy or Boss.takeDamage
+        }
+      } else {
+        createDamageNumber('MISS', false, false, false, true);
+      }
+      game.lastPlayerAttack = currentTime;
+    }
+    return;
+  }
+
   if (currentTime - game.lastPlayerAttack >= timeBetweenAttacks) {
     if (game.currentEnemy.currentLife > 0) {
       // Calculate if attack hits
@@ -94,7 +117,7 @@ export function playerDeath() {
     game.gameStarted = false;
     const startBtn = document.getElementById('start-btn');
     if (startBtn) {
-      startBtn.textContent = 'Start';
+      startBtn.textContent = 'Fight';
       startBtn.style.backgroundColor = '#059669';
     }
   }

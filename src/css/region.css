@@ -5,7 +5,7 @@
   margin-bottom: 16px;
   margin-top: 8px;
 }
-.region-btn {
+.region-tab {
   background: linear-gradient(90deg, #232b38 60%, #1a202c 100%);
   color: #fff;
   border: 2px solid #3b4a5a;
@@ -19,25 +19,39 @@
   outline: none;
   position: relative;
 }
-.region-btn.selected {
+.region-tab:hover {
+  background: linear-gradient(90deg, #2563eb 60%, #1e40af 100%);
+}
+.region-tab.active {
   background: linear-gradient(90deg, #059669 60%, #047857 100%);
   color: #fff;
   border-color: #059669;
   box-shadow: 0 4px 16px 0 #05966944;
   z-index: 1;
 }
-.region-btn:disabled {
+.region-tab:disabled {
   background: #232b38;
   color: #888;
   border-color: #444;
   cursor: not-allowed;
   opacity: 0.7;
 }
-.region-btn:not(:disabled):hover {
-  background: linear-gradient(90deg, #2563eb 60%, #1e40af 100%);
-  color: #fff;
-  border-color: #2563eb;
+// Region tabs container
+.region-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
-.region-btn.hidden {
+
+// Region panel styling
+.region-panel {
+  padding: 1rem;
+  background: #2d3748;
+  border-radius: 0.5rem;
+  min-height: 200px;
+}
+
+// Hidden panels
+.region-panel.hidden {
   display: none;
 }

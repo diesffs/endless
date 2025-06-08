@@ -3,6 +3,9 @@ import { game, hero, prestige, skillTree, quests, statistics, inventory } from '
 import { updateQuestsUI } from './questUi.js';
 import { updateStatsAndAttributesUI } from './statsAndAttributesUi.js';
 import { TabIndicatorManager } from './tabIndicatorManager.js';
+import { initializeBossUI } from './bossUi.js';
+import { updateBossUI } from './bossUi.js';
+import { ENEMY_RARITY } from '../constants/enemies.js';
 export {
   initializeSkillTreeUI,
   initializeSkillTreeStructure,
@@ -35,8 +38,8 @@ export function initializeUI() {
       selector: '.resource-gold',
       tooltip: () => `
         <div class="tooltip-header">Gold <span class="icon">💰</span></div>
-        <div class="tooltip-desc">Used to buy upgrades and items.</div>
-        <div class="tooltip-note">Earned from defeating enemies and selling items.</div>
+        <div class="tooltip-desc">Used to buy upgrades.</div>
+        <div class="tooltip-note"></div>
       `,
     },
     {
@@ -44,15 +47,15 @@ export function initializeUI() {
       tooltip: () => `
         <div class="tooltip-header">Crystals <span class="icon">💎</span></div>
         <div class="tooltip-desc">Rare currency for powerful upgrades and skill resets.</div>
-        <div class="tooltip-note">Obtained by reaching a new highest stage.</div>
+        <div class="tooltip-note"></div>
       `,
     },
     {
       selector: '.resource-souls',
       tooltip: () => `
         <div class="tooltip-header">Souls <span class="icon">👻</span></div>
-        <div class="tooltip-desc">Earned from prestige, used for permanent upgrades.</div>
-        <div class="tooltip-note">Prestige to collect more souls and unlock new bonuses.</div>
+        <div class="tooltip-desc">Earned from killing monsters.</div>
+        <div class="tooltip-note"></div>
       `,
     },
   ];
@@ -66,8 +69,43 @@ export function initializeUI() {
     }
   });
 
+  // Initialize boss UI for Arena
+  initializeBossUI(game);
   updateStageUI();
   updateQuestsUI();
+  // Set default region
+  game.activeRegion = 'explore';
+  // Initialize boss level for Arena mode
+  game.bossLevel = game.bossLevel || 1;
+  // Setup region tab switching (Explore / Arena)
+  document.querySelectorAll('.region-tab').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const region = btn.dataset.region;
+      // Track active region for cost and logic
+      game.activeRegion = region;
+      const confirmed = await showConfirmDialog(
+        `Are you sure you want to change to ${region}? That will reset your stage progress and will find you a new enemy`
+      );
+      if (!confirmed) return;
+      // Reset stage progress and enemy as if the hero died
+      if (game.gameStarted) {
+        toggleGame(); // Stop the game if it's running
+      }
+      // Toggle active tab class
+      document.querySelectorAll('.region-tab').forEach((b) => b.classList.toggle('active', b === btn));
+      // Render the appropriate region panel
+      renderRegionPanel(region);
+      // Update controls label
+      const display = document.getElementById('stage-display');
+      if (region === 'explore') {
+        display.textContent = `Stage: ${game.stage}`;
+      } else if (region === 'arena') {
+        display.textContent = `Boss Level: ${game.bossLevel}`;
+      }
+    });
+  });
+  // Render initial region panel
+  renderRegionPanel(game.activeRegion);
 }
 
 export function switchTab(game, tabName) {
@@ -104,8 +142,6 @@ export function updateResources() {
     return;
   }
 
-  prestige.updateUI();
-
   // Update ghost icon (total souls)
   document.getElementById('souls').textContent = hero.souls || 0;
   document.getElementById('crystals').textContent = hero.crystals || 0;
@@ -141,12 +177,34 @@ export function updateEnemyLife() {
   )}`;
 }
 
-export function toggleGame() {
+/**
+ * Start/stop the game loop
+ */
+export async function toggleGame() {
   const startBtn = document.getElementById('start-btn');
-
+  // Handle Arena mode entry and exit
+  const isStarting = !game.gameStarted;
+  if (game.activeRegion === 'arena') {
+    if (isStarting) {
+      // Confirm spending Souls to enter Arena
+      const confirmStart = await showConfirmDialog('Spend 100 Souls to enter the Arena?');
+      if (!confirmStart) return;
+      if (hero.souls < 100) {
+        showToast('Not enough Souls to enter the Arena.', 'error');
+        return;
+      }
+      hero.souls -= 100;
+      updateResources();
+    } else {
+      // Confirm quitting Arena (Souls forfeited)
+      const confirmStop = await showConfirmDialog('Exit the Arena? You will forfeit your spent Souls.');
+      if (!confirmStop) return;
+    }
+  }
+  // Toggle game loop state
   game.toggle();
-
-  startBtn.textContent = game.gameStarted ? 'Stop' : 'Start';
+  // Update button label and style
+  startBtn.textContent = game.gameStarted ? 'Stop' : 'Fight';
   startBtn.style.backgroundColor = game.gameStarted ? '#DC2626' : '#059669';
 }
 
@@ -424,4 +482,71 @@ export function updateTabIndicators() {
   };
 
   tabIndicatorManager.updateAll(state);
+}
+
+/**
+ * Render the panel for the given region: 'explore' or 'arena'.
+ * @param {string} region Active region.
+ */
+function renderRegionPanel(region) {
+  const container = document.getElementById('region-panel-container');
+  if (!container) return;
+  container.innerHTML = '';
+  if (region === 'arena') {
+    const panel = document.createElement('div');
+    panel.id = 'arena-panel';
+    panel.classList.add('region-panel');
+    panel.innerHTML = html`
+      <div class="enemy-avatar"></div>
+      <div class="enemy-name"></div>
+      <div class="life-bar">
+        <div id="enemy-life-fill"></div>
+        <div id="enemy-life-text"></div>
+      </div>
+      <div class="damage-info">Damage: <span id="enemy-damage-value"></span></div>
+    `;
+    container.appendChild(panel);
+    updateBossUI(game.currentBoss);
+  } else {
+    const panel = document.createElement('div');
+    panel.id = 'explore-panel';
+    panel.classList.add('region-panel');
+    panel.innerHTML = html`<div class="enemy-section">
+      <div class="enemy-main-row">
+        <div class="enemy-avatar"></div>
+        <div class="enemy-life-and-stats">
+          <div class="enemy-name"></div>
+          <div class="enemy-life-bar">
+            <div id="enemy-life-fill"></div>
+            <div id="enemy-life-text"></div>
+          </div>
+          <div class="enemy-stats">
+            <div class="enemy-damage">Damage: <span id="enemy-damage-value"></span></div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+    container.appendChild(panel);
+    // Initialize enemy UI values
+    updateEnemyLife();
+    updateResources();
+  }
+
+  const enemy = game.currentEnemy;
+  enemy.setEnemyName();
+  enemy.updateEnemyStats();
+
+  // Get enemy section element
+  const enemySection = document.querySelector('.enemy-section');
+
+  // Remove any existing rarity classes
+  enemySection.classList.remove(
+    ENEMY_RARITY.NORMAL.color,
+    ENEMY_RARITY.RARE.color,
+    ENEMY_RARITY.EPIC.color,
+    ENEMY_RARITY.LEGENDARY.color,
+    ENEMY_RARITY.MYTHIC.color
+  );
+  // Add the new color class
+  enemySection.classList.add(enemy.color);
 }

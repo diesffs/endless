@@ -66,41 +66,8 @@
 
             <div id="prestige" class="tab-panel">
               <div class="prestige-container">
-                <!-- TODO: fix when prestige works -->
-                <!-- <div class="prestige-header">
-                  <div class="damage-display">
-                    <h3>damage</h3>
-                    <div class="bonus">+${damageBonus}%</div>
-                  </div>
-                  <button id="prestige-btn" class="earned-souls-display">
-                    <h3>Prestige for:</h3>
-                    <div class="bonus">+${earnedSouls}</div>
-                  </button>
-                </div> -->
-
                 <div class="prestige-upgrades-container">
                   <!-- Crystal upgrades will be inserted here -->
-                </div>
-
-                <div id="prestige-modal" class="modal hidden">
-                  <div class="modal-content">
-                    <h2>Confirm Prestige</h2>
-                    <p>Are you sure you want to prestige?</p>
-                    <div class="souls-preview">
-                      <span>You will earn:</span>
-                      <div class="souls-amount">+<span id="modal-souls-amount">0</span> Souls</div>
-                    </div>
-                    <div class="warning">
-                      You will lose your level, trainings and skill tree. <br />
-                      <span style="color: rgb(79, 243, 79)"
-                        >You will keep only inventory, souls and crystal upgrades.</span
-                      >
-                    </div>
-                    <div class="modal-buttons">
-                      <button id="cancel-prestige" class="modal-btn cancel">Cancel</button>
-                      <button id="confirm-prestige" class="modal-btn confirm">Prestige</button>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -198,11 +165,14 @@
                 <div class="options-section">
                   <h3>Statistics</h3>
                   <div class="stats-display">
+                    <div id="stat-bosses-killed"></div>
                     <div id="stat-total-time-played"></div>
                     <div id="stat-time-played"></div>
                     <div id="stat-enemies-killed"></div>
                     <div id="stat-highest-damage"></div>
                     <div id="stat-total-gold"></div>
+                    <div id="stat-total-crystals"></div>
+                    <div id="stat-total-souls"></div>
                     <div id="stat-items-found"></div>
                     <div id="stat-prestige-count"></div>
                     <div id="stat-highest-stage"></div>
@@ -218,7 +188,12 @@
           </div>
         </div>
 
-        <div class="character-panel">
+        <div class="combat-panel">
+          <!-- Region Tabs -->
+          <div class="region-tabs">
+            <button data-region="explore" class="region-tab active">Explore</button>
+            <button data-region="arena" class="region-tab">Arena</button>
+          </div>
           <div class="character-info">
             <div id="character-avatar">🛡️</div>
             <div class="character-resources">
@@ -245,29 +220,7 @@
             <div id="stage-display">Stage: 1</div>
           </div>
 
-          <!-- REGION SELECTOR -->
-          <div id="region-selector"></div>
-
-          <div class="enemy-section">
-            <div class="enemy-main-row">
-              <div class="enemy-avatar">⚔️</div>
-              <div class="enemy-life-and-stats">
-                <div class="enemy-name-row">
-                  <h3 class="enemy-name"></h3>
-                </div>
-                <div class="enemy-life-bar">
-                  <div id="enemy-life-fill" style="width: 100%"></div>
-                  <div id="enemy-life-text" class="life-text">50/50</div>
-                </div>
-                <div class="enemy-stats">
-                  <div class="enemy-damage">
-                    <span class="stat-label">Damage:</span> <span class="stat-value" id="enemy-damage-value">0</span>
-                  </div>
-                  <!-- More stats can be added here in the future -->
-                </div>
-              </div>
-            </div>
-          </div>
+          <div id="region-panel-container"></div>
         </div>
       </div>
     </div>

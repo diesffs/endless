@@ -195,17 +195,6 @@ export function createModifyUI() {
   heroSection.innerHTML = `<h3>Hero</h3>`;
   modifyDiv.appendChild(heroSection);
 
-  // Button to give free attribute points
-  const giveStatsBtn = document.createElement('button');
-  giveStatsBtn.textContent = 'Give 5 Attributes';
-  giveStatsBtn.addEventListener('click', () => {
-    const freePoints = 5; // Number of free attribute points to give
-    hero.statPoints += freePoints;
-    hero.recalculateFromAttributes();
-    showToast(`Gave ${freePoints} attribute points!`);
-  });
-  heroSection.appendChild(giveStatsBtn);
-
   // Button to give 100 attribute points
   const give100StatsBtn = document.createElement('button');
   give100StatsBtn.textContent = 'Give 100 Attributes';
@@ -272,6 +261,17 @@ export function createModifyUI() {
     showToast(`Added ${crystalsAmount} crystals!`);
   });
   heroSection.appendChild(addCrystalsBtn);
+
+  // Button to add souls
+  const addSoulsBtn = document.createElement('button');
+  addSoulsBtn.textContent = 'Add Souls';
+  addSoulsBtn.addEventListener('click', () => {
+    const soulsAmount = 1000; // Amount of souls to add
+    hero.gainSouls(soulsAmount);
+    updateResources(); // Assuming there's a function to update the UI
+    showToast(`Added ${soulsAmount} souls!`);
+  });
+  heroSection.appendChild(addSoulsBtn);
 
   // Example: Add buttons to modify inventory
   const inventorySection = document.createElement('div');
@@ -393,9 +393,9 @@ export function createModifyUI() {
   modifyDiv.appendChild(skillTreeSection);
 
   const addSkillPointBtn = document.createElement('button');
-  addSkillPointBtn.textContent = 'Add Skill Point';
+  addSkillPointBtn.textContent = 'Add 100 Skill Points';
   addSkillPointBtn.addEventListener('click', () => {
-    skillTree.addSkillPoints(1);
+    skillTree.addSkillPoints(100);
   });
   skillTreeSection.appendChild(addSkillPointBtn);
 

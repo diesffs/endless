@@ -8,12 +8,13 @@ import {
   initializeSkillTreeUI,
 } from './ui/ui.js';
 import { playerAttack, enemyAttack, playerDeath, defeatEnemy } from './combat.js';
-import { game, hero, inventory, prestige, training, skillTree, statistics, quests } from './globals.js';
+import { game, hero, inventory, prestige, training, skillTree, statistics, quests, boss } from './globals.js';
 import Enemy from './enemy.js';
 import { ITEM_SLOTS, MATERIALS_SLOTS } from './inventory.js';
 import { updateInventoryGrid } from './ui/inventoryUi.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 import { updateQuestsUI } from './ui/questUi.js';
+import { updateBossUI } from './ui/bossUi.js';
 
 class Game {
   constructor() {
@@ -66,6 +67,26 @@ class Game {
   }
 
   damageEnemy(damage) {
+    if (game.activeRegion === 'arena' && this.currentBoss) {
+      // Boss damage flow
+      const isDead = this.currentBoss.takeDamage(damage);
+      updateEnemyLife();
+      // Refresh boss UI
+      updateBossUI(this.currentBoss);
+      if (isDead) {
+        // Apply boss rewards
+        const { crystals, gold, materials } = this.currentBoss.reward;
+        if (gold) hero.gainGold(gold);
+        if (crystals) hero.gainCrystals(crystals);
+        if (materials && materials.length) {
+          materials.forEach(({ id, qty }) => inventory.addMaterial({ id, qty }));
+        }
+        showToast(`Boss defeated! +${gold} gold, +${crystals} crystals`, 'success');
+        updateResources();
+      }
+      return;
+    }
+    // Regular enemy flow
     if (this.currentEnemy) {
       // Only update highestDamageDealt if damage is greater than the current value
       if (damage > statistics.highestDamageDealt) {
@@ -135,19 +156,30 @@ class Game {
     this.gameStarted = !this.gameStarted;
 
     if (this.gameStarted) {
+      // On starting combat, choose the appropriate enemy/boss
+      if (game.activeRegion === 'arena' && game.currentBoss) {
+        this.currentEnemy = game.currentBoss;
+      } else {
+        this.currentEnemy = new Enemy(this.stage);
+      }
       this.currentEnemy.lastAttack = Date.now();
-      // When the game starts, reset life and update resources
+      // Reset life and update resources
       this.resetAllLife();
-      updateResources(); // Pass game here
+      updateResources();
     } else {
       // Stop all active buffs when combat ends
       skillTree.stopAllBuffs();
       updateBuffIndicators();
 
-      this.stage = hero.startingStage; // Reset stage
+      // Reset stage and enemy for Explore mode
+      this.stage = hero.startingStage;
       updateStageUI();
-      updateStatsAndAttributesUI(); // Update stats and attributes UI when start/stop game
-      this.currentEnemy = new Enemy(this.stage);
+      updateStatsAndAttributesUI();
+      if (game.activeRegion === 'arena' && game.currentBoss) {
+        this.currentEnemy = game.currentBoss;
+      } else {
+        this.currentEnemy = new Enemy(this.stage);
+      }
 
       hero.stats.currentLife = hero.stats.life; // Reset player life
       hero.stats.currentMana = hero.stats.mana; // Reset player mana
@@ -167,6 +199,7 @@ class Game {
       inventory: inventory,
       statistics: statistics,
       quests: quests,
+      boss: boss,
     };
     localStorage.setItem('gameProgress', JSON.stringify(saveData));
   }

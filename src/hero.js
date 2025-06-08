@@ -62,10 +62,6 @@ export default class Hero {
     return 66 + 84 * (this.level - 1);
   }
 
-  gainSoul(amount) {
-    this.souls += amount;
-  }
-
   gainExp(amount) {
     this.exp += amount;
     while (this.exp >= this.getExpToNextLevel()) {
@@ -81,6 +77,11 @@ export default class Hero {
   gainCrystals(amount) {
     statistics.increment('totalCrystalsEarned', null, amount);
     this.crystals += amount;
+  }
+
+  gainSouls(amount) {
+    statistics.increment('totalSoulsEarned', null, amount);
+    this.souls += amount;
   }
   levelUp() {
     this.exp -= this.getExpToNextLevel();
@@ -255,9 +256,7 @@ export default class Hero {
     // Apply percent bonuses to all stats that have them
     for (const stat in STATS) {
       if (!stat.endsWith('Percent')) {
-        // Souls bonus only applies to damage
         let percent = percentBonuses[stat + 'Percent'] || 0;
-        if (stat === 'damage') percent += this.souls * 0.01;
 
         // Use Math.floor for integer stats, Number.toFixed for decimals
         let value = flatValues[stat];

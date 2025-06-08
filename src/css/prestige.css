@@ -56,7 +56,6 @@
   margin-bottom: 20px;
 }
 
-.damage-display,
 .souls-display,
 .earned-souls-display {
   background: #1f2937;
@@ -83,7 +82,6 @@
   background: #647081;
 }
 
-.damage-display h3,
 .souls-display h3,
 .earned-souls-display h3 {
   margin: 0;

@@ -19,10 +19,12 @@ import Statistics from './statistics.js';
 import QuestTracker from './quest.js';
 import { QUEST_DEFINITIONS } from './constants/quests.js';
 import { apiFetch, loadGameData, saveGameData } from './api.js';
-import { game, hero, inventory, training, skillTree, prestige, statistics, setGlobals } from './globals.js';
+import { game, hero, inventory, training, skillTree, prestige, statistics, setGlobals, soulShop } from './globals.js';
 import { initializeRegionSystem, updateRegionUI } from './region.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 import { ENEMY_LIST } from './constants/enemies.js';
+import Boss from './boss.js';
+import SoulShop from './soulShop.js';
 
 window.qwe = console.log;
 window.qw = console.log;
@@ -43,6 +45,8 @@ export let dev = false;
   const _training = new Training(savedData?.training);
   const _statistics = new Statistics(savedData?.statistics);
   const _quests = new QuestTracker(QUEST_DEFINITIONS, savedData?.quests);
+  const _boss = new Boss(savedData?.boss);
+  const _soulShop = new SoulShop(savedData?.soulShop);
 
   setGlobals({
     game: _game,
@@ -53,12 +57,15 @@ export let dev = false;
     prestige: _prestige,
     statistics: _statistics,
     quests: _quests,
+    boss: _boss,
+    soulShop: _soulShop,
   });
 
   game.stage = hero?.startingStage || 1;
 
   initializeUI();
   prestige.initializePrestigeUI();
+  soulShop.initializeSoulShopUI();
   statistics.initializeStatisticsUI();
   initializeSkillTreeUI();
 
@@ -181,17 +188,15 @@ export let dev = false;
           day: 'numeric',
           hour: '2-digit',
           minute: '2-digit',
-          second: '2-digit',
-          timeZoneName: 'short',
         };
         return date.toLocaleString(undefined, options);
       };
       if (cloudInfo && (cloudInfo.exp !== localHero.exp || cloudInfo.gold !== localHero.gold)) {
-        statusMsg = `Local !== Cloud (Last cloud save: ${formatDateWithTimezone(updatedAt)})`;
+        statusMsg = `Last save: ${formatDateWithTimezone(updatedAt)}`;
       } else if (updatedAt) {
-        statusMsg = `Last cloud save: ${formatDateWithTimezone(updatedAt)}`;
+        statusMsg = `Last save: ${formatDateWithTimezone(updatedAt)}`;
       } else if (!updatedAt) {
-        statusMsg = 'Ready to save to cloud';
+        statusMsg = 'Ready to save';
       }
 
       cloudSaveStatus.textContent = statusMsg;

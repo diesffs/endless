@@ -4,6 +4,8 @@ import { showConfirmDialog } from './ui/ui.js';
 
 export default class Statistics {
   constructor(savedData = null) {
+    /** Bosses defeated count */
+    this.bossesKilled = 0;
     this.enemiesKilled = {
       total: 0,
       normal: 0,
@@ -14,6 +16,8 @@ export default class Statistics {
     };
     this.highestDamageDealt = 0;
     this.totalGoldEarned = 0;
+    this.totalCrystalsEarned = 0;
+    this.totalSoulsEarned = 0;
     this.totalItemsFound = 0;
     this.timeSinceLastPrestige = 0;
     this.totalTimePlayed = 0; // New: total time played (resets on reset)
@@ -26,6 +30,7 @@ export default class Statistics {
   }
 
   resetStatistics() {
+    this.bossesKilled = 0;
     this.enemiesKilled = {
       total: 0,
       normal: 0,
@@ -36,6 +41,8 @@ export default class Statistics {
     };
     this.highestDamageDealt = 0;
     this.totalGoldEarned = 0;
+    this.totalCrystalsEarned = 0;
+    this.totalSoulsEarned = 0;
     this.totalItemsFound = 0;
     this.timeSinceLastPrestige = 0;
     this.totalTimePlayed = 0; // Reset total time played
@@ -59,6 +66,12 @@ export default class Statistics {
   }
 
   updateStatisticsUI() {
+    // Bosses Killed
+    const bossesKilledElem = document.getElementById('stat-bosses-killed');
+    if (bossesKilledElem) {
+      bossesKilledElem.textContent = `Bosses Defeated: ${this.bossesKilled}`;
+    }
+
     // Total Time Played (resets on reset)
     const totalTime = document.getElementById('stat-total-time-played');
     if (totalTime) {
@@ -93,6 +106,18 @@ export default class Statistics {
     const totalGold = document.getElementById('stat-total-gold');
     if (totalGold) {
       totalGold.textContent = `Total Gold Earned: ${this.totalGoldEarned || 0}`;
+    }
+
+    // Total Crystals Earned
+    const totalCrystals = document.getElementById('stat-total-crystals');
+    if (totalCrystals) {
+      totalCrystals.textContent = `Total Crystals Earned: ${this.totalCrystalsEarned || 0}`;
+    }
+
+    // Total Souls Earned
+    const totalSouls = document.getElementById('stat-total-souls');
+    if (totalSouls) {
+      totalSouls.textContent = `Total Souls Earned: ${this.totalSoulsEarned || 0}`;
     }
 
     // Total Items Found

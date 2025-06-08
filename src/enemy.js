@@ -30,22 +30,6 @@ class Enemy {
     this.damage = this.calculateDamage(stage, this.rarity) * this.damageMultiplier;
     this.attackSpeed = this.calculateAttackSpeed(this.rarity);
     this.lastAttack = Date.now();
-    this.setEnemyName();
-    this.updateEnemyStats();
-
-    // Get enemy section element
-    const enemySection = document.querySelector('.enemy-section');
-
-    // Remove any existing rarity classes
-    enemySection.classList.remove(
-      ENEMY_RARITY.NORMAL.color,
-      ENEMY_RARITY.RARE.color,
-      ENEMY_RARITY.EPIC.color,
-      ENEMY_RARITY.LEGENDARY.color,
-      ENEMY_RARITY.MYTHIC.color
-    );
-    // Add the new color class
-    enemySection.classList.add(this.color);
   }
 
   setEnemyName() {

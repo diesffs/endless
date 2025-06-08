@@ -164,11 +164,14 @@ export default class SkillTree {
     const currentLevel = this.skills[skillId]?.level || 0;
     const cost = 1 + Math.floor(currentLevel / 50);
     const nextLevel = currentLevel + 1;
+    // Preserve active state for toggle skills
+    const wasActive = this.skills[skillId]?.active || false;
 
     this.skills[skillId] = {
       ...skill,
       level: nextLevel,
-      active: false,
+      // if toggle type, keep previous active state, else default to false
+      active: skill.type() === 'toggle' ? wasActive : false,
       slot: skill.type() !== 'passive' ? Object.keys(this.skills).length + 1 : null,
     };
 

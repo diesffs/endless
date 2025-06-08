@@ -48,7 +48,7 @@ body {
 }
 
 .game-panel,
-.character-panel {
+.combat-panel {
   background-color: var(--bg-panel);
   padding: 1rem;
   border-radius: 0.5rem;
@@ -397,7 +397,7 @@ body {
   background-color: #4d4dff;
 }
 
-.life-text,
+#enemy-life-text,
 .mana-text {
   position: absolute;
   width: 100%;
@@ -778,12 +778,10 @@ body.dev-active .game-container {
   }
 }
 
-.enemy-name-row {
-  margin-bottom: 0.25rem;
-  text-align: left;
-}
 .enemy-name {
+  text-align: left;
   margin: 0;
+  margin-bottom: 0.25rem;
   font-size: 1.2rem;
   font-weight: bold;
 }
@@ -816,4 +814,29 @@ body.dev-active .game-container {
 
 #start-btn:hover {
   background-color: #047857;
+}
+
+/* Region Tabs Styling */
+.region-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.region-tab {
+  background-color: var(--bg-element);
+  color: var(--text);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.region-tab.active {
+  background-color: var(--accent);
+}
+
+/* Region Panels */
+.region-panel {
+  /* Panels share space under tabs */
+  margin-top: 1rem;
 }

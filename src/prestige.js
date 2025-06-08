@@ -59,15 +59,8 @@ export default class Prestige {
     handleSavedData(savedData, this);
   }
 
-  calculateSouls() {
-    const souls = Math.floor(hero.highestStage / 5); // Example: 1 soul per 5 stages
-    return souls;
-  }
-
   performPrestige() {
     statistics.increment('prestigeCount', null, 1);
-
-    const earnedSouls = this.calculateSouls();
 
     // Store crystal-related values before reset
     const savedValues = {
@@ -79,9 +72,8 @@ export default class Prestige {
       },
     };
 
-    const currentSouls = hero.souls;
     hero.setBaseStats(null);
-    hero.souls += currentSouls + earnedSouls;
+    hero.souls = 0;
 
     // Reset skill tree
     skillTree.skillPoints = 0;
@@ -113,7 +105,7 @@ export default class Prestige {
 
     const startBtn = document.getElementById('start-btn');
     if (startBtn) {
-      startBtn.textContent = 'Start';
+      startBtn.textContent = 'Fight';
       startBtn.style.backgroundColor = '#059669';
     }
 
@@ -147,17 +139,8 @@ export default class Prestige {
   }
 
   async initializePrestigeUI() {
-    const earnedSouls = this.calculateSouls();
     const prestigeTab = document.querySelector('#prestige');
     if (!prestigeTab) return;
-
-    // Update existing DOM values
-    const damageDisplay = prestigeTab.querySelector('.damage-display .bonus');
-
-    if (damageDisplay) {
-      const damageBonus = Math.floor(hero.souls * 1);
-      damageDisplay.textContent = `+${damageBonus}%`;
-    }
 
     // Update crystal upgrades
     const upgradesContainer = prestigeTab.querySelector('.prestige-upgrades-container');
@@ -172,7 +155,6 @@ export default class Prestige {
     }
 
     // Setup event listeners
-    this.setupPrestigeButton();
     this.setupCrystalUpgradeHandlers();
   }
 
@@ -277,86 +259,6 @@ export default class Prestige {
     } else {
       showToast(`Need ${cost} crystals for this upgrade`, 'error');
     }
-  }
-  updateUI() {
-    const damageDisplay = document.querySelector('.damage-display');
-    const soulsDisplay = document.querySelector('.earned-souls-display .bonus');
-
-    if (damageDisplay) {
-      const damageBonus = Math.floor(hero.souls * 1);
-      const bonusText = damageDisplay.querySelector('.bonus');
-      if (bonusText) {
-        bonusText.textContent = `+${damageBonus}%`;
-      }
-
-      // Add tooltip for damageDisplay
-      damageDisplay.addEventListener('mouseenter', (e) => {
-        const tooltipContent = this.createDamageTooltip(damageBonus);
-        showTooltip(tooltipContent, e);
-      });
-      damageDisplay.addEventListener('mousemove', positionTooltip);
-      damageDisplay.addEventListener('mouseleave', hideTooltip);
-    }
-
-    if (soulsDisplay) {
-      soulsDisplay.textContent = `+${this.calculateSouls()} souls`;
-    }
-
-    const modalSoulsAmount = document.getElementById('modal-souls-amount');
-    if (modalSoulsAmount) {
-      modalSoulsAmount.textContent = `${this.calculateSouls()}`;
-    }
-  }
-
-  // to create the tooltip content
-  createDamageTooltip(damageBonus) {
-    return html`
-      <div class="tooltip-header">Damage Bonus</div>
-      <div class="tooltip-content">Each soul provides 1% total bonus damage.</div>
-    `;
-  }
-
-  setupPrestigeButton() {
-    const prestigeButton = document.getElementById('prestige-btn');
-    const modal = document.getElementById('prestige-modal');
-    const confirmButton = document.getElementById('confirm-prestige');
-    const cancelButton = document.getElementById('cancel-prestige');
-
-    if (!prestigeButton || !modal || !confirmButton || !cancelButton) {
-      return;
-    }
-
-    // Open modal on Prestige button click with level check
-    prestigeButton.onclick = () => {
-      if (hero.level < 50) {
-        showToast('Level 50 required to prestige!', 'error');
-        return;
-      }
-
-      const earnedSouls = this.calculateSouls();
-      const modalSoulsAmount = document.getElementById('modal-souls-amount');
-      if (modalSoulsAmount) {
-        modalSoulsAmount.textContent = `${earnedSouls}`;
-      }
-      modal.classList.remove('hidden');
-    };
-
-    // Confirm Prestige action
-    confirmButton.onclick = () => {
-      closeModal('prestige-modal');
-      this.performPrestige(); // Perform the prestige logic
-      this.initializePrestigeUI(); // Re-initialize UI to reflect reset
-    };
-
-    // Cancel Prestige action
-    cancelButton.onclick = () => {
-      closeModal('prestige-modal');
-    };
-
-    // Close modal when clicking outside
-    modal.onclick = (e) => {
-      if (e.target === modal) closeModal('prestige-modal');
-    };
   }
 
   hasAutoSpellCastUpgrade() {
