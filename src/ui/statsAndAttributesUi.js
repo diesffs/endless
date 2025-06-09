@@ -173,6 +173,9 @@ export function updateStatsAndAttributesUI() {
           el.textContent = hero.stats.manaRegen.toFixed(STATS.manaRegen.decimalPlaces).replace(/\./g, ',');
         } else if (key === 'blockChance') {
           el.textContent = hero.stats.blockChance.toFixed(STATS.blockChance.decimalPlaces).replace(/\./g, ',') + '%';
+        } else if (key === 'bonusGoldPercent') {
+          el.textContent =
+            (hero.stats.bonusGoldPercent * 100).toFixed(STATS.bonusGoldPercent.decimalPlaces).replace(/\./g, ',') + '%';
         } else {
           el.textContent = hero.stats[key];
         }

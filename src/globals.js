@@ -7,7 +7,6 @@ export let skillTree = null;
 export let prestige = null;
 export let statistics = null;
 export let quests = null; // Export quests tracker
-export let boss = null; // Export boss tracker
 export let soulShop = null;
 
 // Setters for initialization in main.js
@@ -20,7 +19,6 @@ export function setGlobals({
   prestige: p,
   statistics: stat,
   quests: q,
-  boss: b,
   soulShop: ss,
 }) {
   game = g;
@@ -31,6 +29,5 @@ export function setGlobals({
   prestige = p;
   statistics = stat;
   quests = q;
-  boss = b;
   soulShop = ss;
 }

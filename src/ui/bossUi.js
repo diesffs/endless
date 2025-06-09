@@ -1,15 +1,15 @@
 import Boss from '../boss.js';
+import { hero } from '../globals.js';
 
 /**
  * Handle boss instantiation and display.
  * @param {Object} game Global game instance.
- * @param {number} level Boss level to load.
  */
 export function selectBoss(game) {
-  game.currentEnemy = new Boss(3); // change to actual level
+  game.currentEnemy = new Boss();
   updateBossUI(game.currentEnemy);
   const display = document.getElementById('stage-display');
-  if (display) display.textContent = `Boss Level: ${game.currentEnemy.level}`;
+  if (display) display.textContent = `Boss Level: ${hero.bossLevel}`;
 }
 
 /**
@@ -28,7 +28,7 @@ export function updateBossUI(boss) {
   }
 
   // Name
-  const nameElem = document.querySelector('#arena-panel .boss-name');
+  const nameElem = document.querySelector('#arena-panel .enemy-name');
   if (nameElem) nameElem.textContent = boss.name;
 
   // Life bar
@@ -36,9 +36,13 @@ export function updateBossUI(boss) {
   if (lifeFill) lifeFill.style.width = `${boss.getLifePercent()}%`;
 
   const lifeText = document.querySelector('#arena-panel #enemy-life-text');
-  if (lifeText) lifeText.textContent = `${boss.currentLife}/${boss.life}`;
+  if (lifeText) {
+    const currentLife = Math.floor(boss.currentLife);
+    const totalLife = Math.floor(boss.life);
+    lifeText.textContent = `${currentLife}/${totalLife}`;
+  }
 
   // Damage value
   const dmgVal = document.querySelector('#arena-panel #enemy-damage-value');
-  if (dmgVal) dmgVal.textContent = boss.damage;
+  if (dmgVal) dmgVal.textContent = Math.floor(boss.damage);
 }

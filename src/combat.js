@@ -122,11 +122,17 @@ export function playerDeath() {
     }
   }
 
-  // Reset everything regardless of continue state
-  game.stage = hero.startingStage;
-  updateStageUI();
-  game.currentEnemy = new Enemy(game.stage);
-  game.resetAllLife();
+  if (game.activeRegion === 'arena') {
+    // If in arena, reset boss state
+    game.currentEnemy.resetLife();
+    updateBossUI(game.currentEnemy);
+  } else if (game.activeRegion === 'explore') {
+    // Reset everything regardless of continue state
+    game.stage = hero.startingStage;
+    updateStageUI();
+    game.currentEnemy = new Enemy(game.stage);
+    game.resetAllLife();
+  }
 
   // Update all UI elements
   updatePlayerLife();
@@ -152,53 +158,71 @@ export function playerDeath() {
 
 export function defeatEnemy() {
   const enemy = game.currentEnemy;
-  const rarityData = ENEMY_RARITY[enemy.rarity] || {};
-  // const droppedItem = dropLoot(enemy);
+  let baseExpGained = 1; // overwritten
+  let baseGoldGained = 1; // overwritten
 
-  const baseExpGained = Math.floor(10 + game.stage * 2.25);
-  const baseGoldGained = 10 + game.stage * 4;
+  if (game.activeRegion === 'arena') {
+    baseExpGained = Math.floor(10 + hero.bossLevel * 2.25);
+    baseGoldGained = 10 + hero.bossLevel * 4;
+
+    const { crystals, gold, materials, souls } = this.currentEnemy.reward;
+    if (gold) hero.gainGold(gold);
+    if (crystals) hero.gainCrystals(crystals);
+    if (souls) hero.gainSouls(souls + Math.floor(hero.bossLevel * 0.1)); // +10% per boss level
+    if (materials && materials.length) {
+      materials.forEach(({ id, qty }) => inventory.addMaterial({ id, qty }));
+    }
+    showToast(`Boss defeated! +${gold} gold, +${crystals} crystals`, 'success');
+    hero.bossLevel++;
+    updateResources();
+  } else if (game.activeRegion === 'explore') {
+    baseExpGained = Math.floor(10 + game.stage * 2.25);
+    baseGoldGained = 10 + game.stage * 4;
+
+    if (enemy.rollForDrop()) {
+      const itemLevel = enemy.calculateItemLevel(game.stage);
+      const itemType = enemy.getRandomItemType();
+      const newItem = inventory.createItem(itemType, itemLevel);
+      inventory.addItemToInventory(newItem);
+
+      showLootNotification(newItem);
+    }
+    // Drop material (new, separate chance)
+    const materialDropRolls = Math.floor(game.stage / 30) + 1;
+    if (enemy.rollForMaterialDrop) {
+      for (let i = 0; i < materialDropRolls; i++) {
+        if (enemy.rollForMaterialDrop()) {
+          const mat = inventory.getRandomMaterial();
+          inventory.addMaterial({ id: mat.id, icon: mat.icon, qty: 1 });
+          showMaterialNotification(mat);
+        }
+      }
+    }
+
+    game.incrementStage();
+    game.currentEnemy = new Enemy(game.stage);
+
+    statistics.increment('enemiesKilled', 'total');
+    statistics.increment('enemiesKilled', enemy.rarity.toLowerCase());
+  }
+  // END EXPLORE REGION
+
+  // empty object when vs boss
+  const rarityData = ENEMY_RARITY[enemy.rarity] || {};
 
   // Apply bonus experience and gold (include region multipliers)
   const expGained = Math.floor(
     baseExpGained * (1 + hero.stats.bonusExperience / 100) * (enemy.xpMultiplier || 1) * (rarityData.xpBonus || 1)
   );
   const goldGained = Math.floor(
-    baseGoldGained * (1 + hero.stats.bonusGold / 100) * (enemy.goldMultiplier || 1) * (rarityData.goldBonus || 1)
+    baseGoldGained * (1 + hero.stats.bonusGoldPercent / 100) * (enemy.goldMultiplier || 1) * (rarityData.goldBonus || 1)
   );
 
   hero.gainGold(goldGained);
   hero.gainExp(expGained);
 
-  if (enemy.rollForDrop()) {
-    const itemLevel = enemy.calculateItemLevel(game.stage);
-    const itemType = enemy.getRandomItemType();
-    const newItem = inventory.createItem(itemType, itemLevel);
-    inventory.addItemToInventory(newItem);
-
-    showLootNotification(newItem);
-  }
-  // Drop material (new, separate chance)
-  const materialDropRolls = Math.floor(game.stage / 30) + 1;
-  if (enemy.rollForMaterialDrop) {
-    for (let i = 0; i < materialDropRolls; i++) {
-      if (enemy.rollForMaterialDrop()) {
-        const mat = inventory.getRandomMaterial();
-        inventory.addMaterial({ id: mat.id, icon: mat.icon, qty: 1 });
-        showMaterialNotification(mat);
-      }
-    }
-  }
-
-  game.incrementStage();
-  game.currentEnemy = new Enemy(game.stage);
-
-  enemy.setEnemyName();
-  enemy.setEnemyColor();
-
   game.currentEnemy.lastAttack = Date.now();
 
-  statistics.increment('enemiesKilled', 'total');
-  statistics.increment('enemiesKilled', enemy.rarity.toLowerCase());
   updateQuestsUI();
 
   // Update tab indicators for new items/materials dropped

@@ -1,0 +1,55 @@
+/* Soul Shop Styles */
+.soulshop-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 0;
+}
+.soul-shop-upgrades-container {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+}
+.crystal-upgrades-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+  width: 100%;
+}
+.crystal-upgrade-btn {
+  background: #23272e;
+  border: 2px solid #444;
+  border-radius: 8px;
+  color: #fff;
+  padding: 1.2rem 1rem;
+  font-size: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s, border 0.2s;
+}
+.crystal-upgrade-btn.purchased {
+  background: #222a;
+  border-color: #888;
+  color: #aaa;
+  cursor: not-allowed;
+}
+.crystal-upgrade-btn:hover:not(.purchased) {
+  background: #2d3748;
+  border-color: #fbbf24;
+}
+.upgrade-name {
+  font-weight: bold;
+  font-size: 1.15rem;
+}
+.upgrade-bonus {
+  color: #10b981;
+  font-size: 1rem;
+}
+.upgrade-cost {
+  color: #fbbf24;
+  font-size: 1rem;
+  font-weight: bold;
+}

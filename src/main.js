@@ -23,7 +23,6 @@ import { game, hero, inventory, training, skillTree, prestige, statistics, setGl
 import { initializeRegionSystem, updateRegionUI } from './region.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 import { ENEMY_LIST } from './constants/enemies.js';
-import Boss from './boss.js';
 import SoulShop from './soulShop.js';
 
 window.qwe = console.log;
@@ -45,7 +44,6 @@ export let dev = false;
   const _training = new Training(savedData?.training);
   const _statistics = new Statistics(savedData?.statistics);
   const _quests = new QuestTracker(QUEST_DEFINITIONS, savedData?.quests);
-  const _boss = new Boss(savedData?.boss);
   const _soulShop = new SoulShop(savedData?.soulShop);
 
   setGlobals({
@@ -57,7 +55,6 @@ export let dev = false;
     prestige: _prestige,
     statistics: _statistics,
     quests: _quests,
-    boss: _boss,
     soulShop: _soulShop,
   });
 

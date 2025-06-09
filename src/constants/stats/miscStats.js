@@ -115,7 +115,7 @@ export const MISC_STATS = {
     itemTags: ['misc', 'jewelry'],
   },
   // BONUS GOLD
-  bonusGold: {
+  bonusGoldPercent: {
     base: 0,
     decimalPlaces: 0,
     item: { min: 5, max: 15, scaling: 'capped' },

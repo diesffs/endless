@@ -176,7 +176,7 @@ export const ROGUE_SKILLS = {
       dexterity: level * 10,
       strength: level * 20,
       wisdom: level * 10,
-      bonusGold: level * 1,
+      bonusGoldPercent: level * 1,
     }),
   },
 };

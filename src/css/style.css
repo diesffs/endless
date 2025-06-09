@@ -161,6 +161,7 @@ body {
 }
 
 .enemy-main-row {
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: stretch;
@@ -717,7 +718,7 @@ body {
 
 .enemy-damage {
   position: absolute;
-  bottom: 10px;
+  bottom: 0px;
   right: 0;
   padding: 15px;
 }

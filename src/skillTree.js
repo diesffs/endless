@@ -454,8 +454,6 @@ export default class SkillTree {
   }
 
   autoCastEligibleSkills() {
-    // Only run if prestige.hasAutoSpellCastUpgrade() is true
-    if (!prestige.hasAutoSpellCastUpgrade()) return;
     if (!game.gameStarted) return;
     Object.entries(this.skills).forEach(([skillId, skillData]) => {
       const skill = SKILL_TREES[this.selectedPath?.name]?.[skillId];

@@ -1,5 +1,5 @@
 import { initializeSkillTreeStructure, updatePlayerLife, updateTabIndicators } from './ui/ui.js';
-import { game, inventory, training, skillTree, statistics } from './globals.js';
+import { game, inventory, training, skillTree, statistics, soulShop } from './globals.js';
 import { createCombatText } from './combat.js';
 import { handleSavedData } from './functions.js';
 import { updateRegionUI } from './region.js';
@@ -7,6 +7,7 @@ import { STATS } from './constants/stats/stats.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 import { ATTRIBUTES } from './constants/stats/attributes.js';
 import { ELEMENT_OPPOSITES } from './constants/enemies.js';
+import { SOUL_UPGRADE_CONFIG } from './soulShop.js';
 
 export const STATS_ON_LEVEL_UP = 3;
 export default class Hero {
@@ -23,6 +24,7 @@ export default class Hero {
     this.statPoints = 0;
     this.souls = 0;
     this.highestStage = 1;
+    this.bossLevel = 1;
 
     this.startingStage = 1;
 
@@ -237,7 +239,7 @@ export default class Hero {
 
   calculatePercentBonuses(attributeEffects, skillTreeBonuses, equipmentBonuses, trainingBonuses) {
     const percentBonuses = {};
-
+    // Add all standard percent bonuses
     for (const stat in STATS) {
       if (stat.endsWith('Percent')) {
         percentBonuses[stat] =
@@ -246,6 +248,23 @@ export default class Hero {
           (skillTreeBonuses[stat] || 0) / 100 +
           (equipmentBonuses[stat] || 0) / 100 +
           (trainingBonuses[stat] || 0) / 100;
+      }
+    }
+    // Soul Shop bonuses (handled like other sources)
+    if (soulShop && soulShop.soulUpgrades) {
+      const upgrades = soulShop.soulUpgrades;
+      const config = SOUL_UPGRADE_CONFIG;
+
+      for (const [upgradeKey, upgradeConfig] of Object.entries(config)) {
+        if (
+          upgradeConfig &&
+          typeof upgradeConfig.bonus === 'number' &&
+          typeof upgradeConfig.stat === 'string' &&
+          upgrades[upgradeKey]
+        ) {
+          percentBonuses[upgradeConfig.stat] =
+            (percentBonuses[upgradeConfig.stat] || 0) + upgrades[upgradeKey] * upgradeConfig.bonus;
+        }
       }
     }
 

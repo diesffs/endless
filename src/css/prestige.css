@@ -44,10 +44,6 @@
   cursor: default;
 }
 
-.prestige-container {
-  padding: 20px;
-}
-
 .prestige-header {
   display: flex;
   justify-content: space-around;

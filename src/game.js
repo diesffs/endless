@@ -8,7 +8,7 @@ import {
   initializeSkillTreeUI,
 } from './ui/ui.js';
 import { playerAttack, enemyAttack, playerDeath, defeatEnemy } from './combat.js';
-import { game, hero, inventory, prestige, training, skillTree, statistics, quests, boss } from './globals.js';
+import { game, hero, inventory, prestige, training, skillTree, statistics, quests, soulShop } from './globals.js';
 import Enemy from './enemy.js';
 import { ITEM_SLOTS, MATERIALS_SLOTS } from './inventory.js';
 import { updateInventoryGrid } from './ui/inventoryUi.js';
@@ -73,17 +73,6 @@ class Game {
       updateEnemyStats();
       // Refresh boss UI
       updateBossUI(this.currentEnemy);
-      if (isDead) {
-        // Apply boss rewards
-        const { crystals, gold, materials } = this.currentEnemy.reward;
-        if (gold) hero.gainGold(gold);
-        if (crystals) hero.gainCrystals(crystals);
-        if (materials && materials.length) {
-          materials.forEach(({ id, qty }) => inventory.addMaterial({ id, qty }));
-        }
-        showToast(`Boss defeated! +${gold} gold, +${crystals} crystals`, 'success');
-        updateResources();
-      }
       return;
     }
     // Regular enemy flow
@@ -156,16 +145,11 @@ class Game {
     this.gameStarted = !this.gameStarted;
 
     if (this.gameStarted) {
-      // On starting combat, choose the appropriate enemy/boss
-      if (game.activeRegion === 'arena' && game.currentEnemy) {
-        this.currentEnemy = game.currentEnemy;
-      } else {
-        this.currentEnemy = new Enemy(this.stage);
-      }
       this.currentEnemy.lastAttack = Date.now();
       // Reset life and update resources
       this.resetAllLife();
       updateResources();
+      updateEnemyStats();
     } else {
       // Stop all active buffs when combat ends
       skillTree.stopAllBuffs();
@@ -199,7 +183,7 @@ class Game {
       inventory: inventory,
       statistics: statistics,
       quests: quests,
-      boss: boss,
+      soulShop: soulShop,
     };
     localStorage.setItem('gameProgress', JSON.stringify(saveData));
   }

@@ -77,8 +77,6 @@ export function initializeUI() {
   document.querySelectorAll('.region-tab').forEach((btn) => {
     btn.addEventListener('click', async () => {
       const region = btn.dataset.region;
-      // Track active region for cost and logic
-      game.activeRegion = region;
       const confirmed = await showConfirmDialog(
         `Are you sure you want to change to ${region}? That will reset your stage progress and will find you a new enemy`
       );
@@ -87,6 +85,8 @@ export function initializeUI() {
       if (game.gameStarted) {
         toggleGame(); // Stop the game if it's running
       }
+
+      game.activeRegion = region;
 
       // find new enemy/boss based on region
       if (game.activeRegion === 'explore') {
@@ -181,6 +181,12 @@ export function updateEnemyStats() {
 
   const dmg = document.getElementById('enemy-damage-value');
   if (dmg) dmg.textContent = Math.floor(enemy.damage);
+  if (game.activeRegion === 'arena') {
+    // Update boss UI ?
+  } else if (game.activeRegion === 'explore') {
+    game.currentEnemy.setEnemyColor();
+    game.currentEnemy.setEnemyName();
+  }
 }
 
 /**
@@ -409,7 +415,7 @@ export const formatStatName = (stat) => {
   if (stat === 'elementalDamagePercent') return 'Elemental Damage %';
   if (stat === 'lifeRegen') return 'Life Regeneration';
   if (stat === 'manaRegen') return 'Mana Regeneration';
-  if (stat === 'bonusGold') return 'Bonus Gold';
+  if (stat === 'bonusGoldPercent') return 'Bonus Gold';
   if (stat === 'bonusExperience') return 'Bonus Experience';
   if (stat === 'blockChance') return 'Block Chance';
   if (stat === 'fireDamage') return 'Fire Damage';
@@ -526,13 +532,6 @@ function renderRegionPanel(region) {
     </div>`;
 
     container.appendChild(panel);
-
-    // Initialize enemy instance
-    const enemy = game.currentEnemy;
-    console.log(enemy);
-
-    enemy.setEnemyColor();
-    enemy.setEnemyName();
 
     // Initialize enemy UI values
     updateEnemyStats();
