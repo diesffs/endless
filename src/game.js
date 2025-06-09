@@ -1,6 +1,6 @@
 import {
   updatePlayerLife,
-  updateEnemyLife,
+  updateEnemyStats,
   updateStageUI,
   updateResources,
   updateBuffIndicators,
@@ -67,15 +67,15 @@ class Game {
   }
 
   damageEnemy(damage) {
-    if (game.activeRegion === 'arena' && this.currentBoss) {
+    if (game.activeRegion === 'arena' && this.currentEnemy) {
       // Boss damage flow
-      const isDead = this.currentBoss.takeDamage(damage);
-      updateEnemyLife();
+      const isDead = this.currentEnemy.takeDamage(damage);
+      updateEnemyStats();
       // Refresh boss UI
-      updateBossUI(this.currentBoss);
+      updateBossUI(this.currentEnemy);
       if (isDead) {
         // Apply boss rewards
-        const { crystals, gold, materials } = this.currentBoss.reward;
+        const { crystals, gold, materials } = this.currentEnemy.reward;
         if (gold) hero.gainGold(gold);
         if (crystals) hero.gainCrystals(crystals);
         if (materials && materials.length) {
@@ -94,7 +94,7 @@ class Game {
       }
       this.currentEnemy.currentLife -= damage;
       if (this.currentEnemy.currentLife < 0) this.currentEnemy.currentLife = 0;
-      updateEnemyLife();
+      updateEnemyStats();
 
       if (this.currentEnemy.currentLife <= 0) {
         defeatEnemy();
@@ -107,7 +107,7 @@ class Game {
     hero.stats.currentMana = hero.stats.mana;
     updatePlayerLife();
     this.currentEnemy.resetLife();
-    updateEnemyLife();
+    updateEnemyStats();
 
     // Reset combat timers
     const currentTime = Date.now();
@@ -157,8 +157,8 @@ class Game {
 
     if (this.gameStarted) {
       // On starting combat, choose the appropriate enemy/boss
-      if (game.activeRegion === 'arena' && game.currentBoss) {
-        this.currentEnemy = game.currentBoss;
+      if (game.activeRegion === 'arena' && game.currentEnemy) {
+        this.currentEnemy = game.currentEnemy;
       } else {
         this.currentEnemy = new Enemy(this.stage);
       }
@@ -175,8 +175,8 @@ class Game {
       this.stage = hero.startingStage;
       updateStageUI();
       updateStatsAndAttributesUI();
-      if (game.activeRegion === 'arena' && game.currentBoss) {
-        this.currentEnemy = game.currentBoss;
+      if (game.activeRegion === 'arena' && game.currentEnemy) {
+        this.currentEnemy = game.currentEnemy;
       } else {
         this.currentEnemy = new Enemy(this.stage);
       }
@@ -185,7 +185,7 @@ class Game {
       hero.stats.currentMana = hero.stats.mana; // Reset player mana
       this.currentEnemy.resetLife(); // Reset enemy life
       updatePlayerLife();
-      updateEnemyLife();
+      updateEnemyStats();
     }
   }
 

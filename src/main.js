@@ -4,7 +4,7 @@ import Training from './training.js';
 import {
   initializeSkillTreeUI,
   initializeUI,
-  updateEnemyLife,
+  updateEnemyStats,
   updatePlayerLife,
   updateResources,
   updateStageUI,
@@ -77,7 +77,7 @@ export let dev = false;
   updatePlayerLife();
   updateStatsAndAttributesUI();
   updateStageUI();
-  updateEnemyLife();
+  updateEnemyStats();
   updateTabIndicators();
 
   // Preload all enemy avatar images to warm browser cache

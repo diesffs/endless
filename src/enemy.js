@@ -73,13 +73,6 @@ class Enemy {
     enemySection.classList.add(this.color);
   }
 
-  updateEnemyStats() {
-    // Update the right-side stats (damage, extensible)
-    const dmg = document.getElementById('enemy-damage-value');
-    if (dmg) dmg.textContent = Math.floor(this.damage);
-    // Add more stats here as needed
-  }
-
   generateRarity() {
     const random = Math.random() * 100;
     if (random < ENEMY_RARITY.NORMAL.threshold) return ENEMY_RARITY.NORMAL.type;

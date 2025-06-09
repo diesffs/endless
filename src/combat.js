@@ -1,6 +1,6 @@
 import {
   updatePlayerLife,
-  updateEnemyLife,
+  updateEnemyStats,
   updateResources,
   updateStageUI,
   updateBuffIndicators,
@@ -47,7 +47,7 @@ export function enemyAttack(currentTime) {
         if (fireReflect > 0) {
           game.damageEnemy(fireReflect);
           createDamageNumber(fireReflect, false);
-          updateEnemyLife();
+          updateEnemyStats();
         }
       }
 
@@ -65,15 +65,15 @@ export function playerAttack(currentTime) {
   const timeBetweenAttacks = 1000 / hero.stats.attackSpeed;
 
   // Boss combat: direct boss hits
-  if (game.activeRegion === 'arena' && game.currentBoss) {
+  if (game.activeRegion === 'arena' && game.currentEnemy) {
     if (currentTime - game.lastPlayerAttack >= timeBetweenAttacks) {
       // Calculate if attack hits
       const hitChance = calculateHitChance(hero.stats.attackRating, game.bossLevel);
       const roll = Math.random() * 100;
       if (roll <= hitChance) {
         const { damage, isCritical } = hero.calculateTotalDamage();
-        const isDead = game.currentBoss.takeDamage(damage);
-        updateBossUI(game.currentBoss);
+        const isDead = game.currentEnemy.takeDamage(damage);
+        updateBossUI(game.currentEnemy);
         createDamageNumber(damage, false, isCritical);
         if (isDead) {
           // Rewards and toast handled in Game.damageEnemy or Boss.takeDamage
@@ -131,7 +131,7 @@ export function playerDeath() {
   // Update all UI elements
   updatePlayerLife();
   if (game.currentEnemy) {
-    updateEnemyLife();
+    updateEnemyStats();
   }
   updateResources();
   updateStatsAndAttributesUI();
@@ -194,7 +194,6 @@ export function defeatEnemy() {
 
   enemy.setEnemyName();
   enemy.setEnemyColor();
-  enemy.updateEnemyStats();
 
   game.currentEnemy.lastAttack = Date.now();
 
@@ -207,7 +206,7 @@ export function defeatEnemy() {
 
   // Continue existing UI updates
   updateResources();
-  updateEnemyLife();
+  updateEnemyStats();
   updateStatsAndAttributesUI();
 
   game.saveGame();

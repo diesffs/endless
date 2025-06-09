@@ -3,9 +3,7 @@ import { game, hero, prestige, skillTree, quests, statistics, inventory } from '
 import { updateQuestsUI } from './questUi.js';
 import { updateStatsAndAttributesUI } from './statsAndAttributesUi.js';
 import { TabIndicatorManager } from './tabIndicatorManager.js';
-import { initializeBossUI } from './bossUi.js';
-import { updateBossUI } from './bossUi.js';
-import { ENEMY_RARITY } from '../constants/enemies.js';
+import { selectBoss, updateBossUI } from './bossUi.js';
 export {
   initializeSkillTreeUI,
   initializeSkillTreeStructure,
@@ -69,8 +67,6 @@ export function initializeUI() {
     }
   });
 
-  // Initialize boss UI for Arena
-  initializeBossUI(game);
   updateStageUI();
   updateQuestsUI();
   // Set default region
@@ -90,6 +86,13 @@ export function initializeUI() {
       // Reset stage progress and enemy as if the hero died
       if (game.gameStarted) {
         toggleGame(); // Stop the game if it's running
+      }
+
+      // find new enemy/boss based on region
+      if (game.activeRegion === 'explore') {
+        game.currentEnemy = new Enemy(game.stage);
+      } else if (game.activeRegion === 'arena') {
+        selectBoss(game); // Select boss based on current level
       }
       // Toggle active tab class
       document.querySelectorAll('.region-tab').forEach((b) => b.classList.toggle('active', b === btn));
@@ -168,13 +171,16 @@ export function updatePlayerLife() {
   )}`;
 }
 
-export function updateEnemyLife() {
+export function updateEnemyStats() {
   const enemy = game.currentEnemy;
   const lifePercentage = (enemy.currentLife / enemy.life) * 100;
   document.getElementById('enemy-life-fill').style.width = `${lifePercentage}%`;
   document.getElementById('enemy-life-text').textContent = `${Math.max(0, Math.floor(enemy.currentLife))}/${Math.floor(
     enemy.life
   )}`;
+
+  const dmg = document.getElementById('enemy-damage-value');
+  if (dmg) dmg.textContent = Math.floor(enemy.damage);
 }
 
 /**
@@ -192,6 +198,11 @@ export async function toggleGame() {
 export function updateStageUI() {
   const stage = game.stage;
   const stageDisplay = document.getElementById('stage-display');
+  if (stageDisplay && game.activeRegion === 'arena') {
+    // In Arena mode, display boss level instead of stage
+    stageDisplay.textContent = `Boss Level: ${game.bossLevel}`;
+    return;
+  }
   if (stageDisplay) {
     stageDisplay.textContent = `Stage: ${stage}`;
   }
@@ -493,7 +504,7 @@ function renderRegionPanel(region) {
       </div>
     </div>`;
     container.appendChild(panel);
-    updateBossUI(game.currentBoss);
+    updateBossUI(game.currentEnemy);
   } else {
     const panel = document.createElement('div');
     panel.id = 'explore-panel';
@@ -513,13 +524,18 @@ function renderRegionPanel(region) {
         </div>
       </div>
     </div>`;
+
     container.appendChild(panel);
+
+    // Initialize enemy instance
+    const enemy = game.currentEnemy;
+    console.log(enemy);
+
+    enemy.setEnemyColor();
+    enemy.setEnemyName();
+
     // Initialize enemy UI values
-    updateEnemyLife();
+    updateEnemyStats();
     updateResources();
   }
-  const enemy = game.currentEnemy;
-  // if game mode is explore
-  enemy.setEnemyColor();
-  enemy.setEnemyName();
 }

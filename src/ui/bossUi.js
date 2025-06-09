@@ -1,26 +1,15 @@
 import Boss from '../boss.js';
-import { BOSSES } from '../constants/bosses.js';
-
-/**
- * Initialize boss UI: randomly select a boss for the Arena.
- * @param {Object} game Global game instance.
- */
-export function initializeBossUI(game) {
-  const randomIndex = Math.floor(Math.random() * BOSSES.length);
-  const level = BOSSES[randomIndex].level;
-  selectBoss(game, level);
-}
 
 /**
  * Handle boss instantiation and display.
  * @param {Object} game Global game instance.
  * @param {number} level Boss level to load.
  */
-export function selectBoss(game, level) {
-  game.currentBoss = new Boss(level);
-  updateBossUI(game.currentBoss);
+export function selectBoss(game) {
+  game.currentEnemy = new Boss(3); // change to actual level
+  updateBossUI(game.currentEnemy);
   const display = document.getElementById('stage-display');
-  if (display) display.textContent = `Boss Level: ${game.currentBoss.level}`;
+  if (display) display.textContent = `Boss Level: ${game.currentEnemy.level}`;
 }
 
 /**
