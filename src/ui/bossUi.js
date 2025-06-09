@@ -22,7 +22,15 @@ export function updateBossUI(boss) {
   if (avatar) {
     avatar.innerHTML = '';
     const img = document.createElement('img');
-    img.src = boss.image;
+
+    // Use Vite's BASE_URL if available, else fallback
+    let baseUrl = '';
+    try {
+      baseUrl = import.meta.env.BASE_URL || '';
+    } catch (e) {}
+    console.log(`Loading boss image from: ${baseUrl}${boss.image}`);
+
+    img.src = baseUrl + boss.image;
     img.alt = boss.name;
     avatar.appendChild(img);
   }
