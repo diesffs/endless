@@ -28,7 +28,6 @@ export function updateBossUI(boss) {
     try {
       baseUrl = import.meta.env.BASE_URL || '';
     } catch (e) {}
-    console.log(`Loading boss image from: ${baseUrl}${boss.image}`);
 
     img.src = baseUrl + boss.image;
     img.alt = boss.name;

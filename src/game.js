@@ -70,6 +70,10 @@ class Game {
     if (game.activeRegion === 'arena' && this.currentEnemy) {
       // Boss damage flow
       const isDead = this.currentEnemy.takeDamage(damage);
+
+      if (isDead) {
+        defeatEnemy();
+      }
       updateEnemyStats();
       // Refresh boss UI
       updateBossUI(this.currentEnemy);

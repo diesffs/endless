@@ -46,6 +46,6 @@ export const BOSSES = [
     itemDropMultiplier: 1,
     materialDropMultiplier: 1,
     materialDropWeights: {},
-    reward: { souls: 1, crystals: 5, gold: 50000, materials: [{ id: 'elixir', qty: 1 }] },
+    reward: { souls: 2, crystals: 5, gold: 50000, materials: [{ id: 'elixir', qty: 1 }] },
   },
 ];

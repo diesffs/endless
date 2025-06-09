@@ -5,6 +5,7 @@ import {
   updateStageUI,
   updateBuffIndicators,
   updateTabIndicators,
+  showToast,
 } from './ui/ui.js';
 import Enemy from './enemy.js';
 import { hero, game, inventory, prestige, statistics, skillTree } from './globals.js';
@@ -64,28 +65,6 @@ export function playerAttack(currentTime) {
   if (!game || !game.currentEnemy) return;
   const timeBetweenAttacks = 1000 / hero.stats.attackSpeed;
 
-  // Boss combat: direct boss hits
-  if (game.activeRegion === 'arena' && game.currentEnemy) {
-    if (currentTime - game.lastPlayerAttack >= timeBetweenAttacks) {
-      // Calculate if attack hits
-      const hitChance = calculateHitChance(hero.stats.attackRating, game.bossLevel);
-      const roll = Math.random() * 100;
-      if (roll <= hitChance) {
-        const { damage, isCritical } = hero.calculateTotalDamage();
-        const isDead = game.currentEnemy.takeDamage(damage);
-        updateBossUI(game.currentEnemy);
-        createDamageNumber(damage, false, isCritical);
-        if (isDead) {
-          // Rewards and toast handled in Game.damageEnemy or Boss.takeDamage
-        }
-      } else {
-        createDamageNumber('MISS', false, false, false, true);
-      }
-      game.lastPlayerAttack = currentTime;
-    }
-    return;
-  }
-
   if (currentTime - game.lastPlayerAttack >= timeBetweenAttacks) {
     if (game.currentEnemy.currentLife > 0) {
       // Calculate if attack hits
@@ -103,6 +82,9 @@ export function playerAttack(currentTime) {
         game.healPlayer(lifeStealAmount + lifePerHitAmount);
         game.damageEnemy(damage);
         createDamageNumber(damage, false, isCritical);
+      }
+      if (game.activeRegion === 'arena') {
+        updateBossUI(game.currentEnemy);
       }
     }
     game.lastPlayerAttack = currentTime;
@@ -164,15 +146,17 @@ export function defeatEnemy() {
   if (game.activeRegion === 'arena') {
     baseExpGained = Math.floor(10 + hero.bossLevel * 2.25);
     baseGoldGained = 10 + hero.bossLevel * 4;
+    console.log(`Boss defeated! Level: ${enemy}`);
+    console.log(`Boss defeated! Level: ${hero.bossLevel}, Stage: ${game.stage}`);
 
-    const { crystals, gold, materials, souls } = this.currentEnemy.reward;
+    const { crystals, gold, materials, souls } = game.currentEnemy.reward;
     if (gold) hero.gainGold(gold);
     if (crystals) hero.gainCrystals(crystals);
     if (souls) hero.gainSouls(souls + Math.floor(hero.bossLevel * 0.1)); // +10% per boss level
     if (materials && materials.length) {
       materials.forEach(({ id, qty }) => inventory.addMaterial({ id, qty }));
     }
-    showToast(`Boss defeated! +${gold} gold, +${crystals} crystals`, 'success');
+    showToast(`Boss defeated! +${gold} gold, +${crystals} crystals, +${souls} souls`, 'success');
     hero.bossLevel++;
     updateResources();
   } else if (game.activeRegion === 'explore') {
