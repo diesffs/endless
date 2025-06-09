@@ -397,6 +397,7 @@ body {
   background-color: #4d4dff;
 }
 
+.life-text,
 #enemy-life-text,
 .mana-text {
   position: absolute;

@@ -25,9 +25,9 @@ class Enemy {
 
     this.rarity = this.generateRarity();
     this.color = this.getRarityColor(this.rarity);
-    this.life = this.calculateLife(stage, this.rarity) * this.lifeMultiplier;
+    this.life = this.calculateLife(stage, this.rarity);
     this.currentLife = this.life;
-    this.damage = this.calculateDamage(stage, this.rarity) * this.damageMultiplier;
+    this.damage = this.calculateDamage(stage, this.rarity);
     this.attackSpeed = this.calculateAttackSpeed(this.rarity);
     this.lastAttack = Date.now();
   }
@@ -52,6 +52,25 @@ class Enemy {
       } catch (e) {}
       img.src = baseUrl + this.image;
     }
+  }
+
+  setEnemyColor() {
+    // Get enemy section element
+    const enemySection = document.querySelector('.enemy-section');
+    if (!enemySection) {
+      return;
+    }
+
+    // Remove any existing rarity classes
+    enemySection.classList.remove(
+      ENEMY_RARITY.NORMAL.color,
+      ENEMY_RARITY.RARE.color,
+      ENEMY_RARITY.EPIC.color,
+      ENEMY_RARITY.LEGENDARY.color,
+      ENEMY_RARITY.MYTHIC.color
+    );
+    // Add the new color class
+    enemySection.classList.add(this.color);
   }
 
   updateEnemyStats() {
@@ -99,7 +118,7 @@ class Enemy {
       [ENEMY_RARITY.MYTHIC.type]: ENEMY_RARITY.MYTHIC.lifeBonus,
     };
 
-    return baseLife * (rarityMap[rarity] || ENEMY_RARITY.NORMAL.lifeBonus);
+    return baseLife * (rarityMap[rarity] || ENEMY_RARITY.NORMAL.lifeBonus) * this.lifeMultiplier;
   }
 
   calculateDamage(stage, rarity) {
@@ -120,7 +139,7 @@ class Enemy {
       [ENEMY_RARITY.MYTHIC.type]: ENEMY_RARITY.MYTHIC.damageBonus,
     };
 
-    return baseDamage * (rarityMap[rarity] || ENEMY_RARITY.NORMAL.damageBonus);
+    return baseDamage * (rarityMap[rarity] || ENEMY_RARITY.NORMAL.damageBonus) * this.damageMultiplier;
   }
 
   calculateAttackSpeed(rarity) {

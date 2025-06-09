@@ -191,6 +191,11 @@ export function defeatEnemy() {
 
   game.incrementStage();
   game.currentEnemy = new Enemy(game.stage);
+
+  enemy.setEnemyName();
+  enemy.setEnemyColor();
+  enemy.updateEnemyStats();
+
   game.currentEnemy.lastAttack = Date.now();
 
   statistics.increment('enemiesKilled', 'total');
@@ -229,11 +234,6 @@ function showLootNotification(item) {
 }
 
 export function createDamageNumber(damage, isPlayer, isCritical = false, isBlocked = false, isMiss = false) {
-  const enemyElement = game.currentEnemy.element;
-  const elementClass = `element-${enemyElement}`;
-  const enemySection = document.querySelector('.enemy-section');
-  enemySection.classList.add(elementClass);
-
   const target = isPlayer ? '#character-avatar' : '.enemy-avatar';
   const avatar = document.querySelector(target);
   // Use parent container for positioning

@@ -182,25 +182,6 @@ export function updateEnemyLife() {
  */
 export async function toggleGame() {
   const startBtn = document.getElementById('start-btn');
-  // Handle Arena mode entry and exit
-  const isStarting = !game.gameStarted;
-  if (game.activeRegion === 'arena') {
-    if (isStarting) {
-      // Confirm spending Souls to enter Arena
-      const confirmStart = await showConfirmDialog('Spend 100 Souls to enter the Arena?');
-      if (!confirmStart) return;
-      if (hero.souls < 100) {
-        showToast('Not enough Souls to enter the Arena.', 'error');
-        return;
-      }
-      hero.souls -= 100;
-      updateResources();
-    } else {
-      // Confirm quitting Arena (Souls forfeited)
-      const confirmStop = await showConfirmDialog('Exit the Arena? You will forfeit your spent Souls.');
-      if (!confirmStop) return;
-    }
-  }
   // Toggle game loop state
   game.toggle();
   // Update button label and style
@@ -496,15 +477,21 @@ function renderRegionPanel(region) {
     const panel = document.createElement('div');
     panel.id = 'arena-panel';
     panel.classList.add('region-panel');
-    panel.innerHTML = html`
-      <div class="enemy-avatar"></div>
-      <div class="enemy-name"></div>
-      <div class="life-bar">
-        <div id="enemy-life-fill"></div>
-        <div id="enemy-life-text"></div>
+    panel.innerHTML = html`<div class="enemy-section">
+      <div class="enemy-main-row">
+        <div class="enemy-avatar"></div>
+        <div class="enemy-life-and-stats">
+          <div class="enemy-name"></div>
+          <div class="enemy-life-bar">
+            <div id="enemy-life-fill"></div>
+            <div id="enemy-life-text"></div>
+          </div>
+          <div class="enemy-stats">
+            <div class="enemy-damage">Damage: <span id="enemy-damage-value"></span></div>
+          </div>
+        </div>
       </div>
-      <div class="damage-info">Damage: <span id="enemy-damage-value"></span></div>
-    `;
+    </div>`;
     container.appendChild(panel);
     updateBossUI(game.currentBoss);
   } else {
@@ -531,22 +518,8 @@ function renderRegionPanel(region) {
     updateEnemyLife();
     updateResources();
   }
-
   const enemy = game.currentEnemy;
+  // if game mode is explore
+  enemy.setEnemyColor();
   enemy.setEnemyName();
-  enemy.updateEnemyStats();
-
-  // Get enemy section element
-  const enemySection = document.querySelector('.enemy-section');
-
-  // Remove any existing rarity classes
-  enemySection.classList.remove(
-    ENEMY_RARITY.NORMAL.color,
-    ENEMY_RARITY.RARE.color,
-    ENEMY_RARITY.EPIC.color,
-    ENEMY_RARITY.LEGENDARY.color,
-    ENEMY_RARITY.MYTHIC.color
-  );
-  // Add the new color class
-  enemySection.classList.add(enemy.color);
 }
