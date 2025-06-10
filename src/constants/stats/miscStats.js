@@ -164,4 +164,12 @@ export const MISC_STATS = {
     base: 0,
     decimalPlaces: 0,
   },
+  /**
+   * Max number of extra materials dropped per enemy kill.
+   * Only increased via Soul Shop.
+   */
+  extraMaterialDropMax: {
+    base: 1,
+    decimalPlaces: 0,
+  },
 };

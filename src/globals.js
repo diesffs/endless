@@ -4,7 +4,7 @@ export let hero = null;
 export let inventory = null;
 export let training = null;
 export let skillTree = null;
-export let prestige = null;
+export let crystalShop = null;
 export let statistics = null;
 export let quests = null; // Export quests tracker
 export let soulShop = null;
@@ -16,7 +16,7 @@ export function setGlobals({
   inventory: i,
   training: s,
   skillTree: st,
-  prestige: p,
+  crystalShop: p,
   statistics: stat,
   quests: q,
   soulShop: ss,
@@ -26,7 +26,7 @@ export function setGlobals({
   inventory = i;
   training = s;
   skillTree = st;
-  prestige = p;
+  crystalShop = p;
   statistics = stat;
   quests = q;
   soulShop = ss;

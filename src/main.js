@@ -11,7 +11,7 @@ import {
   showConfirmDialog,
   updateTabIndicators,
 } from './ui/ui.js';
-import Prestige from './prestige.js';
+import CrystalShop from './crystalShop.js';
 import Inventory from './inventory.js';
 import SkillTree from './skillTree.js';
 import { createDebugUI, createModifyUI, crypt } from './functions.js';
@@ -19,7 +19,17 @@ import Statistics from './statistics.js';
 import QuestTracker from './quest.js';
 import { QUEST_DEFINITIONS } from './constants/quests.js';
 import { apiFetch, loadGameData, saveGameData } from './api.js';
-import { game, hero, inventory, training, skillTree, prestige, statistics, setGlobals, soulShop } from './globals.js';
+import {
+  game,
+  hero,
+  inventory,
+  training,
+  skillTree,
+  crystalShop,
+  statistics,
+  setGlobals,
+  soulShop,
+} from './globals.js';
 import { initializeRegionSystem, updateRegionUI } from './region.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 import { ENEMY_LIST } from './constants/enemies.js';
@@ -40,7 +50,7 @@ export let dev = false;
   const _hero = new Hero(savedData?.hero);
   const _inventory = new Inventory(savedData?.inventory);
   const _skillTree = new SkillTree(savedData?.skillTree);
-  const _prestige = new Prestige(savedData?.prestige);
+  const _crystalShop = new CrystalShop(savedData?.crystalShop);
   const _training = new Training(savedData?.training);
   const _statistics = new Statistics(savedData?.statistics);
   const _quests = new QuestTracker(QUEST_DEFINITIONS, savedData?.quests);
@@ -52,7 +62,7 @@ export let dev = false;
     inventory: _inventory,
     training: _training,
     skillTree: _skillTree,
-    prestige: _prestige,
+    crystalShop: _crystalShop,
     statistics: _statistics,
     quests: _quests,
     soulShop: _soulShop,
@@ -61,7 +71,7 @@ export let dev = false;
   game.stage = hero?.startingStage || 1;
 
   initializeUI();
-  prestige.initializePrestigeUI();
+  crystalShop.initializeCrystalShopUI();
   soulShop.initializeSoulShopUI();
   statistics.initializeStatisticsUI();
   initializeSkillTreeUI();
@@ -229,7 +239,7 @@ export let dev = false;
       await saveGameData(
         userSession.id,
         {
-          data_json: crypt.encrypt(JSON.stringify({ hero, skillTree, prestige, training, inventory, statistics })),
+          data_json: crypt.encrypt(JSON.stringify({ hero, skillTree, crystalShop, training, inventory, statistics })),
           game_name: gameName,
         },
         userSession.token

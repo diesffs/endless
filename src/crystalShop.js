@@ -51,9 +51,15 @@ const CRYSTAL_UPGRADE_CONFIG = {
     baseCost: 10,
     multiple: true,
   },
+  resetBossLevel: {
+    label: 'Reset Boss Level',
+    bonus: 'Reset boss level to 1',
+    baseCost: 10,
+    multiple: true,
+  },
 };
 
-export default class Prestige {
+export default class CrystalShop {
   constructor(savedData = null) {
     this.crystalUpgrades = {};
     handleSavedData(savedData, this);
@@ -62,8 +68,8 @@ export default class Prestige {
     this.selectedQty = 1;
   }
 
-  performPrestige() {
-    statistics.increment('prestigeCount', null, 1);
+  performCrystalShop() {
+    statistics.increment('crystalShopCount', null, 1);
 
     const savedValues = {
       crystals: hero.crystals,
@@ -109,7 +115,7 @@ export default class Prestige {
 
     game.saveGame();
 
-    this.initializePrestigeUI();
+    this.initializeCrystalShopUI();
 
     training.updateTrainingUI('gold-upgrades');
     training.updateTrainingUI('crystal-upgrades');
@@ -130,13 +136,13 @@ export default class Prestige {
     updateResources();
     updatePlayerLife();
     game.saveGame();
-    this.initializePrestigeUI();
+    this.initializeCrystalShopUI();
   }
 
-  async initializePrestigeUI() {
-    const prestigeTab = document.querySelector('#prestige');
-    if (!prestigeTab) return;
-    const upgradesContainer = prestigeTab.querySelector('.prestige-upgrades-container');
+  async initializeCrystalShopUI() {
+    const crystalShopTab = document.querySelector('#crystalShop');
+    if (!crystalShopTab) return;
+    const upgradesContainer = crystalShopTab.querySelector('.crystalShop-upgrades-container');
     if (upgradesContainer) {
       upgradesContainer.innerHTML = `
         <div class="crystal-upgrades-grid">
@@ -194,7 +200,7 @@ export default class Prestige {
       </div>
     `;
     this.modal = createModal({
-      id: 'prestige-modal',
+      id: 'crystalShop-modal',
       className: 'training-modal hidden',
       content,
       onClose: () => this.closeModal(),
@@ -236,17 +242,26 @@ export default class Prestige {
       hero.resetAttributes();
       updateStatsAndAttributesUI();
       showToast('All attribute points have been refunded.', 'success');
+    } else if (stat === 'resetBossLevel') {
+      confirmed = await showConfirmDialog(
+        'Are you sure you want to reset your boss level to 1?<br>' +
+          `This will cost <strong>${cost} crystals</strong> and cannot be undone.`
+      );
+      if (!confirmed) return;
+      hero.crystals -= cost;
+      hero.bossLevel = 1;
+      showToast('Boss level has been reset to 1.', 'success');
     }
     updateResources();
     game.saveGame();
-    this.initializePrestigeUI();
+    this.initializeCrystalShopUI();
   }
 
   /**
    * Opens the upgrade modal or, for reset buttons, shows confirmation dialogs.
    */
   async openUpgradeModal(stat) {
-    if (stat === 'resetSkillTree' || stat === 'resetAttributes') {
+    if (stat === 'resetSkillTree' || stat === 'resetAttributes' || stat === 'resetBossLevel') {
       await this.confirmReset(stat);
       return;
     }
@@ -400,7 +415,7 @@ export default class Prestige {
       game.saveGame();
       updateResources();
       this.updateModalDetails();
-      this.initializePrestigeUI();
+      this.initializeCrystalShopUI();
       showToast(`Upgraded ${config.label} by ${count} levels!`, count > 0 ? 'success' : 'error');
       return;
     }
@@ -416,7 +431,7 @@ export default class Prestige {
       this.crystalUpgrades[stat] = true;
       game.saveGame();
       updateResources();
-      this.initializePrestigeUI();
+      this.initializeCrystalShopUI();
       this.closeModal();
       showToast(`Purchased ${config.label}!`, 'success');
       return;
@@ -428,11 +443,21 @@ export default class Prestige {
         showToast('Not enough crystals!', 'error');
         return;
       }
+      if (stat === 'resetBossLevel') {
+        hero.crystals -= cost;
+        hero.bossLevel = 1;
+        game.saveGame();
+        updateResources();
+        this.initializeCrystalShopUI();
+        this.closeModal();
+        showToast('Boss level has been reset to 1.', 'success');
+        return;
+      }
       hero.crystals -= cost;
       this.crystalUpgrades[stat] = (this.crystalUpgrades[stat] || 0) + 1;
       game.saveGame();
       updateResources();
-      this.initializePrestigeUI();
+      this.initializeCrystalShopUI();
       this.closeModal();
       showToast(`Purchased ${config.label}!`, 'success');
       return;

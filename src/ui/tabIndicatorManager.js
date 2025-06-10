@@ -162,9 +162,9 @@ export class TabIndicatorManager {
       this.clearIndicatorOnly('quests');
     }
 
-    // Training and Prestige tabs don't need indicators per requirements
+    // Training and CrystalShop tabs don't need indicators per requirements
     this.clearIndicatorOnly('training');
-    this.clearIndicatorOnly('prestige');
+    this.clearIndicatorOnly('crystalShop');
     this.clearIndicatorOnly('options');
   }
   /**

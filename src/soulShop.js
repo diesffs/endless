@@ -60,6 +60,17 @@ export const SOUL_UPGRADE_CONFIG = {
     stat: 'extraMaterialDropPercent',
     suffix: '%',
   },
+  /**
+   * Extra Material Drop Max
+   * Each level increases the maximum number of extra material drops per kill.
+   */
+  extraMaterialDropMax: {
+    label: 'Extra Material Drop Max',
+    bonus: 1, // +1 max per level
+    baseCost: 250,
+    costIncrement: 0,
+    stat: 'extraMaterialDropMax',
+  },
 };
 
 export default class SoulShop {

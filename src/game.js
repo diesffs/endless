@@ -8,7 +8,7 @@ import {
   initializeSkillTreeUI,
 } from './ui/ui.js';
 import { playerAttack, enemyAttack, playerDeath, defeatEnemy } from './combat.js';
-import { game, hero, inventory, prestige, training, skillTree, statistics, quests, soulShop } from './globals.js';
+import { game, hero, inventory, crystalShop, training, skillTree, statistics, quests, soulShop } from './globals.js';
 import Enemy from './enemy.js';
 import { ITEM_SLOTS, MATERIALS_SLOTS } from './inventory.js';
 import { updateInventoryGrid } from './ui/inventoryUi.js';
@@ -131,10 +131,10 @@ class Game {
       this.lastRegen = currentTime;
     }
 
-    // Only update Prestige UI after stage progression
+    // Only update CrystalShop UI after stage progression
     if (this.stageChanged) {
       this.stageChanged = false; // Reset flag
-      prestige.initializePrestigeUI(); // Update Prestige UI
+      crystalShop.initializeCrystalShopUI(); // Update CrystalShop UI
     }
 
     if (currentTime % 30000 < 16) {
@@ -182,7 +182,7 @@ class Game {
     const saveData = {
       hero: hero,
       skillTree: skillTree,
-      prestige: prestige,
+      crystalShop: crystalShop,
       training: training,
       inventory: inventory,
       statistics: statistics,
@@ -216,8 +216,8 @@ class Game {
     hero.souls = 0;
     hero.crystals = 0;
     hero.startingStage = 1;
-    // reset prestige upgrades
-    prestige.crystalUpgrades = {
+    // reset crystalShop upgrades
+    crystalShop.crystalUpgrades = {
       startingStage: 0,
     };
     skillTree.resetSkillTree();
@@ -230,7 +230,7 @@ class Game {
 
     soulShop.resetSoulShop(); // Reset soul shop
 
-    prestige.performPrestige(); // Use the existing functionality to reset progress
+    crystalShop.performCrystalShop(); // Use the existing functionality to reset progress
     statistics.resetStatistics();
     quests.reset();
     initializeSkillTreeUI(); // to show path selection

@@ -1,6 +1,6 @@
 import { createDamageNumber } from './combat.js';
 import { handleSavedData } from './functions.js';
-import { game, hero, prestige } from './globals.js';
+import { game, hero, crystalShop } from './globals.js';
 import { CLASS_PATHS, SKILL_TREES } from './constants/skills.js';
 import {
   showManaWarning,

@@ -44,7 +44,7 @@
   cursor: default;
 }
 
-.prestige-header {
+.crystalShop-header {
   display: flex;
   justify-content: space-around;
   width: 100%;
@@ -91,7 +91,7 @@
   font-weight: bold;
 }
 
-.prestige-upgrades {
+.crystalShop-upgrades {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;

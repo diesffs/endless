@@ -250,25 +250,31 @@ export default class Hero {
           (trainingBonuses[stat] || 0) / 100;
       }
     }
-    // Soul Shop bonuses (handled like other sources)
-    if (soulShop && soulShop.soulUpgrades) {
-      const upgrades = soulShop.soulUpgrades;
-      const config = SOUL_UPGRADE_CONFIG;
+    return percentBonuses;
+  }
 
-      for (const [upgradeKey, upgradeConfig] of Object.entries(config)) {
-        if (
-          upgradeConfig &&
-          typeof upgradeConfig.bonus === 'number' &&
-          typeof upgradeConfig.stat === 'string' &&
-          upgrades[upgradeKey]
-        ) {
-          percentBonuses[upgradeConfig.stat] =
-            (percentBonuses[upgradeConfig.stat] || 0) + upgrades[upgradeKey] * upgradeConfig.bonus;
-        }
+  /**
+   * Returns all soul shop bonuses as an object, mapping stat names to their total bonus.
+   * Handles both percent and flat bonuses.
+   * @returns {Object} soulShopBonuses
+   */
+  getSoulShopBonuses() {
+    const bonuses = {};
+    if (!soulShop || !soulShop.soulUpgrades) return bonuses;
+    const { soulUpgrades } = soulShop;
+    const config = SOUL_UPGRADE_CONFIG;
+    for (const [upgradeKey, upgradeConfig] of Object.entries(config)) {
+      if (
+        upgradeConfig &&
+        typeof upgradeConfig.bonus === 'number' &&
+        typeof upgradeConfig.stat === 'string' &&
+        soulUpgrades[upgradeKey]
+      ) {
+        bonuses[upgradeConfig.stat] =
+          (bonuses[upgradeConfig.stat] || 0) + soulUpgrades[upgradeKey] * upgradeConfig.bonus;
       }
     }
-
-    return percentBonuses;
+    return bonuses;
   }
 
   applyFinalCalculations(flatValues, percentBonuses) {
@@ -291,6 +297,14 @@ export default class Hero {
             (flatAttackSpeedBonus > 0 ? maxBonus * (1 - Math.exp(-flatAttackSpeedBonus / scale)) : 0);
         }
 
+        // Apply soul shop bonuses (flat or percent)
+        const soulShopBonuses = this.getSoulShopBonuses();
+        if (stat.endsWith('Percent')) {
+          value += soulShopBonuses[stat] || 0;
+        } else if (soulShopBonuses[stat]) {
+          value += soulShopBonuses[stat];
+        }
+
         // Apply decimal places
         const decimals = STATS[stat].decimalPlaces ?? 0;
         value = decimals > 0 ? Number(value.toFixed(decimals)) : Math.floor(value);
@@ -300,11 +314,16 @@ export default class Hero {
         if (stat === 'critChance') value = Math.min(value, 100);
         if (stat === 'attackSpeed') value = Math.min(value, 5);
         if (stat === 'resurrectionChance') value = Math.min(value, 50);
+        if (stat === 'extraMaterialDropMax') value = Math.max(value, 1); // Always at least 1
 
         this.stats[stat] = value;
       } else {
         // add percent bonuses to stats, mainly for elemental damage
-        this.stats[stat] = percentBonuses[stat] || 0;
+        let percentValue = percentBonuses[stat] || 0;
+        // Add soul shop percent bonuses
+        const soulShopBonuses = this.getSoulShopBonuses();
+        if (soulShopBonuses[stat]) percentValue += soulShopBonuses[stat];
+        this.stats[stat] = percentValue;
       }
     }
     // Special handling for elemental damages

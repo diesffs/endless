@@ -8,7 +8,7 @@ import {
   showToast,
 } from './ui/ui.js';
 import Enemy from './enemy.js';
-import { hero, game, inventory, prestige, statistics, skillTree } from './globals.js';
+import { hero, game, inventory, crystalShop, statistics, skillTree } from './globals.js';
 import { ITEM_RARITY } from './constants/items.js';
 import { ENEMY_RARITY } from './constants/enemies.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
@@ -93,7 +93,7 @@ export function playerAttack(currentTime) {
 
 // Remove any duplicate definitions and keep this single version
 export function playerDeath() {
-  const shouldContinue = prestige.crystalUpgrades.continuousPlay;
+  const shouldContinue = crystalShop.crystalUpgrades.continuousPlay;
 
   if (!shouldContinue) {
     game.gameStarted = false;
@@ -181,12 +181,13 @@ export function defeatEnemy() {
           // Extra material drop logic: each extra drop is a new random material
           const extraChance = hero.stats.extraMaterialDropPercent * 100 || 0;
           let extraRolls = 0;
+          const maxExtraRolls = hero.stats.extraMaterialDropMax;
           while (Math.random() * 100 < extraChance) {
             extraRolls++;
             const extraMat = inventory.getRandomMaterial();
             inventory.addMaterial({ id: extraMat.id, icon: extraMat.icon, qty: 1 });
             showMaterialNotification(extraMat);
-            if (extraRolls > 5) break;
+            if (extraRolls >= maxExtraRolls) break;
           }
         }
       }

@@ -19,9 +19,9 @@ export default class Statistics {
     this.totalCrystalsEarned = 0;
     this.totalSoulsEarned = 0;
     this.totalItemsFound = 0;
-    this.timeSinceLastPrestige = 0;
+    this.timeSinceLastCrystalShop = 0;
     this.totalTimePlayed = 0; // New: total time played (resets on reset)
-    this.prestigeCount = 0;
+    this.crystalShopCount = 0;
     this.highestStageReached = 0;
     this.totalTimeInFights = 0; // Track total time spent in fights
 
@@ -44,9 +44,9 @@ export default class Statistics {
     this.totalCrystalsEarned = 0;
     this.totalSoulsEarned = 0;
     this.totalItemsFound = 0;
-    this.timeSinceLastPrestige = 0;
+    this.timeSinceLastCrystalShop = 0;
     this.totalTimePlayed = 0; // Reset total time played
-    this.prestigeCount = 0;
+    this.crystalShopCount = 0;
     this.highestStageReached = 0;
     this.totalTimeInFights = 0; // Reset total time in fights
     this.updateStatisticsUI();
@@ -84,10 +84,10 @@ export default class Statistics {
     // Current Session Time Played (not reset until reload)
     const sessionTime = document.getElementById('stat-time-played');
     if (sessionTime) {
-      const seconds = Math.floor(this.timeSinceLastPrestige);
+      const seconds = Math.floor(this.timeSinceLastCrystalShop);
       const hours = Math.floor(seconds / 3600);
       const minutes = Math.floor((seconds % 3600) / 60);
-      sessionTime.textContent = `Time Since Last Prestige: ${hours}h ${minutes}m`;
+      sessionTime.textContent = `Time Since Last CrystalShop: ${hours}h ${minutes}m`;
     }
 
     // Total Enemies Killed
@@ -126,10 +126,10 @@ export default class Statistics {
       itemsFound.textContent = `Total Items Found: ${this.totalItemsFound || 0}`;
     }
 
-    // Prestige Count
-    const prestigeCount = document.getElementById('stat-prestige-count');
-    if (prestigeCount) {
-      prestigeCount.textContent = `Prestige Count: ${this.prestigeCount || 0}`;
+    // CrystalShop Count
+    const crystalShopCount = document.getElementById('stat-crystalShop-count');
+    if (crystalShopCount) {
+      crystalShopCount.textContent = `CrystalShop Count: ${this.crystalShopCount || 0}`;
     }
 
     // Highest Stage Reached
@@ -177,7 +177,7 @@ export default class Statistics {
   update() {
     const now = Date.now();
     const deltaSeconds = (now - this.lastUpdate) / 1000;
-    this.timeSinceLastPrestige += deltaSeconds;
+    this.timeSinceLastCrystalShop += deltaSeconds;
     this.totalTimePlayed += deltaSeconds;
     this.lastUpdate = now;
     this.updateStatisticsUI();
