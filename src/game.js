@@ -228,6 +228,8 @@ class Game {
     inventory.materials = new Array(MATERIALS_SLOTS).fill(null);
     updateInventoryGrid();
 
+    soulShop.resetSoulShop(); // Reset soul shop
+
     prestige.performPrestige(); // Use the existing functionality to reset progress
     statistics.resetStatistics();
     quests.reset();

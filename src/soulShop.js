@@ -69,6 +69,13 @@ export default class SoulShop {
     if (!this.modal) this.createUpgradeModal();
   }
 
+  resetSoulShop() {
+    this.soulUpgrades = {};
+    this.modal = null;
+    this.currentStat = null;
+    this.selectedQty = 1;
+  }
+
   createSoulUpgradeButton(stat, config) {
     const isOneTime = config.oneTime;
     const isMultiple = config.multiple;
