@@ -178,17 +178,14 @@ export function defeatEnemy() {
           inventory.addMaterial({ id: mat.id, icon: mat.icon, qty: 1 });
           showMaterialNotification(mat);
 
-          // Extra material drop logic
-          const extraChance = hero.stats.extraMaterialDropPercent || 0;
-          console.log(`Extra material drop chance: ${extraChance}%`);
-
+          // Extra material drop logic: each extra drop is a new random material
+          const extraChance = hero.stats.extraMaterialDropPercent * 100 || 0;
           let extraRolls = 0;
-          // Roll for extra drops, each success gives +1 material (can be more than one)
           while (Math.random() * 100 < extraChance) {
             extraRolls++;
-            inventory.addMaterial({ id: mat.id, icon: mat.icon, qty: 1 });
-            showMaterialNotification(mat);
-            // Optionally: break after N extra drops to avoid infinite loop if chance is 100%
+            const extraMat = inventory.getRandomMaterial();
+            inventory.addMaterial({ id: extraMat.id, icon: extraMat.icon, qty: 1 });
+            showMaterialNotification(extraMat);
             if (extraRolls > 5) break;
           }
         }

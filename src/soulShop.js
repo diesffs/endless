@@ -13,12 +13,19 @@ export const SOUL_UPGRADE_CONFIG = {
     baseCost: 1000,
     oneTime: true,
   },
-  bonusGoldPercent: {
+  bonusGold: {
     label: 'Bonus Gold',
     bonus: 0.05,
     baseCost: 3,
     costIncrement: 0,
-    stat: 'bonusGoldPercent',
+    stat: 'bonusGold',
+  },
+  bonusExperience: {
+    label: 'Bonus Experience',
+    bonus: 0.05,
+    baseCost: 3,
+    costIncrement: 0,
+    stat: 'bonusExperience',
   },
   damageBoost: {
     label: 'Damage Boost',
