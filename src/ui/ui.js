@@ -70,7 +70,7 @@ export function initializeUI() {
   updateStageUI();
   updateQuestsUI();
   // Set default region
-  game.activeRegion = 'explore';
+  game.fightMode = 'explore';
   // Initialize boss level for Arena mode
   game.bossLevel = game.bossLevel || 1;
   // Setup region tab switching (Explore / Arena)
@@ -86,12 +86,12 @@ export function initializeUI() {
         toggleGame(); // Stop the game if it's running
       }
 
-      game.activeRegion = region;
+      game.fightMode = region;
 
       // find new enemy/boss based on region
-      if (game.activeRegion === 'explore') {
+      if (game.fightMode === 'explore') {
         game.currentEnemy = new Enemy(game.stage);
-      } else if (game.activeRegion === 'arena') {
+      } else if (game.fightMode === 'arena') {
         selectBoss(game); // Select boss based on current level
       }
       // Toggle active tab class
@@ -105,10 +105,17 @@ export function initializeUI() {
       } else if (region === 'arena') {
         display.textContent = `Boss Level: ${hero.bossLevel}`;
       }
+      // Hide or show region-selector based on region
+      const regionSelector = document.getElementById('region-selector');
+      regionSelector.style.display = region === 'arena' ? 'none' : '';
     });
   });
-  // Render initial region panel
-  renderRegionPanel(game.activeRegion);
+  // Render initial region panel and set region-selector visibility
+  renderRegionPanel(game.fightMode);
+  const regionSelector = document.getElementById('region-selector');
+  regionSelector.style.display = game.fightMode === 'arena' ? 'none' : '';
+
+  // ...existing code...
 }
 
 export function switchTab(game, tabName) {
@@ -181,9 +188,9 @@ export function updateEnemyStats() {
 
   const dmg = document.getElementById('enemy-damage-value');
   if (dmg) dmg.textContent = Math.floor(enemy.damage);
-  if (game.activeRegion === 'arena') {
+  if (game.fightMode === 'arena') {
     // Update boss UI ?
-  } else if (game.activeRegion === 'explore') {
+  } else if (game.fightMode === 'explore') {
     game.currentEnemy.setEnemyColor();
     game.currentEnemy.setEnemyName();
   }
@@ -204,7 +211,7 @@ export async function toggleGame() {
 export function updateStageUI() {
   const stage = game.stage;
   const stageDisplay = document.getElementById('stage-display');
-  if (stageDisplay && game.activeRegion === 'arena') {
+  if (stageDisplay && game.fightMode === 'arena') {
     // In Arena mode, display boss level instead of stage
     stageDisplay.textContent = `Boss Level: ${hero.bossLevel}`;
     return;

@@ -67,7 +67,7 @@ class Game {
   }
 
   damageEnemy(damage) {
-    if (game.activeRegion === 'arena' && this.currentEnemy) {
+    if (game.fightMode === 'arena' && this.currentEnemy) {
       // Boss damage flow
       const isDead = this.currentEnemy.takeDamage(damage);
 
@@ -163,7 +163,7 @@ class Game {
       this.stage = hero.startingStage;
       updateStageUI();
       updateStatsAndAttributesUI();
-      if (game.activeRegion === 'arena' && game.currentEnemy) {
+      if (game.fightMode === 'arena' && game.currentEnemy) {
         this.currentEnemy = game.currentEnemy;
       } else {
         this.currentEnemy = new Enemy(this.stage);

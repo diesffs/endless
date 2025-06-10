@@ -83,7 +83,7 @@ export function playerAttack(currentTime) {
         game.damageEnemy(damage);
         createDamageNumber(damage, false, isCritical);
       }
-      if (game.activeRegion === 'arena') {
+      if (game.fightMode === 'arena') {
         updateBossUI(game.currentEnemy);
       }
     }
@@ -104,11 +104,11 @@ export function playerDeath() {
     }
   }
 
-  if (game.activeRegion === 'arena') {
+  if (game.fightMode === 'arena') {
     // If in arena, reset boss state
     game.currentEnemy.resetLife();
     updateBossUI(game.currentEnemy);
-  } else if (game.activeRegion === 'explore') {
+  } else if (game.fightMode === 'explore') {
     // Reset everything regardless of continue state
     game.stage = hero.startingStage;
     updateStageUI();
@@ -143,7 +143,7 @@ export function defeatEnemy() {
   let baseExpGained = 1; // overwritten
   let baseGoldGained = 1; // overwritten
 
-  if (game.activeRegion === 'arena') {
+  if (game.fightMode === 'arena') {
     baseExpGained = Math.floor(10 + hero.bossLevel * 2.25);
     baseGoldGained = 10 + hero.bossLevel * 4;
 
@@ -157,7 +157,7 @@ export function defeatEnemy() {
     showToast(`Boss defeated! +${gold} gold, +${crystals} crystals, +${souls} souls`, 'success');
     hero.bossLevel++;
     updateResources();
-  } else if (game.activeRegion === 'explore') {
+  } else if (game.fightMode === 'explore') {
     baseExpGained = Math.floor(10 + game.stage * 2.25);
     baseGoldGained = 10 + game.stage * 4;
 
