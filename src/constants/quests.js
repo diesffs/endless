@@ -8,7 +8,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Defeat 10 enemies.',
     type: 'kill',
     target: 10,
-    reward: { gold: 1000 },
+    reward: { gold: 500 },
     icon: '⚔️',
   },
   {
@@ -18,7 +18,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Defeat 50 enemies.',
     type: 'kill',
     target: 50,
-    reward: { gold: 7000 },
+    reward: { gold: 1500 },
     icon: '⚔️',
   },
   {
@@ -28,7 +28,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Defeat 250 enemies.',
     type: 'kill',
     target: 250,
-    reward: { gold: 28000 },
+    reward: { gold: 4000 },
     icon: '💥',
   },
   {
@@ -38,7 +38,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Defeat 1000 enemies.',
     type: 'kill',
     target: 1000,
-    reward: { gold: 70000, crystals: 1 },
+    reward: { gold: 10000, crystals: 1 },
     icon: '💀',
   },
   {
@@ -48,7 +48,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Defeat 2500 enemies.',
     type: 'kill',
     target: 2500,
-    reward: { gold: 100000, crystals: 4 },
+    reward: { gold: 30000, crystals: 4 },
     icon: '💀',
   },
   {
@@ -58,7 +58,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Defeat 5000 enemies.',
     type: 'kill',
     target: 5000,
-    reward: { gold: 140000, crystals: 2 },
+    reward: { gold: 60000, crystals: 2 },
     icon: '☠️',
   },
   {
@@ -68,7 +68,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Defeat 10000 enemies.',
     type: 'kill',
     target: 10000,
-    reward: { gold: 200000, crystals: 3 },
+    reward: { gold: 100000, crystals: 3 },
     icon: '☠️',
   },
   {
@@ -78,7 +78,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Defeat 25000 enemies.',
     type: 'kill',
     target: 25000,
-    reward: { gold: 500000, crystals: 5 },
+    reward: { gold: 200000, crystals: 5 },
     icon: '🌍',
   },
   {
@@ -88,7 +88,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Defeat 50000 enemies.',
     type: 'kill',
     target: 50000,
-    reward: { gold: 1000000, crystals: 8 },
+    reward: { gold: 400000, crystals: 8 },
     icon: '🌍',
   },
   {
@@ -98,7 +98,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Defeat 100000 enemies.',
     type: 'kill',
     target: 100000,
-    reward: { gold: 2000000, crystals: 12 },
+    reward: { gold: 700000, crystals: 12 },
     icon: '🌌',
   },
   {
@@ -108,7 +108,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Defeat 250000 enemies.',
     type: 'kill',
     target: 250000,
-    reward: { gold: 5000000, crystals: 20 },
+    reward: { gold: 2000000, crystals: 20 },
     icon: '🌌',
   },
   {
@@ -118,7 +118,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Defeat 500000 enemies.',
     type: 'kill',
     target: 500000,
-    reward: { gold: 10000000, crystals: 30 },
+    reward: { gold: 6000000, crystals: 30 },
     icon: '⭐',
   },
   {
@@ -128,7 +128,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Defeat 1000000 enemies.',
     type: 'kill',
     target: 1000000,
-    reward: { gold: 25000000, crystals: 50 },
+    reward: { gold: 15000000, crystals: 50 },
     icon: '⭐',
   }, // Rarity kill quests
   {
