@@ -146,8 +146,6 @@ export function defeatEnemy() {
   if (game.activeRegion === 'arena') {
     baseExpGained = Math.floor(10 + hero.bossLevel * 2.25);
     baseGoldGained = 10 + hero.bossLevel * 4;
-    console.log(`Boss defeated! Level: ${enemy}`);
-    console.log(`Boss defeated! Level: ${hero.bossLevel}, Stage: ${game.stage}`);
 
     const { crystals, gold, materials, souls } = game.currentEnemy.reward;
     if (gold) hero.gainGold(gold);

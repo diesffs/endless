@@ -1,3 +1,5 @@
+import { skillTree } from '../globals.js';
+
 // Material definitions
 export const MATERIALS = {
   EXPERIENCE_POTION: {

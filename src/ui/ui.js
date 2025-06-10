@@ -103,7 +103,7 @@ export function initializeUI() {
       if (region === 'explore') {
         display.textContent = `Stage: ${game.stage}`;
       } else if (region === 'arena') {
-        display.textContent = `Boss Level: ${game.bossLevel}`;
+        display.textContent = `Boss Level: ${hero.bossLevel}`;
       }
     });
   });
@@ -206,7 +206,7 @@ export function updateStageUI() {
   const stageDisplay = document.getElementById('stage-display');
   if (stageDisplay && game.activeRegion === 'arena') {
     // In Arena mode, display boss level instead of stage
-    stageDisplay.textContent = `Boss Level: ${game.bossLevel}`;
+    stageDisplay.textContent = `Boss Level: ${hero.bossLevel}`;
     return;
   }
   if (stageDisplay) {
