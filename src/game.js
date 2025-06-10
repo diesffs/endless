@@ -15,6 +15,7 @@ import { updateInventoryGrid } from './ui/inventoryUi.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 import { updateQuestsUI } from './ui/questUi.js';
 import { updateBossUI } from './ui/bossUi.js';
+import { updateRegionUI } from './region.js';
 
 class Game {
   constructor() {
@@ -211,32 +212,66 @@ class Game {
     localStorage.removeItem('gameProgress');
   }
 
-  resetAllProgress() {
-    hero.highestStage = 1; // needed to reset souls
-    hero.souls = 0;
-    hero.crystals = 0;
-    hero.startingStage = 1;
-    // reset crystalShop upgrades
-    crystalShop.crystalUpgrades = {
-      startingStage: 0,
-    };
-    skillTree.resetSkillTree();
+  /**
+   * Resets hero stats, stage, and enemy to initial state.
+   * Updates UI and saves the game.
+   */
+  resetCoreGameState() {
+    // Reset hero and stage-related progress
+    hero.setBaseStats(null);
 
+    game.stage = hero.startingStage;
+    game.gameStarted = false;
+    game.currentEnemy = new Enemy(game.stage);
+    game.currentEnemy.resetLife();
+
+    updateStageUI();
+    updateResources();
+    updatePlayerLife();
+    updateEnemyStats();
+  }
+
+  /**
+   * Resets all player progress, inventory, shops, skills, and statistics.
+   * Updates all relevant UI and saves the reset state.
+   */
+  resetAllProgress() {
     // Reset inventory and equipped items
     inventory.equippedItems = {};
     inventory.inventoryItems = new Array(ITEM_SLOTS).fill(null);
     inventory.materials = new Array(MATERIALS_SLOTS).fill(null);
     updateInventoryGrid();
 
-    soulShop.resetSoulShop(); // Reset soul shop
-
-    crystalShop.performCrystalShop(); // Use the existing functionality to reset progress
+    soulShop.resetSoulShop();
+    training.reset();
     statistics.resetStatistics();
     quests.reset();
-    initializeSkillTreeUI(); // to show path selection
-    showToast('All progress has been reset!');
+    crystalShop.resetCrystalShop();
+    crystalShop.initializeCrystalShopUI();
+    skillTree.resetSkillTree();
+    initializeSkillTreeUI();
+
+    // Reset core game state (stage, enemy, player stats, UI, save)
+    this.resetCoreGameState();
+    hero.recalculateFromAttributes();
+
+    // Update additional UI
+    updateStatsAndAttributesUI();
+    updateRegionUI();
     updateQuestsUI();
-    this.saveGame(); // Save the reset progress
+    training.updateTrainingUI('gold-upgrades');
+    training.updateTrainingUI('crystal-upgrades');
+    statistics.updateStatisticsUI();
+
+    // Reset start button UI
+    const startBtn = document.getElementById('start-btn');
+    if (startBtn) {
+      startBtn.textContent = 'Fight';
+      startBtn.style.backgroundColor = '#059669';
+    }
+
+    showToast('All progress has been reset!');
+    this.saveGame();
   }
 }
 

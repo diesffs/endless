@@ -1,20 +1,13 @@
-import { game, hero, training, skillTree, statistics } from './globals.js';
+import { game, hero, skillTree } from './globals.js';
 import {
-  updateStageUI,
   updateResources,
-  updatePlayerLife,
-  positionTooltip,
-  showTooltip,
-  hideTooltip,
   initializeSkillTreeUI,
   updateActionBar,
   updateSkillTreeValues,
   showConfirmDialog,
   showToast,
 } from './ui/ui.js';
-import Enemy from './enemy.js';
 import { handleSavedData } from './functions.js';
-import { updateRegionUI } from './region.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 import { createModal } from './ui/modal.js';
 
@@ -68,75 +61,8 @@ export default class CrystalShop {
     this.selectedQty = 1;
   }
 
-  performCrystalShop() {
-    statistics.increment('crystalShopCount', null, 1);
-
-    const savedValues = {
-      crystals: hero.crystals,
-      startingStage: hero.startingStage,
-      crystalUpgrades: {
-        startingStage: this.crystalUpgrades.startingStage,
-        continuousPlay: this.crystalUpgrades.continuousPlay,
-      },
-    };
-
-    hero.setBaseStats(null);
-    hero.souls = 0;
-
-    skillTree.skillPoints = 0;
-    skillTree.selectedPath = null;
-    skillTree.skills = {};
-
-    training.reset();
-
-    hero.crystals = savedValues.crystals;
-    hero.startingStage = savedValues.startingStage;
-    this.crystalUpgrades.startingStage = savedValues.crystalUpgrades.startingStage;
-    this.crystalUpgrades.continuousPlay = savedValues.crystalUpgrades.continuousPlay;
-
-    skillTree.skillPoints = 0;
-    skillTree.selectedPath = null;
-    skillTree.skills = {};
-    initializeSkillTreeUI();
-
-    this.resetGame();
-    hero.recalculateFromAttributes();
-    updateStatsAndAttributesUI();
-    updateResources();
-    updatePlayerLife();
-    updateRegionUI();
-    game.resetAllLife();
-
-    const startBtn = document.getElementById('start-btn');
-    if (startBtn) {
-      startBtn.textContent = 'Fight';
-      startBtn.style.backgroundColor = '#059669';
-    }
-
-    game.saveGame();
-
-    this.initializeCrystalShopUI();
-
-    training.updateTrainingUI('gold-upgrades');
-    training.updateTrainingUI('crystal-upgrades');
-    statistics.updateStatisticsUI();
-  }
-
-  resetGame() {
-    if (!game || typeof game.stage !== 'number') {
-      console.error('Game is not properly initialized in resetGame:', game);
-      return;
-    }
-
-    game.stage = hero.startingStage;
-    game.gameStarted = false;
-    game.currentEnemy = new Enemy(game.stage);
-    updateStageUI();
-
-    updateResources();
-    updatePlayerLife();
-    game.saveGame();
-    this.initializeCrystalShopUI();
+  resetCrystalShop() {
+    this.crystalUpgrades = {};
   }
 
   async initializeCrystalShopUI() {

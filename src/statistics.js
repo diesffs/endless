@@ -21,7 +21,6 @@ export default class Statistics {
     this.totalItemsFound = 0;
     this.timeSinceLastCrystalShop = 0;
     this.totalTimePlayed = 0; // New: total time played (resets on reset)
-    this.crystalShopCount = 0;
     this.highestStageReached = 0;
     this.totalTimeInFights = 0; // Track total time spent in fights
 
@@ -46,7 +45,6 @@ export default class Statistics {
     this.totalItemsFound = 0;
     this.timeSinceLastCrystalShop = 0;
     this.totalTimePlayed = 0; // Reset total time played
-    this.crystalShopCount = 0;
     this.highestStageReached = 0;
     this.totalTimeInFights = 0; // Reset total time in fights
     this.updateStatisticsUI();
@@ -124,12 +122,6 @@ export default class Statistics {
     const itemsFound = document.getElementById('stat-items-found');
     if (itemsFound) {
       itemsFound.textContent = `Total Items Found: ${this.totalItemsFound || 0}`;
-    }
-
-    // CrystalShop Count
-    const crystalShopCount = document.getElementById('stat-crystalShop-count');
-    if (crystalShopCount) {
-      crystalShopCount.textContent = `CrystalShop Count: ${this.crystalShopCount || 0}`;
     }
 
     // Highest Stage Reached
