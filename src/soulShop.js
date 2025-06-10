@@ -41,6 +41,18 @@ export const SOUL_UPGRADE_CONFIG = {
     costIncrement: 0,
     stat: 'manaPercent',
   },
+  /**
+   * Extra Material Drop Chance
+   * Each level increases the chance to gain an additional material drop.
+   */
+  extraMaterialDropPercent: {
+    label: 'Extra Material Drop Chance',
+    bonus: 0.01, // 1% per level
+    baseCost: 10,
+    costIncrement: 1,
+    stat: 'extraMaterialDropPercent',
+    suffix: '%',
+  },
 };
 
 export default class SoulShop {

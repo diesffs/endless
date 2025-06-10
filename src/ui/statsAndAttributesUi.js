@@ -63,7 +63,7 @@ export function updateStatsAndAttributesUI() {
       const elementalKeys = ['fireDamage', 'coldDamage', 'airDamage', 'earthDamage'];
       const collectedElementals = [];
       Object.keys(statsDef).forEach((key) => {
-        if (!statsDef[key].showInUI) return;
+        if (!statsDef[key].showInUI && key !== 'extraMaterialDropPercent') return;
         // Collect elementals separately for offense panel
         if (panel === offensePanel && elementalKeys.includes(key)) {
           collectedElementals.push(key);
@@ -77,7 +77,10 @@ export function updateStatsAndAttributesUI() {
         const span = document.createElement('span');
         span.id = `${key}-value`;
         let val = hero.stats[key];
-        if (typeof val === 'number' && statsDef[key].decimalPlaces !== undefined) {
+        // Special formatting for extraMaterialDropPercent
+        if (key === 'extraMaterialDropPercent') {
+          val = (val * 100).toFixed(1) + '%';
+        } else if (typeof val === 'number' && statsDef[key].decimalPlaces !== undefined) {
           val = val.toFixed(statsDef[key].decimalPlaces);
         }
         span.textContent = val;
@@ -176,6 +179,8 @@ export function updateStatsAndAttributesUI() {
         } else if (key === 'bonusGoldPercent') {
           el.textContent =
             (hero.stats.bonusGoldPercent * 100).toFixed(STATS.bonusGoldPercent.decimalPlaces).replace(/\./g, ',') + '%';
+        } else if (key === 'extraMaterialDropPercent') {
+          el.textContent = (hero.stats.extraMaterialDropPercent * 100).toFixed(1) + '%';
         } else {
           el.textContent = hero.stats[key];
         }

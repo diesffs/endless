@@ -156,4 +156,12 @@ export const MISC_STATS = {
     decimalPlaces: 0,
     showInUI: true,
   },
+  /**
+   * Chance (%) to drop extra materials on enemy kill.
+   * Only increased via Soul Shop.
+   */
+  extraMaterialDropPercent: {
+    base: 0,
+    decimalPlaces: 0,
+  },
 };

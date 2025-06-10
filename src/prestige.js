@@ -26,7 +26,6 @@ const CRYSTAL_UPGRADE_CONFIG = {
     bonus: 1,
     baseCost: 2,
     costIncrement: 0,
-    // Not oneTime or multiple:true, so treat as multi-level upgrade
   },
   continuousPlay: {
     label: 'Continuous Play',
@@ -66,7 +65,6 @@ export default class Prestige {
   performPrestige() {
     statistics.increment('prestigeCount', null, 1);
 
-    // Store crystal-related values before reset
     const savedValues = {
       crystals: hero.crystals,
       startingStage: hero.startingStage,
@@ -79,31 +77,27 @@ export default class Prestige {
     hero.setBaseStats(null);
     hero.souls = 0;
 
-    // Reset skill tree
     skillTree.skillPoints = 0;
     skillTree.selectedPath = null;
     skillTree.skills = {};
 
-    // reset training
     training.reset();
 
-    // Restore crystal-related values
     hero.crystals = savedValues.crystals;
     hero.startingStage = savedValues.startingStage;
     this.crystalUpgrades.startingStage = savedValues.crystalUpgrades.startingStage;
     this.crystalUpgrades.continuousPlay = savedValues.crystalUpgrades.continuousPlay;
 
-    // Reset skill tree
     skillTree.skillPoints = 0;
     skillTree.selectedPath = null;
     skillTree.skills = {};
-    initializeSkillTreeUI(); // to show path selection
+    initializeSkillTreeUI();
 
     this.resetGame();
     hero.recalculateFromAttributes();
-    updateStatsAndAttributesUI(); // Update stats and attributes UI
-    updateResources(); // Update resources UI
-    updatePlayerLife(); // Update life bar dynamically
+    updateStatsAndAttributesUI();
+    updateResources();
+    updatePlayerLife();
     updateRegionUI();
     game.resetAllLife();
 
@@ -115,7 +109,7 @@ export default class Prestige {
 
     game.saveGame();
 
-    this.initializePrestigeUI(); // Ensure UI reflects reset state
+    this.initializePrestigeUI();
 
     training.updateTrainingUI('gold-upgrades');
     training.updateTrainingUI('crystal-upgrades');
@@ -133,13 +127,10 @@ export default class Prestige {
     game.currentEnemy = new Enemy(game.stage);
     updateStageUI();
 
-    // RARITY_ORDER.forEach((rarity) => inventory.salvageItemsByRarity(rarity));
-
-    // Update UI and save game
     updateResources();
     updatePlayerLife();
     game.saveGame();
-    this.initializePrestigeUI(); // Ensure UI reflects reset state
+    this.initializePrestigeUI();
   }
 
   async initializePrestigeUI() {
@@ -163,7 +154,6 @@ export default class Prestige {
     const isOneTime = config.oneTime;
     const isMultiple = config.multiple;
     let alreadyPurchased = isOneTime && this.crystalUpgrades[stat];
-    // For multiple:true, do not show level
     const level = isOneTime || isMultiple ? undefined : this.crystalUpgrades[stat] || 0;
     const bonus =
       isOneTime || isMultiple ? config.bonus : `+${config.bonus * (this.crystalUpgrades[stat] || 0)} ${config.label}`;
@@ -171,6 +161,7 @@ export default class Prestige {
       isOneTime || isMultiple
         ? config.baseCost
         : config.baseCost + (config.costIncrement || 0) * (this.crystalUpgrades[stat] || 0);
+
     return `
       <button class="crystal-upgrade-btn ${alreadyPurchased ? 'purchased' : ''}" data-stat="${stat}" ${
       alreadyPurchased ? 'disabled' : ''
@@ -212,7 +203,54 @@ export default class Prestige {
     this.modal.querySelector('.modal-buy').onclick = () => this.buyBulk(this.currentStat, this.selectedQty);
   }
 
-  openUpgradeModal(stat) {
+  /**
+   * Handle crystal‐costed resets via confirmation dialogs,
+   * instead of opening the bulk‐buy modal.
+   */
+  async confirmReset(stat) {
+    const cost = CRYSTAL_UPGRADE_CONFIG[stat].baseCost;
+    if (hero.crystals < cost) {
+      showToast(`Need ${cost} crystals for this upgrade`, 'error');
+      return;
+    }
+    let confirmed;
+    if (stat === 'resetSkillTree') {
+      confirmed = await showConfirmDialog(
+        'Are you sure you want to reset your class and refund all skill points?<br>' +
+          `This will cost <strong>${cost} crystals</strong> and cannot be undone.`
+      );
+      if (!confirmed) return;
+      hero.crystals -= cost;
+      skillTree.resetSkillTree();
+      updateSkillTreeValues();
+      updateActionBar();
+      initializeSkillTreeUI();
+      showToast('Class has been reset and all points refunded.', 'success');
+    } else if (stat === 'resetAttributes') {
+      confirmed = await showConfirmDialog(
+        'Are you sure you want to reset all allocated attribute points?<br>' +
+          `This will cost <strong>${cost} crystals</strong> and cannot be undone.`
+      );
+      if (!confirmed) return;
+      hero.crystals -= cost;
+      hero.resetAttributes();
+      updateStatsAndAttributesUI();
+      showToast('All attribute points have been refunded.', 'success');
+    }
+    updateResources();
+    game.saveGame();
+    this.initializePrestigeUI();
+  }
+
+  /**
+   * Opens the upgrade modal or, for reset buttons, shows confirmation dialogs.
+   */
+  async openUpgradeModal(stat) {
+    if (stat === 'resetSkillTree' || stat === 'resetAttributes') {
+      await this.confirmReset(stat);
+      return;
+    }
+
     const config = CRYSTAL_UPGRADE_CONFIG[stat];
     if (!config) return;
     this.currentStat = stat;
@@ -222,9 +260,8 @@ export default class Prestige {
     const controls = m.querySelector('.modal-controls');
     const buyBtn = m.querySelector('.modal-buy');
     this.selectedQty = 1;
-    // Multi-level (like training.js): startingStage only
+
     if (stat === 'startingStage') {
-      // Show all fields and quantity controls
       fields.innerHTML = `
         <p>Current Level: <span class="modal-level"></span></p>
         <p>Current Bonus: <span class="modal-bonus"></span></p>
@@ -248,7 +285,6 @@ export default class Prestige {
       buyBtn.style.display = '';
       this.updateModalDetails();
     } else if (config.oneTime) {
-      // One-time: description, cost, buy button, or Purchased
       controls.style.display = 'none';
       const purchased = !!this.crystalUpgrades[stat];
       fields.innerHTML = `
@@ -261,7 +297,6 @@ export default class Prestige {
       buyBtn.style.display = purchased ? 'none' : '';
       buyBtn.disabled = purchased;
     } else if (config.multiple) {
-      // Multiple: like oneTime, but always buyable, never 'Purchased'
       controls.style.display = 'none';
       fields.innerHTML = `
         <p>${config.bonus && typeof config.bonus === 'string' ? config.bonus : ''}</p>
@@ -270,6 +305,7 @@ export default class Prestige {
       buyBtn.style.display = '';
       buyBtn.disabled = false;
     }
+
     m.classList.remove('hidden');
     if (stat === 'startingStage') this.updateModalDetails();
   }
@@ -280,12 +316,13 @@ export default class Prestige {
     const config = CRYSTAL_UPGRADE_CONFIG[stat];
     const m = this.modal;
     const q = (sel) => m.querySelector(sel);
+
     if (stat === 'startingStage') {
-      // Multi-level modal logic (like training.js)
       const baseLevel = this.crystalUpgrades[stat] || 0;
       const crystalsAvailable = hero.crystals;
       let qty = this.selectedQty === 'max' ? 0 : this.selectedQty;
       let totalCost = 0;
+
       if (this.selectedQty === 'max') {
         let lvl = baseLevel;
         let crystals = crystalsAvailable;
@@ -303,27 +340,20 @@ export default class Prestige {
           totalCost += cost;
         }
       }
+
       const bonusValue = (config.bonus || 0) * qty;
-      const decimals = 0;
       if (q('.modal-qty')) q('.modal-qty').textContent = qty;
       if (q('.modal-total-cost')) q('.modal-total-cost').textContent = totalCost;
-      if (q('.modal-total-bonus'))
-        q('.modal-total-bonus').textContent = `+${bonusValue.toFixed(decimals)} ${config.label}`;
+      if (q('.modal-total-bonus')) q('.modal-total-bonus').textContent = `+${bonusValue} ${config.label}`;
       if (q('.modal-level')) q('.modal-level').textContent = baseLevel;
       if (q('.modal-bonus')) q('.modal-bonus').textContent = this.getBonusText(stat, config, baseLevel);
       if (q('.modal-next-bonus')) q('.modal-next-bonus').textContent = this.getBonusText(stat, config, baseLevel + 1);
+
       const buyBtn = q('.modal-buy');
       if (buyBtn) buyBtn.disabled = qty <= 0 || totalCost > crystalsAvailable;
     }
   }
 
-  /**
-   * Returns the bonus text for a given upgrade and level.
-   * @param {string} stat
-   * @param {object} config
-   * @param {number} level
-   * @returns {string}
-   */
   getBonusText(stat, config, level) {
     if (config.oneTime) return '';
     const baseBonus = config.bonus || 0;
@@ -331,26 +361,20 @@ export default class Prestige {
     return `+${bonus} ${config.label}`;
   }
 
-  /**
-   * Closes the prestige modal dialog.
-   */
   closeModal() {
     if (this.modal) {
       this.modal.classList.add('hidden');
     }
   }
 
-  /**
-   * Handles purchasing upgrades in bulk or single, depending on upgrade type.
-   * @param {string} stat
-   * @param {number|string} qty
-   */
   async buyBulk(stat, qty) {
     const config = CRYSTAL_UPGRADE_CONFIG[stat];
     if (!config) return;
+
     if (stat === 'startingStage') {
       let count = 0;
       let totalCost = 0;
+
       if (qty === 'max') {
         let level = this.crystalUpgrades[stat] || 0;
         while (true) {
@@ -372,14 +396,15 @@ export default class Prestige {
           count++;
         }
       }
+
       game.saveGame();
       updateResources();
       this.updateModalDetails();
       this.initializePrestigeUI();
-      // Do NOT close the modal for multi-level upgrades
       showToast(`Upgraded ${config.label} by ${count} levels!`, count > 0 ? 'success' : 'error');
       return;
     }
+
     if (config.oneTime) {
       if (this.crystalUpgrades[stat]) return;
       const cost = config.baseCost;
@@ -396,6 +421,7 @@ export default class Prestige {
       showToast(`Purchased ${config.label}!`, 'success');
       return;
     }
+
     if (config.multiple) {
       const cost = config.baseCost;
       if (hero.crystals < cost) {
@@ -411,5 +437,9 @@ export default class Prestige {
       showToast(`Purchased ${config.label}!`, 'success');
       return;
     }
+  }
+
+  hasAutoSpellCastUpgrade() {
+    return !!this.crystalUpgrades.autoSpellCast;
   }
 }

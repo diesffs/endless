@@ -83,7 +83,7 @@ export const MATERIALS = {
     name: 'Crystalized Rock',
     icon: '💎',
     description: 'Gives 1 crystal.',
-    dropChance: 30,
+    dropChance: 50,
     sort: 80,
     onUse: (hero, qty = 1) => {
       hero.gainCrystals(1 * qty);
@@ -160,7 +160,7 @@ export const MATERIALS = {
     name: 'Armor Upgrade Stone',
     icon: '🪨',
     description: 'Upgrade the level of an equipped armor item by 1.',
-    dropChance: 6,
+    dropChance: 20,
     sort: 150,
     onUse: (hero, qty = 1) => {
       // Custom modal logic handled in inventory UI
@@ -172,7 +172,7 @@ export const MATERIALS = {
     name: 'Jewelry Upgrade Gem',
     icon: '💍',
     description: 'Upgrade the level of an equipped jewelry item by 1.',
-    dropChance: 2,
+    dropChance: 4,
     sort: 160,
     onUse: (hero, qty = 1) => {
       // Custom modal logic handled in inventory UI
@@ -184,7 +184,7 @@ export const MATERIALS = {
     name: 'Weapon Upgrade Core',
     icon: '⚡',
     description: 'Upgrade the level of an equipped weapon by 1.',
-    dropChance: 4,
+    dropChance: 3,
     sort: 170,
     onUse: (hero, qty = 1) => {
       // Custom modal logic handled in inventory UI
