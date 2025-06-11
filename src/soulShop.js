@@ -118,7 +118,7 @@ export default class SoulShop {
       bonus = config.bonus;
     } else if (isMultiLevel) {
       const value = Math.floor(config.bonus * (this.soulUpgrades[stat] || 0) * 100);
-      bonus = `+${value}${config.suffix || '%'} ${config.label}`;
+      bonus = `+${value}${config.suffix || ''} ${config.label}`;
     } else {
       bonus = `+${config.bonus * (this.soulUpgrades[stat] || 0)} ${config.label}`;
     }
