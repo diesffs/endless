@@ -44,9 +44,9 @@ const CRYSTAL_UPGRADE_CONFIG = {
     baseCost: 10,
     multiple: true,
   },
-  resetBossLevel: {
-    label: 'Reset Boss Level',
-    bonus: 'Reset boss level to 1',
+  resetArenaLevel: {
+    label: 'Reset Arena Level',
+    bonus: 'Reset Arena level to 1',
     baseCost: 10,
     multiple: true,
   },
@@ -168,7 +168,7 @@ export default class CrystalShop {
       hero.resetAttributes();
       updateStatsAndAttributesUI();
       showToast('All attribute points have been refunded.', 'success');
-    } else if (stat === 'resetBossLevel') {
+    } else if (stat === 'resetArenaLevel') {
       confirmed = await showConfirmDialog(
         'Are you sure you want to reset your boss level to 1?<br>' +
           `This will cost <strong>${cost} crystals</strong> and cannot be undone.`
@@ -187,7 +187,7 @@ export default class CrystalShop {
    * Opens the upgrade modal or, for reset buttons, shows confirmation dialogs.
    */
   async openUpgradeModal(stat) {
-    if (stat === 'resetSkillTree' || stat === 'resetAttributes' || stat === 'resetBossLevel') {
+    if (stat === 'resetSkillTree' || stat === 'resetAttributes' || stat === 'resetArenaLevel') {
       await this.confirmReset(stat);
       return;
     }
@@ -373,7 +373,7 @@ export default class CrystalShop {
         showToast('Not enough crystals!', 'error');
         return;
       }
-      if (stat === 'resetBossLevel') {
+      if (stat === 'resetArenaLevel') {
         hero.crystals -= cost;
         hero.bossLevel = 1;
         game.saveGame();
