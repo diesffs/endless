@@ -19,7 +19,6 @@ export default class Statistics {
     this.totalCrystalsEarned = 0;
     this.totalSoulsEarned = 0;
     this.totalItemsFound = 0;
-    this.timeSinceLastCrystalShop = 0;
     this.totalTimePlayed = 0; // New: total time played (resets on reset)
     this.highestStageReached = 0;
     this.totalTimeInFights = 0; // Track total time spent in fights
@@ -43,7 +42,6 @@ export default class Statistics {
     this.totalCrystalsEarned = 0;
     this.totalSoulsEarned = 0;
     this.totalItemsFound = 0;
-    this.timeSinceLastCrystalShop = 0;
     this.totalTimePlayed = 0; // Reset total time played
     this.highestStageReached = 0;
     this.totalTimeInFights = 0; // Reset total time in fights
@@ -77,15 +75,6 @@ export default class Statistics {
       const hours = Math.floor(seconds / 3600);
       const minutes = Math.floor((seconds % 3600) / 60);
       totalTime.textContent = `Total Time Played: ${hours}h ${minutes}m`;
-    }
-
-    // Current Session Time Played (not reset until reload)
-    const sessionTime = document.getElementById('stat-time-played');
-    if (sessionTime) {
-      const seconds = Math.floor(this.timeSinceLastCrystalShop);
-      const hours = Math.floor(seconds / 3600);
-      const minutes = Math.floor((seconds % 3600) / 60);
-      sessionTime.textContent = `Time Since Last CrystalShop: ${hours}h ${minutes}m`;
     }
 
     // Total Enemies Killed
@@ -169,7 +158,6 @@ export default class Statistics {
   update() {
     const now = Date.now();
     const deltaSeconds = (now - this.lastUpdate) / 1000;
-    this.timeSinceLastCrystalShop += deltaSeconds;
     this.totalTimePlayed += deltaSeconds;
     this.lastUpdate = now;
     this.updateStatisticsUI();
