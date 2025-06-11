@@ -360,6 +360,10 @@ export default class CrystalShop {
       this.initializeCrystalShopUI();
       this.closeModal();
       showToast(`Purchased ${config.label}!`, 'success');
+      // Update skill tree UI if autoSpellCast was just purchased
+      if (stat === 'autoSpellCast') {
+        initializeSkillTreeUI();
+      }
       return;
     }
 

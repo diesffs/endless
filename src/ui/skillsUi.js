@@ -1,7 +1,7 @@
 import { STATS } from '../constants/stats/stats.js';
 import { CLASS_PATHS, SKILL_TREES } from '../constants/skills.js';
 import { REQ_LEVEL_FOR_SKILL_TREE, SKILL_LEVEL_TIERS } from '../skillTree.js';
-import { skillTree, hero } from '../globals.js';
+import { skillTree, hero, crystalShop } from '../globals.js';
 import { formatStatName, hideTooltip, positionTooltip, showToast, showTooltip } from '../ui/ui.js';
 import { createModal } from './modal.js';
 
@@ -138,6 +138,9 @@ function renderAutoCastToggles() {
   let autoCastSection = document.getElementById('auto-cast-section');
   if (autoCastSection) autoCastSection.remove();
 
+  // Only show if player owns the upgrade
+  if (!crystalShop.hasAutoSpellCastUpgrade()) return;
+
   // Only show if there are any instant/buff skills unlocked
   const eligibleSkills = Object.entries(skillTree.skills)
     .filter(([skillId, skill]) => {
@@ -179,7 +182,14 @@ function renderAutoCastToggles() {
     toggle.type = 'checkbox';
     toggle.checked = skillTree.isAutoCastEnabled(skill.id);
     toggle.addEventListener('change', (e) => {
-      skillTree.setAutoCast(skill.id, e.target.checked);
+      // Only allow toggling if upgrade is owned
+      if (crystalShop.hasAutoSpellCastUpgrade()) {
+        skillTree.setAutoCast(skill.id, e.target.checked);
+      } else {
+        e.preventDefault();
+        showToast('Purchase Auto Spell Cast upgrade to enable auto-casting.', 'warning');
+        toggle.checked = false;
+      }
     });
     wrapper.appendChild(toggle);
 

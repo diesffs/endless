@@ -68,6 +68,7 @@ class Game {
   }
 
   damageEnemy(damage) {
+    damage = Math.floor(damage); // Ensure damage is an integer
     if (game.fightMode === 'arena' && this.currentEnemy) {
       // Boss damage flow
       const isDead = this.currentEnemy.takeDamage(damage);

@@ -723,47 +723,6 @@ body {
   padding: 15px;
 }
 
-/* Switch for auto-cast toggles */
-.auto-cast-switch {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5em;
-  margin: 0.25em 1em;
-}
-.auto-cast-switch input[type='checkbox'] {
-  width: 32px;
-  height: 18px;
-  appearance: none;
-  background: #444;
-  border-radius: 10px;
-  position: relative;
-  cursor: pointer;
-  outline: none;
-  transition: background 0.2s;
-}
-.auto-cast-switch input[type='checkbox']:checked {
-  background: var(--accent);
-}
-.auto-cast-switch input[type='checkbox']::before {
-  content: '';
-  position: absolute;
-  left: 2px;
-  top: 2px;
-  width: 14px;
-  height: 14px;
-  background: #fff;
-  border-radius: 50%;
-  transition: transform 0.2s;
-}
-.auto-cast-switch input[type='checkbox']:checked::before {
-  transform: translateX(14px);
-}
-.auto-cast-switch label {
-  font-size: 0.95em;
-  color: var(--text);
-  user-select: none;
-}
-
 /* When dev/debug UI is active, limit the width of the main game area */
 body.dev-active .game-container {
   max-width: calc(100vw - 720px); /* 2x debug/modify width + gap */
