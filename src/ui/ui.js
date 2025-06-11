@@ -415,10 +415,11 @@ export const formatStatName = (stat) => {
   if (stat === 'attackSpeed') return 'Attack Speed';
   if (stat === 'attackRating') return 'Attack Rating';
   if (stat === 'attackRatingPercent') return 'Attack Rating';
-  if (stat === 'damagePercent') return 'Damage';
+  if (stat === 'damage') return 'Damage';
+  if (stat === 'damagePercent') return 'Damage %';
   if (stat === 'lifePercent') return 'Life %';
   if (stat === 'manaPercent') return 'Mana %';
-  if (stat === 'armorPercent') return 'Armor';
+  if (stat === 'armorPercent') return 'Armor %';
   if (stat === 'elementalDamagePercent') return 'Elemental Damage %';
   if (stat === 'lifeRegen') return 'Life Regeneration';
   if (stat === 'manaRegen') return 'Mana Regeneration';
