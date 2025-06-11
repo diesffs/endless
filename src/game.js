@@ -250,6 +250,7 @@ class Game {
     crystalShop.resetCrystalShop();
     crystalShop.initializeCrystalShopUI();
     skillTree.resetSkillTree();
+    skillTree.skillPoints = 0; // reset permanent bonuses
     initializeSkillTreeUI();
 
     // Reset core game state (stage, enemy, player stats, UI, save)
