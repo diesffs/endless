@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="/src/css/region.css" />
     <link rel="stylesheet" href="/src/css/modal.css" />
     <link rel="stylesheet" href="/src/css/quests.css" />
+    <link rel="stylesheet" href="/src/css/options.css" />
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-L06KLWGC80"></script>
@@ -49,6 +50,7 @@
         <button class="tab-btn" data-tab="crystalShop">Crystal Shop</button>
         <button class="tab-btn" data-tab="soulshop">Soul Shop</button>
         <button class="tab-btn" data-tab="quests">Quests</button>
+        <button class="tab-btn" data-tab="statistics">Statistics</button>
         <button class="tab-btn" data-tab="options">Options</button>
       </div>
 
@@ -166,12 +168,9 @@
                 </div>
               </div>
             </div>
-            <div id="options" class="tab-panel">
-              <div class="options-container">
-                <button id="reset-progress" class="danger-button">Reset All Progress</button>
-
+            <div id="statistics" class="tab-panel">
+              <div class="statistics-container">
                 <div class="options-section">
-                  <h3>Statistics</h3>
                   <div class="stats-display">
                     <div id="stat-bosses-killed"></div>
                     <div id="stat-total-time-played"></div>
@@ -184,6 +183,22 @@
                     <div id="stat-highest-stage"></div>
                     <div id="stat-total-time-in-fights"></div>
                   </div>
+                </div>
+              </div>
+            </div>
+            <div id="options" class="tab-panel">
+              <div class="options-container">
+                <button id="reset-progress" class="danger-button">Reset All Progress</button>
+                <div class="options-section">
+                  <a
+                    href="https://discord.gg/pvCxff4s"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="discord-link"
+                    aria-label="Join our Discord"
+                  >
+                    <span>Join our Discord</span>
+                  </a>
                 </div>
               </div>
             </div>

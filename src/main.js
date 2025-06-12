@@ -34,6 +34,7 @@ import { initializeRegionSystem, updateRegionUI } from './region.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 import { ENEMY_LIST } from './constants/enemies.js';
 import SoulShop from './soulShop.js';
+import { initializeOptionsUI } from './options.js';
 
 window.qwe = console.log;
 window.qw = console.log;
@@ -93,6 +94,7 @@ export let dev = false;
   window.addEventListener('DOMContentLoaded', () => {
     initializeRegionSystem();
     updateRegionUI();
+    initializeOptionsUI();
   });
 
   game.saveGame();

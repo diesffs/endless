@@ -1,7 +1,9 @@
-import { game } from './globals.js';
 import { handleSavedData } from './functions.js';
-import { showConfirmDialog } from './ui/ui.js';
 
+/**
+ * @class Statistics
+ * Handles game statistics tracking and UI updates.
+ */
 export default class Statistics {
   constructor(savedData = null) {
     /** Bosses defeated count */
@@ -48,16 +50,10 @@ export default class Statistics {
     this.updateStatisticsUI();
   }
 
+  /**
+   * Initialize statistics UI (no reset button logic here).
+   */
   initializeStatisticsUI() {
-    const resetButton = document.getElementById('reset-progress');
-    // Show confirm dialog for resetting progress
-    resetButton.onclick = async () => {
-      const confirmed = await showConfirmDialog('Are you sure you want to reset all progress? This cannot be undone!');
-      if (confirmed) {
-        game.resetAllProgress();
-      }
-    };
-
     this.updateStatisticsUI();
   }
 
@@ -169,3 +165,5 @@ export default class Statistics {
     this.updateStatisticsUI();
   }
 }
+
+// No changes needed in this file for the move; just ensure UI initialization targets the new tab if necessary.
