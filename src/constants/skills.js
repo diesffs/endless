@@ -60,8 +60,8 @@ export const CLASS_PATHS = {
     avatar: () => 'berserker-avatar.jpg',
     baseStats: () => ({
       damage: 30,
-      attackSpeed: 0.5,
-      damagePercent: 20,
+      attackSpeed: 0.2,
+      damagePercent: 15,
       lifePercent: -20,
     }),
     description: () => 'Frenzied fighter focusing on raw damage output',
