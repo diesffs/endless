@@ -56,6 +56,11 @@ class Game {
     if (hero.stats.currentLife > hero.stats.life) {
       hero.stats.currentLife = hero.stats.life;
     }
+
+    // handle special case for BERSERKER class, where lifePerHit can be negative
+    if (hero.stats.currentLife <= 0) {
+      playerDeath();
+    }
     updatePlayerLife();
   }
 
