@@ -17,36 +17,44 @@ const CRYSTAL_UPGRADE_CONFIG = {
   startingStage: {
     label: 'Starting Stage',
     bonus: 1,
+    bonusLabel: 'Increases starting stage by 1',
+    showLevel: true,
     baseCost: 2,
     costIncrement: 0,
+    multiple: true,
   },
   continuousPlay: {
     label: 'Continuous Play',
     bonus: 'Auto-continue after death',
+    bonusLabel: 'Auto-continue after death',
     baseCost: 20,
     oneTime: true,
   },
   autoSpellCast: {
     label: 'Auto Spell Cast',
     bonus: 'Automatically casts instant and buff skills',
+    bonusLabel: 'Automatically casts instant and buff skills',
     baseCost: 40,
     oneTime: true,
   },
   resetSkillTree: {
     label: 'Reset Skill Tree',
     bonus: 'Refund all skill points and reset path',
+    bonusLabel: 'Refund all skill points and reset path',
     baseCost: 10,
     multiple: true,
   },
   resetAttributes: {
     label: 'Reset Attributes',
     bonus: 'Refund all allocated attribute points',
+    bonusLabel: 'Refund all allocated attribute points',
     baseCost: 10,
     multiple: true,
   },
   resetArenaLevel: {
     label: 'Reset Arena Level',
     bonus: 'Reset Arena level to 1',
+    bonusLabel: 'Reset Arena level to 1',
     baseCost: 10,
     multiple: true,
   },
@@ -83,23 +91,16 @@ export default class CrystalShop {
   }
 
   createCrystalUpgradeButton(stat, config) {
-    const isOneTime = config.oneTime;
-    const isMultiple = config.multiple;
-    let alreadyPurchased = isOneTime && this.crystalUpgrades[stat];
-    const level = isOneTime || isMultiple ? undefined : this.crystalUpgrades[stat] || 0;
-    const bonus =
-      isOneTime || isMultiple ? config.bonus : `+${config.bonus * (this.crystalUpgrades[stat] || 0)} ${config.label}`;
-    const cost =
-      isOneTime || isMultiple
-        ? config.baseCost
-        : config.baseCost + (config.costIncrement || 0) * (this.crystalUpgrades[stat] || 0);
+    let alreadyPurchased = config.oneTime && this.crystalUpgrades[stat];
+    const level = this.crystalUpgrades[stat] || 0;
+    const cost = config.baseCost + (config.costIncrement || 0) * (this.crystalUpgrades[stat] || 0);
 
     return `
       <button class="crystal-upgrade-btn ${alreadyPurchased ? 'purchased' : ''}" data-stat="${stat}" ${
       alreadyPurchased ? 'disabled' : ''
     }>
-        <span class="upgrade-name">${config.label} ${isOneTime ? '' : isMultiple ? '' : `(Lvl ${level})`}</span>
-        <span class="upgrade-bonus">${bonus}</span>
+        <span class="upgrade-name">${config.label} ${config.showLevel ? `(Lvl ${level})` : ''}</span>
+        <span class="upgrade-bonus">${config.bonusLabel}</span>
         <span class="upgrade-cost">${alreadyPurchased ? 'Purchased' : `${cost} Crystals`}</span>
       </button>
     `;
@@ -308,89 +309,149 @@ export default class CrystalShop {
     }
   }
 
+  /**
+   * Generic bulk purchase for any “multiple” upgrade with levels.
+   * @private
+   * @param {string} stat
+   * @param {{ baseCost: number, costIncrement?: number, label: string }} config
+   * @param {number|'max'} qty
+   */
+  async _bulkPurchase(stat, config, qty) {
+    const { baseCost, costIncrement = 0, label } = config;
+    let level = this.crystalUpgrades[stat] || 0;
+    let count = 0,
+      totalCost = 0;
+    const nextCost = (lvl) => baseCost + costIncrement * lvl;
+
+    if (qty === 'max') {
+      while (hero.crystals >= nextCost(level)) {
+        const cost = nextCost(level++);
+        hero.crystals -= cost;
+        totalCost += cost;
+        count++;
+      }
+    } else {
+      for (let i = 0; i < qty; i++) {
+        const cost = nextCost(level);
+        if (hero.crystals < cost) break;
+        hero.crystals -= cost;
+        totalCost += cost;
+        level++;
+        count++;
+      }
+    }
+
+    this.crystalUpgrades[stat] = level;
+    this._commitChanges(false);
+    this.updateModalDetails();
+    showToast(`Upgraded ${label} by ${count} level${count !== 1 ? 's' : ''}!`, count > 0 ? 'success' : 'error');
+  }
+
+  /**
+   * Handle a single one-time purchase.
+   * @private
+   * @param {string} stat
+   * @param {{ baseCost: number, label: string }} config
+   */
+  async _handleOneTimePurchase(stat, config) {
+    const { baseCost, label } = config;
+    if (this.crystalUpgrades[stat]) return;
+    if (hero.crystals < baseCost) {
+      showToast('Not enough crystals!', 'error');
+      return;
+    }
+
+    hero.crystals -= baseCost;
+    this.crystalUpgrades[stat] = true;
+    this._commitChanges();
+    showToast(`Purchased ${label}!`, 'success');
+
+    if (stat === 'autoSpellCast') {
+      initializeSkillTreeUI();
+    }
+  }
+
+  /**
+   * Handle a simple incremental purchase for “multiple” upgrades without bulk tiers.
+   * @private
+   * @param {string} stat
+   * @param {{ baseCost: number, label: string }} config
+   */
+  async _handleMultiplePurchase(stat, config) {
+    const { baseCost, label } = config;
+    if (hero.crystals < baseCost) {
+      showToast('Not enough crystals!', 'error');
+      return;
+    }
+
+    hero.crystals -= baseCost;
+    this.crystalUpgrades[stat] = (this.crystalUpgrades[stat] || 0) + 1;
+    this._commitChanges();
+    showToast(`Purchased ${label}!`, 'success');
+  }
+
+  /**
+   * Centralize game save, resource/UI updates and optional modal close.
+   * @private
+   * @param {boolean} [close=true] whether to close the modal
+   */
+  _commitChanges(close = true) {
+    try {
+      game.saveGame();
+      updateResources();
+      this.initializeCrystalShopUI();
+      if (close) this.closeModal();
+    } catch (err) {
+      console.error(err);
+      showToast('Error updating shop. Please try again.', 'error');
+    }
+  }
+
+  /**
+   * Main entry-point for all crystal purchases.
+   * Routes to resets, bulk, one-time or multiple handlers.
+   * @param {string} stat
+   * @param {number|'max'} qty
+   */
   async buyBulk(stat, qty) {
     const config = CRYSTAL_UPGRADE_CONFIG[stat];
     if (!config) return;
 
-    if (stat === 'startingStage') {
-      let count = 0;
-      let totalCost = 0;
-
-      if (qty === 'max') {
-        let level = this.crystalUpgrades[stat] || 0;
-        while (true) {
-          const cost = config.baseCost + (config.costIncrement || 0) * level;
-          if (hero.crystals < cost) break;
-          hero.crystals -= cost;
-          totalCost += cost;
-          level++;
-          count++;
-        }
-        this.crystalUpgrades[stat] = level;
-      } else {
-        for (let i = 0; i < qty; i++) {
-          const cost = config.baseCost + (config.costIncrement || 0) * ((this.crystalUpgrades[stat] || 0) + i);
-          if (hero.crystals < cost) break;
-          hero.crystals -= cost;
-          totalCost += cost;
-          this.crystalUpgrades[stat] = (this.crystalUpgrades[stat] || 0) + 1;
-          count++;
-        }
-      }
-
-      game.saveGame();
-      updateResources();
-      this.updateModalDetails();
-      this.initializeCrystalShopUI();
-      showToast(`Upgraded ${config.label} by ${count} levels!`, count > 0 ? 'success' : 'error');
+    // special resets use confirm dialog
+    if (['resetSkillTree', 'resetAttributes', 'resetArenaLevel'].includes(stat)) {
+      await this.confirmReset(stat);
       return;
     }
 
+    // tiered/bulk multiple
+    if (config.multiple && config.costIncrement != null) {
+      if (stat === 'startingStage') {
+        const current = this.crystalUpgrades.startingStage || 0;
+        const cap = Math.floor(hero.highestStage * 0.75);
+        if (current >= cap) {
+          showToast(`Cannot upgrade Starting Stage above ${cap}. Reach a higher stage to unlock more.`, 'error');
+          return;
+        }
+        // adjust qty so we never exceed the cap
+        if (qty === 'max') {
+          qty = cap - current;
+        } else {
+          qty = Math.min(qty, cap - current);
+        }
+      }
+      await this._bulkPurchase(stat, config, qty);
+      return;
+    }
+
+    // single-use
     if (config.oneTime) {
-      if (this.crystalUpgrades[stat]) return;
-      const cost = config.baseCost;
-      if (hero.crystals < cost) {
-        showToast('Not enough crystals!', 'error');
-        return;
-      }
-      hero.crystals -= cost;
-      this.crystalUpgrades[stat] = true;
-      game.saveGame();
-      updateResources();
-      this.initializeCrystalShopUI();
-      this.closeModal();
-      showToast(`Purchased ${config.label}!`, 'success');
-      // Update skill tree UI if autoSpellCast was just purchased
-      if (stat === 'autoSpellCast') {
-        initializeSkillTreeUI();
-      }
+      await this._handleOneTimePurchase(stat, config);
       return;
     }
 
+    // simple repeated purchase
     if (config.multiple) {
-      const cost = config.baseCost;
-      if (hero.crystals < cost) {
-        showToast('Not enough crystals!', 'error');
-        return;
-      }
-      if (stat === 'resetArenaLevel') {
-        hero.crystals -= cost;
-        hero.bossLevel = 1;
-        game.saveGame();
-        updateResources();
-        this.initializeCrystalShopUI();
-        this.closeModal();
-        showToast('Boss level has been reset to 1.', 'success');
-        return;
-      }
-      hero.crystals -= cost;
-      this.crystalUpgrades[stat] = (this.crystalUpgrades[stat] || 0) + 1;
-      game.saveGame();
-      updateResources();
-      this.initializeCrystalShopUI();
-      this.closeModal();
-      showToast(`Purchased ${config.label}!`, 'success');
-      return;
+      await this._handleMultiplePurchase(stat, config);
     }
   }
 

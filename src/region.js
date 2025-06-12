@@ -25,7 +25,7 @@ export async function setCurrentRegion(regionId) {
     updateRegionUI();
     return;
   }
-  game.stage = game.hero?.startingStage || 1;
+  game.stage = hero.getStartingStage();
   game.currentEnemy = new Enemy(game.stage);
   game.resetAllLife();
   game.saveGame();

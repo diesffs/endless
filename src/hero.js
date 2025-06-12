@@ -1,5 +1,5 @@
 import { initializeSkillTreeStructure, updatePlayerLife, updateTabIndicators } from './ui/ui.js';
-import { game, inventory, training, skillTree, statistics, soulShop } from './globals.js';
+import { game, inventory, training, skillTree, statistics, soulShop, crystalShop } from './globals.js';
 import { createCombatText } from './combat.js';
 import { handleSavedData } from './functions.js';
 import { updateRegionUI } from './region.js';
@@ -25,8 +25,6 @@ export default class Hero {
     this.souls = 0;
     this.highestStage = 1;
     this.bossLevel = 1;
-
-    this.startingStage = 1;
 
     this.primaryStats = {
       strength: 0,
@@ -460,14 +458,9 @@ export default class Hero {
     return 0;
   }
 
-  /**
-   * Sets the startingStage, capped at 75% of highestStage.
-   * @param {number} stage - Desired starting stage before cap.
-   */
-  setStartingStage(stage) {
-    const cap = Math.floor(this.highestStage * 0.75);
-    // If cap is at least 1, apply cap; otherwise allow minimum stage
-    this.startingStage = cap >= 1 ? Math.min(stage, cap) : stage;
+  getStartingStage() {
+    // get starting stage from crystalShop
+    return crystalShop.crystalUpgrades.startingStage || 1;
   }
 
   /**

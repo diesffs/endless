@@ -110,7 +110,7 @@ export function playerDeath() {
     updateBossUI(game.currentEnemy);
   } else if (game.fightMode === 'explore') {
     // Reset everything regardless of continue state
-    game.stage = hero.startingStage;
+    game.stage = hero.getStartingStage();
     updateStageUI();
     game.currentEnemy = new Enemy(game.stage);
     game.resetAllLife();

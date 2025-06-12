@@ -162,7 +162,7 @@ class Game {
       updateBuffIndicators();
 
       // Reset stage and enemy for Explore mode
-      this.stage = hero.startingStage;
+      this.stage = hero.getStartingStage();
       updateStageUI();
       updateStatsAndAttributesUI();
       if (game.fightMode === 'arena' && game.currentEnemy) {
@@ -221,7 +221,7 @@ class Game {
     // Reset hero and stage-related progress
     hero.setBaseStats(null);
 
-    game.stage = hero.startingStage;
+    game.stage = hero.getStartingStage();
     game.gameStarted = false;
     game.currentEnemy = new Enemy(game.stage);
     game.currentEnemy.resetLife();

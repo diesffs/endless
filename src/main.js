@@ -69,7 +69,7 @@ export let dev = false;
     soulShop: _soulShop,
   });
 
-  game.stage = hero?.startingStage || 1;
+  game.stage = hero.getStartingStage() || 1;
 
   initializeUI();
   crystalShop.initializeCrystalShopUI();
