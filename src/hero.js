@@ -370,8 +370,12 @@ export default class Hero {
   }
 
   calculateArmorReduction() {
+    let stage = game.stage || 1;
+    if (game.currentRegion === 'arena') {
+      stage = this.bossLevel * 15 || 15; // Use boss level for arena
+    }
     const armor = this.stats.armor;
-    const stageScaling = 1 + (game.stage - 1) * 0.15; // Linear 15% increase per stage
+    const stageScaling = 1 + (stage - 1) * 0.15; // Linear 15% increase per stage
     const constant = 100 * stageScaling;
     const reduction = (armor / (armor + constant)) * 100;
     return Math.min(reduction, 75); // Keep the 75% cap

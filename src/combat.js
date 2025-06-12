@@ -68,7 +68,7 @@ export function playerAttack(currentTime) {
   if (currentTime - game.lastPlayerAttack >= timeBetweenAttacks) {
     if (game.currentEnemy.currentLife > 0) {
       // Calculate if attack hits
-      const hitChance = calculateHitChance(hero.stats.attackRating, game.stage);
+      const hitChance = calculateHitChance(hero.stats.attackRating);
       const roll = Math.random() * 100;
 
       if (roll > hitChance) {
@@ -322,7 +322,11 @@ export function createCombatText(text, isPlayer = true) {
   setTimeout(() => textEl.remove(), 1000);
 }
 
-export function calculateHitChance(attackRating, stage) {
+export function calculateHitChance(attackRating) {
+  let stage = game.stage || 1; // Default to stage 1 if not set
+  if (game.fightMode === 'arena') {
+    stage = hero.bossLevel * 15 || 15; // Use boss level for arena fights
+  }
   const stageScaling = 1 + (stage - 1) * 0.25; // Linear 25% increase per stage
   const baseChance = (attackRating / (attackRating + 25 * stageScaling)) * 100;
   return Math.min(Math.max(baseChance, 10), 100);

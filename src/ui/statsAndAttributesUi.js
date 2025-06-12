@@ -199,7 +199,7 @@ export function updateStatsAndAttributesUI() {
     const attackRatingEl = document.getElementById('attackRating-value');
     if (attackRatingEl) {
       attackRatingEl.textContent = hero.stats.attackRating;
-      const hitPct = calculateHitChance(hero.stats.attackRating, game.stage).toFixed(2) + '%';
+      const hitPct = calculateHitChance(hero.stats.attackRating).toFixed(2) + '%';
       attackRatingEl.appendChild(document.createTextNode(` (${hitPct})`));
     }
 

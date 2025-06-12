@@ -19,6 +19,7 @@ import { updateRegionUI } from './region.js';
 
 class Game {
   constructor() {
+    this.fightMode = 'explore'; // Default fight mode
     this.gameStarted = false;
     this.currentEnemy = null;
     this.stage = 1;

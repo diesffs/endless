@@ -87,6 +87,7 @@ export function initializeUI() {
       }
 
       game.fightMode = region;
+      updateStatsAndAttributesUI();
 
       // find new enemy/boss based on region
       if (game.fightMode === 'explore') {
@@ -98,6 +99,7 @@ export function initializeUI() {
       document.querySelectorAll('.region-tab').forEach((b) => b.classList.toggle('active', b === btn));
       // Render the appropriate region panel
       renderRegionPanel(region);
+      updateStatsAndAttributesUI();
       // Update controls label
       const display = document.getElementById('stage-display');
       if (region === 'explore') {
