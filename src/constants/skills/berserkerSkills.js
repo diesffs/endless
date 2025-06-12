@@ -90,8 +90,8 @@ export const BERSERKER_SKILLS = {
     description: () => 'Further enhances attack speed and damage.',
     maxLevel: () => DEFAULT_MAX_SKILL_LEVEL,
     effect: (level) => ({
-      attackSpeed: level * 0.01,
-      lifePerHit: level * 5,
+      attackSpeed: level * 0.02,
+      lifePerHit: level * 1,
     }),
   },
 
