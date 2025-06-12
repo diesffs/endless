@@ -1,0 +1,140 @@
+/* src/css/buildings.css */
+#buildings {
+  padding: 24px 16px;
+  background: #181c24;
+  color: #f3e9d2;
+  border-radius: 8px;
+  min-height: 300px;
+}
+#buildings h2 {
+  font-size: 2rem;
+  margin-bottom: 16px;
+  color: #ffd700;
+}
+#buildings-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+#buildings-list button {
+  background: #23283a;
+  color: #ffd700;
+  border: 2px solid #ffd700;
+  border-radius: 6px;
+  padding: 12px 24px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+#buildings-list button:hover {
+  background: #ffd700;
+  color: #23283a;
+}
+#buildings-list button.crystal-lab {
+  color: #6ecbff;
+  border-color: #6ecbff;
+}
+#buildings-list button.crystal-lab:hover {
+  background: #6ecbff;
+  color: #23283a;
+}
+#buildings-list button.soul-forge {
+  color: #b0b0b0;
+  border-color: #b0b0b0;
+}
+#buildings-list button.soul-forge:hover {
+  background: #b0b0b0;
+  color: #23283a;
+}
+#offline-bonus {
+  margin-top: 12px;
+  font-size: 1.1rem;
+  color: #aee571;
+}
+.building-modal {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.5);
+}
+.building-modal .building-modal-content {
+  background: #23272f;
+  color: #e0e0e0;
+  border-radius: 14px;
+  padding: 40px 44px 32px 44px;
+  min-width: 320px;
+  max-width: 90vw;
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.55);
+  position: relative;
+  text-align: center;
+  font-size: 1.18rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.building-modal .building-modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 18px;
+  font-size: 2.1rem;
+  color: #ffe066;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.building-modal .building-modal-content p {
+  margin: 12px 0;
+  font-size: 1.18rem;
+  color: #e0e0e0;
+}
+.building-modal .modal-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.building-modal .modal-close:hover {
+  color: #ffe066;
+}
+.building-modal .collect-btn {
+  margin-top: 36px;
+  margin-bottom: 0;
+  background: #ffe066;
+  color: #23272f;
+  border: none;
+  border-radius: 7px;
+  padding: 15px 48px;
+  font-size: 1.18rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+  transition: background 0.2s, color 0.2s;
+  align-self: center;
+  display: block;
+}
+.building-modal .collect-btn:hover {
+  background: #ffe066;
+  color: #20263a;
+}
+.building-modal .bonus-gold {
+  color: #ffe066;
+  font-weight: bold;
+}
+.building-modal .bonus-crystals {
+  color: #6ecbff;
+  font-weight: bold;
+}
+.building-modal .bonus-souls {
+  color: #b0b0b0;
+  font-weight: bold;
+}

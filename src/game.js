@@ -16,6 +16,7 @@ import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 import { updateQuestsUI } from './ui/questUi.js';
 import { updateBossUI } from './ui/bossUi.js';
 import { updateRegionUI } from './region.js';
+import { resetBuildings } from './buildings.js';
 
 class Game {
   constructor() {
@@ -258,6 +259,7 @@ class Game {
     skillTree.resetSkillTree();
     skillTree.skillPoints = 0; // reset permanent bonuses
     initializeSkillTreeUI();
+    resetBuildings();
 
     // Reset core game state (stage, enemy, player stats, UI, save)
     this.resetCoreGameState();

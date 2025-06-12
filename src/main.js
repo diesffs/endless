@@ -35,6 +35,8 @@ import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 import { ENEMY_LIST } from './constants/enemies.js';
 import SoulShop from './soulShop.js';
 import { initializeOptionsUI } from './options.js';
+import { initializeBuildingsUI } from './ui/buildings.js';
+import { loadBuildings, calculateOfflineBonus, startBuildingsGeneration, showOfflineBonusDialog } from './buildings.js';
 
 window.qwe = console.log;
 window.qw = console.log;
@@ -68,6 +70,14 @@ export let dev = false;
     quests: _quests,
     soulShop: _soulShop,
   });
+
+  // Load buildings and calculate offline bonus
+  loadBuildings();
+  const offlineBonus = calculateOfflineBonus();
+  showOfflineBonusDialog(offlineBonus);
+
+  initializeBuildingsUI();
+  startBuildingsGeneration();
 
   game.stage = hero.getStartingStage() || 1;
 
