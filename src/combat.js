@@ -80,6 +80,7 @@ export function playerAttack(currentTime) {
         const lifeStealAmount = damage * (hero.stats.lifeSteal / 100);
         const lifePerHitAmount = hero.stats.lifePerHit * (1 + (hero.stats.lifePerHitPercent || 0) / 100);
         game.healPlayer(lifeStealAmount + lifePerHitAmount);
+        game.restoreMana(hero.stats.manaPerHit * (1 + (hero.stats.manaPerHitPercent || 0) / 100) || 0);
         game.damageEnemy(damage);
         createDamageNumber(damage, false, isCritical);
       }
