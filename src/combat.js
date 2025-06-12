@@ -106,8 +106,9 @@ export function playerDeath() {
   }
 
   if (game.fightMode === 'arena') {
-    // If in arena, reset boss state
+    // If in arena, reset boss state and player health
     game.currentEnemy.resetLife();
+    game.resetAllLife(); // <-- Ensure player health is reset
     updateBossUI(game.currentEnemy);
   } else if (game.fightMode === 'explore') {
     // Reset everything regardless of continue state
