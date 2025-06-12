@@ -126,8 +126,35 @@ export default class Hero {
     const equipmentBonuses = inventory.getEquipmentBonuses();
     const trainingBonuses = training.getTrainingBonuses();
 
+    // 1) Build primary (flat) stats
     this.calculatePrimaryStats(skillTreeBonuses, equipmentBonuses, trainingBonuses);
+
+    // 2) Get base flatValues & percentBonuses WITHOUT any attributeEffects
+    const baseFlat = this.calculateFlatValues(
+      /* attributeEffects */ {},
+      skillTreeBonuses,
+      equipmentBonuses,
+      trainingBonuses
+    );
+    const basePercent = this.calculatePercentBonuses(
+      /* attributeEffects */ {},
+      skillTreeBonuses,
+      equipmentBonuses,
+      trainingBonuses
+    );
+
+    // 3) “Lock in” each attribute (STR, VIT, etc.) so that attributeEffects sees the %-increased value
+    Object.keys(ATTRIBUTES).forEach((attr) => {
+      const pct = basePercent[`${attr}Percent`] || 0;
+      let v = baseFlat[attr] * (1 + pct);
+      const decimals = STATS[attr].decimalPlaces ?? 0;
+      this.stats[attr] = decimals > 0 ? Number(v.toFixed(decimals)) : Math.floor(v);
+    });
+
+    // 4) Now calculate all attributeEffects off those updated attribute stats
     const attributeEffects = this.calculateAttributeEffects();
+
+    // 5) Normal flat+% pass
     const flatValues = this.calculateFlatValues(attributeEffects, skillTreeBonuses, equipmentBonuses, trainingBonuses);
     const percentBonuses = this.calculatePercentBonuses(
       attributeEffects,
@@ -135,7 +162,6 @@ export default class Hero {
       equipmentBonuses,
       trainingBonuses
     );
-
     this.applyFinalCalculations(flatValues, percentBonuses);
 
     updatePlayerLife();
@@ -345,10 +371,10 @@ export default class Hero {
 
   calculateArmorReduction() {
     const armor = this.stats.armor;
-    const stageScaling = 1 + (game.stage - 1) * 0.1; // Linear 10% increase per stage, matching attack rating
+    const stageScaling = 1 + (game.stage - 1) * 0.15; // Linear 15% increase per stage
     const constant = 100 * stageScaling;
     const reduction = (armor / (armor + constant)) * 100;
-    return Math.min(reduction, 95); // Keep the 95% cap
+    return Math.min(reduction, 75); // Keep the 75% cap
   }
 
   regenerate() {
