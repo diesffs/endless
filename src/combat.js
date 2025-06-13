@@ -140,10 +140,13 @@ export function playerDeath() {
   }
 }
 
-export function defeatEnemy() {
+export async function defeatEnemy() {
   const enemy = game.currentEnemy;
   let baseExpGained = 1; // overwritten
   let baseGoldGained = 1; // overwritten
+
+  // Add 500ms delay between monster kills
+  await new Promise((resolve) => setTimeout(resolve, 500));
 
   if (game.fightMode === 'arena') {
     baseExpGained = Math.floor(10 + hero.bossLevel * 2.25);
