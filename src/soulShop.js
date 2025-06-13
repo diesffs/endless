@@ -83,24 +83,24 @@ export default class SoulShop {
   }
 
   async initializeSoulShopUI() {
-    const soulShopTab = document.querySelector('#soulshop');
+    const soulShopTab = document.querySelector('#soulShop');
     if (!soulShopTab) return;
-    // Create .soulshop-container and .soul-shop-upgrades-container if not present
-    let shopContainer = soulShopTab.querySelector('.soulshop-container');
+    // Create .soulShop-container and .soulShop-upgrades-container if not present
+    let shopContainer = soulShopTab.querySelector('.soulShop-container');
     if (!shopContainer) {
       shopContainer = document.createElement('div');
-      shopContainer.className = 'soulshop-container';
+      shopContainer.className = 'soulShop-container';
       soulShopTab.innerHTML = '';
       soulShopTab.appendChild(shopContainer);
     }
-    let upgradesContainer = shopContainer.querySelector('.soul-shop-upgrades-container');
+    let upgradesContainer = shopContainer.querySelector('.soulShop-upgrades-container');
     if (!upgradesContainer) {
       upgradesContainer = document.createElement('div');
-      upgradesContainer.className = 'soul-shop-upgrades-container';
+      upgradesContainer.className = 'soulShop-upgrades-container';
       shopContainer.appendChild(upgradesContainer);
     }
     upgradesContainer.innerHTML = `
-      <div class="crystal-upgrades-grid">
+      <div class="soul-upgrades-grid">
         ${Object.entries(SOUL_UPGRADE_CONFIG)
           .map(([stat, config]) => this.createSoulUpgradeButton(stat, config))
           .join('')}
@@ -138,7 +138,7 @@ export default class SoulShop {
         ? config.baseCost
         : config.baseCost + (config.costIncrement || 0) * (this.soulUpgrades[stat] || 0);
     return `
-      <button class="crystal-upgrade-btn ${alreadyPurchased ? 'purchased' : ''}" data-stat="${stat}" ${
+      <button class="soul-upgrade-btn ${alreadyPurchased ? 'purchased' : ''}" data-stat="${stat}" ${
       alreadyPurchased ? 'disabled' : ''
     }>
         <span class="upgrade-name">${config.label} ${isOneTime ? '' : isMultiple ? '' : `(Lvl ${level})`}</span>
@@ -149,7 +149,7 @@ export default class SoulShop {
   }
 
   setupSoulUpgradeHandlers() {
-    const buttons = document.querySelectorAll('.crystal-upgrade-btn');
+    const buttons = document.querySelectorAll('.soul-upgrade-btn');
     buttons.forEach((button) => {
       button.addEventListener('click', () => {
         const stat = button.dataset.stat;
@@ -169,7 +169,7 @@ export default class SoulShop {
       </div>
     `;
     this.modal = createModal({
-      id: 'soulshop-modal',
+      id: 'soulShop-modal',
       className: 'training-modal hidden',
       content,
       onClose: () => this.closeModal(),
