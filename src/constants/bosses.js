@@ -16,7 +16,7 @@ export const BOSSES = [
     itemDropMultiplier: 1,
     materialDropMultiplier: 1,
     materialDropWeights: {},
-    reward: { souls: 1, crystals: 1, gold: 10000, materials: [{ id: 'experience_potion', qty: 1 }] },
+    reward: { souls: 1, gold: 500, materials: [{ id: 'experience_potion', qty: 1 }] },
   },
   {
     id: 'stone-golem',
@@ -31,7 +31,7 @@ export const BOSSES = [
     itemDropMultiplier: 1,
     materialDropMultiplier: 1,
     materialDropWeights: {},
-    reward: { souls: 1, crystals: 2, gold: 25000, materials: [{ id: 'crystalized_rock', qty: 1 }] },
+    reward: { souls: 1, gold: 1000, materials: [{ id: 'potion_of_agility', qty: 1 }] },
   },
   {
     id: 'fire-drake',
@@ -46,6 +46,6 @@ export const BOSSES = [
     itemDropMultiplier: 1,
     materialDropMultiplier: 1,
     materialDropWeights: {},
-    reward: { souls: 2, crystals: 5, gold: 50000, materials: [{ id: 'elixir', qty: 1 }] },
+    reward: { souls: 1, gold: 1500, materials: [{ id: 'crystalized_rock', qty: 1 }] },
   },
 ];
