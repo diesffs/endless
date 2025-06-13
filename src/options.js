@@ -5,6 +5,28 @@ import { showConfirmDialog } from './ui/ui.js';
  * Initialize the Options tab UI and logic.
  */
 export function initializeOptionsUI() {
+  // Create options UI structure dynamically
+  const optionsTab = document.getElementById('options');
+  if (!optionsTab) return;
+  optionsTab.innerHTML = '';
+  const container = document.createElement('div');
+  container.className = 'options-container';
+  container.innerHTML = `
+    <button id="reset-progress" class="danger-button">Reset All Progress</button>
+    <div class="options-section">
+      <a
+        href="https://discord.gg/pvCxff4s"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="discord-link"
+        aria-label="Join our Discord"
+      >
+        <span>Join our Discord</span>
+      </a>
+    </div>
+  `;
+  optionsTab.appendChild(container);
+
   const resetButton = document.getElementById('reset-progress');
   if (resetButton) {
     resetButton.onclick = async () => {

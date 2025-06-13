@@ -54,6 +54,29 @@ export default class Statistics {
    * Initialize statistics UI (no reset button logic here).
    */
   initializeStatisticsUI() {
+    // Create statistics UI structure dynamically
+    const statisticsTab = document.getElementById('statistics');
+    if (!statisticsTab) return;
+    statisticsTab.innerHTML = '';
+    const container = document.createElement('div');
+    container.className = 'statistics-container';
+    container.innerHTML = `
+      <div class="options-section">
+        <div class="stats-display">
+          <div id="stat-total-time-played"></div>
+          <div id="stat-total-time-in-fights"></div>
+          <div id="stat-highest-stage"></div>
+          <div id="stat-total-gold"></div>
+          <div id="stat-total-crystals"></div>
+          <div id="stat-total-souls"></div>
+          <div id="stat-items-found"></div>
+          <div id="stat-enemies-killed"></div>
+          <div id="stat-bosses-killed"></div>
+          <div id="stat-highest-damage"></div>
+        </div>
+      </div>
+    `;
+    statisticsTab.appendChild(container);
     this.updateStatisticsUI();
   }
 
