@@ -1,5 +1,5 @@
 import { QUEST_DEFINITIONS } from './constants/quests.js';
-import { hero, game } from './globals.js';
+import { hero, game, statistics } from './globals.js';
 import { showToast, updateResources, updateTabIndicators } from './ui/ui.js';
 
 export class Quest {
@@ -18,7 +18,7 @@ export class Quest {
   }
 
   // Progress is now computed from statistics, not stored
-  getProgress(statistics) {
+  getProgress() {
     if (this.type === 'kill') {
       return Math.min(statistics.enemiesKilled.total, this.target);
     }
@@ -47,11 +47,12 @@ export class Quest {
     return 0;
   }
 
-  isComplete(statistics) {
-    return this.getProgress(statistics) >= this.target;
+  isComplete() {
+    return this.getProgress() >= this.target;
   }
-  claim(statistics) {
-    if (!this.isComplete(statistics) || this.claimed) return null;
+
+  claim() {
+    if (!this.isComplete() || this.claimed) return null;
     this.claimed = true;
 
     // apply rewards
@@ -63,6 +64,7 @@ export class Quest {
 
     // Update tab indicators for claimed quest rewards
     updateTabIndicators();
+    game.saveGame();
 
     return this.reward;
   }
@@ -82,9 +84,9 @@ export default class QuestTracker {
     this.quests = definitions.map((def) => Quest.fromJSON(def, savedData?.[def.id]));
   }
 
-  claim(id, statistics) {
+  claim(id) {
     const q = this.quests.find((quest) => quest.id === id);
-    return q ? q.claim(statistics) : null;
+    return q ? q.claim() : null;
   }
 
   toJSON() {

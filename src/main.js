@@ -96,21 +96,6 @@ export let dev = false;
     initializeOptionsUI();
   });
 
-  game.saveGame = function () {
-    statistics.updateStatisticsUI();
-    const saveData = {
-      hero: hero,
-      skillTree: skillTree,
-      crystalShop: crystalShop,
-      training: training,
-      inventory: inventory,
-      statistics: statistics,
-      quests: quests,
-      soulShop: soulShop,
-    };
-    localStorage.setItem('gameProgress', JSON.stringify(saveData));
-  };
-
   let isRunning = false;
   setInterval(() => {
     if (!isRunning) {

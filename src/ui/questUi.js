@@ -35,10 +35,10 @@ export function updateQuestsUI() {
   quests.quests
     .filter((q) => q.category === selectedCategory)
     .forEach((q) => {
-      const progress = q.getProgress(statistics);
+      const progress = q.getProgress();
       const item = document.createElement('div');
       item.className = 'quest-item';
-      if (q.isComplete(statistics) && !q.claimed) item.classList.add('ready');
+      if (q.isComplete() && !q.claimed) item.classList.add('ready');
       if (q.claimed) item.classList.add('claimed');
       item.innerHTML = `
       <span class="quest-icon">${q.icon}</span>
@@ -86,7 +86,7 @@ export function openQuestModal(quest) {
   }
   modal.querySelector('#quest-modal-desc').textContent = quest.description;
   // Add progress display in green
-  const progress = quest.getProgress(statistics);
+  const progress = quest.getProgress();
   const progressHtml = `<span style=\"color:#22c55e;font-weight:bold;\">${progress}/${quest.target}</span>`;
   // Add reward display: gold in yellow, crystals in blue, others default
   let rewardParts = [];
@@ -104,7 +104,7 @@ export function openQuestModal(quest) {
 
   // Claim button logic
   const claimBtn = modal.querySelector('#quest-claim-btn');
-  claimBtn.disabled = !quest.isComplete(statistics) || quest.claimed;
+  claimBtn.disabled = !quest.isComplete() || quest.claimed;
   if (quest.claimed) {
     claimBtn.textContent = 'Claimed';
     claimBtn.style.backgroundColor = '#22c55e'; // green
@@ -112,11 +112,11 @@ export function openQuestModal(quest) {
   } else {
     claimBtn.textContent = 'Claim Reward';
     claimBtn.style.backgroundColor = '';
-    claimBtn.disabled = !quest.isComplete(statistics);
+    claimBtn.disabled = !quest.isComplete();
   }
   claimBtn.onclick = () => {
-    if (!quest.isComplete(statistics) || quest.claimed) return;
-    quest.claim(statistics);
+    if (!quest.isComplete() || quest.claimed) return;
+    quest.claim();
     modal.classList.add('hidden');
     updateQuestsUI();
   };
