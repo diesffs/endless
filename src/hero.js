@@ -303,6 +303,19 @@ export default class Hero {
 
   applyFinalCalculations(flatValues, percentBonuses) {
     // Apply percent bonuses to all stats that have them
+
+    for (const stat in STATS) {
+      if (stat.endsWith('Percent')) {
+        // add percent bonuses to stats, mainly for elemental damage
+        let percentValue = percentBonuses[stat] || 0;
+        // Add soul shop percent bonuses
+        const soulShopBonuses = this.getSoulShopBonuses();
+        if (soulShopBonuses[stat]) percentValue += soulShopBonuses[stat];
+        this.stats[stat] = percentValue;
+        percentBonuses[stat] = percentValue; // todo: this or above makes no sense, but keep it
+      }
+    }
+
     for (const stat in STATS) {
       if (!stat.endsWith('Percent')) {
         let percent = percentBonuses[stat + 'Percent'] || 0;
@@ -341,13 +354,6 @@ export default class Hero {
         if (stat === 'extraMaterialDropMax') value = Math.max(value, 1); // Always at least 1
 
         this.stats[stat] = value;
-      } else {
-        // add percent bonuses to stats, mainly for elemental damage
-        let percentValue = percentBonuses[stat] || 0;
-        // Add soul shop percent bonuses
-        const soulShopBonuses = this.getSoulShopBonuses();
-        if (soulShopBonuses[stat]) percentValue += soulShopBonuses[stat];
-        this.stats[stat] = percentValue;
       }
     }
     // Special handling for elemental damages
