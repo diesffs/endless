@@ -44,8 +44,22 @@ export default class Training {
   }
 
   initializeTrainingUI() {
-    const trainingGrid = document.querySelector('.training-grid');
-    if (!trainingGrid) return;
+    // Create .sub-tab-panel and .training-grid if not present
+    const trainingTab = document.getElementById('training');
+    let subTabPanel = trainingTab.querySelector('.sub-tab-panel');
+    if (!subTabPanel) {
+      subTabPanel = document.createElement('div');
+      subTabPanel.className = 'sub-tab-panel active';
+      subTabPanel.id = 'gold-upgrades';
+      trainingTab.innerHTML = '';
+      trainingTab.appendChild(subTabPanel);
+    }
+    let trainingGrid = subTabPanel.querySelector('.training-grid');
+    if (!trainingGrid) {
+      trainingGrid = document.createElement('div');
+      trainingGrid.className = 'training-grid';
+      subTabPanel.appendChild(trainingGrid);
+    }
 
     // Section navigation
     let nav = document.querySelector('.training-section-nav');

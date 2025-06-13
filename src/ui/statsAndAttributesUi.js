@@ -15,9 +15,18 @@ const html = String.raw;
 let allocationMode = 1;
 
 export function updateStatsAndAttributesUI() {
-  const statsGrid = document.querySelector('.stats-grid');
-
-  if (!statsGrid) return;
+  // Create .stats-grid if it doesn't exist
+  let statsGrid = document.querySelector('.stats-grid');
+  if (!statsGrid) {
+    statsGrid = document.createElement('div');
+    statsGrid.className = 'stats-grid';
+    // Insert as the only child of the #stats tab panel
+    const statsTab = document.getElementById('stats');
+    if (statsTab) {
+      statsTab.innerHTML = '';
+      statsTab.appendChild(statsGrid);
+    }
+  }
 
   // Ensure sections exist; create them only if they don't
   let statsContainer = document.querySelector('.stats-container');

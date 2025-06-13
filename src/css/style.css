@@ -101,10 +101,6 @@ body {
   display: block;
 }
 
-.tab-content {
-  height: 100%;
-}
-
 .tab-panel {
   display: none;
   background-color: var(--bg-element);

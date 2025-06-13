@@ -74,18 +74,29 @@ export default class CrystalShop {
   }
 
   async initializeCrystalShopUI() {
-    const crystalShopTab = document.querySelector('#crystalShop');
+    const crystalShopTab = document.getElementById('crystalShop');
     if (!crystalShopTab) return;
-    const upgradesContainer = crystalShopTab.querySelector('.crystalShop-upgrades-container');
-    if (upgradesContainer) {
-      upgradesContainer.innerHTML = `
-        <div class="crystal-upgrades-grid">
-          ${Object.entries(CRYSTAL_UPGRADE_CONFIG)
-            .map(([stat, config]) => this.createCrystalUpgradeButton(stat, config))
-            .join('')}
-        </div>
-      `;
+    // Create .crystalShop-container and .crystalShop-upgrades-container if not present
+    let shopContainer = crystalShopTab.querySelector('.crystalShop-container');
+    if (!shopContainer) {
+      shopContainer = document.createElement('div');
+      shopContainer.className = 'crystalShop-container';
+      crystalShopTab.innerHTML = '';
+      crystalShopTab.appendChild(shopContainer);
     }
+    let upgradesContainer = shopContainer.querySelector('.crystalShop-upgrades-container');
+    if (!upgradesContainer) {
+      upgradesContainer = document.createElement('div');
+      upgradesContainer.className = 'crystalShop-upgrades-container';
+      shopContainer.appendChild(upgradesContainer);
+    }
+    upgradesContainer.innerHTML = `
+      <div class="crystal-upgrades-grid">
+        ${Object.entries(CRYSTAL_UPGRADE_CONFIG)
+          .map(([stat, config]) => this.createCrystalUpgradeButton(stat, config))
+          .join('')}
+      </div>
+    `;
     this.setupCrystalUpgradeHandlers();
     if (!this.modal) this.createUpgradeModal();
   }
