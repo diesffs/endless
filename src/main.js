@@ -29,14 +29,15 @@ import {
   statistics,
   setGlobals,
   soulShop,
+  building,
 } from './globals.js';
 import { initializeRegionSystem, updateRegionUI } from './region.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 import { ENEMY_LIST } from './constants/enemies.js';
 import SoulShop from './soulShop.js';
 import { initializeOptionsUI } from './options.js';
-import { initializeBuildingsUI } from './ui/buildings.js';
-import { loadBuildings, calculateOfflineBonus, startBuildingsGeneration, showOfflineBonusDialog } from './buildings.js';
+import { initializeBuildingsUI } from './ui/buildingUi.js';
+import Building from './building.js';
 
 window.qwe = console.log;
 window.qw = console.log;
@@ -58,7 +59,7 @@ export let dev = false;
   const _statistics = new Statistics(savedData?.statistics);
   const _quests = new QuestTracker(QUEST_DEFINITIONS, savedData?.quests);
   const _soulShop = new SoulShop(savedData?.soulShop);
-
+  const _building = new Building(savedData?.building);
   setGlobals({
     game: _game,
     hero: _hero,
@@ -69,15 +70,14 @@ export let dev = false;
     statistics: _statistics,
     quests: _quests,
     soulShop: _soulShop,
+    building: _building,
   });
 
-  // Load buildings and calculate offline bonus
-  loadBuildings();
-  const offlineBonus = calculateOfflineBonus();
-  showOfflineBonusDialog(offlineBonus);
-
+  // Load building and calculate offline bonus
+  const offlineBonus = _building.calculateOfflineBonus();
+  _building.showOfflineBonusDialog(offlineBonus);
   initializeBuildingsUI();
-  startBuildingsGeneration();
+  _building.startGeneration();
 
   game.stage = hero.getStartingStage() || 1;
 
@@ -107,7 +107,26 @@ export let dev = false;
     initializeOptionsUI();
   });
 
-  game.saveGame();
+  game.saveGame = function () {
+    statistics.updateStatisticsUI();
+    const saveData = {
+      hero: hero,
+      skillTree: skillTree,
+      crystalShop: crystalShop,
+      training: training,
+      inventory: inventory,
+      statistics: statistics,
+      quests: quests,
+      soulShop: soulShop,
+      building: {
+        playerBuildings: building.playerBuildings.map((b) => ({ owned: b.owned })),
+        lastOnline: building.lastOnline,
+        mapSpots: building.mapSpots,
+        spotPositions: building.spotPositions,
+      },
+    };
+    localStorage.setItem('gameProgress', JSON.stringify(saveData));
+  };
 
   let isRunning = false;
   setInterval(() => {

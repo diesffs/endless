@@ -8,6 +8,7 @@ export let crystalShop = null;
 export let statistics = null;
 export let quests = null; // Export quests tracker
 export let soulShop = null;
+export let building = null; // Export building tracker
 
 // Setters for initialization in main.js
 export function setGlobals({
@@ -20,6 +21,7 @@ export function setGlobals({
   statistics: stat,
   quests: q,
   soulShop: ss,
+  building: b,
 }) {
   game = g;
   hero = h;
@@ -30,4 +32,5 @@ export function setGlobals({
   statistics = stat;
   quests = q;
   soulShop = ss;
+  building = b;
 }

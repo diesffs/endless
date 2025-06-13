@@ -6,7 +6,7 @@ import { hero } from './globals.js';
 import { showToast, showConfirmDialog, updateResources } from './ui/ui.js';
 import { createModal, closeModal } from './ui/modal.js';
 
-class Buildings {
+export default class Building {
   constructor(data) {
     data = data || {};
     this.playerBuildings = BUILDING_DEFS.map((b, i) => ({ ...b, owned: data.playerBuildings?.[i]?.owned || 0 }));
@@ -139,4 +139,4 @@ class Buildings {
   }
 }
 
-export const buildings = new Buildings();
+export const buildings = new Building();

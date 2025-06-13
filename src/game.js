@@ -8,7 +8,18 @@ import {
   initializeSkillTreeUI,
 } from './ui/ui.js';
 import { playerAttack, enemyAttack, playerDeath, defeatEnemy } from './combat.js';
-import { game, hero, inventory, crystalShop, training, skillTree, statistics, quests, soulShop } from './globals.js';
+import {
+  game,
+  hero,
+  inventory,
+  crystalShop,
+  training,
+  skillTree,
+  statistics,
+  quests,
+  soulShop,
+  building,
+} from './globals.js';
 import Enemy from './enemy.js';
 import { ITEM_SLOTS, MATERIALS_SLOTS } from './inventory.js';
 import { updateInventoryGrid } from './ui/inventoryUi.js';
@@ -16,7 +27,6 @@ import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 import { updateQuestsUI } from './ui/questUi.js';
 import { updateBossUI } from './ui/bossUi.js';
 import { updateRegionUI } from './region.js';
-import { resetBuildings } from './buildings.js';
 
 class Game {
   constructor() {
@@ -259,7 +269,7 @@ class Game {
     skillTree.resetSkillTree();
     skillTree.skillPoints = 0; // reset permanent bonuses
     initializeSkillTreeUI();
-    resetBuildings();
+    building.reset();
 
     // Reset core game state (stage, enemy, player stats, UI, save)
     this.resetCoreGameState();

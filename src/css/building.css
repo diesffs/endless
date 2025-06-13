@@ -267,8 +267,7 @@
   border: 2px solid #fffbe6;
   z-index: 3;
 }
-.open-map-btn,
-.add-spot-btn {
+.open-map-btn, .add-spot-btn {
   background: #ffe082;
   color: #23283a;
   border: 2px solid #ffd700;
@@ -278,14 +277,13 @@
   font-weight: 600;
   cursor: pointer;
   margin: 12px 0 18px 0;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
   transition: background 0.18s, color 0.18s, box-shadow 0.18s;
 }
-.open-map-btn:hover,
-.add-spot-btn:hover {
+.open-map-btn:hover, .add-spot-btn:hover {
   background: #ffe9a7;
   color: #181c24;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.13);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.13);
 }
 .add-spot-btn {
   border-color: #6ecbff;
@@ -299,7 +297,7 @@
 #buildings-map-modal-content {
   background: rgba(35, 39, 47, 0.92);
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.28);
   padding: 32px 32px 24px 32px;
   max-width: 1100px;
   margin: 0 auto;
@@ -316,7 +314,7 @@
   margin-top: 18px;
   cursor: pointer;
   transition: background 0.18s, color 0.18s, border 0.18s;
-  box-shadow: 0 1px 4px rgba(183, 28, 28, 0.08);
+  box-shadow: 0 1px 4px rgba(183,28,28,0.08);
 }
 #remove-building-btn:hover {
   background: #ffcdd2;
@@ -339,9 +337,7 @@
   font-weight: 600;
   color: #ffd700;
 }
-.bonus-gold,
-.bonus-crystals,
-.bonus-souls {
+.bonus-gold, .bonus-crystals, .bonus-souls {
   margin-right: 0;
 }
 .gold-color {
