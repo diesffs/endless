@@ -11,7 +11,7 @@ export {
   updateActionBar,
   updateBuffIndicators,
   showManaWarning,
-} from './skillsUi.js';
+} from './skillTreeUi.js';
 
 // Tab indicator manager instance
 let tabIndicatorManager = null;

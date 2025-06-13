@@ -85,16 +85,27 @@ export default class SoulShop {
   async initializeSoulShopUI() {
     const soulShopTab = document.querySelector('#soulshop');
     if (!soulShopTab) return;
-    const upgradesContainer = soulShopTab.querySelector('.soul-shop-upgrades-container');
-    if (upgradesContainer) {
-      upgradesContainer.innerHTML = `
-        <div class="crystal-upgrades-grid">
-          ${Object.entries(SOUL_UPGRADE_CONFIG)
-            .map(([stat, config]) => this.createSoulUpgradeButton(stat, config))
-            .join('')}
-        </div>
-      `;
+    // Create .soulshop-container and .soul-shop-upgrades-container if not present
+    let shopContainer = soulShopTab.querySelector('.soulshop-container');
+    if (!shopContainer) {
+      shopContainer = document.createElement('div');
+      shopContainer.className = 'soulshop-container';
+      soulShopTab.innerHTML = '';
+      soulShopTab.appendChild(shopContainer);
     }
+    let upgradesContainer = shopContainer.querySelector('.soul-shop-upgrades-container');
+    if (!upgradesContainer) {
+      upgradesContainer = document.createElement('div');
+      upgradesContainer.className = 'soul-shop-upgrades-container';
+      shopContainer.appendChild(upgradesContainer);
+    }
+    upgradesContainer.innerHTML = `
+      <div class="crystal-upgrades-grid">
+        ${Object.entries(SOUL_UPGRADE_CONFIG)
+          .map(([stat, config]) => this.createSoulUpgradeButton(stat, config))
+          .join('')}
+      </div>
+    `;
     this.setupSoulUpgradeHandlers();
     if (!this.modal) this.createUpgradeModal();
   }

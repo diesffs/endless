@@ -5,8 +5,67 @@ import { hideTooltip, positionTooltip, showToast, showTooltip } from '../ui/ui.j
 import { ITEM_RARITY, RARITY_ORDER, SLOT_REQUIREMENTS } from '../constants/items.js';
 
 export function initializeInventoryUI(inv) {
-  const gridContainer = document.querySelector('.grid-container');
+  // Create all inventory UI structure dynamically
+  const inventoryTab = document.getElementById('inventory');
+  if (!inventoryTab) return;
+  inventoryTab.innerHTML = '';
+
+  // Equipment container
+  const equipmentContainer = document.createElement('div');
+  equipmentContainer.className = 'equipment-container';
+  equipmentContainer.innerHTML = `
+    <div class="equipment-layout">
+      <div class="equipment-slots">
+        <div class="equipment-slot" data-slot="head"><div class="slot-indicator">🪖</div></div>
+        <div class="equipment-slot" data-slot="amulet"><div class="slot-indicator">📿</div></div>
+        <div class="equipment-slot" data-slot="chest"><div class="slot-indicator">👕</div></div>
+        <div class="equipment-slot" data-slot="belt"><div class="slot-indicator">🎗️</div></div>
+        <div class="equipment-slot" data-slot="weapon"><div class="slot-indicator">⚔️</div></div>
+        <div class="equipment-slot" data-slot="offhand"><div class="slot-indicator">🛡️</div></div>
+        <div class="equipment-slot" data-slot="gloves"><div class="slot-indicator">🧤</div></div>
+        <div class="equipment-slot" data-slot="ring1"><div class="slot-indicator">💍</div></div>
+        <div class="equipment-slot" data-slot="legs"><div class="slot-indicator">👖</div></div>
+        <div class="equipment-slot" data-slot="ring2"><div class="slot-indicator">💍</div></div>
+        <div class="equipment-slot" data-slot="boots"><div class="slot-indicator">👢</div></div>
+      </div>
+      <div class="character-preview">👤</div>
+    </div>
+    <div class="salvage-container">
+      <div class="inventory-tabs">
+        <button id="items-tab" class="inventory-btn active">Items</button>
+        <button id="materials-tab" class="inventory-btn">Materials</button>
+      </div>
+      <div id="sort-inventory" class="inventory-btn">Sort Items</div>
+      <div class="salvage-dropdown">
+        <button class="salvage-btn">Salvage <span class="dropdown-icon">▼</span></button>
+        <div class="salvage-options">
+          <div data-rarity="NORMAL">Normal Items</div>
+          <div data-rarity="MAGIC">Magic Items & Below</div>
+          <div data-rarity="RARE">Rare Items & Below</div>
+          <div data-rarity="UNIQUE">Unique Items & Below</div>
+          <div data-rarity="LEGENDARY">Legendary Items & Below</div>
+          <div data-rarity="MYTHIC">Mythic Items & Below</div>
+        </div>
+      </div>
+      <div class="inventory-trash">🗑️</div>
+    </div>
+  `;
+  inventoryTab.appendChild(equipmentContainer);
+
+  // Inventory grid
+  const inventoryGrid = document.createElement('div');
+  inventoryGrid.className = 'inventory-grid';
+  inventoryGrid.innerHTML = `
+    <div class="materials-grid" style="display: none">
+      <div class="materials-container"></div>
+    </div>
+    <div class="persistent-inventory"></div>
+    <div class="grid-container"></div>
+  `;
+  inventoryTab.appendChild(inventoryGrid);
+
   // Create ITEM_SLOTS empty cells (10x20 grid)
+  const gridContainer = inventoryTab.querySelector('.grid-container');
   for (let i = 0; i < ITEM_SLOTS; i++) {
     const cell = document.createElement('div');
     cell.classList.add('grid-cell');
