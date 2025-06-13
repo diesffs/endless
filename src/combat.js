@@ -149,7 +149,7 @@ export async function defeatEnemy() {
   await new Promise((resolve) => setTimeout(resolve, 500));
 
   if (game.fightMode === 'arena') {
-    baseExpGained = Math.floor(10 + hero.bossLevel * 2.25);
+    baseExpGained = Math.floor(12 + hero.bossLevel * 2.25);
     baseGoldGained = 10 + hero.bossLevel * 4;
 
     const { crystals, gold, materials, souls } = game.currentEnemy.reward;
@@ -163,8 +163,8 @@ export async function defeatEnemy() {
     hero.bossLevel++;
     updateResources();
   } else if (game.fightMode === 'explore') {
-    baseExpGained = Math.floor(10 + game.stage * 2.25);
-    baseGoldGained = 10 + game.stage * 4;
+    baseExpGained = Math.floor(6 + game.stage * 1.5);
+    baseGoldGained = 5 + game.stage * 2;
 
     if (enemy.rollForDrop()) {
       const itemLevel = enemy.calculateItemLevel(game.stage);
