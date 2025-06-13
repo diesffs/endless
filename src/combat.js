@@ -28,7 +28,7 @@ export function enemyAttack(currentTime) {
       // Show "BLOCKED" text instead of damage number
       createDamageNumber('BLOCKED', true, false, true);
       if (healAmount > 0) {
-        createDamageNumber(`+${Math.floor(healAmount)}`, true, false, false, false, true);
+        createDamageNumber(`+${Math.floor(healAmount)}`, true, false, true, false, true);
       }
     } else {
       // Calculate armor reduction
@@ -266,7 +266,7 @@ export function createDamageNumber(damage, isPlayer, isCritical = false, isBlock
 
   if (isBlocked) {
     damageEl.className = 'damage-number blocked';
-    damageEl.textContent = 'BLOCKED';
+    damageEl.textContent = damage;
     damageEl.style.color = '#4CAF50';
   } else if (isMiss) {
     damageEl.className = 'damage-number miss';
