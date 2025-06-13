@@ -45,6 +45,7 @@
 
 // Region panel styling
 .region-panel {
+  margin-top: 1rem;
   padding: 1rem;
   background: #2d3748;
   border-radius: 0.5rem;
@@ -54,4 +55,18 @@
 // Hidden panels
 .region-panel.hidden {
   display: none;
+}
+
+.region-tab {
+  background-color: var(--bg-element);
+  color: var(--text);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.region-tab.active {
+  background-color: var(--accent);
 }

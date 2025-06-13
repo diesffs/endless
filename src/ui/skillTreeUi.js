@@ -356,7 +356,7 @@ function initializeSkillModal() {
   // Build skill modal content
   const content = html`
     <div class="skill-modal-content">
-      <span class="skill-modal-close">&times;</span>
+      <span class="modal-close">&times;</span>
       <div class="modal-skill-icon"></div>
       <h2 class="modal-skill-name"></h2>
       <p class="modal-skill-desc"></p>

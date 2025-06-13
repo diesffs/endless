@@ -67,7 +67,7 @@ export function openQuestModal(quest) {
   modal.className = 'modal training-modal'; // Use both classes for styling/position
   modal.innerHTML = `
     <div class="training-modal-content">
-      <button class="training-modal-close">&times;</button>
+      <button class="modal-close">&times;</button>
       <h2 id="quest-modal-title"></h2>
       <div id="quest-modal-category" style="color:#38bdf8;font-size:1em;"></div>
       <p id="quest-modal-desc"></p>
@@ -122,7 +122,7 @@ export function openQuestModal(quest) {
   };
 
   // Close button logic
-  modal.querySelector('.training-modal-close').onclick = () => modal.classList.add('hidden');
+  modal.querySelector('.modal-close').onclick = () => modal.classList.add('hidden');
 
   // Close modal when clicking outside the content
   modal.addEventListener('click', (e) => {

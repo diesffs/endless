@@ -96,7 +96,7 @@ export default class Training {
       // Build markup for bulk-buy modal
       const content = html`
         <div class="training-modal-content">
-          <button class="training-modal-close">&times;</button>
+          <button class="modal-close">&times;</button>
           <h2 class="modal-title"></h2>
           <p>Current Level: <span class="modal-level"></span></p>
           <p>Current Bonus: <span class="modal-bonus"></span></p>

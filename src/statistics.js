@@ -61,7 +61,6 @@ export default class Statistics {
     const container = document.createElement('div');
     container.className = 'statistics-container';
     container.innerHTML = `
-      <div class="options-section">
         <div class="stats-display">
           <div id="stat-total-time-played"></div>
           <div id="stat-total-time-in-fights"></div>
@@ -74,7 +73,6 @@ export default class Statistics {
           <div id="stat-bosses-killed"></div>
           <div id="stat-highest-damage"></div>
         </div>
-      </div>
     `;
     statisticsTab.appendChild(container);
     this.updateStatisticsUI();

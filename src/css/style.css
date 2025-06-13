@@ -1,28 +1,3 @@
-:root {
-  --bg-dark: #111827;
-  --bg-panel: #1f2937;
-  --bg-element: #374151;
-  --accent: #3b82f6;
-  --text: #ffffff;
-  --life: #ef4444;
-  --persistent-storage-slot: rgb(57, 175, 230);
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  user-select: none;
-}
-
-body {
-  font-family: Arial, sans-serif;
-  background-color: var(--bg-dark);
-  color: var(--text);
-  min-height: 100vh;
-  padding: 1rem;
-}
-
 .resource-bar {
   display: grid;
   grid-template-columns: minmax(90px, 120px) minmax(90px, 120px) minmax(90px, 120px) 1fr;
@@ -152,10 +127,6 @@ body {
   position: relative;
 }
 
-.enemy-header {
-  margin-bottom: 0.5rem;
-}
-
 .enemy-main-row {
   position: relative;
   display: flex;
@@ -202,11 +173,6 @@ body {
   background-color: #ff4d4d;
   border-radius: 0.5rem;
   transition: width 0.3s;
-}
-
-.enemy-stats {
-  margin-top: 0.5rem;
-  text-align: left;
 }
 
 .damage-number {
@@ -265,35 +231,8 @@ body {
   vertical-align: middle;
 }
 
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--bg-panel);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--accent);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #2563eb;
-}
-
-/* For Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--accent) var(--bg-panel);
-}
-
 /* Ensure smooth scrolling behavior */
-.tab-panel,
-.grid-container,
-.inventory-grid {
+.tab-panel {
   scroll-behavior: smooth;
 }
 .enemy-section {
@@ -323,23 +262,6 @@ body {
 .enemy-section.red {
   color: #ff0000;
   border-color: #ff0000;
-}
-
-.sub-tab-btn {
-  padding: 10px;
-  cursor: pointer;
-}
-
-.sub-tab-btn.active {
-  background-color: #ddd;
-}
-
-.sub-tab-panel {
-  display: none;
-}
-
-.sub-tab-panel.active {
-  display: block;
 }
 
 .damage-number.blocked {
@@ -413,166 +335,6 @@ body {
   overflow: hidden;
 }
 
-.toast {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #333;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 4px;
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-  z-index: 1000;
-}
-
-.toast.show {
-  opacity: 1;
-}
-
-.toast.error {
-  background-color: #dc2626;
-}
-
-.toast.success {
-  background-color: #059669;
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-
-.hidden {
-  display: none !important;
-}
-
-.elemental-damage {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 5px;
-  margin-top: 5px;
-}
-
-.elemental-damage div {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-/*  SKILLS BAR */
-.action-bar {
-  margin: 10px 0;
-  padding: 5px;
-  background: var(--bg-element);
-  border-radius: 5px;
-}
-
-.skill-slots {
-  display: flex;
-  gap: 5px;
-}
-
-.skill-slot {
-  width: 40px;
-  height: 40px;
-  background: var(--bg-panel);
-  border: 2px solid var(--accent);
-  border-radius: 5px;
-  position: relative;
-  cursor: pointer;
-}
-
-.skill-slot::after {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  font-size: 12px;
-  color: var(--accent);
-  background: var(--bg-panel);
-  opacity: 0.8;
-  border-radius: 3px;
-}
-
-.skill-slot.active {
-  border-color: #ff4444;
-}
-/* END SKILLS */
-
-.attribute-description {
-  display: none;
-}
-
-.tooltip {
-  position: absolute;
-  background-color: #333;
-  color: #fff;
-  padding: 5px 10px;
-  border-radius: 4px;
-  z-index: 1000;
-  pointer-events: none;
-  transition: opacity 0.2s;
-  opacity: 0;
-}
-
-.tooltip.show {
-  opacity: 1;
-}
-
-.tooltip.hidden {
-  display: none;
-}
-
-.modify-panel {
-  position: fixed;
-  top: 0;
-  right: 0;
-  background-color: #1f2937;
-  color: white;
-  border: 1px solid black;
-  padding: 10px;
-  max-height: 100%;
-  max-width: 350px;
-  overflow-y: auto;
-  z-index: 9999;
-  font-family: monospace;
-  font-size: 12px;
-}
-
-.modify-panel h3 {
-  margin-top: 10px;
-  margin-bottom: 5px;
-}
-
-.modify-panel button {
-  background-color: #374151;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  margin-bottom: 5px;
-  cursor: pointer;
-  border-radius: 5px;
-  width: 100%;
-}
-
-.modify-panel button:hover {
-  background-color: #4b5563;
-}
-
 .login-link {
   display: flex;
   align-items: center;
@@ -640,99 +402,11 @@ body {
   color: #ef4444;
 }
 
-#custom-confirm-dialog {
-  position: fixed;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  font-family: inherit;
-}
-#custom-confirm-dialog.show {
-  display: flex;
-}
-#custom-confirm-dialog .confirm-backdrop {
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
-}
-#custom-confirm-dialog .confirm-content {
-  position: relative;
-  background: #222;
-  color: #fff;
-  border-radius: 8px;
-  padding: 24px 32px;
-  min-width: 300px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
-  z-index: 1;
-  text-align: center;
-  animation: popin 0.2s;
-}
-#custom-confirm-dialog .confirm-message {
-  margin-bottom: 18px;
-  font-size: 1.1em;
-  line-height: 1.5;
-}
-#custom-confirm-dialog .confirm-actions {
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-}
-#custom-confirm-dialog .confirm-btn {
-  padding: 8px 24px;
-  border: none;
-  border-radius: 4px;
-  font-size: 1em;
-  cursor: pointer;
-  background: #059669;
-  color: #fff;
-  transition: background 0.2s;
-}
-#custom-confirm-dialog .confirm-btn.confirm-no {
-  background: #dc2626;
-}
-#custom-confirm-dialog .confirm-btn:hover {
-  filter: brightness(1.1);
-}
-@keyframes popin {
-  from {
-    transform: scale(0.95);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
 .enemy-damage {
   position: absolute;
   bottom: 0px;
   right: 0;
   padding: 15px;
-}
-
-/* When dev/debug UI is active, limit the width of the main game area */
-body.dev-active .game-container {
-  max-width: calc(100vw - 720px); /* 2x debug/modify width + gap */
-  margin-left: 370px; /* width of debug panel + gap */
-  margin-right: 370px; /* width of modify panel + gap */
-  transition: max-width 0.3s, margin 0.3s;
-}
-
-@media (max-width: 1200px) {
-  body.dev-active .game-container {
-    max-width: 100vw;
-    margin-left: 0;
-    margin-right: 0;
-  }
 }
 
 .enemy-name {
@@ -771,29 +445,4 @@ body.dev-active .game-container {
 
 #start-btn:hover {
   background-color: #047857;
-}
-
-/* Region Tabs Styling */
-.region-tabs {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-.region-tab {
-  background-color: var(--bg-element);
-  color: var(--text);
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-.region-tab.active {
-  background-color: var(--accent);
-}
-
-/* Region Panels */
-.region-panel {
-  /* Panels share space under tabs */
-  margin-top: 1rem;
 }

@@ -161,7 +161,7 @@ export default class SoulShop {
   createUpgradeModal() {
     const content = html`
       <div class="training-modal-content">
-        <button class="training-modal-close" aria-label="Close">&times;</button>
+        <button class="modal-close" aria-label="Close">&times;</button>
         <h2 class="modal-title"></h2>
         <div class="modal-fields"></div>
         <div class="modal-controls" style="display:none;"></div>
@@ -174,7 +174,7 @@ export default class SoulShop {
       content,
       onClose: () => this.closeModal(),
     });
-    this.modal.querySelector('.training-modal-close').onclick = () => this.closeModal();
+    this.modal.querySelector('.modal-close').onclick = () => this.closeModal();
     this.modal.querySelector('.modal-buy').onclick = () => this.buyBulk(this.currentStat, this.selectedQty);
   }
 

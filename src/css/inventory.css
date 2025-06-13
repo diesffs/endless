@@ -1,3 +1,7 @@
+#inventory {
+  user-select: none;
+  overflow-y: scroll;
+}
 .inventory-btn {
   margin: 5px;
   cursor: pointer;
@@ -36,18 +40,6 @@
   background: var(--bg-panel);
   border-radius: 0.5rem;
   z-index: 1;
-}
-
-.equipment-slot {
-  position: absolute;
-  width: 50px;
-  height: 50px;
-  background: var(--bg-panel);
-  border: 2px solid #3d4757;
-  border-radius: 0.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 /* Position each slot */
@@ -111,16 +103,40 @@
   transform: translateX(-50%);
 }
 
+/* Hide indicator when slot has an item */
+.equipment-slot.has-item .slot-indicator {
+  display: none;
+}
+
+/* Adjust equipment slots to match new size */
+.equipment-slot {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  background: var(--bg-panel);
+  border: 2px solid #3d4757;
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.equipment-slot .inventory-item {
+  z-index: 1;
+}
+.equipment-slot.valid-target {
+  background-color: rgba(76, 175, 80, 0.2);
+}
+
+.equipment-slot.invalid-target {
+  background-color: rgba(244, 67, 54, 0.2);
+}
+
 .slot-indicator {
   position: absolute;
   opacity: 0.3;
   font-size: 1.5rem;
   pointer-events: none;
-}
-
-/* Hide indicator when slot has an item */
-.equipment-slot.has-item .slot-indicator {
-  display: none;
 }
 
 .item-tooltip {
@@ -145,14 +161,11 @@
   margin-bottom: 5px;
 }
 
-.item-stat {
-  color: #4caf50;
-}
-
 .inventory-grid {
   display: block;
   align-content: center;
   justify-items: center;
+  scroll-behavior: smooth;
 }
 
 .grid-container {
@@ -165,6 +178,7 @@
   border-radius: 0.5rem;
   width: fit-content;
   overflow-y: auto;
+  scroll-behavior: smooth;
 }
 
 .grid-cell,
@@ -195,32 +209,9 @@
   user-select: none;
 }
 
-/* Adjust equipment slots to match new size */
-.equipment-slot {
-  width: 40px;
-  height: 40px;
-}
-
-.equipment-slot .inventory-item {
-  z-index: 1;
-}
-
 .inventory-item.dragging {
   opacity: 0.5;
   cursor: grabbing;
-}
-
-.equipment-slot.valid-target {
-  background-color: rgba(76, 175, 80, 0.2);
-}
-
-.equipment-slot.invalid-target {
-  background-color: rgba(244, 67, 54, 0.2);
-}
-
-#inventory {
-  user-select: none;
-  overflow-y: scroll;
 }
 
 .loot-notification {

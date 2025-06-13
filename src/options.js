@@ -12,7 +12,7 @@ export function initializeOptionsUI() {
   const container = document.createElement('div');
   container.className = 'options-container';
   container.innerHTML = `
-    <button id="reset-progress" class="danger-button">Reset All Progress</button>
+    <button id="reset-progress">Reset All Progress</button>
     <div class="options-section">
       <a
         href="https://discord.gg/pvCxff4s"

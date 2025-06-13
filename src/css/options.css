@@ -1,17 +1,16 @@
 /* Reset All Progress button */
-.danger-button,
 #reset-progress {
-  background: #d32f2f;
-  color: #fff;
+  background: #dc2626;
+  color: white;
   border: none;
-  padding: 0.7em 1.5em;
+  padding: 12px 24px;
   border-radius: 4px;
-  font-weight: bold;
   cursor: pointer;
-  margin-bottom: 1em;
+  font-weight: bold;
   transition: background 0.2s;
+  width: 100%;
+  margin-bottom: 10px;
 }
-.danger-button:hover,
 #reset-progress:hover {
   background: #b71c1c;
 }
@@ -46,4 +45,11 @@
   height: 1.3em;
   vertical-align: middle;
   fill: #fff;
+}
+
+.options-section {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
 }

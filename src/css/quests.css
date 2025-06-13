@@ -66,10 +66,6 @@
   cursor: not-allowed !important;
   opacity: 0.7;
 }
-#quest-modal-close {
-  background-color: #4b5563;
-  color: #fff;
-}
 
 .quest-tabs {
   display: flex;

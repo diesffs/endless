@@ -126,6 +126,11 @@
   margin: auto;
 }
 
+.skill-slots {
+  display: flex;
+  gap: 5px;
+}
+
 .skill-slot {
   position: relative;
   width: 40px;
@@ -183,31 +188,6 @@
   z-index: 2;
 }
 
-.skill-tooltip {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.9);
-  color: white;
-  padding: 8px;
-  border-radius: 4px;
-  width: 200px;
-  pointer-events: none;
-  z-index: 1000;
-}
-
-.skill-slot:hover .skill-tooltip {
-  display: block;
-}
-
-.tooltip-header {
-  color: #4caf50;
-  font-weight: bold;
-  margin-bottom: 4px;
-}
-
 .tooltip-type {
   color: #888;
   font-size: 0.9em;
@@ -254,18 +234,6 @@
 }
 
 /* Skill Modal Styling */
-.skill-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
 .skill-modal.hidden {
   display: none;
 }
@@ -277,16 +245,6 @@
   text-align: center;
   position: relative;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-}
-.skill-modal-close {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.75rem;
-  background: transparent;
-  border: none;
-  color: var(--text, #fff);
-  font-size: 1.5rem;
-  cursor: pointer;
 }
 .skill-modal-content h2 {
   margin-bottom: 1rem;
@@ -417,4 +375,11 @@
 .auto-cast-switch input[type='checkbox']:checked::before,
 .display-switch input[type='checkbox']:checked::before {
   transform: translateX(20px);
+}
+/*  SKILLS BAR */
+.action-bar {
+  margin: 10px 0;
+  padding: 5px;
+  background: var(--bg-element);
+  border-radius: 5px;
 }

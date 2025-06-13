@@ -105,7 +105,7 @@ export default class Inventory {
       const html = String.raw;
       let content = html`
         <div class="training-modal-content">
-          <button class="training-modal-close">&times;</button>
+          <button class="modal-close">&times;</button>
           <h2>${matDef.name || mat.name || ''}</h2>
           <p>${matDef.description || ''}</p>
           <p>You have <b>${mat.qty}</b></p>
@@ -173,7 +173,7 @@ export default class Inventory {
     // Default: show quantity modal
     const content = html`
       <div class="training-modal-content">
-        <button class="training-modal-close">&times;</button>
+        <button class="modal-close">&times;</button>
         <h2>${matDef.name || mat.name || ''}</h2>
         <p>${matDef.description || ''}</p>
         <p>You have <b>${mat.qty}</b></p>

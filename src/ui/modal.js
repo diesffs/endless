@@ -22,7 +22,7 @@ export function createModal({ id, className, content, onClose }) {
   document.body.appendChild(overlay);
 
   // Handle close button clicks
-  const closeBtn = overlay.querySelector('.training-modal-close, .skill-modal-close, .modal-close');
+  const closeBtn = overlay.querySelector('.modal-close');
   if (closeBtn) {
     closeBtn.addEventListener('click', () => closeModal(id));
   }
