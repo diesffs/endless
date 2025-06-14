@@ -10,3 +10,8 @@
 - Percentage-based damage and crit damage will be capped for items.
 - Mana will be reworked, since after a few hours of play, you get so much mana it never runs out.
 - Skill level-ups will be capped to your hero's level.
+- soul shop upgrades not always working correctly. Will be fixed asap.
+
+> <br>
+
+## <span style="color: red;">Upcoming reset of all data. Will notify a few days before it happens.</span>
