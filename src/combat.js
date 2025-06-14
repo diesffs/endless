@@ -155,7 +155,7 @@ export async function defeatEnemy() {
     const { crystals, gold, materials, souls } = game.currentEnemy.reward;
     if (gold) hero.gainGold(gold);
     if (crystals) hero.gainCrystals(crystals);
-    if (souls) hero.gainSouls(souls + Math.floor(hero.bossLevel * 0.1)); // +10% per boss level
+    if (souls) hero.gainSouls(souls + Math.floor(hero.bossLevel * 0.01)); // +1% per boss level
     if (materials && materials.length) {
       materials.forEach(({ id, qty }) => inventory.addMaterial({ id, qty }));
     }
