@@ -27,6 +27,38 @@ export const handleSavedData = (savedData, self) => {
 
 // Debugging
 
+export function initDebugging() {
+  let dev = false; // Track if dev mode is active
+  let keySequence = [];
+  const toggleSequence = ['e', 'd', 'e', 'v'];
+
+  document.addEventListener('keydown', (event) => {
+    keySequence.push(event.key.toLowerCase());
+    if (keySequence.length > toggleSequence.length) {
+      keySequence.shift();
+    }
+    if (keySequence.join('') === toggleSequence.join('')) {
+      dev = !dev;
+      console.log(`Dev mode is now ${dev ? 'enabled' : 'disabled'}.`);
+      if (dev) {
+        document.body.classList.add('dev-active');
+        createDebugUI();
+        createModifyUI();
+      } else {
+        document.body.classList.remove('dev-active');
+        const debugDiv = document.querySelector('.debug-ui');
+        const modifyUI = document.querySelector('.modify-ui');
+        if (debugDiv) {
+          debugDiv.remove();
+        }
+        if (modifyUI) {
+          modifyUI.remove();
+        }
+      }
+    }
+  });
+}
+
 export function createDebugUI() {
   const indentPx = 10;
   const debugDiv = document.createElement('div');

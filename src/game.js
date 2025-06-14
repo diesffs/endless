@@ -8,7 +8,18 @@ import {
   initializeSkillTreeUI,
 } from './ui/ui.js';
 import { playerAttack, enemyAttack, playerDeath, defeatEnemy } from './combat.js';
-import { game, hero, inventory, crystalShop, training, skillTree, statistics, quests, soulShop } from './globals.js';
+import {
+  game,
+  hero,
+  inventory,
+  crystalShop,
+  training,
+  skillTree,
+  statistics,
+  quests,
+  soulShop,
+  getGlobals,
+} from './globals.js';
 import Enemy from './enemy.js';
 import { ITEM_SLOTS, MATERIALS_SLOTS } from './inventory.js';
 import { updateInventoryGrid } from './ui/inventoryUi.js';
@@ -187,16 +198,7 @@ class Game {
 
   saveGame() {
     statistics.updateStatisticsUI();
-    const saveData = {
-      hero: hero,
-      skillTree: skillTree,
-      crystalShop: crystalShop,
-      training: training,
-      inventory: inventory,
-      statistics: statistics,
-      quests: quests,
-      soulShop: soulShop,
-    };
+    const saveData = getGlobals();
     localStorage.setItem('gameProgress', JSON.stringify(saveData));
   }
 
@@ -209,8 +211,7 @@ class Game {
   loadGame() {
     const savedData = localStorage.getItem('gameProgress');
     if (savedData) {
-      const parsedData = JSON.parse(savedData);
-      return parsedData;
+      return JSON.parse(savedData);
     }
     return null;
   }

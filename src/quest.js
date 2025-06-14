@@ -79,9 +79,8 @@ export class Quest {
 }
 
 export default class QuestTracker {
-  constructor(definitions = QUEST_DEFINITIONS, savedData = null) {
-    this.definitions = definitions;
-    this.quests = definitions.map((def) => Quest.fromJSON(def, savedData?.[def.id]));
+  constructor(savedData = null) {
+    this.quests = QUEST_DEFINITIONS.map((def) => Quest.fromJSON(def, savedData?.[def.id]));
   }
 
   claim(id) {
@@ -99,6 +98,6 @@ export default class QuestTracker {
 
   // Reset all quest claimed status
   reset() {
-    this.quests = this.definitions.map((def) => Quest.fromJSON(def));
+    this.quests = QUEST_DEFINITIONS.map((def) => Quest.fromJSON(def));
   }
 }

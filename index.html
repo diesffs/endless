@@ -31,29 +31,27 @@
   </head>
 
   <body>
+    <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Open menu">☰</button>
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
     <div class="game-container">
-      <div class="resource-bar">
-        <div class="resource resource-gold"><span class="icon">💰</span><span id="gold"></span></div>
-        <div class="resource resource-crystal"><span class="icon">💎</span><span id="crystals"></span></div>
-        <div class="resource resource-souls"><span class="icon">👻</span><span id="souls"></span></div>
-        <!-- Cloud Save UI -->
-        <div class="cloud-save-bar">
-          <span id="cloud-save-status">Checking login...</span>
-          <button id="cloud-save-btn" disabled>Save to Cloud</button>
-          <button id="cloud-load-btn" disabled>Load from Cloud</button>
+      <div class="sidebar">
+        <div class="resource-bar">
+          <div class="resource resource-gold"><span class="icon">💰</span><span id="gold"></span></div>
+          <div class="resource resource-crystal"><span class="icon">💎</span><span id="crystals"></span></div>
+          <div class="resource resource-souls"><span class="icon">👻</span><span id="souls"></span></div>
         </div>
-      </div>
 
-      <div class="tab-buttons">
-        <button class="tab-btn active" data-tab="stats">Stats</button>
-        <button class="tab-btn" data-tab="training">Training</button>
-        <button class="tab-btn" data-tab="inventory">Inventory</button>
-        <button class="tab-btn" data-tab="skilltree">Skill Tree</button>
-        <button class="tab-btn" data-tab="crystalShop">Crystal Shop</button>
-        <button class="tab-btn" data-tab="soulShop">Soul Shop</button>
-        <button class="tab-btn" data-tab="quests">Quests</button>
-        <button class="tab-btn" data-tab="statistics">Statistics</button>
-        <button class="tab-btn" data-tab="options">Options</button>
+        <div class="tab-buttons">
+          <button class="tab-btn active" data-tab="stats">Stats</button>
+          <button class="tab-btn" data-tab="training">Training</button>
+          <button class="tab-btn" data-tab="inventory">Inventory</button>
+          <button class="tab-btn" data-tab="skilltree">Skill Tree</button>
+          <button class="tab-btn" data-tab="crystalShop">Crystal Shop</button>
+          <button class="tab-btn" data-tab="soulShop">Soul Shop</button>
+          <button class="tab-btn" data-tab="quests">Quests</button>
+          <button class="tab-btn" data-tab="statistics">Statistics</button>
+          <button class="tab-btn" data-tab="options">Options</button>
+        </div>
       </div>
 
       <div class="main-content">

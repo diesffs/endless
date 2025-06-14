@@ -40,6 +40,7 @@
 .region-tabs {
   display: flex;
   gap: 0.5rem;
+  height: 30px;
   margin-bottom: 1rem;
 }
 

@@ -77,6 +77,7 @@ export function initializeUI() {
   document.querySelectorAll('.region-tab').forEach((btn) => {
     btn.addEventListener('click', async () => {
       const region = btn.dataset.region;
+      if (game.fightMode === region) return; // No change needed
       const confirmed = await showConfirmDialog(
         `Are you sure you want to change to ${region}? That will reset your stage progress and will find you a new enemy`
       );

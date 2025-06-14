@@ -1,6 +1,21 @@
+.game-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 180px;
+  margin-right: 1rem;
+}
+
 .resource-bar {
-  display: grid;
-  grid-template-columns: minmax(90px, 120px) minmax(90px, 120px) minmax(90px, 120px) 1fr;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   gap: 1rem;
   margin-bottom: 1rem;
   user-select: none;
@@ -20,10 +35,12 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
+  width: 100%;
 }
 
 .game-panel,
 .combat-panel {
+  display: grid;
   background-color: var(--bg-panel);
   padding: 1rem;
   border-radius: 0.5rem;
@@ -39,6 +56,7 @@
 
 .tab-buttons {
   display: flex;
+  flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 1rem;
   width: 100%;
@@ -81,6 +99,7 @@
   background-color: var(--bg-element);
   padding: 1rem;
   border-radius: 0.5rem;
+  height: 100%;
   min-height: 100%;
   max-height: 70vh;
   overflow-y: auto;
@@ -212,14 +231,77 @@
   }
 }
 
-@media (max-width: 968px) {
+@media (max-width: 1100px) {
   .main-content {
     grid-template-columns: 1fr;
+  }
+  .sidebar {
+    display: none;
+  }
+  .sidebar-toggle {
+    display: flex;
+  }
+}
+
+.sidebar-toggle {
+  display: flex;
+  position: fixed;
+  top: 1.5rem;
+  left: 1.5rem;
+  z-index: 1000;
+  background: #232b3a;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+@media (min-width: 1101px) {
+  .sidebar-toggle {
+    display: none;
+  }
+}
+
+.sidebar.sidebar-visible {
+  display: flex !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  background: #181e29;
+  z-index: 1100;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.18);
+  padding-top: 2.5rem;
+}
+
+.sidebar-backdrop {
+  display: none;
+}
+
+@media (max-width: 1100px) {
+  .sidebar-backdrop.sidebar-backdrop-visible {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1099;
   }
 }
 
 #stage-display {
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 16px;
   font-weight: bold;
   color: #ffffff;
@@ -333,73 +415,6 @@
 .life-bar,
 .mana-bar {
   overflow: hidden;
-}
-
-.login-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #3b82f6;
-  text-decoration: none;
-  padding: 2px 8px;
-  border-radius: 4px;
-  background: #e0e7ef;
-  transition: background 0.2s, color 0.2s;
-}
-.login-link:hover {
-  background: #3b82f6;
-  color: #fff;
-  text-decoration: none;
-}
-
-.cloud-save-bar {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  background: #232b3a;
-  border-radius: 6px;
-  padding: 0.4em 1em;
-  margin-top: 0.2em;
-  margin-bottom: 0.2em;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
-}
-
-#cloud-save-status {
-  font-size: 1.08em;
-  color: #10b981;
-  font-weight: 600;
-  letter-spacing: 0.2px;
-}
-#cloud-save-status.not-logged-in {
-  color: #ef4444;
-}
-#cloud-save-status.saving {
-  color: #f59e42;
-}
-#cloud-save-status.failed {
-  color: #ef4444;
-}
-
-#cloud-save-btn,
-#cloud-load-btn {
-  background: linear-gradient(90deg, #3b82f6 60%, #2563eb 100%);
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  padding: 0.45em 1.2em;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.08);
-  transition: background 0.2s, opacity 0.2s;
-}
-#cloud-save-btn:disabled {
-  background: #a1a1aa;
-  color: #e5e7eb;
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-.login-status {
-  color: #ef4444;
 }
 
 .enemy-damage {
