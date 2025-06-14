@@ -1,5 +1,5 @@
 import { QUEST_DEFINITIONS } from './constants/quests.js';
-import { hero, game, statistics } from './globals.js';
+import { hero, statistics, dataManager } from './globals.js';
 import { showToast, updateResources, updateTabIndicators } from './ui/ui.js';
 
 export class Quest {
@@ -64,7 +64,7 @@ export class Quest {
 
     // Update tab indicators for claimed quest rewards
     updateTabIndicators();
-    game.saveGame();
+    dataManager.saveGame();
 
     return this.reward;
   }

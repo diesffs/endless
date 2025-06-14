@@ -1,5 +1,5 @@
 import Item from './item.js';
-import { game, hero, statistics } from './globals.js';
+import { game, hero, statistics, dataManager } from './globals.js';
 import { showToast, updateResources } from './ui/ui.js';
 import { createModal, closeModal } from './ui/modal.js';
 import { initializeInventoryUI, updateInventoryGrid, updateMaterialsGrid } from './ui/inventoryUi.js';
@@ -86,7 +86,7 @@ export default class Inventory {
     }
     this.hasNewItems = true; // Set flag when new material is added
     updateMaterialsGrid();
-    game.saveGame();
+    dataManager.saveGame();
   }
 
   openMaterialDialog(mat) {
@@ -160,7 +160,7 @@ export default class Inventory {
           hero.recalculateFromAttributes();
           updateMaterialsGrid();
           updateInventoryGrid();
-          game.saveGame();
+          dataManager.saveGame();
           updateResources();
           updateStatsAndAttributesUI();
           closeModal('material-upgrade-dialog');
@@ -217,7 +217,7 @@ export default class Inventory {
       }
       hero.recalculateFromAttributes();
       updateMaterialsGrid();
-      game.saveGame();
+      dataManager.saveGame();
       updateResources();
       updateStatsAndAttributesUI();
       closeModal('material-use-dialog');
@@ -260,7 +260,7 @@ export default class Inventory {
       updateInventoryGrid();
       updateMaterialsGrid();
       updateResources(); // <-- update the UI after using a material
-      game.saveGame();
+      dataManager.saveGame();
     } else {
       showToast(`No ${rarity.toLowerCase()} or lower items to salvage`, 'info');
     }
@@ -300,7 +300,7 @@ export default class Inventory {
     }
 
     hero.recalculateFromAttributes();
-    game.saveGame();
+    dataManager.saveGame();
   }
 
   moveItemToPosition(item, newPosition) {
@@ -334,7 +334,7 @@ export default class Inventory {
     }
     updateInventoryGrid();
     hero.recalculateFromAttributes();
-    game.saveGame(); // Add save
+    dataManager.saveGame();
   }
 
   getEquippedItemById(id) {
@@ -392,7 +392,7 @@ export default class Inventory {
       }
     }
     updateInventoryGrid();
-    game.saveGame(); // Add save
+    dataManager.saveGame();
   }
 
   removeTooltip() {
@@ -439,7 +439,7 @@ export default class Inventory {
 
     // Equip the new item
     this.equippedItems[slot] = item;
-    game.saveGame(); // Add save
+    dataManager.saveGame();
   }
 
   updateItemBonuses() {

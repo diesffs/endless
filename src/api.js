@@ -2,7 +2,7 @@ import { crypt } from './functions.js';
 
 // Set your actual API URL here
 const apiUrl = import.meta.env.VITE_API_URL;
-const gameName = import.meta.env.VITE_GAME_NAME || 'endless';
+const gameName = import.meta.env.VITE_GAME_NAME;
 
 /**
  * Flexible API fetch wrapper for all HTTP methods.
@@ -20,7 +20,7 @@ export function apiFetch(path, options = {}) {
 }
 
 // Cloud Save: Save game data to the server
-export async function saveGameData(userId, data, token) {
+export async function saveGameData(userId, data) {
   // data: { hero, skillTree, ... }
   const payload = {
     data_json: crypt.encrypt(JSON.stringify(data.data_json)),
@@ -30,7 +30,6 @@ export async function saveGameData(userId, data, token) {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(payload),
   });
@@ -41,12 +40,8 @@ export async function saveGameData(userId, data, token) {
 }
 
 // Cloud Load: Load game data from the server
-export async function loadGameData(userId, token, premium = 'no') {
-  const response = await apiFetch(`/game-data/${userId}?premium=${premium}&gameName=${gameName}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+export async function loadGameData(userId, premium = 'no') {
+  const response = await apiFetch(`/game-data/${userId}?premium=${premium}&gameName=${gameName}`);
   if (!response.ok) {
     throw new Error('Failed to load game data');
   }

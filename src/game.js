@@ -1,32 +1,9 @@
-import {
-  updatePlayerLife,
-  updateEnemyStats,
-  updateStageUI,
-  updateResources,
-  updateBuffIndicators,
-  showToast,
-  initializeSkillTreeUI,
-} from './ui/ui.js';
+import { updatePlayerLife, updateEnemyStats, updateStageUI, updateResources, updateBuffIndicators } from './ui/ui.js';
 import { playerAttack, enemyAttack, playerDeath, defeatEnemy } from './combat.js';
-import {
-  game,
-  hero,
-  inventory,
-  crystalShop,
-  training,
-  skillTree,
-  statistics,
-  quests,
-  soulShop,
-  getGlobals,
-} from './globals.js';
+import { game, hero, crystalShop, skillTree, statistics, dataManager, setGlobals } from './globals.js';
 import Enemy from './enemy.js';
-import { ITEM_SLOTS, MATERIALS_SLOTS } from './inventory.js';
-import { updateInventoryGrid } from './ui/inventoryUi.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
-import { updateQuestsUI } from './ui/questUi.js';
 import { updateBossUI } from './ui/bossUi.js';
-import { updateRegionUI } from './region.js';
 
 class Game {
   constructor() {
@@ -51,6 +28,10 @@ class Game {
 
     updateStageUI();
     updateResources(); // Update resources to reflect new crystal count
+  }
+
+  getStartingStage() {
+    return crystalShop.crystalUpgrades?.startingStage || 1;
   }
 
   damagePlayer(damage) {
@@ -88,7 +69,7 @@ class Game {
 
   damageEnemy(damage) {
     damage = Math.floor(damage); // Ensure damage is an integer
-    if (game.fightMode === 'arena' && this.currentEnemy) {
+    if (this.fightMode === 'arena' && this.currentEnemy) {
       // Boss damage flow
       const isDead = this.currentEnemy.takeDamage(damage);
 
@@ -181,11 +162,11 @@ class Game {
       updateBuffIndicators();
 
       // Reset stage and enemy for Explore mode
-      this.stage = hero.getStartingStage();
+      this.stage = this.getStartingStage();
       updateStageUI();
       updateStatsAndAttributesUI();
-      if (game.fightMode === 'arena' && game.currentEnemy) {
-        this.currentEnemy = game.currentEnemy;
+      if (this.fightMode === 'arena' && this.currentEnemy) {
+        this.currentEnemy = this.currentEnemy;
       } else {
         this.currentEnemy = new Enemy(this.stage);
       }
@@ -198,91 +179,12 @@ class Game {
     }
   }
 
-  saveGame() {
-    statistics.updateStatisticsUI();
-    const saveData = getGlobals();
-    localStorage.setItem('gameProgress', JSON.stringify(saveData));
-  }
-
-  /**
-   * Loads the latest game data from localStorage.
-   * The cloud save/load logic is now handled manually in main.js.
-   * This function is no longer used for cloud sync and only loads from localStorage.
-   * @returns {object|null} The latest save data
-   */
-  loadGame() {
-    const savedData = localStorage.getItem('gameProgress');
-    if (savedData) {
-      return JSON.parse(savedData);
-    }
-    return null;
-  }
-
-  clearSave() {
-    localStorage.removeItem('gameProgress');
-  }
-
-  /**
-   * Resets hero stats, stage, and enemy to initial state.
-   * Updates UI and saves the game.
-   */
-  resetCoreGameState() {
-    // Reset hero and stage-related progress
-    hero.setBaseStats(null);
-
-    game.stage = hero.getStartingStage();
-    game.gameStarted = false;
-    game.currentEnemy = new Enemy(game.stage);
-    game.currentEnemy.resetLife();
-
-    updateStageUI();
-    updateResources();
-    updatePlayerLife();
-    updateEnemyStats();
-  }
-
-  /**
-   * Resets all player progress, inventory, shops, skills, and statistics.
-   * Updates all relevant UI and saves the reset state.
-   */
   resetAllProgress() {
-    // Reset inventory and equipped items
-    inventory.equippedItems = {};
-    inventory.inventoryItems = new Array(ITEM_SLOTS).fill(null);
-    inventory.materials = new Array(MATERIALS_SLOTS).fill(null);
-    updateInventoryGrid();
-
-    soulShop.resetSoulShop();
-    training.reset();
-    statistics.resetStatistics();
-    quests.reset();
-    crystalShop.resetCrystalShop();
-    crystalShop.initializeCrystalShopUI();
-    skillTree.resetSkillTree();
-    skillTree.skillPoints = 0; // reset permanent bonuses
-    initializeSkillTreeUI();
-
-    // Reset core game state (stage, enemy, player stats, UI, save)
-    this.resetCoreGameState();
-    hero.recalculateFromAttributes();
-
-    // Update additional UI
-    updateStatsAndAttributesUI();
-    updateRegionUI();
-    updateQuestsUI();
-    training.updateTrainingUI('gold-upgrades');
-    training.updateTrainingUI('crystal-upgrades');
-    statistics.updateStatisticsUI();
-
-    // Reset start button UI
-    const startBtn = document.getElementById('start-btn');
-    if (startBtn) {
-      startBtn.textContent = 'Fight';
-      startBtn.style.backgroundColor = '#059669';
-    }
-
-    showToast('All progress has been reset!');
-    this.saveGame();
+    setGlobals({ reset: true });
+    // reload to update UI
+    window.location.reload();
+    // TODO: update all UI, create a method for this, insteafd of reloading. LOW PRIORITY
+    dataManager.saveGame();
   }
 }
 

@@ -1,4 +1,4 @@
-import { game, hero, skillTree } from './globals.js';
+import { dataManager, hero, skillTree } from './globals.js';
 import {
   updateResources,
   initializeSkillTreeUI,
@@ -191,7 +191,7 @@ export default class CrystalShop {
       showToast('Boss level has been reset to 1.', 'success');
     }
     updateResources();
-    game.saveGame();
+    dataManager.saveGame();
     this.initializeCrystalShopUI();
   }
 
@@ -408,7 +408,7 @@ export default class CrystalShop {
    */
   _commitChanges(close = true) {
     try {
-      game.saveGame();
+      dataManager.saveGame();
       updateResources();
       this.initializeCrystalShopUI();
       if (close) this.closeModal();

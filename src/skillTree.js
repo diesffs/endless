@@ -1,6 +1,6 @@
 import { createDamageNumber } from './combat.js';
 import { handleSavedData } from './functions.js';
-import { game, hero } from './globals.js';
+import { dataManager, game, hero } from './globals.js';
 import { CLASS_PATHS, SKILL_TREES } from './constants/skills.js';
 import {
   showManaWarning,
@@ -112,7 +112,7 @@ export default class SkillTree {
       name: pathName,
     };
     hero.recalculateFromAttributes();
-    game.saveGame();
+    dataManager.saveGame();
 
     // Google Analytics event: class path chosen
     if (typeof gtag === 'function') {
@@ -183,7 +183,8 @@ export default class SkillTree {
     }
 
     // Trigger tooltip update
-    updateSkillTreeValues(); // Ensure this function updates the tooltip content    game.saveGame();
+    updateSkillTreeValues();
+    dataManager.saveGame();
 
     // Update tab indicators for spent skill points
     updateTabIndicators();
@@ -423,7 +424,7 @@ export default class SkillTree {
     hero.recalculateFromAttributes();
     updateActionBar();
     updateSkillTreeValues();
-    game.saveGame();
+    dataManager.saveGame();
 
     // Google Analytics event: skill tree reset
     if (typeof gtag === 'function') {
@@ -435,7 +436,7 @@ export default class SkillTree {
 
   setAutoCast(skillId, enabled) {
     this.autoCastSettings[skillId] = enabled;
-    game.saveGame();
+    dataManager.saveGame();
   }
 
   isAutoCastEnabled(skillId) {
@@ -445,7 +446,7 @@ export default class SkillTree {
   // --- Slot display settings (default ON) ---
   setDisplay(skillId, enabled) {
     this.displaySettings[skillId] = enabled;
-    game.saveGame();
+    dataManager.saveGame();
   }
 
   isDisplayEnabled(skillId) {

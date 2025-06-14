@@ -1,6 +1,6 @@
 {
   "name": "endless",
-  "version": "1.0.0",
+  "version": "0.0.3",
   "description": "Secret Tower Game",
   "type": "module",
   "scripts": {

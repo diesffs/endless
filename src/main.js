@@ -1,6 +1,3 @@
-import Hero from './hero.js';
-import Game from './game.js';
-import Training from './training.js';
 import {
   initializeSkillTreeUI,
   initializeUI,
@@ -10,18 +7,10 @@ import {
   updateStageUI,
   updateTabIndicators,
 } from './ui/ui.js';
-import CrystalShop from './crystalShop.js';
-import Inventory from './inventory.js';
-import SkillTree from './skillTree.js';
 import { initDebugging } from './functions.js';
-import Statistics from './statistics.js';
-import QuestTracker from './quest.js';
-import { game, hero, crystalShop, statistics, setGlobals, soulShop, options } from './globals.js';
+import { game, hero, crystalShop, statistics, setGlobals, soulShop, options, dataManager } from './globals.js';
 import { initializeRegionSystem, updateRegionUI } from './region.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
-import { ENEMY_LIST } from './constants/enemies.js';
-import SoulShop from './soulShop.js';
-import { Options } from './options.js';
 
 window.qwe = console.log;
 window.qw = console.log;
@@ -31,32 +20,9 @@ window.log = console.log;
 
 // Wrap initialization in an async IIFE to avoid top-level await error
 (async () => {
-  const _game = new Game();
-  const savedData = await _game.loadGame();
-  const _hero = new Hero(savedData?.hero);
-  const _inventory = new Inventory(savedData?.inventory);
-  const _skillTree = new SkillTree(savedData?.skillTree);
-  const _crystalShop = new CrystalShop(savedData?.crystalShop);
-  const _training = new Training(savedData?.training);
-  const _statistics = new Statistics(savedData?.statistics);
-  const _quests = new QuestTracker(savedData?.quests);
-  const _soulShop = new SoulShop(savedData?.soulShop);
-  const _options = new Options(savedData?.options);
+  await setGlobals();
 
-  setGlobals({
-    game: _game,
-    hero: _hero,
-    inventory: _inventory,
-    training: _training,
-    skillTree: _skillTree,
-    crystalShop: _crystalShop,
-    statistics: _statistics,
-    quests: _quests,
-    soulShop: _soulShop,
-    options: _options,
-  });
-
-  game.stage = hero.getStartingStage() || 1;
+  game.stage = game.getStartingStage() || 1;
 
   initializeUI();
   crystalShop.initializeCrystalShopUI();
@@ -76,12 +42,10 @@ window.log = console.log;
   updateEnemyStats();
   updateTabIndicators();
 
-  // Preload all enemy avatar images to warm browser cache
-  preloadEnemyImages();
-
   initializeRegionSystem();
   updateRegionUI();
-  window.addEventListener('DOMContentLoaded', () => {});
+
+  initDebugging();
 
   let isRunning = false;
   setInterval(() => {
@@ -94,7 +58,7 @@ window.log = console.log;
 
   setInterval(() => {
     statistics.update();
-    game.saveGame();
+    dataManager.saveGame();
   }, 60000);
 
   // Sidebar toggle logic for responsive sidebar
@@ -125,16 +89,4 @@ window.log = console.log;
       }
     });
   })();
-
-  initDebugging();
-
-  // Preload function for enemy images
-  function preloadEnemyImages() {
-    const baseUrl = import.meta.env.BASE_URL || '';
-    const urls = Array.from(new Set(ENEMY_LIST.map((e) => baseUrl + e.image)));
-    urls.forEach((src) => {
-      const img = new Image();
-      img.src = src;
-    });
-  }
 })();

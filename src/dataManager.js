@@ -1,0 +1,152 @@
+import { loadGameData, saveGameData, apiFetch } from './api.js';
+import { crypt } from './functions.js';
+import { getGlobals } from './globals.js';
+import { showToast } from './ui/ui.js';
+
+export class DataManager {
+  constructor() {
+    this.session = null;
+    this.sessionInterval = null;
+  }
+
+  getSession() {
+    return this.session;
+  }
+
+  setSession(user) {
+    this.session = user;
+  }
+
+  clearSession() {
+    this.session = null;
+  }
+
+  async saveGame({ cloud = false } = {}) {
+    const saveData = crypt.encrypt(JSON.stringify(getGlobals()));
+
+    localStorage.setItem('gameProgress', saveData);
+
+    if (cloud) {
+      try {
+        // Encrypt data for cloud save, match previous structure
+        await saveGameData(this.session.id, {
+          data_json: saveData,
+          game_name: import.meta.env.VITE_GAME_NAME,
+        });
+      } catch (e) {
+        showToast('Cloud save failed!');
+        console.error('Cloud save failed:', e);
+      }
+    }
+  }
+
+  async loadGame({ cloud = false, premium = 'no' } = {}) {
+    let data = null;
+    let updated_at = null;
+    let source = 'local';
+
+    // get cloud save data
+    try {
+      if (cloud && this.session?.id) {
+        const result = await loadGameData(this.session.id, premium);
+        if (result.data) {
+          data = result.data;
+          updated_at = result.updated_at;
+          source = 'cloud';
+        }
+      }
+    } catch (e) {
+      console.error('Cloud load failed:', e);
+    }
+
+    // if no cloud data, try local storage
+    if (!data) {
+      data = localStorage.getItem('gameProgress');
+      if (!data) {
+        console.warn('No game data found in local storage');
+        return null;
+      }
+      // Decrypt data
+      try {
+        data = crypt.decrypt(data);
+      } catch (e) {
+        console.error('Decryption failed:', e);
+        try {
+          data = JSON.parse(data);
+        } catch (e) {
+          console.warn('Failed to parse game data:', data);
+          return null;
+        }
+      }
+    }
+
+    // get version
+    let version = data.options?.version || null;
+
+    if (!version) {
+      const salt = Math.random().toString(36).substring(2, 15);
+      localStorage.setItem('game_backup_' + salt, JSON.stringify(data));
+      return null;
+    }
+
+    data = await this.runMigrations(data, version);
+    data.source = source;
+    data.updated_at = updated_at;
+    return data;
+  }
+
+  async runMigrations(data, version) {
+    let migratedData = data;
+
+    // List migration files
+    const migrationContext = import.meta.glob('./migrations/*.js', { eager: true });
+    // Extract versions and sort
+    const migrations = Object.keys(migrationContext)
+      .map((path) => {
+        const match = path.match(/([\\/])(\d+\.\d+\.\d+)\.js$/);
+        return match ? { version: match[2], path } : null;
+      })
+      .filter(Boolean)
+      .sort((a, b) => a.version.localeCompare(b.version, undefined, { numeric: true }));
+
+    let currentVersion = version;
+    for (const migration of migrations) {
+      if (migration.version > currentVersion) {
+        const migrationModule = migrationContext[migration.path];
+        if (typeof migrationModule.run === 'function') {
+          // If run() returns true, update version
+          const { data: newData, result } = await migrationModule.run(data);
+          if (result === true) {
+            currentVersion = migration.version;
+            migratedData = newData;
+          }
+        }
+      }
+    }
+    // Update version in data
+    if (!data.dataManager) data.dataManager = {};
+    // previous version kept, if migration fails
+    migratedData.options.version = currentVersion;
+    return migratedData;
+  }
+
+  async checkSession() {
+    let userSession = null;
+    try {
+      const res = await apiFetch(`/user/session`);
+      if (!res.ok) throw new Error('Not logged in');
+      const user = (await res.json()).user;
+      this.setSession(user);
+      userSession = user;
+    } catch (error) {
+      this.clearSession();
+      userSession = null;
+    }
+  }
+
+  async startSessionMonitor() {
+    await this.checkSession();
+    if (this.sessionInterval) clearInterval(this.sessionInterval);
+    this.sessionInterval = setInterval(() => this.checkSession(), 60000 * 60); // check every hour
+  }
+}

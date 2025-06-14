@@ -1,4 +1,4 @@
-import { hero, inventory, game } from '../globals.js';
+import { hero, inventory, dataManager } from '../globals.js';
 import { ITEM_SLOTS, MATERIALS_SLOTS, PERSISTENT_SLOTS } from '../inventory.js';
 import { MATERIALS } from '../constants/materials.js';
 import { hideTooltip, positionTooltip, showToast, showTooltip } from '../ui/ui.js';
@@ -252,7 +252,7 @@ export function setupDragAndDrop() {
         if (crystalsGained > 0) msg += `, gained ${crystalsGained} crystal${crystalsGained > 1 ? 's' : ''}`;
         showToast(msg, 'success');
         updateInventoryGrid();
-        game.saveGame();
+        dataManager.saveGame();
       }
     });
 
@@ -365,7 +365,7 @@ export function setupItemDragAndTooltip() {
           delete inventory.equippedItems[equippedSlot];
           hero.recalculateFromAttributes();
           updateInventoryGrid();
-          game.saveGame();
+          dataManager.saveGame();
         }
         return;
       }
@@ -451,7 +451,7 @@ export function sortMaterials() {
   // Fill up to MATERIALS_SLOTS with nulls
   inventory.materials = [...nonNullMaterials, ...new Array(MATERIALS_SLOTS - nonNullMaterials.length).fill(null)];
   updateMaterialsGrid();
-  game.saveGame();
+  dataManager.saveGame();
 }
 
 export function updateMaterialsGrid(inv) {
@@ -520,5 +520,5 @@ export function sortInventory() {
 
   // Update the UI
   updateInventoryGrid();
-  game.saveGame();
+  dataManager.saveGame();
 }

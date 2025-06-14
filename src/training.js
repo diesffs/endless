@@ -1,7 +1,7 @@
 import { formatStatName, updateResources } from './ui/ui.js';
 
 import { showToast } from './ui/ui.js';
-import { game, hero } from './globals.js';
+import { hero, dataManager } from './globals.js';
 import { handleSavedData } from './functions.js';
 import { STATS } from './constants/stats/stats.js';
 import { createModal } from './ui/modal.js';
@@ -274,7 +274,7 @@ export default class Training {
     hero.recalculateFromAttributes();
     updateStatsAndAttributesUI();
     updateResources();
-    game.saveGame();
+    dataManager.saveGame();
 
     // Update modal details live
     if (this.modal && !this.modal.classList.contains('hidden') && this.currentStat === stat) {
@@ -331,7 +331,7 @@ export default class Training {
     hero.recalculateFromAttributes();
     updateStatsAndAttributesUI();
     updateResources();
-    game.saveGame();
+    dataManager.saveGame();
 
     // Update modal details live
     if (this.modal && !this.modal.classList.contains('hidden') && this.currentStat === stat) {

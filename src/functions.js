@@ -1,4 +1,4 @@
-import { game, hero, inventory, training, skillTree } from './globals.js';
+import { game, hero, inventory, training, skillTree, dataManager } from './globals.js';
 import { MATERIALS } from './constants/materials.js';
 import SimpleCrypto from 'simple-crypto-js';
 import { showToast, updatePlayerLife, updateResources } from './ui/ui.js';
@@ -181,9 +181,9 @@ export function createDebugUI() {
       if (key === 'debugUIState') continue;
 
       try {
-        value = JSON.parse(localStorage.getItem(key));
+        value = crypt.decrypt(localStorage.getItem('gameProgress'));
       } catch {
-        value = localStorage.getItem(key); // Non-JSON values
+        console.error('Failed to decrypt game progress');
       }
 
       const fullPath = key;
@@ -214,7 +214,7 @@ export function createDebugUI() {
   // Initial update and monitor changes
   updateDebugUI();
   setInterval(updateDebugUI, 1000);
-  setInterval(game.saveGame, 1000);
+  setInterval(dataManager.saveGame, 1000);
 }
 
 export function createModifyUI() {

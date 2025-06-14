@@ -1,7 +1,7 @@
 // Region system for the game
 // Handles region data, selection, unlocking, and UI
 
-import { game, hero } from './globals.js';
+import { dataManager, game, hero } from './globals.js';
 import { showConfirmDialog, toggleGame, updateStageUI } from './ui/ui.js';
 import Enemy from './enemy.js';
 // Tooltip imports
@@ -25,10 +25,10 @@ export async function setCurrentRegion(regionId) {
     updateRegionUI();
     return;
   }
-  game.stage = hero.getStartingStage();
+  game.stage = game.getStartingStage();
   game.currentEnemy = new Enemy(game.stage);
   game.resetAllLife();
-  game.saveGame();
+  dataManager.saveGame();
 
   updateStageUI();
   updateRegionUI();

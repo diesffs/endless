@@ -1,5 +1,5 @@
 import { initializeSkillTreeStructure, updatePlayerLife, updateTabIndicators } from './ui/ui.js';
-import { game, inventory, training, skillTree, statistics, soulShop, crystalShop } from './globals.js';
+import { game, inventory, training, skillTree, statistics, soulShop, crystalShop, dataManager } from './globals.js';
 import { createCombatText, createDamageNumber } from './combat.js';
 import { handleSavedData } from './functions.js';
 import { updateRegionUI } from './region.js';
@@ -97,7 +97,7 @@ export default class Hero {
     updatePlayerLife();
     updateStatsAndAttributesUI();
     initializeSkillTreeStructure();
-    game.saveGame();
+    dataManager.saveGame();
     updateRegionUI(); // Update region UI to unlock new regions if level requirement is met
 
     // Update tab indicators for newly gained stat and skill points
@@ -111,7 +111,7 @@ export default class Hero {
       if (stat === 'vitality' && !game.gameStarted) {
         this.stats.currentLife = this.stats.life;
       }
-      game.saveGame();
+      dataManager.saveGame();
 
       // Update tab indicators for spent attribute points
       updateTabIndicators();
@@ -166,7 +166,7 @@ export default class Hero {
 
     updatePlayerLife();
     updateStatsAndAttributesUI();
-    game.saveGame();
+    dataManager.saveGame();
   }
 
   calculatePrimaryStats(skillTreeBonuses, equipmentBonuses, trainingBonuses) {
@@ -513,11 +513,6 @@ export default class Hero {
     return 0;
   }
 
-  getStartingStage() {
-    // get starting stage from crystalShop
-    return crystalShop.crystalUpgrades.startingStage || 1;
-  }
-
   /**
    * Resets all allocated primary stats and refunds stat points for reallocation.
    */
@@ -529,6 +524,6 @@ export default class Hero {
     }
     this.statPoints += totalAllocated;
     this.recalculateFromAttributes();
-    game.saveGame();
+    dataManager.saveGame();
   }
 }

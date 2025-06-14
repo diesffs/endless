@@ -1,4 +1,4 @@
-import { game, hero } from './globals.js';
+import { dataManager, hero } from './globals.js';
 import { updateResources, showToast, updatePlayerLife } from './ui/ui.js';
 import { handleSavedData } from './functions.js';
 import { createModal } from './ui/modal.js';
@@ -350,7 +350,7 @@ export default class SoulShop {
       showToast(`Purchased ${config.label}!`, 'success');
     }
 
-    game.saveGame();
+    dataManager.saveGame();
     updateResources();
     hero.recalculateFromAttributes();
     this.updateModalDetails();

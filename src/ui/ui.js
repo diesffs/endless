@@ -1,5 +1,5 @@
 import Enemy from '../enemy.js';
-import { game, hero, crystalShop, skillTree, quests, statistics, inventory } from '../globals.js';
+import { game, hero, skillTree, quests, statistics, inventory } from '../globals.js';
 import { updateQuestsUI } from './questUi.js';
 import { updateStatsAndAttributesUI } from './statsAndAttributesUi.js';
 import { TabIndicatorManager } from './tabIndicatorManager.js';

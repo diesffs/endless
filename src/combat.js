@@ -8,7 +8,7 @@ import {
   showToast,
 } from './ui/ui.js';
 import Enemy from './enemy.js';
-import { hero, game, inventory, crystalShop, statistics, skillTree } from './globals.js';
+import { hero, game, inventory, crystalShop, statistics, skillTree, dataManager } from './globals.js';
 import { ITEM_RARITY } from './constants/items.js';
 import { ENEMY_RARITY } from './constants/enemies.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
@@ -112,7 +112,7 @@ export function playerDeath() {
     updateBossUI(game.currentEnemy);
   } else if (game.fightMode === 'explore') {
     // Reset everything regardless of continue state
-    game.stage = hero.getStartingStage();
+    game.stage = game.getStartingStage();
     updateStageUI();
     game.currentEnemy = new Enemy(game.stage);
     game.resetAllLife();
@@ -236,7 +236,7 @@ export async function defeatEnemy() {
   updateEnemyStats();
   updateStatsAndAttributesUI();
 
-  game.saveGame();
+  dataManager.saveGame();
 }
 
 function showMaterialNotification(mat) {

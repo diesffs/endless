@@ -1,6 +1,6 @@
 // Quest UI logic moved from ui.js
 import { showTooltip, hideTooltip, positionTooltip } from './ui.js';
-import { quests, statistics } from '../globals.js';
+import { quests } from '../globals.js';
 
 export function updateQuestsUI() {
   const panel = document.getElementById('quests');

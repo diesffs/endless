@@ -1,20 +1,22 @@
-import { game, getGlobals, hero } from './globals.js';
-import { showConfirmDialog } from './ui/ui.js';
+import { dataManager, game, setGlobals } from './globals.js';
+import { showConfirmDialog, showToast } from './ui/ui.js';
 import { createModal } from './ui/modal.js';
-import { apiFetch, loadGameData, saveGameData } from './api.js';
-import { crypt } from './functions.js';
 
 // Options class to store options and version (future-proof for migrations)
 export class Options {
   constructor(data = {}) {
-    this.version = data.version || '0.0.2'; // Set to latest version
-    // Add more options fields as needed
+    this.version = data.version || '0.0.3';
   }
 
   /**
    * Main entry to initialize the Options tab UI.
    */
   initializeOptionsUI() {
+    this._renderOptionsUI();
+    this._initCloudSaveButtons();
+  }
+
+  _renderOptionsUI() {
     const optionsTab = document.getElementById('options');
     if (!optionsTab) return;
     optionsTab.innerHTML = '';
@@ -26,14 +28,12 @@ export class Options {
     const changelogRow = document.createElement('div');
     changelogRow.className = 'changelog-row';
     changelogRow.appendChild(this._createChangelogButton());
-    changelogRow.appendChild(this._createUpcomingButton());
+    changelogRow.appendChild(this._createUpcomingChangesButton());
     container.appendChild(changelogRow);
 
     container.appendChild(this._createDiscordSection());
     container.appendChild(this._createResetButton());
     optionsTab.appendChild(container);
-
-    this._initCloudSaveButtons();
   }
 
   /**
@@ -44,8 +44,8 @@ export class Options {
     bar.className = 'cloud-save-bar';
     bar.innerHTML = `
       <span id="cloud-save-status">Checking login...</span>
-      <button id="cloud-save-btn" disabled>Save to Cloud</button>
-      <button id="cloud-load-btn" disabled>Load from Cloud</button>
+      <button id="cloud-save-btn">Save to Cloud</button>
+      <button id="cloud-load-btn">Load from Cloud</button>
     `;
     return bar;
   }
@@ -108,7 +108,8 @@ export class Options {
       changelogs.forEach((entry, i) => {
         const expanded = i === 0 ? 'expanded' : '';
         // Add (current) to the latest version
-        const versionLabel = i === 0 ? `Version ${entry.version} <span class="changelog-current">(current)</span>` : `Version ${entry.version}`;
+        const versionLabel =
+          i === 0 ? `${entry.version} <span class="changelog-current">(current)</span>` : `${entry.version}`;
         content += `
           <div class="changelog-entry ${expanded}">
             <div class="changelog-header" data-index="${i}">
@@ -149,7 +150,7 @@ export class Options {
   /**
    * Creates the Upcoming Changes button and its modal logic.
    */
-  _createUpcomingButton() {
+  _createUpcomingChangesButton() {
     const upcomingBtn = document.createElement('button');
     upcomingBtn.id = 'view-upcoming';
     upcomingBtn.textContent = 'View Upcoming Changes';
@@ -198,99 +199,74 @@ export class Options {
     return section;
   }
 
-  _initCloudSaveButtons() {
+  async _initCloudSaveButtons() {
     // Cloud Save UI logic
     const cloudSaveStatus = document.getElementById('cloud-save-status');
     const cloudSaveBtn = document.getElementById('cloud-save-btn');
     const cloudLoadBtn = document.getElementById('cloud-load-btn');
-    let lastCloudSave = null;
-    let userSession = null;
-    const isLocal = import.meta.env.VITE_IS_LOCAL === 'true';
-    const gameName = import.meta.env.VITE_GAME_NAME || 'endless';
 
-    async function checkSession() {
-      try {
-        const res = await apiFetch(`/user/session`, { credentials: 'include' });
-        if (!res.ok) throw new Error('Not logged in');
-        userSession = (await res.json()).user;
+    let userSession = dataManager.getSession();
 
-        // Fetch cloud save and compare with local
-        let cloudInfo = null;
-        let updatedAt = null;
-        try {
-          const cloudResult = await loadGameData(userSession.id, userSession.token);
+    // Fetch cloud save and compare with local
+    let statusMsg = 'Ready to save to cloud';
 
-          cloudInfo = cloudResult?.data?.hero;
-          updatedAt = cloudResult?.updated_at || cloudResult?.data?.updated_at;
-        } catch (e) {
-          console.error('Failed to load cloud data:', e);
-        }
+    const formatDateWithTimezone = (dateStr) => {
+      if (!dateStr) return 'unknown';
+      const date = new Date(dateStr);
+      const options = {
+        year: 'numeric',
+        month: 'short', // e.g., "May"
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      };
+      return date.toLocaleString(undefined, options);
+    };
 
-        const localHero = hero;
-        let statusMsg = 'Ready to save to cloud';
-        const formatDateWithTimezone = (dateStr) => {
-          if (!dateStr) return 'unknown';
-          const date = new Date(dateStr);
-          const options = {
-            year: 'numeric',
-            month: 'short', // e.g., "May"
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-          };
-          return date.toLocaleString(undefined, options);
-        };
-        if (cloudInfo && (cloudInfo.exp !== localHero.exp || cloudInfo.gold !== localHero.gold)) {
-          statusMsg = `Last save: ${formatDateWithTimezone(updatedAt)}`;
-        } else if (updatedAt) {
-          statusMsg = `Last save: ${formatDateWithTimezone(updatedAt)}`;
-        } else if (!updatedAt) {
-          statusMsg = 'Ready to save';
-        }
+    try {
+      const cloudResult = await dataManager.loadGame({ cloud: true });
 
-        cloudSaveStatus.textContent = statusMsg;
-        cloudSaveStatus.className = '';
-        cloudSaveBtn.disabled = false;
-        cloudSaveBtn.classList.remove('disabled');
-        cloudLoadBtn.disabled = false;
-        cloudLoadBtn.classList.remove('disabled');
-      } catch (error) {
-        console.error('Not logged in or session expired:', error);
-
-        userSession = null;
-        let loginUrl = '/login';
-        if (isLocal) {
-          loginUrl = 'http://localhost:5173/login';
-        }
-        cloudSaveStatus.innerHTML =
-          '<span class="login-status">Not logged in</span><div><a href="' +
-          loginUrl +
-          '" class="login-link" target="_blank">Log in</a></div>';
-        cloudSaveStatus.className = 'not-logged-in';
-        cloudSaveBtn.disabled = true;
-        cloudSaveBtn.classList.add('disabled');
-        cloudLoadBtn.disabled = true;
-        cloudLoadBtn.classList.add('disabled');
+      if (!cloudResult) {
+        statusMsg = 'No cloud save found';
+      } else if (cloudResult.source !== 'cloud') {
+        statusMsg = 'No cloud save found';
+      } else {
+        statusMsg = `Last save: ${formatDateWithTimezone(cloudResult.updated_at)}`;
       }
+    } catch (e) {
+      console.error('Failed to load cloud data:', e);
+    }
+
+    cloudSaveStatus.textContent = statusMsg;
+
+    if (!userSession) {
+      let loginUrl = '/login';
+      const isLocal = import.meta.env.VITE_IS_LOCAL === 'true';
+      if (isLocal) {
+        loginUrl = 'http://localhost:5173/login';
+      }
+      cloudSaveStatus.innerHTML =
+        '<span class="login-status">Not logged in</span><div><a href="' +
+        loginUrl +
+        '" class="login-link" target="_blank">Log in</a></div>';
+      cloudSaveStatus.className = 'not-logged-in';
+      cloudSaveBtn.disabled = true;
+      cloudSaveBtn.classList.add('disabled');
+      cloudLoadBtn.disabled = true;
+      cloudLoadBtn.classList.add('disabled');
     }
 
     // Save
     cloudSaveBtn.addEventListener('click', async () => {
+      userSession = dataManager.getSession();
       if (!userSession) return;
       cloudSaveBtn.disabled = true;
       cloudSaveStatus.textContent = 'Saving...';
       cloudSaveStatus.className = 'saving';
       try {
-        await saveGameData(
-          userSession.id,
-          {
-            data_json: crypt.encrypt(JSON.stringify(getGlobals())),
-            game_name: gameName,
-          },
-          userSession.token
-        );
-        lastCloudSave = Date.now();
-        cloudSaveStatus.textContent = `Last cloud save: ${new Date(lastCloudSave).toLocaleTimeString()}`;
+        // Use robust saveGame method
+        await dataManager.saveGame({ cloud: true });
+        cloudSaveStatus.textContent = `Last cloud save: ${new Date(Date.now()).toLocaleTimeString()}`;
       } catch (e) {
         console.error('Cloud save failed:', e);
         cloudSaveStatus.textContent = 'Cloud save failed';
@@ -302,35 +278,31 @@ export class Options {
 
     // Load
     cloudLoadBtn.addEventListener('click', async () => {
+      userSession = dataManager.getSession();
       if (!userSession) return;
-      cloudLoadBtn.disabled = true;
-      cloudLoadBtn.textContent = 'Loading...';
-      try {
-        const { data: cloudData } = await loadGameData(userSession.id, userSession.token);
 
-        if (!cloudData) throw new Error('No cloud save found');
-        // Extract info for confirmation
-        const info = cloudData.hero || {};
-        const msg = `Cloud Save Info:\n\nLevel: ${info.level || 1}\nGold: ${info.gold || 0}\nCrystals: ${
-          info.crystals || 0
-        }\nSouls: ${
-          info.souls || 0
+      try {
+        const cloudData = await dataManager.loadGame({ cloud: true });
+
+        if (!cloudData || cloudData.source !== 'cloud') throw new Error('No cloud save found');
+
+        const msg = `Cloud Save Info:\n\nLevel: ${cloudData.hero.level || 1}\nGold: ${
+          cloudData.hero.gold || 0
+        }\nCrystals: ${cloudData.hero.crystals || 0}\nSouls: ${
+          cloudData.hero.souls || 0
         }\n\nAre you sure you want to overwrite your local save with this cloud save? This cannot be undone.`;
+
         const confirmed = await showConfirmDialog(msg);
+
         if (confirmed) {
-          localStorage.setItem('gameProgress', JSON.stringify({ ...cloudData, lastUpdated: Date.now() }));
+          await setGlobals({ cloud: true });
+          // Reload the game to apply the cloud save (to make sure all globals have been updated & have correct default values)
           window.location.reload();
         }
       } catch (e) {
         console.error('Failed to load from cloud:', e);
-      } finally {
-        cloudLoadBtn.disabled = !userSession;
-        cloudLoadBtn.textContent = 'Load from Cloud';
+        showToast(e.message || 'Failed to load from cloud');
       }
     });
-
-    // Check session on load and every 60m
-    checkSession();
-    setInterval(checkSession, 60000 * 60); // 60 minutes
   }
 }
