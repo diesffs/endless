@@ -1,6 +1,6 @@
 import { initializeSkillTreeStructure, updatePlayerLife, updateTabIndicators } from './ui/ui.js';
 import { game, inventory, training, skillTree, statistics, soulShop, crystalShop } from './globals.js';
-import { createCombatText } from './combat.js';
+import { createCombatText, createDamageNumber } from './combat.js';
 import { handleSavedData } from './functions.js';
 import { updateRegionUI } from './region.js';
 import { STATS } from './constants/stats/stats.js';
@@ -166,6 +166,7 @@ export default class Hero {
 
     updatePlayerLife();
     updateStatsAndAttributesUI();
+    game.saveGame();
   }
 
   calculatePrimaryStats(skillTreeBonuses, equipmentBonuses, trainingBonuses) {
@@ -471,14 +472,32 @@ export default class Hero {
   }
 
   willRessurect() {
-    if (this.stats.resurrectionChance > 0) {
+    let res = false;
+
+    // Check if soul shop resurrection is available
+    if (soulShop.soulUpgrades?.extraLife && game.soulShopResurrectCount === 0) {
+      game.resurrectCount++;
+      game.soulShopResurrectCount++;
+      res = true;
+    }
+
+    // Check if resurrection chance is enabled
+    if (!res && this.stats.resurrectionChance > 0) {
       const roll = Math.random() * 100;
-      if (roll < this.stats.resurrectionChance) {
-        this.stats.currentLife = this.stats.life;
-        this.stats.currentMana = this.stats.mana;
-        return true;
+      if (roll < this.stats.resurrectionChance && game.resurrectCount < 2) {
+        game.resurrectCount++;
+        res = true;
       }
     }
+
+    // If resurrection was successful
+    if (res) {
+      createDamageNumber('Ressurected!', true, false, true);
+      game.healPlayer(this.stats.life);
+      game.restoreMana(this.stats.mana);
+      return true;
+    }
+
     return false;
   }
 

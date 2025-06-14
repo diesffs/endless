@@ -165,9 +165,6 @@ export function updateResources() {
 
 export function updatePlayerLife() {
   const stats = hero.stats;
-  if (!game.gameStarted) {
-    stats.currentLife = stats.life;
-  }
   const lifePercentage = (stats.currentLife / stats.life) * 100;
   document.getElementById('life-fill').style.width = `${lifePercentage}%`;
   document.getElementById('life-text').textContent = `${Math.max(0, Math.floor(stats.currentLife))}/${Math.floor(
@@ -361,7 +358,7 @@ export const formatStatName = (stat) => {
   if (stat === 'lifeRegen') return 'Life Regeneration';
   if (stat === 'manaRegen') return 'Mana Regeneration';
   if (stat === 'bonusGoldPercent') return 'Bonus Gold';
-  if (stat === 'bonusExperience') return 'Bonus Experience';
+  if (stat === 'bonusExperiencePercent') return 'Bonus Experience';
   if (stat === 'blockChance') return 'Block Chance';
   if (stat === 'fireDamage') return 'Fire Damage';
   if (stat === 'coldDamage') return 'Cold Damage';
@@ -397,6 +394,7 @@ export const formatStatName = (stat) => {
   if (stat === 'resurrectionChance') return 'Resurrection Chance';
   if (stat === 'reflectFireDamage') return 'Reflect Fire Damage';
   if (stat === 'skillPoints') return 'Bonus Skill Points';
+  if (stat === 'extraMaterialDropPercent') return 'Bonus Material Drop %';
 
   // Fallback: convert camelCase to Title Case with spaces
   return stat

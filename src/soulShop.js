@@ -1,7 +1,8 @@
 import { game, hero } from './globals.js';
-import { updateResources, showToast } from './ui/ui.js';
+import { updateResources, showToast, updatePlayerLife } from './ui/ui.js';
 import { handleSavedData } from './functions.js';
 import { createModal } from './ui/modal.js';
+import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 
 const html = String.raw;
 
@@ -14,37 +15,37 @@ export const SOUL_UPGRADE_CONFIG = {
     oneTime: true,
   },
   bonusGold: {
-    label: 'Bonus Gold',
-    bonus: 0.05,
-    baseCost: 3,
+    label: 'Bonus Gold %',
+    bonus: 0.01,
+    baseCost: 7,
     costIncrement: 0,
-    stat: 'bonusGold',
+    stat: 'bonusGoldPercent',
   },
   bonusExperience: {
-    label: 'Bonus Experience',
-    bonus: 0.05,
-    baseCost: 3,
+    label: 'Bonus Experience %',
+    bonus: 0.01,
+    baseCost: 7,
     costIncrement: 0,
-    stat: 'bonusExperience',
+    stat: 'bonusExperiencePercent',
   },
   damageBoost: {
-    label: 'Damage Boost',
-    bonus: 0.03,
-    baseCost: 5,
+    label: 'Damage Boost %',
+    bonus: 0.01,
+    baseCost: 10,
     costIncrement: 0,
     stat: 'damagePercent',
   },
   lifeBoost: {
-    label: 'Life Boost',
-    bonus: 0.03,
-    baseCost: 5,
+    label: 'Life Boost %',
+    bonus: 0.01,
+    baseCost: 10,
     costIncrement: 0,
     stat: 'lifePercent',
   },
   manaBoost: {
-    label: 'Mana Boost',
-    bonus: 0.03,
-    baseCost: 10,
+    label: 'Mana Boost %',
+    bonus: 0.01,
+    baseCost: 50,
     costIncrement: 0,
     stat: 'manaPercent',
   },
@@ -55,8 +56,8 @@ export const SOUL_UPGRADE_CONFIG = {
   extraMaterialDropPercent: {
     label: 'Extra Material Drop Chance',
     bonus: 0.01, // 1% per level
-    baseCost: 10,
-    costIncrement: 1,
+    baseCost: 50,
+    costIncrement: 10,
     stat: 'extraMaterialDropPercent',
     suffix: '%',
   },
@@ -67,8 +68,8 @@ export const SOUL_UPGRADE_CONFIG = {
   extraMaterialDropMax: {
     label: 'Extra Material Drop Max',
     bonus: 1, // +1 max per level
-    baseCost: 250,
-    costIncrement: 0,
+    baseCost: 400,
+    costIncrement: 50,
     stat: 'extraMaterialDropMax',
   },
 };
@@ -99,6 +100,19 @@ export default class SoulShop {
       upgradesContainer.className = 'soulShop-upgrades-container';
       shopContainer.appendChild(upgradesContainer);
     }
+    this.updateSoulShopUI();
+  }
+
+  updateSoulShopUI() {
+    // Ensure the modal is created before updating the UI
+    if (!this.modal) this.createUpgradeModal();
+
+    const soulShopTab = document.querySelector('#soulShop');
+    if (!soulShopTab) return;
+    const shopContainer = soulShopTab.querySelector('.soulShop-container');
+    if (!shopContainer) return;
+    let upgradesContainer = shopContainer.querySelector('.soulShop-upgrades-container');
+    if (!upgradesContainer) return;
     upgradesContainer.innerHTML = `
       <div class="soul-upgrades-grid">
         ${Object.entries(SOUL_UPGRADE_CONFIG)
@@ -107,7 +121,6 @@ export default class SoulShop {
       </div>
     `;
     this.setupSoulUpgradeHandlers();
-    if (!this.modal) this.createUpgradeModal();
   }
 
   resetSoulShop() {
@@ -115,6 +128,7 @@ export default class SoulShop {
     this.modal = null;
     this.currentStat = null;
     this.selectedQty = 1;
+    this.updateSoulShopUI();
   }
 
   createSoulUpgradeButton(stat, config) {
@@ -320,38 +334,32 @@ export default class SoulShop {
           count++;
         }
       }
-      game.saveGame();
-      updateResources();
-      this.updateModalDetails();
-      this.initializeSoulShopUI();
-      // Do NOT close the modal for multi-level upgrades
       showToast(`Upgraded ${config.label} by ${count} levels!`, count > 0 ? 'success' : 'error');
-      return;
-    }
-    if (config.oneTime) {
-      if (this.soulUpgrades[stat]) return;
+    } else if (config.oneTime || config.multiple) {
+      if (config.oneTime && this.soulUpgrades[stat]) {
+        showToast('Already purchased!', 'error');
+        return;
+      }
       const cost = config.baseCost;
       if (hero.souls < cost) {
         showToast('Not enough souls!', 'error');
         return;
       }
       hero.souls -= cost;
-      this.soulUpgrades[stat] = true;
+      this.soulUpgrades[stat] = config.oneTime ? true : (this.soulUpgrades[stat] || 0) + 1;
+      showToast(`Purchased ${config.label}!`, 'success');
     }
-    if (config.multiple) {
-      const cost = config.baseCost;
-      if (hero.souls < cost) {
-        showToast('Not enough souls!', 'error');
-        return;
-      }
-      hero.souls -= cost;
-      this.soulUpgrades[stat] = (this.soulUpgrades[stat] || 0) + 1;
-    }
+
     game.saveGame();
     updateResources();
+    hero.recalculateFromAttributes();
+    this.updateModalDetails();
+    updateStatsAndAttributesUI();
+    updatePlayerLife();
     this.initializeSoulShopUI();
+    // Do NOT close the modal for multi-level upgrades
+    if (isMultiLevel) return;
     this.closeModal();
-    showToast(`Purchased ${config.label}!`, 'success');
   }
 
   /**

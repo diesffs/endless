@@ -26,9 +26,9 @@ export function enemyAttack(currentTime) {
       const healAmount = hero.calculateBlockHealing();
 
       // Show "BLOCKED" text instead of damage number
-      createDamageNumber('BLOCKED', true, false, true);
+      createDamageNumber({ text: 'BLOCKED', isPlayer: true, color: '#66bd02' });
       if (healAmount > 0) {
-        createDamageNumber(`+${Math.floor(healAmount)}`, true, false, true, false, true);
+        createDamageNumber({ text: `+${Math.floor(healAmount)}`, isPlayer: true, color: '#4CAF50' });
       }
     } else {
       // Calculate armor reduction
@@ -39,7 +39,7 @@ export function enemyAttack(currentTime) {
       // only if there is some thorns damage to deal, only paladin
       if (thornsDamage - game.currentEnemy.damage > 1) {
         game.damageEnemy(thornsDamage);
-        createDamageNumber(thornsDamage, false);
+        createDamageNumber({ text: `${thornsDamage}` });
       }
 
       // check currently applied buffs and if fireShield is active, return its damage to the attacker.
@@ -47,13 +47,13 @@ export function enemyAttack(currentTime) {
         const fireReflect = hero.stats.reflectFireDamage || 0;
         if (fireReflect > 0) {
           game.damageEnemy(fireReflect);
-          createDamageNumber(fireReflect, false);
+          createDamageNumber({ text: `${fireReflect}` });
           updateEnemyStats();
         }
       }
 
       game.damagePlayer(effectiveDamage);
-      createDamageNumber(Math.floor(effectiveDamage), true);
+      createDamageNumber({ text: `-${Math.floor(effectiveDamage)}`, isPlayer: true });
     }
 
     // Record the enemy's last attack time
@@ -74,7 +74,7 @@ export function playerAttack(currentTime) {
       if (roll > hitChance) {
         // to take up mana even when missing. (for toggle skills)
         skillTree.applyToggleEffects();
-        createDamageNumber('MISS', false, false, false, true);
+        createDamageNumber({ text: 'MISS', color: '#888888' });
       } else {
         const { damage, isCritical } = hero.calculateTotalDamage();
         const lifeStealAmount = damage * (hero.stats.lifeSteal / 100);
@@ -82,7 +82,7 @@ export function playerAttack(currentTime) {
         game.healPlayer(lifeStealAmount + lifePerHitAmount);
         game.restoreMana(hero.stats.manaPerHit * (1 + (hero.stats.manaPerHitPercent || 0) / 100) || 0);
         game.damageEnemy(damage);
-        createDamageNumber(damage, false, isCritical);
+        createDamageNumber({ text: isCritical ? `💥 -${Math.floor(damage)}` : `-${Math.floor(damage)}`, isCritical });
       }
       if (game.fightMode === 'arena') {
         updateBossUI(game.currentEnemy);
@@ -118,13 +118,17 @@ export function playerDeath() {
     game.resetAllLife();
   }
 
+  // reset ressurect counts
+  game.resurrectCount = 0;
+  game.soulShopResurrectCount = 0;
+
   // Update all UI elements
-  updatePlayerLife();
   if (game.currentEnemy) {
     updateEnemyStats();
   }
   updateResources();
   updateStatsAndAttributesUI();
+  updatePlayerLife();
 
   // Reset buffs and indicators
   skillTree.stopAllBuffs();
@@ -174,26 +178,23 @@ export async function defeatEnemy() {
 
       showLootNotification(newItem);
     }
-    // Drop material (new, separate chance)
-    const materialDropRolls = Math.floor(game.stage / 30) + 1;
-    if (enemy.rollForMaterialDrop) {
-      for (let i = 0; i < materialDropRolls; i++) {
-        if (enemy.rollForMaterialDrop()) {
-          const mat = inventory.getRandomMaterial();
-          inventory.addMaterial({ id: mat.id, icon: mat.icon, qty: 1 });
-          showMaterialNotification(mat);
 
-          // Extra material drop logic: each extra drop is a new random material
-          const extraChance = hero.stats.extraMaterialDropPercent * 100 || 0;
-          let extraRolls = 0;
-          const maxExtraRolls = hero.stats.extraMaterialDropMax;
-          while (Math.random() * 100 < extraChance) {
-            extraRolls++;
-            const extraMat = inventory.getRandomMaterial();
-            inventory.addMaterial({ id: extraMat.id, icon: extraMat.icon, qty: 1 });
-            showMaterialNotification(extraMat);
-            if (extraRolls >= maxExtraRolls) break;
-          }
+    if (enemy.rollForMaterialDrop) {
+      if (enemy.rollForMaterialDrop()) {
+        const mat = inventory.getRandomMaterial();
+        inventory.addMaterial({ id: mat.id, icon: mat.icon, qty: 1 });
+        showMaterialNotification(mat);
+
+        // Extra material drop logic: each extra drop is a new random material
+        const extraChance = hero.stats.extraMaterialDropPercent * 100 || 0;
+        let extraRolls = 0;
+        const maxExtraRolls = hero.stats.extraMaterialDropMax;
+        while (Math.random() * 100 < extraChance) {
+          extraRolls++;
+          const extraMat = inventory.getRandomMaterial();
+          inventory.addMaterial({ id: extraMat.id, icon: extraMat.icon, qty: 1 });
+          showMaterialNotification(extraMat);
+          if (extraRolls >= maxExtraRolls) break;
         }
       }
     }
@@ -211,7 +212,10 @@ export async function defeatEnemy() {
 
   // Apply bonus experience and gold (include region multipliers)
   const expGained = Math.floor(
-    baseExpGained * (1 + hero.stats.bonusExperience / 100) * (enemy.xpMultiplier || 1) * (rarityData.xpBonus || 1)
+    baseExpGained *
+      (1 + hero.stats.bonusExperiencePercent / 100) *
+      (enemy.xpMultiplier || 1) *
+      (rarityData.xpBonus || 1)
   );
   const goldGained = Math.floor(
     baseGoldGained * (1 + hero.stats.bonusGoldPercent / 100) * (enemy.goldMultiplier || 1) * (rarityData.goldBonus || 1)
@@ -255,7 +259,7 @@ function showLootNotification(item) {
   setTimeout(() => notification.remove(), 3000);
 }
 
-export function createDamageNumber(damage, isPlayer, isCritical = false, isBlocked = false, isMiss = false) {
+export function createDamageNumber({ text = '', isPlayer = false, isCritical = false, color = '' } = {}) {
   const target = isPlayer ? '#character-avatar' : '.enemy-avatar';
   const avatar = document.querySelector(target);
   // Use parent container for positioning
@@ -266,18 +270,10 @@ export function createDamageNumber(damage, isPlayer, isCritical = false, isBlock
   }
 
   const damageEl = document.createElement('div');
-
-  if (isBlocked) {
-    damageEl.className = 'damage-number blocked';
-    damageEl.textContent = damage;
-    damageEl.style.color = '#4CAF50';
-  } else if (isMiss) {
-    damageEl.className = 'damage-number miss';
-    damageEl.textContent = 'MISS';
-    damageEl.style.color = '#888888';
-  } else {
-    damageEl.className = isCritical ? 'damage-number critical' : 'damage-number';
-    damageEl.textContent = isCritical ? `💥 -${Math.floor(damage)}` : `-${Math.floor(damage)}`;
+  damageEl.className = isCritical ? 'damage-number critical' : 'damage-number';
+  damageEl.textContent = text !== '' ? text : isCritical ? `💥 -0` : `-0`;
+  if (color) {
+    damageEl.style.color = color;
   }
 
   // Get avatar's position relative to parent

@@ -123,7 +123,7 @@ export const MISC_STATS = {
     showInUI: true,
   },
   // BONUS EXPERIENCE
-  bonusExperience: {
+  bonusExperiencePercent: {
     base: 0,
     decimalPlaces: 0,
     item: { min: 5, max: 15, scaling: 'capped' },

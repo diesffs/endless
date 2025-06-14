@@ -34,6 +34,8 @@ class Game {
     this.gameStarted = false;
     this.currentEnemy = null;
     this.stage = 1;
+    this.resurrectCount = 0; // Track number of resurrections
+    this.soulShopResurrectCount = 0; // Track number of resurrections from SoulShop
     this.lastPlayerAttack = Date.now();
     this.lastRegen = Date.now();
   }

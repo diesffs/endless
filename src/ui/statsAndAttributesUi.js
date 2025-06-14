@@ -172,24 +172,27 @@ export function updateStatsAndAttributesUI() {
       if (el) {
         // Special formatting for certain stats
         if (key === 'attackSpeed') {
-          el.textContent = hero.stats.attackSpeed.toFixed(STATS.attackSpeed.decimalPlaces).replace(/\./g, ',');
+          el.textContent = hero.stats.attackSpeed.toFixed(STATS.attackSpeed.decimalPlaces);
         } else if (key === 'critChance') {
-          el.textContent = hero.stats.critChance.toFixed(STATS.critChance.decimalPlaces).replace(/\./g, ',') + '%';
+          el.textContent = hero.stats.critChance.toFixed(STATS.critChance.decimalPlaces) + '%';
         } else if (key === 'critDamage') {
-          el.textContent = hero.stats.critDamage.toFixed(STATS.critDamage.decimalPlaces).replace(/\./g, ',') + 'x';
+          el.textContent = hero.stats.critDamage.toFixed(STATS.critDamage.decimalPlaces) + 'x';
         } else if (key === 'lifeSteal') {
-          el.textContent = hero.stats.lifeSteal.toFixed(STATS.lifeSteal.decimalPlaces).replace(/\./g, ',') + '%';
+          el.textContent = hero.stats.lifeSteal.toFixed(STATS.lifeSteal.decimalPlaces) + '%';
         } else if (key === 'lifeRegen') {
-          el.textContent = hero.stats.lifeRegen.toFixed(STATS.lifeRegen.decimalPlaces).replace(/\./g, ',');
+          el.textContent = hero.stats.lifeRegen.toFixed(STATS.lifeRegen.decimalPlaces);
         } else if (key === 'manaRegen') {
-          el.textContent = hero.stats.manaRegen.toFixed(STATS.manaRegen.decimalPlaces).replace(/\./g, ',');
+          el.textContent = hero.stats.manaRegen.toFixed(STATS.manaRegen.decimalPlaces);
         } else if (key === 'blockChance') {
-          el.textContent = hero.stats.blockChance.toFixed(STATS.blockChance.decimalPlaces).replace(/\./g, ',') + '%';
+          el.textContent = hero.stats.blockChance.toFixed(STATS.blockChance.decimalPlaces) + '%';
         } else if (key === 'bonusGoldPercent') {
+          el.textContent = (hero.stats.bonusGoldPercent * 100).toFixed(STATS.bonusGoldPercent.decimalPlaces) + '%';
+        } else if (key === 'bonusExperiencePercent') {
           el.textContent =
-            (hero.stats.bonusGoldPercent * 100).toFixed(STATS.bonusGoldPercent.decimalPlaces).replace(/\./g, ',') + '%';
+            (hero.stats.bonusExperiencePercent * 100).toFixed(STATS.bonusExperiencePercent.decimalPlaces) + '%';
         } else if (key === 'extraMaterialDropPercent') {
-          el.textContent = (hero.stats.extraMaterialDropPercent * 100).toFixed(1) + '%';
+          el.textContent =
+            (hero.stats.extraMaterialDropPercent * 100).toFixed(STATS.extraMaterialDropPercent.decimalPlaces) + '%';
         } else {
           el.textContent = hero.stats[key];
         }
