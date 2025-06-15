@@ -396,6 +396,32 @@ export function createModifyUI() {
   });
   addItemControlsDiv.appendChild(addItemBtn);
 
+  // Generate full gear button
+  const generateFullGearBtn = document.createElement('button');
+  generateFullGearBtn.textContent = 'Generate full gear';
+  generateFullGearBtn.addEventListener('click', () => {
+    const itemLevel = parseInt(itemLevelInput.value, 10) || 1;
+    const rarity = raritySelect.value;
+    const tier = parseInt(tierInput.value, 10) || 1;
+    let count = 0;
+    Object.values(ITEM_TYPES).forEach((itemType) => {
+      if (itemType === 'ring') {
+        // Generate two rings
+        for (let i = 0; i < 2; i++) {
+          const newItem = inventory.createItem(itemType, itemLevel, rarity, tier);
+          inventory.addItemToInventory(newItem);
+          count++;
+        }
+      } else {
+        const newItem = inventory.createItem(itemType, itemLevel, rarity, tier);
+        inventory.addItemToInventory(newItem);
+        count++;
+      }
+    });
+    showToast(`Generated full gear set (${count} items, level ${itemLevel}, ${rarity}, tier ${tier})`);
+  });
+  addItemControlsDiv.appendChild(generateFullGearBtn);
+
   inventorySection.appendChild(addItemControlsDiv);
 
   // --- Add Material Buttons ---
