@@ -5,7 +5,7 @@ export const DEFENSE_STATS = {
     base: 100,
     decimalPlaces: 0,
     levelUpBonus: 1,
-    training: { available: true, cost: 80, bonus: 10 },
+    training: { available: true, cost: 80, bonus: 5 },
     item: { min: 30, max: 80, scaling: 'full' },
     itemTags: ['defense'],
     showInUI: true,
@@ -20,7 +20,7 @@ export const DEFENSE_STATS = {
   armor: {
     base: 0,
     decimalPlaces: 0,
-    training: { available: true, cost: 50, bonus: 2 },
+    training: { available: true, cost: 100, bonus: 3 },
     item: { min: 10, max: 30, scaling: 'full' },
     itemTags: ['defense'],
     showInUI: true,
@@ -35,7 +35,7 @@ export const DEFENSE_STATS = {
   blockChance: {
     base: 0,
     decimalPlaces: 1,
-    training: { available: true, cost: 150, bonus: 0.1 },
+    training: { available: true, cost: 400, bonus: 0.1 },
     item: { min: 2, max: 6, scaling: 'capped' },
     itemTags: ['shield'],
     showInUI: true,
@@ -48,7 +48,7 @@ export const DEFENSE_STATS = {
   lifeRegen: {
     base: 0,
     decimalPlaces: 1,
-    training: { available: true, cost: 80, bonus: 0.1 },
+    training: { available: true, cost: 200, bonus: 0.1 },
     item: { min: 1, max: 10, scaling: 'full' },
     itemTags: ['belt'],
     showInUI: true,
