@@ -300,7 +300,7 @@ export function updateSkillTreeValues() {
   container.querySelectorAll('.skill-node').forEach((node) => {
     const skillId = node.dataset.skillId;
     const currentLevel = skillTree.skills[skillId]?.level || 0;
-    const canUnlock = skillTree.canUnlockSkill(skillId);
+    const canUnlock = skillTree.canUnlockSkill(skillId, false);
 
     const levelDisplay = node.querySelector('.skill-level');
     const skill = skillTree.getSkill(skillId);
@@ -611,9 +611,7 @@ function createSkillElement(baseSkill) {
 const updateTooltipContent = (skillId) => {
   // get fresh skill data
   let skill = skillTree.getSkill(skillId);
-
   const currentLevel = skillTree.skills[skill.id]?.level || 0;
-  const canUnlock = skillTree.canUnlockSkill(skill.id);
 
   // Calculate effects at current level
   const effectsCurrent = skillTree.getSkillEffect(skill.id);

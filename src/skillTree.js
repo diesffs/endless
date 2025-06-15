@@ -134,7 +134,7 @@ export default class SkillTree {
     return SKILL_TREES[pathName] || [];
   }
 
-  canUnlockSkill(skillId) {
+  canUnlockSkill(skillId, showWarning = false) {
     if (!this.selectedPath) return false;
 
     const skill = this.getSkill(skillId);
@@ -142,6 +142,13 @@ export default class SkillTree {
 
     const currentLevel = this.skills[skillId]?.level || 0;
     const cost = 1 + Math.floor(currentLevel / 50);
+    // Prevent leveling skill above hero level
+    if (currentLevel >= hero.level) {
+      if (showWarning) {
+        showToast(`You cannot level up ${skill.name()} above your current level!`, 'warning');
+      }
+      return false;
+    }
     return (
       this.skillPoints >= cost &&
       currentLevel < (skill.maxLevel() || DEFAULT_MAX_SKILL_LEVEL) &&
@@ -158,7 +165,7 @@ export default class SkillTree {
     });
   }
   unlockSkill(skillId) {
-    if (!this.canUnlockSkill(skillId)) return false;
+    if (!this.canUnlockSkill(skillId, true)) return false;
 
     const skill = this.getSkill(skillId);
     const currentLevel = this.skills[skillId]?.level || 0;
