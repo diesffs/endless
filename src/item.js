@@ -20,8 +20,18 @@ export default class Item {
     this.id = crypto.randomUUID();
   }
 
+  getLevelScale(level) {
+    // Stats double every 250 levels, starting from level 1
+    return 2 ** ((level - 1) / 250);
+  }
+
   getTierBonus() {
     return 1 + TIER_BONUSES[this.tier] * (this.tier - 1);
+  }
+
+  calculateStatValue({ baseValue, tierBonus, multiplier, scale, stat }) {
+    const decimals = STATS[stat].decimalPlaces || 0;
+    return Number((baseValue * tierBonus * multiplier * scale).toFixed(decimals));
   }
 
   generateStats() {
@@ -32,11 +42,8 @@ export default class Item {
     const tierBonus = this.getTierBonus();
     const calculateStatValue = (stat, baseValue) => {
       const scaling = AVAILABLE_STATS[stat].scaling;
-      // New scaling: double every 150 levels
-      const scale = scaling === 'capped' ? Math.min(2 ** (this.level / 150), 2) : 2 ** (this.level / 150);
-      const value = baseValue * tierBonus * multiplier * scale;
-      const decimals = STATS[stat].decimalPlaces || 0;
-      return Number(value.toFixed(decimals));
+      const scale = scaling === 'capped' ? Math.min(this.getLevelScale(this.level), 2) : this.getLevelScale(this.level);
+      return this.calculateStatValue({ baseValue, tierBonus, multiplier, scale, stat });
     };
 
     // Add mandatory stats first
@@ -129,12 +136,9 @@ export default class Item {
     const tierBonus = this.getTierBonus();
     for (const stat of Object.keys(this.stats)) {
       const scaling = AVAILABLE_STATS[stat].scaling;
-      // New scaling: double every 150 levels
-      const scale = scaling === 'capped' ? Math.min(2 ** (newLevel / 150), 2) : 2 ** (newLevel / 150);
+      const scale = scaling === 'capped' ? Math.min(this.getLevelScale(newLevel), 2) : this.getLevelScale(newLevel);
       const multiplier = ITEM_RARITY[this.rarity].statMultiplier;
-      const value = baseValues[stat] * tierBonus * multiplier * scale;
-      const decimals = STATS[stat].decimalPlaces || 0;
-      this.stats[stat] = Number(value.toFixed(decimals));
+      this.stats[stat] = this.calculateStatValue({ baseValue: baseValues[stat], tierBonus, multiplier, scale, stat });
     }
     this.level = newLevel;
   }

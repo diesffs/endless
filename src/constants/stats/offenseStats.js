@@ -33,7 +33,7 @@ export const OFFENSE_STATS = {
     base: 5,
     decimalPlaces: 2,
     training: { available: true, cost: 140, bonus: 0.1 },
-    item: { min: 0.5, max: 1.5, scaling: 'capped' },
+    item: { min: 0.05, max: 0.3, scaling: 'capped' },
     itemTags: ['offense', 'jewelry', 'gloves'],
     showInUI: true,
   },
@@ -46,7 +46,7 @@ export const OFFENSE_STATS = {
     base: 1.5,
     decimalPlaces: 2,
     training: { available: true, cost: 200, bonus: 0.01 },
-    item: { min: 0.02, max: 0.1, scaling: 'full' },
+    item: { min: 0.02, max: 0.1, scaling: 'capped' },
     itemTags: ['offense', 'jewelry', 'gloves'],
     showInUI: true,
   },
@@ -105,7 +105,7 @@ export const OFFENSE_STATS = {
   fireDamagePercent: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 2, max: 6, scaling: 'full' },
+    item: { min: 2, max: 6, scaling: 'capped' },
     itemTags: ['sword', 'jewelry', 'gloves'],
   },
   // COLD DAMAGE
@@ -120,7 +120,7 @@ export const OFFENSE_STATS = {
   coldDamagePercent: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 2, max: 6, scaling: 'full' },
+    item: { min: 2, max: 6, scaling: 'capped' },
     itemTags: ['sword', 'jewelry', 'gloves'],
   },
   // AIR DAMAGE
@@ -135,7 +135,7 @@ export const OFFENSE_STATS = {
   airDamagePercent: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 2, max: 6, scaling: 'full' },
+    item: { min: 2, max: 6, scaling: 'capped' },
     itemTags: ['sword', 'jewelry', 'gloves'],
   },
   // EARTH DAMAGE
@@ -150,7 +150,7 @@ export const OFFENSE_STATS = {
   earthDamagePercent: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 2, max: 6, scaling: 'full' },
+    item: { min: 2, max: 6, scaling: 'capped' },
     itemTags: ['sword', 'jewelry', 'gloves'],
   },
   // DOUBLE DAMAGE
@@ -164,7 +164,7 @@ export const OFFENSE_STATS = {
   elementalDamagePercent: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 0.5, max: 4, scaling: 'full' },
+    item: { min: 0.5, max: 4, scaling: 'capped' },
     itemTags: ['offense', 'jewelry', 'gloves'],
   },
 };
