@@ -84,7 +84,7 @@ export class Options {
     changelogBtn.onclick = async () => {
       const { marked } = await import('marked');
       // Use Vite's import.meta.glob to dynamically import all changelog files
-      const changelogModules = import.meta.glob('./changelog/*.md', { as: 'raw' });
+      const changelogModules = import.meta.glob('./changelog/*.md', { query: '?raw', import: 'default' });
       const entries = Object.entries(changelogModules)
         .map(([path, loader]) => {
           const match = path.match(/([\d.]+)\.md$/);
@@ -157,7 +157,7 @@ export class Options {
     upcomingBtn.onclick = async () => {
       const { marked } = await import('marked');
       // Use Vite's import.meta.glob to dynamically import the upcoming file
-      const upcomingModules = import.meta.glob('./upcomming.md', { as: 'raw' });
+      const upcomingModules = import.meta.glob('./upcomming.md', { query: '?raw', import: 'default' });
       const loader = upcomingModules['./upcomming.md'];
       let text = '';
       try {

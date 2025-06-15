@@ -7,13 +7,13 @@ export const WARRIOR_SKILLS = {
     id: 'bash',
     name: () => 'Bash',
     type: () => 'toggle',
-    manaCost: (level) => 2 + level * 0.3,
+    manaCost: (level) => 1 + level * 0.3,
     requiredLevel: () => SKILL_LEVEL_TIERS[0],
     icon: () => 'war-axe',
     description: () => 'While active, increases damage but costs mana per attack',
     maxLevel: () => DEFAULT_MAX_SKILL_LEVEL,
     effect: (level) => ({
-      damage: level * 5,
+      damage: level * 3,
     }),
   },
   toughness: {
@@ -25,7 +25,7 @@ export const WARRIOR_SKILLS = {
     description: () => 'Permanently increases armor',
     maxLevel: () => DEFAULT_MAX_SKILL_LEVEL,
     effect: (level) => ({
-      armor: level * 20,
+      armor: level * 8,
     }),
   },
 
@@ -41,7 +41,7 @@ export const WARRIOR_SKILLS = {
     description: () => 'A powerful strike that deals increased damage',
     maxLevel: () => DEFAULT_MAX_SKILL_LEVEL,
     effect: (level) => ({
-      damage: level * 20,
+      damage: level * 8,
     }),
   },
   ironWill: {
@@ -53,8 +53,8 @@ export const WARRIOR_SKILLS = {
     description: () => 'Increases resistance to damage',
     maxLevel: () => DEFAULT_MAX_SKILL_LEVEL,
     effect: (level) => ({
-      vitality: level * 4,
-      lifeRegen: level * 0.6,
+      vitality: level * 3,
+      lifeRegen: level * 0.33,
     }),
   },
 
@@ -63,15 +63,15 @@ export const WARRIOR_SKILLS = {
     id: 'battleCry',
     name: () => 'Battle Cry',
     type: () => 'buff',
-    manaCost: (level) => 20 + level * 1,
+    manaCost: (level) => 20 + level * 0.4,
     cooldown: (level) => 60000,
-    duration: (level) => 45000,
+    duration: (level) => 45000 + level * 500,
     requiredLevel: () => SKILL_LEVEL_TIERS[2],
     icon: () => 'cry',
     description: () => 'Temporarily increases damage',
     maxLevel: () => DEFAULT_MAX_SKILL_LEVEL,
     effect: (level) => ({
-      damage: level * 25,
+      damage: level * 5,
     }),
   },
   fortitude: {
@@ -92,14 +92,14 @@ export const WARRIOR_SKILLS = {
     id: 'groundSlam',
     name: () => 'Ground Slam',
     type: () => 'instant',
-    manaCost: (level) => 10 + level * 1,
+    manaCost: (level) => 5 + level * 0.5,
     cooldown: (level) => 5000,
     requiredLevel: () => SKILL_LEVEL_TIERS[3],
     icon: () => 'slam',
     description: () => 'Deals instant damage',
     maxLevel: () => DEFAULT_MAX_SKILL_LEVEL,
     effect: (level) => ({
-      damage: level * 80,
+      damage: level * 18,
     }),
   },
 
@@ -116,8 +116,8 @@ export const WARRIOR_SKILLS = {
     description: () => 'Increases armor and block chance temporarily',
     maxLevel: () => DEFAULT_MAX_SKILL_LEVEL,
     effect: (level) => ({
-      armor: level * 200,
-      blockChance: level * 0.5,
+      armor: level * 50,
+      blockChance: level * 0.1,
     }),
   },
 
@@ -126,14 +126,14 @@ export const WARRIOR_SKILLS = {
     id: 'berserk',
     name: () => 'Berserk',
     type: () => 'toggle',
-    manaCost: (level) => 10 + level * 0.3,
+    manaCost: (level) => 6 + level * 0.3,
     requiredLevel: () => SKILL_LEVEL_TIERS[5],
     icon: () => 'berserk',
     description: () => 'Gives huge amounts of physical and fire damage',
     maxLevel: () => DEFAULT_MAX_SKILL_LEVEL,
     effect: (level) => ({
-      damage: level * 20,
-      fireDamage: level * 75,
+      damage: level * 5,
+      fireDamage: level * 25,
     }),
   },
 
@@ -144,12 +144,12 @@ export const WARRIOR_SKILLS = {
     requiredLevel: () => SKILL_LEVEL_TIERS[5],
     icon: () => 'last-stand',
     description: () => 'Greatly increases offensive stats',
-    maxLevel: () => DEFAULT_MAX_SKILL_LEVEL,
+    maxLevel: () => 100,
     effect: (level) => ({
-      damage: level * 5,
+      damage: level * 1,
       lifeSteal: level * 0.01,
       attackSpeed: level * 0.01,
-      attackRating: level * 100,
+      attackRating: level * 50,
     }),
   },
 
@@ -161,15 +161,15 @@ export const WARRIOR_SKILLS = {
     requiredLevel: () => SKILL_LEVEL_TIERS[6],
     icon: () => 'warlord',
     description: () => 'Increases all attributes significantly',
-    maxLevel: () => DEFAULT_MAX_SKILL_LEVEL,
+    maxLevel: () => 200,
     effect: (level) => ({
-      lifePercent: level * 1,
-      damagePercent: level * 1,
-      strength: level * 10,
-      vitality: level * 10,
-      agility: level * 10,
-      wisdom: level * 5,
-      endurance: level * 10,
+      lifePercent: level * 0.3,
+      damagePercent: level * 0.3,
+      strength: level * 5,
+      vitality: level * 5,
+      agility: level * 5,
+      wisdom: level * 2,
+      endurance: level * 5,
     }),
   },
 };

@@ -12,7 +12,6 @@ export const ROGUE_SKILLS = {
     description: () => 'A quick dance from the shadows, increasing your damage.',
     maxLevel: () => DEFAULT_MAX_SKILL_LEVEL,
     effect: (level) => ({
-      damage: level * 2,
       critChance: level * 0.1,
       agility: level * 3,
     }),
@@ -25,11 +24,11 @@ export const ROGUE_SKILLS = {
     icon: () => 'dodge',
     description: () => `
         Increases armor and block chance. 
-        Additionally, when blocking, you also recover life equal to 5% of your maximum life.
+        Additionally, when blocking, you also recover life equal to 1% of your maximum life.
         `,
     maxLevel: () => DEFAULT_MAX_SKILL_LEVEL,
     effect: (level) => ({
-      blockChance: level * 0.2,
+      blockChance: level * 0.1,
       armor: level * 10,
     }),
   },
@@ -45,7 +44,7 @@ export const ROGUE_SKILLS = {
     description: () => 'Applies physical damage to your attacks.',
     maxLevel: () => DEFAULT_MAX_SKILL_LEVEL,
     effect: (level) => ({
-      damage: level * 20,
+      damage: level * 5,
     }),
   },
   shadowForm: {
@@ -53,16 +52,16 @@ export const ROGUE_SKILLS = {
     name: () => 'Shadow Form',
     type: () => 'buff',
     manaCost: (level) => 10 + level * 0.5,
-    cooldown: (level) => 60000 - level * 1000,
+    cooldown: (level) => 60000,
     duration: (level) => 45000,
     requiredLevel: () => SKILL_LEVEL_TIERS[1],
     icon: () => 'stealth',
     description: () => 'Shadow form increases crit chance, life steal and dexterity (crit damage).',
     maxLevel: () => DEFAULT_MAX_SKILL_LEVEL,
     effect: (level) => ({
-      critChance: level * 0.1,
-      lifeSteal: level * 0.03,
-      dexterity: level * 10,
+      critChance: level * 0.05,
+      lifeSteal: level * 0.01,
+      dexterity: level * 3,
     }),
   },
 
@@ -71,14 +70,14 @@ export const ROGUE_SKILLS = {
     id: 'flurry',
     name: () => 'Flurry',
     type: () => 'instant',
-    manaCost: (level) => 20 + level * 1,
-    cooldown: (level) => 3000,
+    manaCost: (level) => 6 + level * 0.5,
+    cooldown: (level) => 2000,
     requiredLevel: () => SKILL_LEVEL_TIERS[2],
     icon: () => 'flurry',
     description: () => 'Unleash a series of rapid attacks, dealing bonus damage.',
     maxLevel: () => DEFAULT_MAX_SKILL_LEVEL,
     effect: (level) => ({
-      damage: level * 60,
+      damage: level * 15,
     }),
   },
   precision: {
@@ -90,7 +89,7 @@ export const ROGUE_SKILLS = {
     description: () => 'Significantly increases agility.',
     maxLevel: () => DEFAULT_MAX_SKILL_LEVEL,
     effect: (level) => ({
-      agility: level * 40,
+      agility: level * 15,
     }),
   },
 
@@ -99,16 +98,16 @@ export const ROGUE_SKILLS = {
     id: 'backstab',
     name: () => 'Backstab',
     type: () => 'instant',
-    manaCost: (level) => 5 + level * 0.5,
+    manaCost: (level) => 5,
     cooldown: (level) => 6000,
     requiredLevel: () => SKILL_LEVEL_TIERS[3],
     icon: () => 'backstab',
     description: () => 'A devastating attack from behind, dealing massive damage and stealing resources.',
-    maxLevel: () => DEFAULT_MAX_SKILL_LEVEL,
+    maxLevel: () => 100,
     effect: (level) => ({
-      damage: level * 50,
-      lifePerHit: level * 10,
-      manaPerHit: level * 5,
+      damage: level * 6,
+      lifePerHit: level * 2,
+      manaPerHit: level * 1,
     }),
   },
 
@@ -118,14 +117,14 @@ export const ROGUE_SKILLS = {
     name: () => 'Dark Pact',
     type: () => 'buff',
     manaCost: (level) => 30 + level * 0.3,
-    cooldown: (level) => 10000,
+    cooldown: (level) => 30000,
     duration: (level) => 40000,
     requiredLevel: () => SKILL_LEVEL_TIERS[4],
     icon: () => 'dark-pact',
     description: () => 'Massively increases crit damage temporarily.',
-    maxLevel: () => DEFAULT_MAX_SKILL_LEVEL,
+    maxLevel: () => 500,
     effect: (level) => ({
-      critDamage: level * 0.03,
+      critDamage: level * 0.005,
     }),
   },
 
@@ -134,15 +133,15 @@ export const ROGUE_SKILLS = {
     id: 'assassination',
     name: () => 'Assassination',
     type: () => 'toggle',
-    manaCost: (level) => 8 + level * 0.4,
+    manaCost: (level) => 4 + level * 0.4,
     requiredLevel: () => SKILL_LEVEL_TIERS[5],
     icon: () => 'assassination',
     description: () => 'Greatly increases damage',
     maxLevel: () => DEFAULT_MAX_SKILL_LEVEL,
     effect: (level) => ({
-      damage: level * 70,
-      coldDamage: level * 50,
-      airDamage: level * 50,
+      damage: level * 5,
+      coldDamage: level * 10,
+      airDamage: level * 10,
     }),
   },
 
@@ -153,12 +152,12 @@ export const ROGUE_SKILLS = {
     requiredLevel: () => SKILL_LEVEL_TIERS[5],
     icon: () => 'precision',
     description: () => 'Permanently increases crit chance and crit damage.',
-    maxLevel: () => DEFAULT_MAX_SKILL_LEVEL,
+    maxLevel: () => 1000,
     effect: (level) => ({
-      critChance: level * 0.01,
+      critChance: level * 0.05,
       critDamage: level * 0.01,
-      attackRating: level * 100,
-      attackRatingPercent: level * 5,
+      attackRating: level * 40,
+      attackRatingPercent: level * 1,
     }),
   },
 
@@ -170,13 +169,13 @@ export const ROGUE_SKILLS = {
     requiredLevel: () => SKILL_LEVEL_TIERS[6],
     icon: () => 'master',
     description: () => 'Greatly increases attributes and gold gains.',
-    maxLevel: () => DEFAULT_MAX_SKILL_LEVEL,
+    maxLevel: () => 500,
     effect: (level) => ({
-      damagePercent: level * 2,
-      dexterity: level * 10,
-      strength: level * 20,
-      wisdom: level * 10,
-      bonusGoldPercent: level * 1,
+      damagePercent: level * 0.3,
+      dexterity: level * 5,
+      strength: level * 10,
+      wisdom: level * 3,
+      bonusGoldPercent: level * 0.5,
     }),
   },
 };
