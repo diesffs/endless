@@ -461,7 +461,7 @@ export default class Hero {
 
     // Apply crit at the end to total damage
     return {
-      damage: isCritical ? totalDamage * this.stats.critDamage : totalDamage,
+      damage: Math.floor(isCritical ? totalDamage * this.stats.critDamage : totalDamage),
       isCritical,
     };
   }
@@ -492,7 +492,7 @@ export default class Hero {
 
     // If resurrection was successful
     if (res) {
-      createDamageNumber('Ressurected!', true, false, true);
+      createDamageNumber({ text: 'Ressurected!', isPlayer: true, isCritical: false, color: '#00FF00' });
       game.healPlayer(this.stats.life);
       game.restoreMana(this.stats.mana);
       return true;
@@ -505,8 +505,8 @@ export default class Hero {
     // Get evasion skill level if it exists
     const evasionSkill = skillTree.skills['evasion'];
     if (evasionSkill) {
-      // Heal 5% of max life when blocking
-      const healAmount = this.stats.life * 0.05;
+      // Heal 1% of max life when blocking
+      const healAmount = this.stats.life * 0.01;
       game.healPlayer(healAmount);
       return healAmount;
     }

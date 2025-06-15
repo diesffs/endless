@@ -82,7 +82,7 @@ export function playerAttack(currentTime) {
         game.healPlayer(lifeStealAmount + lifePerHitAmount);
         game.restoreMana(hero.stats.manaPerHit * (1 + (hero.stats.manaPerHitPercent || 0) / 100) || 0);
         game.damageEnemy(damage);
-        createDamageNumber({ text: isCritical ? `💥 -${Math.floor(damage)}` : `-${Math.floor(damage)}`, isCritical });
+        createDamageNumber({ text: isCritical ? ` -${Math.floor(damage)}` : `-${Math.floor(damage)}`, isCritical });
       }
       if (game.fightMode === 'arena') {
         updateBossUI(game.currentEnemy);
@@ -271,7 +271,7 @@ export function createDamageNumber({ text = '', isPlayer = false, isCritical = f
 
   const damageEl = document.createElement('div');
   damageEl.className = isCritical ? 'damage-number critical' : 'damage-number';
-  damageEl.textContent = text !== '' ? text : isCritical ? `💥 -0` : `-0`;
+  damageEl.textContent = isCritical ? `💥 ${text}` : text;
   if (color) {
     damageEl.style.color = color;
   }
