@@ -177,7 +177,7 @@ class Enemy {
   }
 
   rollForMaterialDrop() {
-    const baseChance = 0.025;
+    const baseChance = 0.02;
     return Math.random() < baseChance * this.materialDropMultiplier;
   }
 }

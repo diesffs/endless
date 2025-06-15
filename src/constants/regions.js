@@ -2,6 +2,7 @@ import { ENEMY_LIST } from './enemies.js';
 
 export const REGIONS = [
   {
+    tier: 1,
     id: 'forest',
     unlockLevel: 1,
     name: 'Enchanted Forest',
@@ -13,7 +14,7 @@ export const REGIONS = [
     lifeMultiplier: 1.0,
     damageMultiplier: 1.0,
     xpMultiplier: 1.0,
-    goldMultiplier: 1.3,
+    goldMultiplier: 1.2,
     itemDropMultiplier: 1.0,
     materialDropMultiplier: 1.0,
     materialDropWeights: {
@@ -21,6 +22,7 @@ export const REGIONS = [
     },
   },
   {
+    tier: 2,
     id: 'crystal_cave',
     unlockLevel: 25,
     name: 'Crystal Cave',
@@ -29,17 +31,18 @@ export const REGIONS = [
     get enemyNames() {
       return ENEMY_LIST.filter((e) => e.tags && e.tags.includes('cave')).map((e) => e.name);
     },
-    lifeMultiplier: 1.5,
-    damageMultiplier: 1.2,
+    lifeMultiplier: 1.7,
+    damageMultiplier: 1.4,
     xpMultiplier: 1,
     goldMultiplier: 1,
     itemDropMultiplier: 1.0,
-    materialDropMultiplier: 1.2,
+    materialDropMultiplier: 1.4,
     materialDropWeights: {
-      crystalized_rock: 4,
+      crystalized_rock: 5,
     },
   },
   {
+    tier: 3,
     id: 'tundra',
     unlockLevel: 50,
     name: 'Frozen Tundra',
@@ -48,10 +51,10 @@ export const REGIONS = [
     get enemyNames() {
       return ENEMY_LIST.filter((e) => e.tags && e.tags.includes('tundra')).map((e) => e.name);
     },
-    lifeMultiplier: 1.8,
-    damageMultiplier: 1.4,
-    xpMultiplier: 1.7,
-    goldMultiplier: 1.0,
+    lifeMultiplier: 2.4,
+    damageMultiplier: 2.0,
+    xpMultiplier: 1.8,
+    goldMultiplier: 1.5,
     itemDropMultiplier: 1.0,
     materialDropMultiplier: 1.0,
     materialDropWeights: {
@@ -61,6 +64,7 @@ export const REGIONS = [
     },
   },
   {
+    tier: 4,
     id: 'desert',
     unlockLevel: 150,
     name: 'Scorching Desert',
@@ -69,11 +73,11 @@ export const REGIONS = [
     get enemyNames() {
       return ENEMY_LIST.filter((e) => e.tags && e.tags.includes('desert')).map((e) => e.name);
     },
-    lifeMultiplier: 2.2,
-    damageMultiplier: 1.5,
-    xpMultiplier: 1.5,
-    goldMultiplier: 2,
-    itemDropMultiplier: 1,
+    lifeMultiplier: 3,
+    damageMultiplier: 3.5,
+    xpMultiplier: 2.2,
+    goldMultiplier: 2.5,
+    itemDropMultiplier: 1.5,
     materialDropMultiplier: 1.0,
     materialDropWeights: {
       elixir: 5,
@@ -81,6 +85,7 @@ export const REGIONS = [
     canDrop: ['elixir'],
   },
   {
+    tier: 5,
     id: 'swamp',
     unlockLevel: 350,
     name: 'Murky Swamp',
@@ -89,10 +94,10 @@ export const REGIONS = [
     get enemyNames() {
       return ENEMY_LIST.filter((e) => e.tags && e.tags.includes('swamp')).map((e) => e.name);
     },
-    lifeMultiplier: 2.5,
-    damageMultiplier: 1.8,
-    xpMultiplier: 2,
-    goldMultiplier: 1.0,
+    lifeMultiplier: 6,
+    damageMultiplier: 3,
+    xpMultiplier: 3,
+    goldMultiplier: 2,
     itemDropMultiplier: 3,
     materialDropMultiplier: 1.0,
     materialDropWeights: {
@@ -101,6 +106,7 @@ export const REGIONS = [
     },
   },
   {
+    tier: 6,
     id: 'skyrealm',
     unlockLevel: 660,
     name: 'Skyrealm Peaks',
@@ -109,12 +115,12 @@ export const REGIONS = [
     get enemyNames() {
       return ENEMY_LIST.filter((e) => e.tags && e.tags.includes('sky')).map((e) => e.name);
     },
-    lifeMultiplier: 4.0,
-    damageMultiplier: 2.0,
-    xpMultiplier: 2.5,
-    goldMultiplier: 1.8,
-    itemDropMultiplier: 1.0,
-    materialDropMultiplier: 2.0,
+    lifeMultiplier: 7,
+    damageMultiplier: 5,
+    xpMultiplier: 4,
+    goldMultiplier: 3.5,
+    itemDropMultiplier: 3,
+    materialDropMultiplier: 1.0,
     materialDropWeights: {
       potion_of_dexterity: 5,
       potion_of_strength: 3,
@@ -125,6 +131,7 @@ export const REGIONS = [
     },
   },
   {
+    tier: 7,
     id: 'abyss',
     unlockLevel: 1000,
     name: 'Abyssal Depths',
@@ -133,17 +140,18 @@ export const REGIONS = [
     get enemyNames() {
       return ENEMY_LIST.filter((e) => e.tags && e.tags.includes('abyss')).map((e) => e.name);
     },
-    lifeMultiplier: 5.0,
-    damageMultiplier: 2.5,
+    lifeMultiplier: 12,
+    damageMultiplier: 6,
     xpMultiplier: 5.0,
     goldMultiplier: 4.0,
     itemDropMultiplier: 1.0,
-    materialDropMultiplier: 1.0,
+    materialDropMultiplier: 5.0,
     materialDropWeights: {
       freaky_gold_coins: 15,
     },
   },
   {
+    tier: 8,
     id: 'volcanic_rift',
     unlockLevel: 1400,
     name: 'Volcanic Rift',
@@ -154,11 +162,11 @@ export const REGIONS = [
         (e) => e.name
       );
     },
-    lifeMultiplier: 6.0,
-    damageMultiplier: 3.0,
-    xpMultiplier: 4.0,
-    goldMultiplier: 2.5,
-    itemDropMultiplier: 1.0,
+    lifeMultiplier: 18,
+    damageMultiplier: 12,
+    xpMultiplier: 8.0,
+    goldMultiplier: 4.5,
+    itemDropMultiplier: 7.0,
     materialDropMultiplier: 1.5,
     materialDropWeights: {
       potion_of_strength: 4,
@@ -167,6 +175,7 @@ export const REGIONS = [
     },
   },
   {
+    tier: 9,
     id: 'sunken_ruins',
     unlockLevel: 1800,
     name: 'Sunken Ruins',
@@ -177,18 +186,19 @@ export const REGIONS = [
         (e) => e.name
       );
     },
-    lifeMultiplier: 7.0,
-    damageMultiplier: 3.2,
-    xpMultiplier: 4.5,
-    goldMultiplier: 2.0,
-    itemDropMultiplier: 1.2,
-    materialDropMultiplier: 1.3,
+    lifeMultiplier: 22,
+    damageMultiplier: 16,
+    xpMultiplier: 10,
+    goldMultiplier: 12,
+    itemDropMultiplier: 2,
+    materialDropMultiplier: 2,
     materialDropWeights: {
       potion_of_vitality: 3.1,
       crystalized_rock: 2.2,
     },
   },
   {
+    tier: 10,
     id: 'haunted_moor',
     unlockLevel: 2200,
     name: 'Haunted Moor',
@@ -199,12 +209,12 @@ export const REGIONS = [
         (e) => e.name
       );
     },
-    lifeMultiplier: 8.0,
-    damageMultiplier: 3.5,
-    xpMultiplier: 5.0,
-    goldMultiplier: 2.2,
-    itemDropMultiplier: 1.0,
-    materialDropMultiplier: 1.1,
+    lifeMultiplier: 35,
+    damageMultiplier: 25,
+    xpMultiplier: 20,
+    goldMultiplier: 5,
+    itemDropMultiplier: 15,
+    materialDropMultiplier: 1.0,
     materialDropWeights: {
       potion_of_wisdom: 3.2,
       elixir: 1.3,
@@ -212,6 +222,7 @@ export const REGIONS = [
     canDrop: ['elixir'],
   },
   {
+    tier: 11,
     id: 'golden_steppe',
     unlockLevel: 2600,
     name: 'Golden Steppe',
@@ -222,18 +233,19 @@ export const REGIONS = [
         (e) => e.name
       );
     },
-    lifeMultiplier: 9.0,
-    damageMultiplier: 3.8,
-    xpMultiplier: 5.5,
-    goldMultiplier: 5.0,
-    itemDropMultiplier: 1.0,
-    materialDropMultiplier: 1.0,
+    lifeMultiplier: 30,
+    damageMultiplier: 35,
+    xpMultiplier: 15,
+    goldMultiplier: 25.0,
+    itemDropMultiplier: 6.0,
+    materialDropMultiplier: 6.0,
     materialDropWeights: {
       medium_gold_coins: 3.2,
       large_gold_coins: 1.2,
     },
   },
   {
+    tier: 12,
     id: 'obsidian_spire',
     unlockLevel: 3000,
     name: 'Obsidian Spire',
@@ -244,12 +256,12 @@ export const REGIONS = [
         (e) => e.name
       );
     },
-    lifeMultiplier: 10.0,
-    damageMultiplier: 4.2,
-    xpMultiplier: 6.0,
-    goldMultiplier: 3.0,
-    itemDropMultiplier: 1.0,
-    materialDropMultiplier: 1.4,
+    lifeMultiplier: 60,
+    damageMultiplier: 60,
+    xpMultiplier: 40,
+    goldMultiplier: 40,
+    itemDropMultiplier: 20,
+    materialDropMultiplier: 20,
     materialDropWeights: {
       jewelry_upgrade_gem: 2.2,
       potion_of_dexterity: 2.1,

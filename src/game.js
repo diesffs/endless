@@ -140,7 +140,7 @@ class Game {
     }
 
     if (currentTime % 30000 < 16) {
-      this.saveGame();
+      dataManager.saveGame();
     }
 
     // Auto-cast logic: run every game loop
