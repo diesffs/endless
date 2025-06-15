@@ -6,14 +6,14 @@ export const MISC_STATS = {
     decimalPlaces: 0,
     levelUpBonus: 0,
     training: { available: true, cost: 100, bonus: 5 },
-    item: { min: 5, max: 15, scaling: 'capped' },
+    item: { min: 1, max: 3, scaling: 'capped' },
     itemTags: ['misc', 'jewelry'],
     showInUI: true,
   },
   manaPercent: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 2, max: 5, scaling: 'capped' },
+    item: { min: 0.5, max: 2, scaling: 'capped' },
     itemTags: ['misc', 'jewelry'],
   },
   // MANA REGEN
@@ -33,7 +33,7 @@ export const MISC_STATS = {
   manaPerHit: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 1, max: 2, scaling: 'capped' },
+    item: { min: 0.2, max: 1, scaling: 'capped' },
     itemTags: ['misc', 'jewelry'],
     showInUI: true,
   },
