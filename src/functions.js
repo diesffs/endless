@@ -313,10 +313,16 @@ export function createModifyUI() {
   // --- Add Random Item with controls ---
   const addItemControlsDiv = document.createElement('div');
   addItemControlsDiv.style.display = 'flex';
-  addItemControlsDiv.style.alignItems = 'center';
+  addItemControlsDiv.style.flexDirection = 'column';
+  addItemControlsDiv.style.alignItems = 'flex-start';
   addItemControlsDiv.style.gap = '8px';
 
-  // Item type dropdown
+  // Item type
+  const itemTypeLabel = document.createElement('label');
+  itemTypeLabel.textContent = 'Item Type:';
+  itemTypeLabel.htmlFor = 'item-type-select';
+  addItemControlsDiv.appendChild(itemTypeLabel);
+
   const itemTypeSelect = document.createElement('select');
   itemTypeSelect.id = 'item-type-select';
   // Use ITEM_TYPES for dropdown
@@ -328,17 +334,28 @@ export function createModifyUI() {
   });
   addItemControlsDiv.appendChild(itemTypeSelect);
 
-  // Item level input
+  // Item level
+  const itemLevelLabel = document.createElement('label');
+  itemLevelLabel.textContent = 'Item Level:';
+  itemLevelLabel.htmlFor = 'item-level-input';
+  addItemControlsDiv.appendChild(itemLevelLabel);
+
   const itemLevelInput = document.createElement('input');
   itemLevelInput.type = 'number';
   itemLevelInput.min = '1';
   itemLevelInput.max = '100';
   itemLevelInput.value = '1';
+  itemLevelInput.id = 'item-level-input';
   itemLevelInput.style.width = '50px';
   itemLevelInput.title = 'Item Level';
   addItemControlsDiv.appendChild(itemLevelInput);
 
-  // Item rarity dropdown
+  // Item rarity
+  const rarityLabel = document.createElement('label');
+  rarityLabel.textContent = 'Rarity:';
+  rarityLabel.htmlFor = 'item-rarity-select';
+  addItemControlsDiv.appendChild(rarityLabel);
+
   const raritySelect = document.createElement('select');
   raritySelect.id = 'item-rarity-select';
   Object.keys(ITEM_RARITY).forEach((rarityKey) => {
@@ -349,6 +366,22 @@ export function createModifyUI() {
   });
   addItemControlsDiv.appendChild(raritySelect);
 
+  // Item tier
+  const tierLabel = document.createElement('label');
+  tierLabel.textContent = 'Tier (max 12):';
+  tierLabel.htmlFor = 'item-tier-input';
+  addItemControlsDiv.appendChild(tierLabel);
+
+  const tierInput = document.createElement('input');
+  tierInput.type = 'number';
+  tierInput.min = '1';
+  tierInput.max = '12';
+  tierInput.value = '1';
+  tierInput.id = 'item-tier-input';
+  tierInput.style.width = '50px';
+  tierInput.title = 'Item Tier';
+  addItemControlsDiv.appendChild(tierInput);
+
   // Add Random Item button
   const addItemBtn = document.createElement('button');
   addItemBtn.textContent = 'Add Random Item';
@@ -356,9 +389,10 @@ export function createModifyUI() {
     const itemType = itemTypeSelect.value;
     const itemLevel = parseInt(itemLevelInput.value, 10) || 1;
     const rarity = raritySelect.value;
-    const newItem = inventory.createItem(itemType, itemLevel, rarity);
+    const tier = parseInt(tierInput.value, 10) || 1;
+    const newItem = inventory.createItem(itemType, itemLevel, rarity, tier);
     inventory.addItemToInventory(newItem);
-    showToast(`Added ${itemType} (level ${itemLevel}, ${rarity}) to inventory`);
+    showToast(`Added ${itemType} (level ${itemLevel}, ${rarity}, tier ${tier}) to inventory`);
   });
   addItemControlsDiv.appendChild(addItemBtn);
 

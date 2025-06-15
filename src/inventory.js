@@ -41,7 +41,7 @@ export default class Inventory {
       Object.entries(savedData.equippedItems).forEach(([slot, item]) => {
         if (item) {
           // Pass existing stats when creating item
-          this.equippedItems[slot] = new Item(item.type, item.level, item.rarity, item.stats);
+          this.equippedItems[slot] = new Item(item.type, item.level, item.rarity, item.tier, item.stats);
           this.equippedItems[slot].id = item.id;
         }
       });
@@ -50,7 +50,7 @@ export default class Inventory {
       this.inventoryItems = savedData.inventoryItems.map((item) => {
         if (item) {
           // Pass existing stats when creating item
-          const restoredItem = new Item(item.type, item.level, item.rarity, item.stats);
+          const restoredItem = new Item(item.type, item.level, item.rarity, item.tier, item.stats);
           restoredItem.id = item.id;
           return restoredItem;
         }
@@ -344,8 +344,11 @@ export default class Inventory {
     return null;
   }
 
-  createItem(type, level, rarity = this.generateRarity()) {
-    return new Item(type, level, rarity);
+  createItem(type, level, rarity, tier) {
+    if (!rarity) {
+      rarity = this.generateRarity();
+    }
+    return new Item(type, level, rarity, tier);
   }
 
   generateRarity() {

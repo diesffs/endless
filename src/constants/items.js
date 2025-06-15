@@ -1,5 +1,20 @@
 import { STATS } from './stats/stats.js';
 
+export const TIER_BONUSES = {
+  1: 0.07,
+  2: 0.15,
+  3: 0.27,
+  4: 0.41,
+  5: 0.58,
+  6: 0.78,
+  7: 1.01,
+  8: 1.27,
+  9: 1.56,
+  10: 1.88,
+  11: 2.19,
+  12: 2.5,
+};
+
 export const EQUIPMENT_SLOTS = {
   HEAD: 'head',
   CHEST: 'chest',

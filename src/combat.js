@@ -14,6 +14,7 @@ import { ENEMY_RARITY } from './constants/enemies.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 import { updateQuestsUI } from './ui/questUi.js';
 import { updateBossUI } from './ui/bossUi.js';
+import { getCurrentRegion } from './region.js';
 
 export function enemyAttack(currentTime) {
   if (!game || !hero || !game.currentEnemy) return;
@@ -173,7 +174,8 @@ export async function defeatEnemy() {
     if (enemy.rollForDrop()) {
       const itemLevel = enemy.calculateItemLevel(game.stage);
       const itemType = enemy.getRandomItemType();
-      const newItem = inventory.createItem(itemType, itemLevel);
+      const region = getCurrentRegion();
+      const newItem = inventory.createItem(itemType, itemLevel, undefined, region.tier);
       inventory.addItemToInventory(newItem);
 
       showLootNotification(newItem);

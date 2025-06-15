@@ -1,4 +1,4 @@
-import { ITEM_ICONS, ITEM_RARITY, ITEM_STAT_POOLS } from './constants/items.js';
+import { ITEM_ICONS, ITEM_RARITY, ITEM_STAT_POOLS, TIER_BONUSES } from './constants/items.js';
 import { STATS } from './constants/stats/stats.js';
 import { formatStatName } from './ui/ui.js';
 
@@ -10,13 +10,18 @@ export const AVAILABLE_STATS = Object.fromEntries(
 );
 
 export default class Item {
-  constructor(type, level, rarity, existingStats = null) {
+  constructor(type, level, rarity, tier = 1, existingStats = null) {
     this.type = type;
     this.level = level;
     this.rarity = rarity.toUpperCase();
+    this.tier = tier;
     // Only generate new stats if no existing stats provided
     this.stats = existingStats || this.generateStats();
     this.id = crypto.randomUUID();
+  }
+
+  getTierBonus() {
+    return 1 + TIER_BONUSES[this.tier] * (this.tier - 1);
   }
 
   generateStats() {
@@ -24,14 +29,12 @@ export default class Item {
     const itemPool = ITEM_STAT_POOLS[this.type];
     const multiplier = ITEM_RARITY[this.rarity].statMultiplier;
     const totalStatsNeeded = ITEM_RARITY[this.rarity].totalStats;
-
+    const tierBonus = this.getTierBonus();
     const calculateStatValue = (stat, baseValue) => {
       const scaling = AVAILABLE_STATS[stat].scaling;
-      const value =
-        scaling === 'capped'
-          ? baseValue * multiplier * Math.min(1 + this.level * (1 / 200), 2)
-          : baseValue * multiplier * (1 + this.level * 0.03);
-
+      // New scaling: double every 150 levels
+      const scale = scaling === 'capped' ? Math.min(2 ** (this.level / 150), 2) : 2 ** (this.level / 150);
+      const value = baseValue * tierBonus * multiplier * scale;
       const decimals = STATS[stat].decimalPlaces || 0;
       return Number(value.toFixed(decimals));
     };
@@ -123,23 +126,15 @@ export default class Item {
    * @param {number} newLevel
    */
   applyLevelToStats(baseValues, newLevel) {
+    const tierBonus = this.getTierBonus();
     for (const stat of Object.keys(this.stats)) {
-      const statConfig = AVAILABLE_STATS[stat];
-      if (!statConfig) continue;
-      const scaling = statConfig.scaling;
+      const scaling = AVAILABLE_STATS[stat].scaling;
+      // New scaling: double every 150 levels
+      const scale = scaling === 'capped' ? Math.min(2 ** (newLevel / 150), 2) : 2 ** (newLevel / 150);
       const multiplier = ITEM_RARITY[this.rarity].statMultiplier;
-      const base = baseValues[stat];
-      if (base === undefined) continue;
-      let newValue;
-      if (scaling === 'capped') {
-        const scale = Math.min(1 + newLevel * (1 / 200), 2);
-        newValue = base * multiplier * scale;
-      } else {
-        const scale = 1 + newLevel * 0.03;
-        newValue = base * multiplier * scale;
-      }
+      const value = baseValues[stat] * tierBonus * multiplier * scale;
       const decimals = STATS[stat].decimalPlaces || 0;
-      this.stats[stat] = Number(newValue.toFixed(decimals));
+      this.stats[stat] = Number(value.toFixed(decimals));
     }
     this.level = newLevel;
   }
