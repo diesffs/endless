@@ -4,7 +4,7 @@ export const MISC_STATS = {
   mana: {
     base: 50,
     decimalPlaces: 0,
-    levelUpBonus: 5,
+    levelUpBonus: 0,
     training: { available: true, cost: 100, bonus: 5 },
     item: { min: 5, max: 15, scaling: 'capped' },
     itemTags: ['misc', 'jewelry'],
@@ -12,7 +12,7 @@ export const MISC_STATS = {
   },
   manaPercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
     item: { min: 2, max: 5, scaling: 'capped' },
     itemTags: ['misc', 'jewelry'],
   },
@@ -32,7 +32,7 @@ export const MISC_STATS = {
   // MANA PER HIT
   manaPerHit: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
     item: { min: 1, max: 2, scaling: 'capped' },
     itemTags: ['misc', 'jewelry'],
     showInUI: true,
@@ -50,7 +50,7 @@ export const MISC_STATS = {
   },
   strengthPercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
     item: { min: 0.5, max: 3, scaling: 'capped' },
     itemTags: ['misc'],
   },
@@ -62,7 +62,7 @@ export const MISC_STATS = {
   },
   agilityPercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
     item: { min: 0.5, max: 3, scaling: 'capped' },
     itemTags: ['misc'],
   },
@@ -74,7 +74,7 @@ export const MISC_STATS = {
   },
   vitalityPercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
     item: { min: 0.5, max: 3, scaling: 'capped' },
     itemTags: ['misc'],
   },
@@ -86,7 +86,7 @@ export const MISC_STATS = {
   },
   wisdomPercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
     item: { min: 0.5, max: 3, scaling: 'capped' },
     itemTags: ['misc', 'jewelry'],
   },
@@ -98,7 +98,7 @@ export const MISC_STATS = {
   },
   endurancePercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
     item: { min: 0.5, max: 3, scaling: 'capped' },
     itemTags: ['misc', 'jewelry'],
   },
@@ -117,7 +117,7 @@ export const MISC_STATS = {
   // BONUS GOLD
   bonusGoldPercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
     item: { min: 5, max: 15, scaling: 'capped' },
     itemTags: ['misc', 'jewelry'],
     showInUI: true,
@@ -125,7 +125,7 @@ export const MISC_STATS = {
   // BONUS EXPERIENCE
   bonusExperiencePercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
     item: { min: 5, max: 15, scaling: 'capped' },
     itemTags: ['misc', 'jewelry'],
     showInUI: true,
@@ -133,22 +133,22 @@ export const MISC_STATS = {
   // COOLDOWN REDUCTION
   cooldownReductionPercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
   },
   // MANA COST REDUCTION
   manaCostReductionPercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
   },
   // BUFF DURATION
   buffDurationPercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
   },
   // ITEM BONUSES
   itemBonusesPercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
   },
   // Only from materials. permanent skill points
   skillPoints: {

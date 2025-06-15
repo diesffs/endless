@@ -11,7 +11,7 @@ export const OFFENSE_STATS = {
   },
   damagePercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
     item: { min: 2, max: 20, scaling: 'capped' },
     itemTags: ['mace'],
   },
@@ -26,7 +26,7 @@ export const OFFENSE_STATS = {
   },
   attackSpeedPercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
   },
   // CRIT CHANCE
   critChance: {
@@ -39,7 +39,7 @@ export const OFFENSE_STATS = {
   },
   critChancePercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
   },
   // CRIT DAMAGE
   critDamage: {
@@ -52,7 +52,7 @@ export const OFFENSE_STATS = {
   },
   critDamagePercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
   },
   // ATTACK RATING
   attackRating: {
@@ -65,7 +65,7 @@ export const OFFENSE_STATS = {
   },
   attackRatingPercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
     item: { min: 5, max: 15, scaling: 'capped' },
     itemTags: ['offense', 'gloves'],
   },
@@ -80,7 +80,7 @@ export const OFFENSE_STATS = {
   },
   lifeStealPercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
   },
   // LIFE PER HIT
   lifePerHit: {
@@ -91,7 +91,7 @@ export const OFFENSE_STATS = {
   },
   lifePerHitPercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
   },
   // FIRE DAMAGE
   fireDamage: {
@@ -104,7 +104,7 @@ export const OFFENSE_STATS = {
   },
   fireDamagePercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
     item: { min: 2, max: 6, scaling: 'full' },
     itemTags: ['sword', 'jewelry', 'gloves'],
   },
@@ -119,7 +119,7 @@ export const OFFENSE_STATS = {
   },
   coldDamagePercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
     item: { min: 2, max: 6, scaling: 'full' },
     itemTags: ['sword', 'jewelry', 'gloves'],
   },
@@ -134,7 +134,7 @@ export const OFFENSE_STATS = {
   },
   airDamagePercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
     item: { min: 2, max: 6, scaling: 'full' },
     itemTags: ['sword', 'jewelry', 'gloves'],
   },
@@ -149,7 +149,7 @@ export const OFFENSE_STATS = {
   },
   earthDamagePercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
     item: { min: 2, max: 6, scaling: 'full' },
     itemTags: ['sword', 'jewelry', 'gloves'],
   },
@@ -163,7 +163,7 @@ export const OFFENSE_STATS = {
   // ELEMENTAL DAMAGE PERCENT
   elementalDamagePercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
     item: { min: 0.5, max: 4, scaling: 'full' },
     itemTags: ['offense', 'jewelry', 'gloves'],
   },

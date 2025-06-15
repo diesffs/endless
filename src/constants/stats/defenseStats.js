@@ -4,7 +4,7 @@ export const DEFENSE_STATS = {
   life: {
     base: 100,
     decimalPlaces: 0,
-    levelUpBonus: 10,
+    levelUpBonus: 1,
     training: { available: true, cost: 80, bonus: 10 },
     item: { min: 30, max: 80, scaling: 'full' },
     itemTags: ['defense'],
@@ -12,7 +12,7 @@ export const DEFENSE_STATS = {
   },
   lifePercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
     item: { min: 2, max: 10, scaling: 'full' },
     itemTags: ['pants'],
   },
@@ -27,7 +27,7 @@ export const DEFENSE_STATS = {
   },
   armorPercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
     item: { min: 2, max: 9, scaling: 'full' },
     itemTags: ['armor'],
   },
@@ -55,16 +55,16 @@ export const DEFENSE_STATS = {
   },
   lifeRegenPercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
   },
   // THORNS
   thornsDamage: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
   },
   thornsDamagePercent: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
   },
   // RESURRECTION
   resurrectionChance: {

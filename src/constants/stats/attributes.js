@@ -15,7 +15,7 @@ export const ATTRIBUTES = {
   },
   agility: {
     effects: {
-      attackRatingPerPoint: 10,
+      attackRatingPerPoint: 7,
       attackRatingPercentPer: {
         enabled: false,
         points: 5,
@@ -30,7 +30,7 @@ export const ATTRIBUTES = {
   },
   vitality: {
     effects: {
-      lifePerPoint: 10,
+      lifePerPoint: 5,
       lifePercentPer: {
         enabled: false,
         points: 5,
@@ -45,7 +45,7 @@ export const ATTRIBUTES = {
   },
   wisdom: {
     effects: {
-      manaPerPoint: 5,
+      manaPerPoint: 1,
       manaPercentPer: {
         enabled: false,
         points: 5,
@@ -60,7 +60,7 @@ export const ATTRIBUTES = {
   },
   endurance: {
     effects: {
-      armorPerPoint: 5,
+      armorPerPoint: 4,
       armorPercentPer: {
         enabled: false,
         points: 5,
@@ -70,7 +70,7 @@ export const ATTRIBUTES = {
   },
   dexterity: {
     effects: {
-      critDamagePerPoint: 0.005,
+      critDamagePerPoint: 0.001,
       critChancePer: {
         enabled: false,
         points: 25,
