@@ -180,7 +180,7 @@ export async function defeatEnemy() {
     updateResources();
   } else if (game.fightMode === 'explore') {
     baseExpGained = Math.floor(6 + game.stage * 1.5);
-    baseGoldGained = 5 + game.stage * 2;
+    baseGoldGained = 5 + game.stage * 4;
 
     if (enemy.rollForDrop()) {
       const itemLevel = enemy.calculateItemLevel(game.stage);

@@ -22,8 +22,8 @@ export const ENEMY_RARITY = {
     lifeBonus: 1.2,
     damageBonus: 1.2,
     bonusAttackSpeed: 0.9,
-    xpBonus: 1.2,
-    goldBonus: 1.05,
+    xpBonus: 2,
+    goldBonus: 2,
   },
   EPIC: {
     type: 'EPIC',
@@ -33,8 +33,8 @@ export const ENEMY_RARITY = {
     lifeBonus: 1.5,
     damageBonus: 1.5,
     bonusAttackSpeed: 0.8,
-    xpBonus: 1.5,
-    goldBonus: 1.1,
+    xpBonus: 3,
+    goldBonus: 3,
   },
   LEGENDARY: {
     type: 'LEGENDARY',
@@ -44,8 +44,8 @@ export const ENEMY_RARITY = {
     lifeBonus: 2,
     damageBonus: 2,
     bonusAttackSpeed: 0.7,
-    xpBonus: 2.5,
-    goldBonus: 1.2,
+    xpBonus: 5,
+    goldBonus: 6,
   },
   MYTHIC: {
     type: 'MYTHIC',
@@ -55,8 +55,8 @@ export const ENEMY_RARITY = {
     lifeBonus: 3,
     damageBonus: 3,
     bonusAttackSpeed: 0.5,
-    xpBonus: 4,
-    goldBonus: 1.5,
+    xpBonus: 8,
+    goldBonus: 8,
   },
 };
 
@@ -74,7 +74,7 @@ export const ENEMY_LIST = [
     image: 'enemies/abyssal-wraith.jpg',
     lifeMultiplier: 1.2,
     damageMultiplier: 1.1,
-    xpMultiplier: 1.0,
+    xpMultiplier: 1.1,
     goldMultiplier: 1.0,
     itemDropMultiplier: 1.0,
     materialDropMultiplier: 1.0,
