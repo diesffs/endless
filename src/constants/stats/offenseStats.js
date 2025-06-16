@@ -85,7 +85,7 @@ export const OFFENSE_STATS = {
   // LIFE PER HIT
   lifePerHit: {
     base: 0,
-    decimalPlaces: 0,
+    decimalPlaces: 1,
     item: { min: 1, max: 8, scaling: 'capped' },
     itemTags: ['axe'],
   },
