@@ -93,3 +93,74 @@
   background: #19391e;
   color: #22c55e;
 }
+
+.quest-claimable-btn {
+  background: #22c55e;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 16px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1em;
+  margin-bottom: 4px;
+  transition: background 0.2s, color 0.2s;
+}
+.quest-claimable-btn:hover {
+  background: #38bdf8;
+  color: #fff;
+}
+
+#claimable-quests-modal .training-modal-content {
+  max-height: 70vh;
+  overflow-y: auto;
+  width: 640px;
+  min-width: 340px;
+}
+
+#claimable-quests-list .quest-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid #22c55e;
+  border-radius: 4px;
+  background-color: #19391e;
+  margin-bottom: 8px;
+}
+
+#claimable-quests-list .quest-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#claimable-quests-list .quest-progress {
+  margin-left: 12px;
+  color: #aaa;
+  flex-shrink: 0;
+}
+
+/* Hide overflowed content except the claim button */
+#claimable-quests-list .quest-item > *:not(.quest-icon):not(.modal-btn) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#claimable-quests-modal .modal-btn {
+  background: linear-gradient(90deg, #22c55e 60%, #38bdf8 100%);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 7px 22px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background 0.2s, color 0.2s;
+  margin-left: 16px;
+}
+#claimable-quests-modal .modal-btn:hover {
+  background: linear-gradient(90deg, #38bdf8 60%, #22c55e 100%);
+}

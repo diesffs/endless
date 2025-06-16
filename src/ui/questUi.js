@@ -17,6 +17,21 @@ export function updateQuestsUI() {
   // Create tabs
   const tabs = document.createElement('div');
   tabs.className = 'quest-tabs';
+  // --- Add Claimable Quests Button INSIDE tabs, at the start ---
+  const claimableBtn = document.createElement('button');
+  claimableBtn.className = 'quest-claimable-btn';
+  // Check if there are claimable quests
+  const hasClaimable = quests.quests.some((q) => q.isComplete() && !q.claimed);
+  if (hasClaimable) {
+    claimableBtn.innerHTML = '✅';
+    claimableBtn.style.backgroundColor = '';
+  } else {
+    claimableBtn.innerHTML = '❌';
+    claimableBtn.style.backgroundColor = '#dc2626'; // red-600
+  }
+  claimableBtn.style.marginRight = '12px';
+  claimableBtn.onclick = () => openClaimableQuestsModal();
+  tabs.appendChild(claimableBtn);
   categories.forEach((cat) => {
     const tab = document.createElement('button');
     tab.className = 'quest-tab' + (cat === selectedCategory ? ' active' : '');
@@ -137,5 +152,63 @@ export function openQuestModal(quest) {
   });
 
   // Show modal
+  modal.classList.remove('hidden');
+}
+
+function openClaimableQuestsModal() {
+  // Remove any existing modal
+  let modal = document.getElementById('claimable-quests-modal');
+  if (modal) modal.remove();
+
+  modal = document.createElement('div');
+  modal.id = 'claimable-quests-modal';
+  modal.className = 'modal training-modal';
+  modal.innerHTML = `
+    <div class="training-modal-content">
+      <button class="modal-close">&times;</button>
+      <h2>Claimable Quests</h2>
+      <div id="claimable-quests-list"></div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  // Populate the list
+  const listDiv = modal.querySelector('#claimable-quests-list');
+  const claimable = quests.quests.filter((q) => q.isComplete() && !q.claimed);
+  if (claimable.length === 0) {
+    listDiv.innerHTML = `<p style="color:#aaa;">No quests ready to claim.</p>`;
+  } else {
+    claimable.forEach((q) => {
+      const item = document.createElement('div');
+      item.className = 'quest-item ready';
+      item.innerHTML = `
+        <span class="quest-icon">${q.icon}</span>
+        <span class="quest-title">${q.title}</span>
+        <span class="quest-progress">${q.getProgress()}/${q.target}</span>
+        <button class="modal-btn" style="margin-left:auto;">Claim</button>
+      `;
+      // Show tooltip on hover
+      item.addEventListener('mouseenter', (e) => showTooltip(q.description, e));
+      item.addEventListener('mousemove', positionTooltip);
+      item.addEventListener('mouseleave', hideTooltip);
+      // Open quest modal on title/icon click
+      item.querySelector('.quest-title').onclick = () => openQuestModal(q);
+      item.querySelector('.quest-icon').onclick = () => openQuestModal(q);
+      // Claim button
+      item.querySelector('button').onclick = (e) => {
+        e.stopPropagation();
+        q.claim();
+        updateQuestsUI();
+        openClaimableQuestsModal(); // Refresh modal
+      };
+      listDiv.appendChild(item);
+    });
+  }
+
+  // Close button logic
+  modal.querySelector('.modal-close').onclick = () => modal.classList.add('hidden');
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.classList.add('hidden');
+  });
   modal.classList.remove('hidden');
 }
