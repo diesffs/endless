@@ -89,7 +89,7 @@ export default class Item {
         <div class="item-name" style="color: ${ITEM_RARITY[this.rarity].color};">
           ${isEquipped ? '(Equipped) ' : ''}${this.getDisplayName()}
         </div>
-        <div class="item-level">Level ${this.level}</div>
+        <div class="item-level">Level ${this.level}, Tier ${this.tier}</div>
         <div class="item-stats">
           ${Object.entries(this.stats)
             .map(([stat, value]) => {
