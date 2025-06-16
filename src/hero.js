@@ -468,7 +468,7 @@ export default class Hero {
 
   calculateTotalThornsDamage(enemyDamage) {
     const damage = (this.stats.thornsDamage + enemyDamage) * (1 + this.stats.thornsDamagePercent / 100);
-    return damage || 0;
+    return Math.floor(damage) || 0;
   }
 
   willRessurect() {

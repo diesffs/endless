@@ -46,7 +46,7 @@ export function enemyAttack(currentTime) {
 
       // check currently applied buffs and if fireShield is active, return its damage to the attacker.
       if (skillTree.activeBuffs.has('fireShield')) {
-        const fireReflect = hero.stats.reflectFireDamage || 0;
+        const fireReflect = Math.floor(hero.stats.reflectFireDamage || 0);
         if (fireReflect > 0) {
           game.damageEnemy(fireReflect);
           createDamageNumber({ text: `${fireReflect}` });
