@@ -93,7 +93,15 @@ export class DataManager {
       return null;
     }
 
-    data = await this.runMigrations(data, version);
+    if (!statusCheck) {
+      data = await this.runMigrations(data, version);
+    }
+
+    // check if is empty object
+    if (!data || Object.keys(data).length === 0) {
+      return null;
+    }
+
     data.source = source;
     data.updated_at = updated_at;
     return data;
@@ -128,6 +136,9 @@ export class DataManager {
       }
     }
 
+    if (migratedData.options) {
+      migratedData.options.version = currentVersion;
+    }
     return migratedData;
   }
 
