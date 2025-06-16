@@ -1,6 +1,7 @@
 import { loadGameData, saveGameData, apiFetch } from './api.js';
 import { crypt } from './functions.js';
 import { getGlobals } from './globals.js';
+import { createModal } from './ui/modal.js';
 import { showToast } from './ui/ui.js';
 
 export class DataManager {
@@ -40,7 +41,7 @@ export class DataManager {
     }
   }
 
-  async loadGame({ cloud = false, premium = 'no' } = {}) {
+  async loadGame({ cloud = false, premium = 'no', statusCheck = false } = {}) {
     let data = null;
     let updated_at = null;
     let source = 'local';
@@ -85,7 +86,10 @@ export class DataManager {
 
     if (!version) {
       const salt = Math.random().toString(36).substring(2, 15);
-      localStorage.setItem('game_backup_' + salt, JSON.stringify(data));
+      if (typeof window !== 'undefined' && !statusCheck) {
+        this._showResetModal();
+        localStorage.setItem('game_backup_' + salt, JSON.stringify(data));
+      }
       return null;
     }
 
@@ -142,5 +146,35 @@ export class DataManager {
     await this.checkSession();
     if (this.sessionInterval) clearInterval(this.sessionInterval);
     this.sessionInterval = setInterval(() => this.checkSession(), 60000 * 60); // check every hour
+  }
+
+  _showResetModal() {
+    createModal({
+      id: 'reset-modal',
+      className: 'reset-modal',
+      content: `
+            <div class="modal-content">
+              <span class="modal-close">&times;</span>
+              <h2>Game Data Reset</h2>
+              <p>Your game data has been fully reset due to a major update or migration. We apologize for any inconvenience. Thank you for your understanding! Your data was not deleted, you can find it in <strong>localStorage</strong>. Contact support for assistance.</p>
+              <div style="text-align:center; margin-top: 24px;">
+                <button id="reset-modal-ok" style="padding: 8px 24px; font-size: 1.1em;">OK</button>
+              </div>
+            </div>
+          `,
+      onClose: () => {
+        // Optionally, you can add any logic here if needed when modal closes
+      },
+    });
+    // Add event listener for OK button
+    setTimeout(() => {
+      const okBtn = document.getElementById('reset-modal-ok');
+      if (okBtn) {
+        okBtn.addEventListener('click', () => {
+          const modal = document.getElementById('reset-modal');
+          if (modal) modal.remove();
+        });
+      }
+    }, 0);
   }
 }

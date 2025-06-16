@@ -179,6 +179,7 @@ export function createDebugUI() {
       let value;
 
       if (key === 'debugUIState') continue;
+      if (key !== 'gameProgress') continue;
 
       try {
         value = crypt.decrypt(localStorage.getItem('gameProgress'));

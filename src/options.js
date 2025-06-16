@@ -224,7 +224,7 @@ export class Options {
     };
 
     try {
-      const cloudResult = await dataManager.loadGame({ cloud: true });
+      const cloudResult = await dataManager.loadGame({ cloud: true, statusCheck: true });
 
       if (!cloudResult) {
         statusMsg = 'No cloud save found';
