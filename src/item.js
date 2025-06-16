@@ -1,4 +1,5 @@
-import { ITEM_ICONS, ITEM_RARITY, ITEM_STAT_POOLS, TIER_BONUSES } from './constants/items.js';
+import { ITEM_ICONS, ITEM_RARITY, ITEM_STAT_POOLS } from './constants/items.js';
+import { REGION_TIER_BONUSES } from './constants/regions.js';
 import { STATS } from './constants/stats/stats.js';
 import { formatStatName } from './ui/ui.js';
 
@@ -26,7 +27,7 @@ export default class Item {
   }
 
   getTierBonus() {
-    return 1 + TIER_BONUSES[this.tier] * (this.tier - 1);
+    return 1 + REGION_TIER_BONUSES[this.tier].itemBaseBonus * (this.tier - 1);
   }
 
   calculateStatValue({ baseValue, tierBonus, multiplier, scale, stat }) {

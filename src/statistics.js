@@ -6,7 +6,6 @@ import { handleSavedData } from './functions.js';
  */
 export default class Statistics {
   constructor(savedData = null) {
-    /** Bosses defeated count */
     this.bossesKilled = 0;
     this.enemiesKilled = {
       total: 0,
@@ -21,9 +20,10 @@ export default class Statistics {
     this.totalCrystalsEarned = 0;
     this.totalSoulsEarned = 0;
     this.totalItemsFound = 0;
-    this.totalTimePlayed = 0; // New: total time played (resets on reset)
+    this.totalMaterialsFound = 0;
+    this.totalTimePlayed = 0;
     this.highestStageReached = 0;
-    this.totalTimeInFights = 0; // Track total time spent in fights
+    this.totalTimeInFights = 0;
 
     handleSavedData(savedData, this);
     this.lastUpdate = Date.now();
@@ -44,9 +44,10 @@ export default class Statistics {
     this.totalCrystalsEarned = 0;
     this.totalSoulsEarned = 0;
     this.totalItemsFound = 0;
-    this.totalTimePlayed = 0; // Reset total time played
+    this.totalMaterialsFound = 0;
+    this.totalTimePlayed = 0;
     this.highestStageReached = 0;
-    this.totalTimeInFights = 0; // Reset total time in fights
+    this.totalTimeInFights = 0;
     this.updateStatisticsUI();
   }
 
@@ -69,6 +70,7 @@ export default class Statistics {
           <div id="stat-total-crystals"></div>
           <div id="stat-total-souls"></div>
           <div id="stat-items-found"></div>
+          <div id="stat-materials-found"></div>
           <div id="stat-enemies-killed"></div>
           <div id="stat-bosses-killed"></div>
           <div id="stat-highest-damage"></div>
@@ -128,6 +130,12 @@ export default class Statistics {
     const itemsFound = document.getElementById('stat-items-found');
     if (itemsFound) {
       itemsFound.textContent = `Total Items Found: ${this.totalItemsFound || 0}`;
+    }
+
+    // Total Materials Found
+    const materialsFound = document.getElementById('stat-materials-found');
+    if (materialsFound) {
+      materialsFound.textContent = `Total Materials Found: ${this.totalMaterialsFound || 0}`;
     }
 
     // Highest Stage Reached

@@ -1,5 +1,5 @@
 import { QUEST_DEFINITIONS } from './constants/quests.js';
-import { hero, statistics, dataManager } from './globals.js';
+import { hero, statistics, dataManager, inventory } from './globals.js';
 import { showToast, updateResources, updateTabIndicators } from './ui/ui.js';
 
 export class Quest {
@@ -44,6 +44,12 @@ export class Quest {
     if (this.type === 'damage') {
       return Math.min(statistics.highestDamageDealt, this.target);
     }
+    if (this.type === 'item_drop') {
+      return Math.min(statistics.totalItemsFound, this.target);
+    }
+    if (this.type === 'material_drop') {
+      return Math.min(statistics.totalMaterialsFound, this.target);
+    }
     return 0;
   }
 
@@ -59,6 +65,18 @@ export class Quest {
     if (this.reward.gold) hero.gainGold(this.reward.gold);
     if (this.reward.exp) hero.gainExp(this.reward.exp);
     if (this.reward.crystals) hero.gainCrystals(this.reward.crystals);
+    if (this.reward.item) {
+      // Generate a random item of the correct rarity, tier, and player level
+      const rarity = this.reward.item.rarity.toUpperCase();
+      const level = hero.level;
+      const tier = this.reward.item.tier || 1;
+      // Pick a random item type
+      const itemTypes = Object.values(require('./constants/items.js').ITEM_TYPES);
+      const type = itemTypes[Math.floor(Math.random() * itemTypes.length)];
+      const newItem = inventory.createItem(type, level, rarity, tier);
+      inventory.addItemToInventory(newItem);
+      showToast(`You received a ${rarity} ${type} (Tier ${tier})!`, 'normal');
+    }
     showToast(`Quest "${this.title}" claimed!`, 'normal');
     updateResources();
 

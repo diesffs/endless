@@ -90,14 +90,21 @@ export function openQuestModal(quest) {
   const progressHtml = `<span style=\"color:#22c55e;font-weight:bold;\">${progress}/${quest.target}</span>`;
   // Add reward display: gold in yellow, crystals in blue, others default
   let rewardParts = [];
-  for (const [k, v] of Object.entries(quest.reward)) {
+  for (const [key, value] of Object.entries(quest.reward)) {
     let color = '';
-    if (k === 'gold') color = '#FFD700';
-    else if (k === 'crystals') color = '#38bdf8';
+    if (key === 'gold') color = '#FFD700';
+    else if (key === 'crystals') color = '#38bdf8';
     else color = '#fff';
-    rewardParts.push(
-      `<span style=\"color:${color};font-weight:bold;\">${v} ${k.charAt(0).toUpperCase() + k.slice(1)}</span>`
-    );
+    if (key === 'item' && typeof value === 'object') {
+      // Show item reward details (rarity, tier)
+      rewardParts.push(
+        `<span style="color:#fff;font-weight:bold;">Random Item (Rarity: <span class="item-color-${value.rarity}">${value.rarity}</span>, Tier: <span style='color:#38bdf8'>${value.tier}</span>)</span>`
+      );
+    } else {
+      rewardParts.push(
+        `<span style=\"color:${color};font-weight:bold;\">${value} ${key.charAt(0).toUpperCase() + key.slice(1)}</span>`
+      );
+    }
   }
   const rewardHtml = rewardParts.join(', ');
   modal.querySelector('#quest-modal-reward').innerHTML = `Progress: ${progressHtml}<br>Reward: ${rewardHtml}`;

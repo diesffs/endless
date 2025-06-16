@@ -262,6 +262,25 @@
   border-color: #ff0033;
 }
 
+.item-color-normal {
+  color: #ffffff;
+}
+.item-color-magic {
+  color: #4287f5;
+}
+.item-color-rare {
+  color: #ffd700;
+}
+.item-color-unique {
+  color: #ff8c00;
+}
+.item-color-legendary {
+  color: #e65a27;
+}
+.item-color-mythic {
+  color: #ff0033;
+}
+
 .salvage-container {
   display: flex;
   align-items: center;
