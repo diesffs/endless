@@ -405,7 +405,7 @@ export function createModifyUI() {
     const tier = parseInt(tierInput.value, 10) || 1;
     let count = 0;
     Object.values(ITEM_TYPES).forEach((itemType) => {
-      if (itemType === 'ring') {
+      if (itemType === 'RING') {
         // Generate two rings
         for (let i = 0; i < 2; i++) {
           const newItem = inventory.createItem(itemType, itemLevel, rarity, tier);

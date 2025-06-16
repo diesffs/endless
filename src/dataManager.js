@@ -114,8 +114,8 @@ export class DataManager {
       if (migration.version > currentVersion) {
         const migrationModule = migrationContext[migration.path];
         if (typeof migrationModule.run === 'function') {
-          // If run() returns true, update version
-          const { data: newData, result } = await migrationModule.run(data);
+          // Always pass the latest migratedData to run()
+          const { data: newData, result } = await migrationModule.run(migratedData);
           if (result === true) {
             currentVersion = migration.version;
             migratedData = newData;
@@ -123,24 +123,18 @@ export class DataManager {
         }
       }
     }
-    // Update version in data
-    if (!data.dataManager) data.dataManager = {};
-    // previous version kept, if migration fails
-    migratedData.options.version = currentVersion;
+
     return migratedData;
   }
 
   async checkSession() {
-    let userSession = null;
     try {
       const res = await apiFetch(`/user/session`);
       if (!res.ok) throw new Error('Not logged in');
       const user = (await res.json()).user;
       this.setSession(user);
-      userSession = user;
     } catch (error) {
       this.clearSession();
-      userSession = null;
     }
   }
 
