@@ -163,7 +163,7 @@ export class DataManager {
             </div>
           `,
       onClose: () => {
-        // Optionally, you can add any logic here if needed when modal closes
+        // Optionally, you can add any logic here if needed when modal closess
       },
     });
     // Add event listener for OK button
