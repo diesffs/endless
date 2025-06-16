@@ -159,13 +159,23 @@ export async function defeatEnemy() {
     baseGoldGained = 10 + hero.bossLevel * 4;
 
     const { crystals, gold, materials, souls } = game.currentEnemy.reward;
-    if (gold) hero.gainGold(gold);
-    if (crystals) hero.gainCrystals(crystals);
-    if (souls) hero.gainSouls(souls + Math.floor(hero.bossLevel * 0.01)); // +1% per boss level
+    let text = `Boss defeated! `;
+    if (gold) {
+      hero.gainGold(gold);
+      text += `+${gold} gold, `;
+    }
+    if (crystals) {
+      hero.gainCrystals(crystals);
+      text += `+${crystals} crystals, `;
+    }
+    if (souls) {
+      hero.gainSouls(souls + Math.floor(hero.bossLevel * 0.01)); // +1% per boss level
+      text += `+${souls + Math.floor(hero.bossLevel * 0.01)} souls, `;
+    }
     if (materials && materials.length) {
       materials.forEach(({ id, qty }) => inventory.addMaterial({ id, qty }));
     }
-    showToast(`Boss defeated! +${gold} gold, +${crystals} crystals, +${souls} souls`, 'success');
+    showToast(text, 'success');
     hero.bossLevel++;
     updateResources();
   } else if (game.fightMode === 'explore') {
