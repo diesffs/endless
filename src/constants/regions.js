@@ -1,5 +1,56 @@
 import { ENEMY_LIST } from './enemies.js';
 
+export const REGION_TIER_BONUSES = {
+  1: {
+    itemBaseBonus: 0.07,
+    hitChanceIncrease: 1.0,
+  },
+  2: {
+    itemBaseBonus: 0.15,
+    hitChanceIncrease: 2,
+  },
+  3: {
+    itemBaseBonus: 0.27,
+    hitChanceIncrease: 3,
+  },
+  4: {
+    itemBaseBonus: 0.41,
+    hitChanceIncrease: 4,
+  },
+  5: {
+    itemBaseBonus: 0.58,
+    hitChanceIncrease: 5,
+  },
+  6: {
+    itemBaseBonus: 0.78,
+    hitChanceIncrease: 6,
+  },
+  7: {
+    itemBaseBonus: 1.01,
+    hitChanceIncrease: 7,
+  },
+  8: {
+    itemBaseBonus: 1.27,
+    hitChanceIncrease: 8,
+  },
+  9: {
+    itemBaseBonus: 1.56,
+    hitChanceIncrease: 9,
+  },
+  10: {
+    itemBaseBonus: 1.88,
+    hitChanceIncrease: 10,
+  },
+  11: {
+    itemBaseBonus: 2.19,
+    hitChanceIncrease: 11,
+  },
+  12: {
+    itemBaseBonus: 2.5,
+    hitChanceIncrease: 12,
+  },
+};
+
 export const REGIONS = [
   {
     tier: 1,

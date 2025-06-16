@@ -28,11 +28,11 @@ class Boss {
     this.materialDropWeights = def.materialDropWeights || {};
     // Base stats
     this.baseLife = 3000;
-    this.baseDamage = 18;
+    this.baseDamage = 25;
     // Scaled stats
     this.life = (this.baseLife + hero.bossLevel * 677) * this.lifeMultiplier;
     this.currentLife = this.life;
-    this.damage = (this.baseDamage + hero.bossLevel * 8) * this.damageMultiplier;
+    this.damage = (this.baseDamage + hero.bossLevel * 14) * this.damageMultiplier;
     // Attack timing for boss combat
     this.attackSpeed = def.attackSpeed || 1; // attacks per second
     this.lastAttack = Date.now();

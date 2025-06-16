@@ -11,6 +11,7 @@ import Enemy from './enemy.js';
 import { hero, game, inventory, crystalShop, statistics, skillTree, dataManager } from './globals.js';
 import { ITEM_RARITY } from './constants/items.js';
 import { ENEMY_RARITY } from './constants/enemies.js';
+import { REGION_TIER_BONUSES } from './constants/regions.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 import { updateQuestsUI } from './ui/questUi.js';
 import { updateBossUI } from './ui/bossUi.js';
@@ -326,11 +327,15 @@ export function createCombatText(text, isPlayer = true) {
 }
 
 export function calculateHitChance(attackRating) {
-  let stage = game.stage || 1; // Default to stage 1 if not set
+  let scalingFactor;
+
   if (game.fightMode === 'arena') {
-    stage = hero.bossLevel * 15 || 15; // Use boss level for arena fights
+    scalingFactor = hero.bossLevel * 15 || 15;
+  } else if (game.fightMode === 'explore') {
+    scalingFactor = game.stage * REGION_TIER_BONUSES[getCurrentRegion().tier].hitChanceIncrease;
   }
-  const stageScaling = 1 + (stage - 1) * 0.25; // Linear 25% increase per stage
-  const baseChance = (attackRating / (attackRating + 25 * stageScaling)) * 100;
+
+  const scale = 1 + (scalingFactor - 1) * 0.25;
+  const baseChance = (attackRating / (attackRating + 25 * scale)) * 100;
   return Math.min(Math.max(baseChance, 10), 100);
 }

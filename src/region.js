@@ -7,6 +7,7 @@ import Enemy from './enemy.js';
 // Tooltip imports
 import { showTooltip, positionTooltip, hideTooltip } from './ui/ui.js';
 import { REGIONS } from './constants/regions.js';
+import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 
 let currentRegionId = null;
 
@@ -30,6 +31,7 @@ export async function setCurrentRegion(regionId) {
   game.resetAllLife();
   dataManager.saveGame();
 
+  updateStatsAndAttributesUI();
   updateStageUI();
   updateRegionUI();
 }

@@ -55,7 +55,7 @@ const CRYSTAL_UPGRADE_CONFIG = {
     label: 'Reset Arena Level',
     bonus: 'Reset Arena level to 1',
     bonusLabel: 'Reset Arena level to 1',
-    baseCost: 10,
+    baseCost: 50,
     multiple: true,
   },
 };
