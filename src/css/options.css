@@ -204,6 +204,9 @@
   color: #e5e7eb;
   line-height: 1.6;
 }
+.changelog-body ul {
+  padding-left: 16px;
+}
 .modal-close {
   position: absolute;
   top: 16px;
