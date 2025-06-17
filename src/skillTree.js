@@ -292,7 +292,13 @@ export default class SkillTree {
     const UiNumber = (amount, c) => {
       isPlayer = true;
       if (typeof amount === 'number' && !isNaN(amount)) {
-        text = `+${Math.floor(amount)}`;
+        if (amount < 0) {
+          text = `-${Math.floor(Math.abs(amount))}`;
+        } else if (amount > 0) {
+          text = `+${Math.floor(amount)}`;
+        } else {
+          text = '0';
+        }
       } else {
         text = amount;
       }
@@ -306,7 +312,11 @@ export default class SkillTree {
     }
     if (baseEffects.lifePerHit) {
       game.healPlayer(baseEffects.lifePerHit);
-      UiNumber(baseEffects.lifePerHit, 'green');
+      if (baseEffects.lifePerHit < 0) {
+        UiNumber(baseEffects.lifePerHit, 'red');
+      } else {
+        UiNumber(baseEffects.lifePerHit, 'green');
+      }
     }
 
     if (baseEffects.life) {
