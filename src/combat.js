@@ -11,7 +11,6 @@ import Enemy from './enemy.js';
 import { hero, game, inventory, crystalShop, statistics, skillTree, dataManager } from './globals.js';
 import { ITEM_RARITY } from './constants/items.js';
 import { ENEMY_RARITY } from './constants/enemies.js';
-import { REGION_TIER_BONUSES } from './constants/regions.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 import { updateQuestsUI } from './ui/questUi.js';
 import { updateBossUI } from './ui/bossUi.js';
@@ -70,7 +69,7 @@ export function playerAttack(currentTime) {
   if (currentTime - game.lastPlayerAttack >= timeBetweenAttacks) {
     if (game.currentEnemy.currentLife > 0) {
       // Calculate if attack hits
-      const hitChance = calculateHitChance(hero.stats.attackRating);
+      const hitChance = hero.calculateHitChance();
       const roll = Math.random() * 100;
 
       if (roll > hitChance) {
@@ -334,18 +333,4 @@ export function createCombatText(text, isPlayer = true) {
 
   parent.appendChild(textEl);
   setTimeout(() => textEl.remove(), 1000);
-}
-
-export function calculateHitChance(attackRating) {
-  let scalingFactor;
-
-  if (game.fightMode === 'arena') {
-    scalingFactor = hero.bossLevel * 15 || 15;
-  } else if (game.fightMode === 'explore') {
-    scalingFactor = game.stage * REGION_TIER_BONUSES[getCurrentRegion().tier].hitChanceIncrease;
-  }
-
-  const scale = 1 + (scalingFactor - 1) * 0.25;
-  const baseChance = (attackRating / (attackRating + 25 * scale)) * 100;
-  return Math.min(Math.max(baseChance, 10), 100);
 }

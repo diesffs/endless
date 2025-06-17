@@ -1,56 +1,5 @@
 import { ENEMY_LIST } from './enemies.js';
 
-export const REGION_TIER_BONUSES = {
-  1: {
-    itemBaseBonus: 0.0504,
-    hitChanceIncrease: 1.0,
-  },
-  2: {
-    itemBaseBonus: 0.108,
-    hitChanceIncrease: 2,
-  },
-  3: {
-    itemBaseBonus: 0.1944,
-    hitChanceIncrease: 3,
-  },
-  4: {
-    itemBaseBonus: 0.2952,
-    hitChanceIncrease: 4,
-  },
-  5: {
-    itemBaseBonus: 0.4188,
-    hitChanceIncrease: 5,
-  },
-  6: {
-    itemBaseBonus: 0.563,
-    hitChanceIncrease: 6,
-  },
-  7: {
-    itemBaseBonus: 0.726,
-    hitChanceIncrease: 7,
-  },
-  8: {
-    itemBaseBonus: 0.906,
-    hitChanceIncrease: 8,
-  },
-  9: {
-    itemBaseBonus: 1.102,
-    hitChanceIncrease: 9,
-  },
-  10: {
-    itemBaseBonus: 1.314,
-    hitChanceIncrease: 10,
-  },
-  11: {
-    itemBaseBonus: 1.542,
-    hitChanceIncrease: 11,
-  },
-  12: {
-    itemBaseBonus: 1.8,
-    hitChanceIncrease: 12,
-  },
-};
-
 export const REGIONS = [
   {
     tier: 1,
@@ -71,6 +20,9 @@ export const REGIONS = [
     materialDropWeights: {
       crystalized_rock: 1.1,
     },
+    itemBaseBonus: 0.0504,
+    hitChanceMultiplier: 1.0,
+    armorReductionMultiplier: 1.0,
   },
   {
     tier: 2,
@@ -91,6 +43,9 @@ export const REGIONS = [
     materialDropWeights: {
       crystalized_rock: 5,
     },
+    itemBaseBonus: 0.108,
+    hitChanceMultiplier: 2.0,
+    armorReductionMultiplier: 2.0,
   },
   {
     tier: 3,
@@ -113,6 +68,9 @@ export const REGIONS = [
       potion_of_agility: 3,
       potion_of_vitality: 3,
     },
+    itemBaseBonus: 0.1944,
+    hitChanceMultiplier: 3.0,
+    armorReductionMultiplier: 3.0,
   },
   {
     tier: 4,
@@ -134,6 +92,9 @@ export const REGIONS = [
       elixir: 5,
     },
     canDrop: ['elixir'],
+    itemBaseBonus: 0.2952,
+    hitChanceMultiplier: 4.0,
+    armorReductionMultiplier: 4.0,
   },
   {
     tier: 5,
@@ -155,6 +116,9 @@ export const REGIONS = [
       potion_of_endurance: 3,
       potion_of_wisdom: 3,
     },
+    itemBaseBonus: 0.4188,
+    hitChanceMultiplier: 5.0,
+    armorReductionMultiplier: 5.0,
   },
   {
     tier: 6,
@@ -180,6 +144,9 @@ export const REGIONS = [
       potion_of_endurance: 3,
       potion_of_wisdom: 3,
     },
+    itemBaseBonus: 0.563,
+    hitChanceMultiplier: 6.0,
+    armorReductionMultiplier: 6.0,
   },
   {
     tier: 7,
@@ -200,6 +167,9 @@ export const REGIONS = [
     materialDropWeights: {
       freaky_gold_coins: 15,
     },
+    itemBaseBonus: 0.726,
+    hitChanceMultiplier: 7.0,
+    armorReductionMultiplier: 7.0,
   },
   {
     tier: 8,
@@ -224,6 +194,9 @@ export const REGIONS = [
       armor_upgrade_stone: 2.2,
       weapon_upgrade_core: 1.2,
     },
+    itemBaseBonus: 0.906,
+    hitChanceMultiplier: 8.0,
+    armorReductionMultiplier: 8.0,
   },
   {
     tier: 9,
@@ -247,6 +220,9 @@ export const REGIONS = [
       potion_of_vitality: 3.1,
       crystalized_rock: 2.2,
     },
+    itemBaseBonus: 1.102,
+    hitChanceMultiplier: 9.0,
+    armorReductionMultiplier: 9.0,
   },
   {
     tier: 10,
@@ -271,6 +247,9 @@ export const REGIONS = [
       elixir: 1.3,
     },
     canDrop: ['elixir'],
+    itemBaseBonus: 1.314,
+    hitChanceMultiplier: 10.0,
+    armorReductionMultiplier: 10.0,
   },
   {
     tier: 11,
@@ -294,6 +273,9 @@ export const REGIONS = [
       medium_gold_coins: 3.2,
       large_gold_coins: 1.2,
     },
+    itemBaseBonus: 1.542,
+    hitChanceMultiplier: 11.0,
+    armorReductionMultiplier: 11.0,
   },
   {
     tier: 12,
@@ -318,5 +300,12 @@ export const REGIONS = [
       potion_of_dexterity: 2.1,
       weapon_upgrade_core: 1.3,
     },
+    itemBaseBonus: 1.8,
+    hitChanceMultiplier: 12.0,
+    armorReductionMultiplier: 12.0,
   },
 ];
+
+export function getRegionByTier(tier) {
+  return REGIONS.find((region) => region.tier === tier);
+}

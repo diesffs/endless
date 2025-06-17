@@ -325,49 +325,48 @@ export function createModifyUI() {
   // --- Add Random Item with controls ---
   const addItemControlsDiv = document.createElement('div');
   addItemControlsDiv.style.display = 'flex';
-  addItemControlsDiv.style.flexDirection = 'column';
-  addItemControlsDiv.style.alignItems = 'flex-start';
-  addItemControlsDiv.style.gap = '8px';
+  addItemControlsDiv.style.flexDirection = 'row';
+  addItemControlsDiv.style.alignItems = 'center';
+  addItemControlsDiv.style.flexWrap = 'wrap';
+
+  // Helper to group label+input compactly
+  function makeControl(labelText, inputElem) {
+    const group = document.createElement('div');
+    group.style.display = 'flex';
+    group.style.flexDirection = 'column';
+    group.style.alignItems = 'flex-start';
+    group.style.margin = '0 4px';
+    const label = document.createElement('label');
+    label.textContent = labelText;
+    label.style.fontSize = '11px';
+    label.style.marginBottom = '2px';
+    group.appendChild(label);
+    group.appendChild(inputElem);
+    return group;
+  }
 
   // Item type
-  const itemTypeLabel = document.createElement('label');
-  itemTypeLabel.textContent = 'Item Type:';
-  itemTypeLabel.htmlFor = 'item-type-select';
-  addItemControlsDiv.appendChild(itemTypeLabel);
-
   const itemTypeSelect = document.createElement('select');
   itemTypeSelect.id = 'item-type-select';
-  // Use ITEM_TYPES for dropdown
   Object.keys(ITEM_TYPES).forEach((type) => {
     const option = document.createElement('option');
     option.value = ITEM_TYPES[type];
     option.textContent = ITEM_TYPES[type];
     itemTypeSelect.appendChild(option);
   });
-  addItemControlsDiv.appendChild(itemTypeSelect);
+  addItemControlsDiv.appendChild(makeControl('Type', itemTypeSelect));
 
   // Item level
-  const itemLevelLabel = document.createElement('label');
-  itemLevelLabel.textContent = 'Item Level:';
-  itemLevelLabel.htmlFor = 'item-level-input';
-  addItemControlsDiv.appendChild(itemLevelLabel);
-
   const itemLevelInput = document.createElement('input');
   itemLevelInput.type = 'number';
   itemLevelInput.min = '1';
   itemLevelInput.max = '100';
   itemLevelInput.value = '1';
   itemLevelInput.id = 'item-level-input';
-  itemLevelInput.style.width = '50px';
-  itemLevelInput.title = 'Item Level';
-  addItemControlsDiv.appendChild(itemLevelInput);
+  itemLevelInput.style.width = '45px';
+  addItemControlsDiv.appendChild(makeControl('Lvl', itemLevelInput));
 
   // Item rarity
-  const rarityLabel = document.createElement('label');
-  rarityLabel.textContent = 'Rarity:';
-  rarityLabel.htmlFor = 'item-rarity-select';
-  addItemControlsDiv.appendChild(rarityLabel);
-
   const raritySelect = document.createElement('select');
   raritySelect.id = 'item-rarity-select';
   Object.keys(ITEM_RARITY).forEach((rarityKey) => {
@@ -376,23 +375,17 @@ export function createModifyUI() {
     option.textContent = ITEM_RARITY[rarityKey].name;
     raritySelect.appendChild(option);
   });
-  addItemControlsDiv.appendChild(raritySelect);
+  addItemControlsDiv.appendChild(makeControl('Rarity', raritySelect));
 
   // Item tier
-  const tierLabel = document.createElement('label');
-  tierLabel.textContent = 'Tier (max 12):';
-  tierLabel.htmlFor = 'item-tier-input';
-  addItemControlsDiv.appendChild(tierLabel);
-
   const tierInput = document.createElement('input');
   tierInput.type = 'number';
   tierInput.min = '1';
   tierInput.max = '12';
   tierInput.value = '1';
   tierInput.id = 'item-tier-input';
-  tierInput.style.width = '50px';
-  tierInput.title = 'Item Tier';
-  addItemControlsDiv.appendChild(tierInput);
+  tierInput.style.width = '45px';
+  addItemControlsDiv.appendChild(makeControl('Tier', tierInput));
 
   // Add Random Item button
   const addItemBtn = document.createElement('button');
@@ -418,7 +411,6 @@ export function createModifyUI() {
     let count = 0;
     Object.values(ITEM_TYPES).forEach((itemType) => {
       if (itemType === 'RING') {
-        // Generate two rings
         for (let i = 0; i < 2; i++) {
           const newItem = inventory.createItem(itemType, itemLevel, rarity, tier);
           inventory.addItemToInventory(newItem);
@@ -526,4 +518,107 @@ export function createModifyUI() {
     game.resetAllProgress();
   });
   modifyDiv.appendChild(resetProgressBtn);
+
+  // Example: Add buttons to modify training
+  const dataManagementSection = document.createElement('div');
+  dataManagementSection.innerHTML = `<h3>Data Management</h3>`;
+  modifyDiv.appendChild(dataManagementSection);
+
+  // Button: Copy Decrypted Save to Clipboard
+  const copyDecryptedBtn = document.createElement('button');
+  copyDecryptedBtn.textContent = 'Copy Decrypted Save';
+  copyDecryptedBtn.title = 'Decrypts your current save and copies the JSON to clipboard.';
+  copyDecryptedBtn.addEventListener('click', async () => {
+    try {
+      const encrypted = localStorage.getItem('gameProgress');
+      if (!encrypted) {
+        showToast('No save found in localStorage', 'error');
+        return;
+      }
+      const decrypted = crypt.decrypt(encrypted);
+      await navigator.clipboard.writeText(JSON.stringify(decrypted, null, 2));
+      showToast('Decrypted save copied to clipboard!');
+    } catch (e) {
+      showToast('Failed to copy decrypted save', 'error');
+      console.error(e);
+    }
+  });
+  dataManagementSection.appendChild(copyDecryptedBtn);
+
+  // Button: Paste Decrypted Save from Clipboard (encrypts and saves)
+  const pasteDecryptedBtn = document.createElement('button');
+  pasteDecryptedBtn.textContent = 'Paste Decrypted Save';
+  pasteDecryptedBtn.title = 'Reads decrypted JSON from clipboard, encrypts it, and saves to localStorage.';
+  pasteDecryptedBtn.addEventListener('click', async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (!text) {
+        showToast('Clipboard is empty', 'error');
+        return;
+      }
+      let parsed;
+      try {
+        parsed = JSON.parse(text);
+      } catch (e) {
+        showToast('Clipboard does not contain valid JSON', 'error');
+        return;
+      }
+      const encrypted = crypt.encrypt(JSON.stringify(parsed));
+      localStorage.setItem('gameProgress', encrypted);
+      window.location.reload();
+      showToast('Decrypted save encrypted and saved to localStorage!');
+    } catch (e) {
+      showToast('Failed to paste decrypted save', 'error');
+      console.error(e);
+    }
+  });
+  dataManagementSection.appendChild(pasteDecryptedBtn);
+
+  
+  // Button: Copy Encrypted Save to Clipboard (with quotes)
+  const copyEncryptedWithQuotesBtn = document.createElement('button');
+  copyEncryptedWithQuotesBtn.textContent = 'Copy Encrypted Save (with quotes)';
+  copyEncryptedWithQuotesBtn.title = 'Copies the encrypted save from localStorage to clipboard, wrapped in quotes.';
+  copyEncryptedWithQuotesBtn.addEventListener('click', async () => {
+    try {
+      const encrypted = localStorage.getItem('gameProgress');
+      if (!encrypted) {
+        showToast('No save found in localStorage', 'error');
+        return;
+      }
+      await navigator.clipboard.writeText('"' + encrypted + '"');
+      showToast('Encrypted save (with quotes) copied to clipboard!');
+    } catch (e) {
+      showToast('Failed to copy encrypted save', 'error');
+      console.error(e);
+    }
+  });
+  dataManagementSection.appendChild(copyEncryptedWithQuotesBtn);
+
+  
+  // Button: Paste Encrypted Save from Clipboard (saves directly)
+  const pasteEncryptedBtn = document.createElement('button');
+  pasteEncryptedBtn.textContent = 'Paste Encrypted Save';
+  pasteEncryptedBtn.title = 'Reads encrypted text from clipboard and saves it directly to localStorage.';
+  pasteEncryptedBtn.addEventListener('click', async () => {
+    try {
+      let encrypted = await navigator.clipboard.readText();
+      if (!encrypted) {
+        showToast('Clipboard is empty', 'error');
+        return;
+      }
+      // Remove quotes if present at start and end
+      if (encrypted.length > 1 && encrypted.startsWith('"') && encrypted.endsWith('"')) {
+        encrypted = encrypted.slice(1, -1);
+      }
+      localStorage.setItem('gameProgress', encrypted);
+      window.location.reload();
+      showToast('Encrypted save pasted to localStorage!');
+    } catch (e) {
+      showToast('Failed to paste encrypted save', 'error');
+      console.error(e);
+    }
+  });
+  dataManagementSection.appendChild(pasteEncryptedBtn);
+
 }

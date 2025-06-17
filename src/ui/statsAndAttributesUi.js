@@ -1,5 +1,4 @@
-import { calculateHitChance } from '../combat.js';
-import { hero, game } from '../globals.js';
+import { hero } from '../globals.js';
 import { STATS } from '../constants/stats/stats.js';
 import { hideTooltip, positionTooltip, showTooltip } from '../ui/ui.js';
 import { OFFENSE_STATS } from '../constants/stats/offenseStats.js';
@@ -211,7 +210,7 @@ export function updateStatsAndAttributesUI() {
     const attackRatingEl = document.getElementById('attackRating-value');
     if (attackRatingEl) {
       attackRatingEl.textContent = hero.stats.attackRating;
-      const hitPct = calculateHitChance(hero.stats.attackRating).toFixed(2) + '%';
+      const hitPct = hero.calculateHitChance().toFixed(2) + '%';
       attackRatingEl.appendChild(document.createTextNode(` (${hitPct})`));
     }
 

@@ -9,16 +9,14 @@ import { showTooltip, positionTooltip, hideTooltip } from './ui/ui.js';
 import { REGIONS } from './constants/regions.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 
-let currentRegionId = null;
-
 export async function setCurrentRegion(regionId) {
-  if (regionId === currentRegionId) return;
+  if (regionId === game.currentRegionId) return;
   // Show confirm dialog before changing region
   const confirmed = await showConfirmDialog(
     'Are you sure you want to change region? That will reset your stage progress and will find you a new enemy'
   );
   if (!confirmed) return;
-  currentRegionId = regionId;
+  game.currentRegionId = regionId;
   // Reset stage progress and enemy as if the hero died
 
   if (game.gameStarted) {
@@ -37,15 +35,11 @@ export async function setCurrentRegion(regionId) {
 }
 
 export function getCurrentRegion() {
-  return REGIONS.find((r) => r.id === currentRegionId) || REGIONS[0];
+  return REGIONS.find((r) => r.id === game.currentRegionId) || REGIONS[0];
 }
 
 export function getUnlockedRegions(hero) {
   return REGIONS.filter((region) => hero.level >= region.unlockLevel);
-}
-
-export function loadRegionSelection() {
-  currentRegionId = REGIONS[0].id;
 }
 
 function getRegionTooltip(region) {
@@ -80,7 +74,7 @@ export function updateRegionUI() {
 
   visibleRegions.forEach((region) => {
     const btn = document.createElement('button');
-    btn.className = 'region-btn' + (region.id === currentRegionId ? ' selected' : '');
+    btn.className = 'region-btn' + (region.id === game.currentRegionId ? ' selected' : '');
     btn.textContent = region.name;
     btn.disabled = !unlocked.includes(region);
     btn.onclick = () => setCurrentRegion(region.id);
@@ -93,6 +87,6 @@ export function updateRegionUI() {
 }
 
 export function initializeRegionSystem() {
-  loadRegionSelection();
+  game.currentRegionId = REGIONS[0].id;
   updateRegionUI();
 }

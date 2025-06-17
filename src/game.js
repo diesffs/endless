@@ -10,6 +10,7 @@ class Game {
     this.fightMode = 'explore'; // Default fight mode
     this.gameStarted = false;
     this.currentEnemy = null;
+    this.currentRegionId = null;
     this.stage = 1;
     this.resurrectCount = 0; // Track number of resurrections
     this.soulShopResurrectCount = 0; // Track number of resurrections from SoulShop

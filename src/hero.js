@@ -1,8 +1,8 @@
 import { initializeSkillTreeStructure, updatePlayerLife, updateTabIndicators } from './ui/ui.js';
-import { game, inventory, training, skillTree, statistics, soulShop, crystalShop, dataManager } from './globals.js';
+import { game, inventory, training, skillTree, statistics, soulShop, dataManager } from './globals.js';
 import { createCombatText, createDamageNumber } from './combat.js';
 import { handleSavedData } from './functions.js';
-import { updateRegionUI } from './region.js';
+import { getCurrentRegion, updateRegionUI } from './region.js';
 import { STATS } from './constants/stats/stats.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 import { ATTRIBUTES } from './constants/stats/attributes.js';
@@ -377,15 +377,31 @@ export default class Hero {
   }
 
   calculateArmorReduction() {
-    let stage = game.stage || 1;
+    let scalingFactor;
+
     if (game.currentRegion === 'arena') {
-      stage = this.bossLevel * 15 || 15; // Use boss level for arena
+      scalingFactor = this.bossLevel * 15 || 15;
+    } else {
+      scalingFactor = game.stage * getCurrentRegion().armorReductionMultiplier;
     }
-    const armor = this.stats.armor;
-    const stageScaling = 1 + (stage - 1) * 0.15; // Linear 15% increase per stage
-    const constant = 100 * stageScaling;
-    const reduction = (armor / (armor + constant)) * 100;
-    return Math.min(reduction, 75); // Keep the 75% cap
+
+    const scale = 1 + (scalingFactor - 1) * 0.18;
+    const reduction = (this.stats.armor / (this.stats.armor + 25 * scale)) * 100;
+    return Math.min(reduction, 80); // Keep the 80% cap
+  }
+
+  calculateHitChance() {
+    let scalingFactor;
+
+    if (game.fightMode === 'arena') {
+      scalingFactor = this.bossLevel * 15 || 15;
+    } else if (game.fightMode === 'explore') {
+      scalingFactor = game.stage * getCurrentRegion().hitChanceMultiplier;
+    }
+
+    const scale = 1 + (scalingFactor - 1) * 0.25;
+    const baseChance = (this.stats.attackRating / (this.stats.attackRating + 25 * scale)) * 100;
+    return Math.min(Math.max(baseChance, 10), 100);
   }
 
   regenerate() {

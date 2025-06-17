@@ -3,6 +3,7 @@ import { crypt } from './functions.js';
 import { getGlobals } from './globals.js';
 import { createModal } from './ui/modal.js';
 import { showToast } from './ui/ui.js';
+import { getChangelogHtml } from './options.js';
 
 export class DataManager {
   constructor() {
@@ -109,10 +110,7 @@ export class DataManager {
 
   async runMigrations(data, version) {
     let migratedData = data;
-
-    // List migration files
     const migrationContext = import.meta.glob('./migrations/*.js', { eager: true });
-    // Extract versions and sort
     const migrations = Object.keys(migrationContext)
       .map((path) => {
         const match = path.match(/([\\/])(\d+\.\d+\.\d+)\.js$/);
@@ -122,13 +120,14 @@ export class DataManager {
       .sort((a, b) => a.version.localeCompare(b.version, undefined, { numeric: true }));
 
     let currentVersion = version;
+    let lastMigration = null;
     for (const migration of migrations) {
       if (migration.version > currentVersion) {
         const migrationModule = migrationContext[migration.path];
         if (typeof migrationModule.run === 'function') {
-          // Always pass the latest migratedData to run()
           const { data: newData, result } = await migrationModule.run(migratedData);
           if (result === true) {
+            lastMigration = { version: migration.version };
             currentVersion = migration.version;
             migratedData = newData;
           }
@@ -136,10 +135,51 @@ export class DataManager {
       }
     }
 
+    if (lastMigration) {
+      // Read changelog for the last migration version using shared logic
+      const changelogHtml = await getChangelogHtml(lastMigration.version);
+      if (changelogHtml) {
+        this._showMigrationModal(lastMigration.version, changelogHtml);
+      }
+    }
+
     if (migratedData.options) {
       migratedData.options.version = currentVersion;
     }
     return migratedData;
+  }
+
+  /**
+   * Show a modal with migration info after a migration is run.
+   * @param {string} version - Migration version
+   * @param {string|object} info - Info or summary of changes
+   */
+  _showMigrationModal(version, info) {
+    let contentHtml = `<div class="modal-content">
+      <span class="modal-close">&times;</span>
+      <h2>v${version}</h2>`;
+    if (info) {
+      contentHtml += `<div class="migration-info">${info}</div>`;
+    }
+    contentHtml += `<div style="text-align:center; margin-top: 24px;">
+      <button id="migration-modal-ok" style="padding: 8px 24px; font-size: 1.1em;">OK</button>
+    </div></div>`;
+
+    createModal({
+      id: `migration-modal-${version}`,
+      className: 'migration-modal',
+      content: contentHtml,
+      onClose: () => {},
+    });
+    setTimeout(() => {
+      const okBtn = document.getElementById(`migration-modal-ok`);
+      if (okBtn) {
+        okBtn.addEventListener('click', () => {
+          const modal = document.getElementById(`migration-modal-${version}`);
+          if (modal) modal.remove();
+        });
+      }
+    }, 0);
   }
 
   async checkSession() {
