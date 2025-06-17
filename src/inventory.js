@@ -41,7 +41,7 @@ export default class Inventory {
       Object.entries(savedData.equippedItems).forEach(([slot, item]) => {
         if (item) {
           // Pass existing stats when creating item
-          this.equippedItems[slot] = new Item(item.type, item.level, item.rarity, item.tier, item.stats);
+          this.equippedItems[slot] = new Item(item.type, item.level, item.rarity, item.tier, item.stats, item.metaData);
           this.equippedItems[slot].id = item.id;
         }
       });
@@ -50,7 +50,7 @@ export default class Inventory {
       this.inventoryItems = savedData.inventoryItems.map((item) => {
         if (item) {
           // Pass existing stats when creating item
-          const restoredItem = new Item(item.type, item.level, item.rarity, item.tier, item.stats);
+          const restoredItem = new Item(item.type, item.level, item.rarity, item.tier, item.stats, item.metaData);
           restoredItem.id = item.id;
           return restoredItem;
         }
@@ -150,9 +150,8 @@ export default class Inventory {
           if (useQty > mat.qty) useQty = mat.qty;
           // Upgrade logic: increase level and update stats for new level
           const oldLevel = item.level;
-          const baseValues = item.getBaseStatValues();
           const newLevel = oldLevel + useQty;
-          item.applyLevelToStats(baseValues, newLevel);
+          item.applyLevelToStats(newLevel);
           mat.qty -= useQty;
           if (mat.qty <= 0) {
             const matIdx = this.materials.findIndex((m) => m && m.id === mat.id);

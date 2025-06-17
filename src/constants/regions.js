@@ -2,51 +2,51 @@ import { ENEMY_LIST } from './enemies.js';
 
 export const REGION_TIER_BONUSES = {
   1: {
-    itemBaseBonus: 0.07,
+    itemBaseBonus: 0.0504,
     hitChanceIncrease: 1.0,
   },
   2: {
-    itemBaseBonus: 0.15,
+    itemBaseBonus: 0.108,
     hitChanceIncrease: 2,
   },
   3: {
-    itemBaseBonus: 0.27,
+    itemBaseBonus: 0.1944,
     hitChanceIncrease: 3,
   },
   4: {
-    itemBaseBonus: 0.41,
+    itemBaseBonus: 0.2952,
     hitChanceIncrease: 4,
   },
   5: {
-    itemBaseBonus: 0.58,
+    itemBaseBonus: 0.4188,
     hitChanceIncrease: 5,
   },
   6: {
-    itemBaseBonus: 0.78,
+    itemBaseBonus: 0.563,
     hitChanceIncrease: 6,
   },
   7: {
-    itemBaseBonus: 1.01,
+    itemBaseBonus: 0.726,
     hitChanceIncrease: 7,
   },
   8: {
-    itemBaseBonus: 1.27,
+    itemBaseBonus: 0.906,
     hitChanceIncrease: 8,
   },
   9: {
-    itemBaseBonus: 1.56,
+    itemBaseBonus: 1.102,
     hitChanceIncrease: 9,
   },
   10: {
-    itemBaseBonus: 1.88,
+    itemBaseBonus: 1.314,
     hitChanceIncrease: 10,
   },
   11: {
-    itemBaseBonus: 2.19,
+    itemBaseBonus: 1.542,
     hitChanceIncrease: 11,
   },
   12: {
-    itemBaseBonus: 2.5,
+    itemBaseBonus: 1.8,
     hitChanceIncrease: 12,
   },
 };

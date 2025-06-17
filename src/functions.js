@@ -1,7 +1,7 @@
 import { game, hero, inventory, training, skillTree, dataManager } from './globals.js';
 import { MATERIALS } from './constants/materials.js';
 import SimpleCrypto from 'simple-crypto-js';
-import { showToast, updatePlayerLife, updateResources } from './ui/ui.js';
+import { showToast, updatePlayerLife, updateResources, updateStageUI } from './ui/ui.js';
 import { ITEM_RARITY, ITEM_TYPES } from './constants/items.js';
 
 export const crypt = new SimpleCrypto(import.meta.env.VITE_ENCRYPT_KEY);
@@ -239,6 +239,17 @@ export function createModifyUI() {
   });
   heroSection.appendChild(give100StatsBtn);
 
+  // Button to set highest stage to 100000
+  const setHighestStageBtn = document.createElement('button');
+  setHighestStageBtn.textContent = 'Set Highest Stage to 100000';
+  setHighestStageBtn.addEventListener('click', () => {
+    hero.highestStage = 100000;
+    updateStageUI();
+    dataManager.saveGame();
+    showToast('Set highest stage to 100000!');
+  });
+  heroSection.appendChild(setHighestStageBtn);
+
   // Button to give experience for level up
   const giveExpBtn = document.createElement('button');
   giveExpBtn.textContent = 'Give Experience for Level Up';
@@ -249,7 +260,7 @@ export function createModifyUI() {
   });
   heroSection.appendChild(giveExpBtn);
 
-  // Button to give experience for level up
+  // Button to give experience for 10 level ups
   const giveExp10Btn = document.createElement('button');
   giveExp10Btn.textContent = 'Give Experience for 10 Level Ups';
   giveExp10Btn.addEventListener('click', () => {

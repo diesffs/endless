@@ -11,39 +11,49 @@ export const AVAILABLE_STATS = Object.fromEntries(
 );
 
 export default class Item {
-  constructor(type, level, rarity, tier = 1, existingStats = null) {
+  constructor(type, level, rarity, tier = 1, existingStats = null, metaData = {}) {
     this.type = type;
     this.level = level;
     this.rarity = rarity.toUpperCase();
     this.tier = tier;
     // Only generate new stats if no existing stats provided
+    this.metaData = metaData;
     this.stats = existingStats || this.generateStats();
     this.id = crypto.randomUUID();
   }
 
-  getLevelScale(level) {
-    // Stats double every 250 levels, starting from level 1
-    return 2 ** ((level - 1) / 250);
+  getLevelScale(stat, level) {
+    const scaleFactor = 0.035; // per level
+    const scaling = AVAILABLE_STATS[stat].scaling;
+    return scaling === 'capped' ? Math.min(1 + (level - 1) * scaleFactor, 2) : 1 + (level - 1) * scaleFactor;
   }
 
   getTierBonus() {
     return 1 + REGION_TIER_BONUSES[this.tier].itemBaseBonus * (this.tier - 1);
   }
 
+  getMultiplier() {
+    return ITEM_RARITY[this.rarity].statMultiplier;
+  }
+
   calculateStatValue({ baseValue, tierBonus, multiplier, scale, stat }) {
     const decimals = STATS[stat].decimalPlaces || 0;
-    return Number((baseValue * tierBonus * multiplier * scale).toFixed(decimals));
+    let val = Number((baseValue * tierBonus * multiplier * scale).toFixed(decimals));
+
+    this.metaData = this.metaData || {};
+    this.metaData[stat] = { baseValue };
+
+    return val;
   }
 
   generateStats() {
     const stats = {};
     const itemPool = ITEM_STAT_POOLS[this.type];
-    const multiplier = ITEM_RARITY[this.rarity].statMultiplier;
     const totalStatsNeeded = ITEM_RARITY[this.rarity].totalStats;
+    const multiplier = this.getMultiplier();
     const tierBonus = this.getTierBonus();
     const calculateStatValue = (stat, baseValue) => {
-      const scaling = AVAILABLE_STATS[stat].scaling;
-      const scale = scaling === 'capped' ? Math.min(this.getLevelScale(this.level), 2) : this.getLevelScale(this.level);
+      const scale = this.getLevelScale(stat, this.level);
       return this.calculateStatValue({ baseValue, tierBonus, multiplier, scale, stat });
     };
 
@@ -108,22 +118,17 @@ export default class Item {
    * @returns {Object} base stat values keyed by stat name
    */
   getBaseStatValues() {
+    if (this.metaData && Object.keys(this.metaData).length > 0) {
+      // If metaData exists, use it to get base values directly
+      return Object.fromEntries(Object.entries(this.metaData).map(([stat, data]) => [stat, data.baseValue]));
+    }
     const baseValues = {};
+    const tierBonus = this.getTierBonus();
+    const multiplier = this.getMultiplier();
     for (const stat of Object.keys(this.stats)) {
-      const statConfig = AVAILABLE_STATS[stat];
-      if (!statConfig) continue;
-      const scaling = statConfig.scaling;
-      const multiplier = ITEM_RARITY[this.rarity].statMultiplier;
+      const scaling = this.getLevelScale(stat, this.level);
       const value = this.stats[stat];
-      if (scaling === 'capped') {
-        // value = base * multiplier * Math.min(1 + level * (1/200), 2)
-        const scale = Math.min(1 + this.level * (1 / 200), 2);
-        baseValues[stat] = value / (multiplier * scale);
-      } else {
-        // value = base * multiplier * (1 + level * 0.03)
-        const scale = 1 + this.level * 0.03;
-        baseValues[stat] = value / (multiplier * scale);
-      }
+      baseValues[stat] = value / (multiplier * scaling * tierBonus);
     }
     return baseValues;
   }
@@ -133,12 +138,12 @@ export default class Item {
    * @param {Object} baseValues - base stat values keyed by stat name
    * @param {number} newLevel
    */
-  applyLevelToStats(baseValues, newLevel) {
+  applyLevelToStats(newLevel) {
+    const baseValues = this.getBaseStatValues();
     const tierBonus = this.getTierBonus();
+    const multiplier = this.getMultiplier();
     for (const stat of Object.keys(this.stats)) {
-      const scaling = AVAILABLE_STATS[stat].scaling;
-      const scale = scaling === 'capped' ? Math.min(this.getLevelScale(newLevel), 2) : this.getLevelScale(newLevel);
-      const multiplier = ITEM_RARITY[this.rarity].statMultiplier;
+      const scale = this.getLevelScale(stat, newLevel);
       this.stats[stat] = this.calculateStatValue({ baseValue: baseValues[stat], tierBonus, multiplier, scale, stat });
     }
     this.level = newLevel;
