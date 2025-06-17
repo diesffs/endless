@@ -1,5 +1,5 @@
-vscode extensions:
-bierner.lit-html
-esbenp.prettier-vscode
-rvest.vs-code-prettier-eslint
-ms-vscode.vscode-typescript-next
+When changing version change in:
+
+1. package.json
+2. options.js
+3. add migration with same version (required)
