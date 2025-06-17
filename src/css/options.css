@@ -229,3 +229,48 @@
   gap: 12px;
   width: 100%;
 }
+
+/* Starting Stage option input */
+.starting-stage-input {
+  background: #232b3a;
+  color: #fff;
+  border: 1px solid #3b82f6;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 1.1em;
+  width: 80px;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.starting-stage-input:focus {
+  border: 1.5px solid #60a5fa;
+  box-shadow: 0 0 0 2px #3b82f633;
+  outline: none;
+}
+.option-row {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  margin: 0.5em 0;
+}
+
+.starting-stage-label {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+.apply-btn {
+  margin-left: 0.5em;
+  padding: 6px 18px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.apply-btn.hover,
+.apply-btn:focus,
+.apply-btn:hover {
+  background: #1d4ed8;
+}

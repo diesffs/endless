@@ -1,6 +1,6 @@
 import { updatePlayerLife, updateEnemyStats, updateStageUI, updateResources, updateBuffIndicators } from './ui/ui.js';
 import { playerAttack, enemyAttack, playerDeath, defeatEnemy } from './combat.js';
-import { game, hero, crystalShop, skillTree, statistics, dataManager, setGlobals } from './globals.js';
+import { game, hero, crystalShop, skillTree, statistics, dataManager, setGlobals, options } from './globals.js';
 import Enemy from './enemy.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 import { updateBossUI } from './ui/bossUi.js';
@@ -31,7 +31,8 @@ class Game {
   }
 
   getStartingStage() {
-    return crystalShop.crystalUpgrades?.startingStage || 1;
+    // if option set, use it. else use crystalShop's startingStage or 0
+    return options.startingStage > 0 ? options.startingStage : 1 + (crystalShop.crystalUpgrades?.startingStage || 0);
   }
 
   damagePlayer(damage) {

@@ -1,11 +1,15 @@
-import { dataManager, game, setGlobals } from './globals.js';
-import { showConfirmDialog, showToast } from './ui/ui.js';
+import { crystalShop, dataManager, game, setGlobals } from './globals.js';
+import { showConfirmDialog, showToast, updateStageUI } from './ui/ui.js';
 import { createModal } from './ui/modal.js';
+import Enemy from './enemy.js';
+const html = String.raw;
 
 // Options class to store options and version (future-proof for migrations)
 export class Options {
   constructor(data = {}) {
     this.version = data.version || '0.0.3';
+    // Add startingStage, default to null (unset)
+    this.startingStage = data.startingStage || null;
   }
 
   /**
@@ -23,6 +27,9 @@ export class Options {
     const container = document.createElement('div');
     container.className = 'options-container';
     container.appendChild(this._createCloudSaveBar());
+
+    // --- Starting Stage Option ---
+    container.appendChild(this._createStartingStageOption());
 
     // --- Changelog & Upcoming buttons row ---
     const changelogRow = document.createElement('div');
@@ -184,7 +191,7 @@ export class Options {
    */
   _createDiscordSection() {
     const section = document.createElement('div');
-    section.className = 'options-section';
+    section.className = 'option-row';
     section.innerHTML = `
       <a
         href="https://discord.gg/pvCxff4s"
@@ -304,5 +311,58 @@ export class Options {
         showToast(e.message || 'Failed to load from cloud');
       }
     });
+  }
+
+  /**
+   * Creates the starting stage number input UI.
+   */
+  _createStartingStageOption() {
+    let max = 1 + (crystalShop.crystalUpgrades?.startingStage || 0);
+    const value = this.startingStage !== null ? this.startingStage : 0;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'option-row';
+    wrapper.innerHTML = html`
+      <label for="starting-stage-input" class="starting-stage-label">Starting Stage:</label>
+      <input
+        type="number"
+        id="starting-stage-input"
+        class="starting-stage-input"
+        min="0"
+        max="${max}"
+        value="${value}"
+        title="Max: ${max} (based on crystal upgrades)"
+      />
+      <button class="apply-btn" type="button">Apply</button>
+    `;
+
+    const input = wrapper.querySelector('input');
+    const applyBtn = wrapper.querySelector('button');
+
+    applyBtn.onmouseenter = () => applyBtn.classList.add('hover');
+    applyBtn.onmouseleave = () => applyBtn.classList.remove('hover');
+
+    input.addEventListener('input', () => {
+      let val = parseInt(input.value, 10);
+      if (isNaN(val) || val < 0) val = 0;
+      if (val > max) val = max;
+      input.value = val;
+    });
+
+    applyBtn.onclick = () => {
+      let val = parseInt(input.value, 10);
+      if (isNaN(val) || val < 0) val = 0;
+      if (val > max) val = max;
+
+      this.startingStage = val;
+
+      game.stage = game.getStartingStage();
+      game.currentEnemy = new Enemy(game.stage);
+      updateStageUI();
+      game.resetAllLife();
+      dataManager.saveGame();
+      showToast('Starting stage option applied!', 'success');
+    };
+    return wrapper;
   }
 }

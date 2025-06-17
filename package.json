@@ -1,7 +1,7 @@
 {
   "name": "endless",
   "version": "0.0.3",
-  "description": "Secret Tower Game",
+  "description": "Endless Game",
   "type": "module",
   "scripts": {
     "dev": "vite",
