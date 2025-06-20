@@ -12,5 +12,7 @@
 - Companions will be added. They will have their own stats and abilities, and will help you in battles. (will be able to equip items and gain xp)
 - 3rd fight method apart from "Explore" and "Arena".
 - New skils for all classes.
+- Live fight. Fight versus other players.
+- Leaderboard system. Will show top players based on their level and other stats.
 
 > <br>

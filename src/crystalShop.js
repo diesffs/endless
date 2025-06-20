@@ -1,4 +1,4 @@
-import { dataManager, hero, skillTree } from './globals.js';
+import { dataManager, hero, options, skillTree } from './globals.js';
 import {
   updateResources,
   initializeSkillTreeUI,
@@ -451,6 +451,7 @@ export default class CrystalShop {
         }
       }
       await this._bulkPurchase(stat, config, qty);
+      options.updateStartingStageOption();
       return;
     }
 

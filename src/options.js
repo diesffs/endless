@@ -331,11 +331,16 @@ export class Options {
     const input = wrapper.querySelector('input');
     const applyBtn = wrapper.querySelector('button');
 
+    // Store refs for update
+    this._startingStageInput = input;
+    this._startingStageWrapper = wrapper;
+
     applyBtn.onmouseenter = () => applyBtn.classList.add('hover');
     applyBtn.onmouseleave = () => applyBtn.classList.remove('hover');
 
     input.addEventListener('input', () => {
       let val = parseInt(input.value, 10);
+      let max = 1 + (crystalShop.crystalUpgrades?.startingStage || 0);
       if (isNaN(val) || val < 0) val = 0;
       if (val > max) val = max;
       input.value = val;
@@ -343,19 +348,41 @@ export class Options {
 
     applyBtn.onclick = () => {
       let val = parseInt(input.value, 10);
+      let max = 1 + (crystalShop.crystalUpgrades?.startingStage || 0);
       if (isNaN(val) || val < 0) val = 0;
       if (val > max) val = max;
 
       this.startingStage = val;
-
-      game.stage = game.getStartingStage();
-      game.currentEnemy = new Enemy(game.stage);
-      updateStageUI();
-      game.resetAllLife();
+      if (game.fightMode === 'explore') {
+        game.stage = game.getStartingStage();
+        game.currentEnemy = new Enemy(game.stage);
+        updateStageUI();
+        game.resetAllLife();
+      }
       dataManager.saveGame();
       showToast('Starting stage option applied!', 'success');
     };
+
+    // Initial update to ensure correct max/value
+    this.updateStartingStageOption();
+
     return wrapper;
+  }
+
+  /**
+   * Updates the starting stage input's max, title, and value if needed.
+   * Call this whenever crystalShop.crystalUpgrades.startingStage changes.
+   */
+  updateStartingStageOption() {
+    if (!this._startingStageInput) return;
+    const max = 1 + (crystalShop.crystalUpgrades?.startingStage || 0);
+    this._startingStageInput.max = max;
+    this._startingStageInput.title = `Max: ${max} (based on crystal upgrades)`;
+
+    let val = parseInt(this._startingStageInput.value, 10);
+    if (isNaN(val) || val < 0) val = 0;
+    if (val > max) val = max;
+    this._startingStageInput.value = val;
   }
 }
 
