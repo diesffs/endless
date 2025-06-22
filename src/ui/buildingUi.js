@@ -102,10 +102,10 @@ function showBuildingsMapModal() {
 
 function showChooseBuildingModal(placeholderIdx) {
   let modal = document.createElement('div');
-  modal.className = 'building-modal choose-building-modal';
+  modal.className = 'building-modal building-choose-building-modal';
   modal.innerHTML = `
-    <div class="building-modal-content">
-      <button class="building-modal-close">×</button>
+    <div class="building-choose-modal-content">
+      <button class="building-choose-modal-close">×</button>
       <h3>Choose a building to place</h3>
       <div class="choose-building-list"></div>
     </div>
@@ -128,7 +128,7 @@ function showChooseBuildingModal(placeholderIdx) {
     };
     list.appendChild(el);
   });
-  modal.querySelector('.building-modal-close').onclick = () => modal.remove();
+  modal.querySelector('.building-choose-modal-close').onclick = () => modal.remove();
   modal.onclick = (e) => {
     if (e.target === modal) modal.remove();
   };
