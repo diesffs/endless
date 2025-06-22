@@ -35,13 +35,14 @@ function showBuildingsMapModal() {
   `;
   document.body.appendChild(modal);
 
-  // Make map draggable
   const mapContainer = modal.querySelector('.building-map-container');
+  const mapImg = modal.querySelector('.building-map-img');
+  const phContainer = modal.querySelector('.building-map-placeholders');
+
+  // Make map draggable
   let isDragging = false,
     startX,
-    startY,
-    scrollLeft,
-    scrollTop;
+    startY;
   mapContainer.addEventListener('mousedown', (e) => {
     isDragging = true;
     startX = e.pageX - mapContainer.offsetLeft;
@@ -58,25 +59,39 @@ function showBuildingsMapModal() {
     mapContainer.style.cursor = '';
   });
 
-  // Add placeholders (example positions)
+  // Placeholders: pixel positions relative to the map image
   const placeholders = [
-    { left: '20%', top: '30%' },
-    { left: '50%', top: '60%' },
-    { left: '70%', top: '20%' },
+    { left: 120, top: 180 }, // px
+    { left: 400, top: 350 },
+    { left: 700, top: 90 },
   ];
-  const phContainer = modal.querySelector('.building-map-placeholders');
-  placeholders.forEach((pos, idx) => {
-    const ph = document.createElement('div');
-    ph.className = 'building-map-placeholder';
-    ph.style.left = pos.left;
-    ph.style.top = pos.top;
-    ph.title = `Place building #${idx + 1}`;
-    ph.addEventListener('click', (e) => {
-      e.stopPropagation();
-      showChooseBuildingModal(idx);
+
+  // Wait for image to load to get natural size
+  mapImg.onload = () => {
+    phContainer.style.width = mapImg.naturalWidth + 'px';
+    phContainer.style.height = mapImg.naturalHeight + 'px';
+    phContainer.style.position = 'absolute';
+    phContainer.style.top = '0';
+    phContainer.style.left = '0';
+    phContainer.style.pointerEvents = 'none';
+    // Position placeholders in px
+    placeholders.forEach((pos, idx) => {
+      const ph = document.createElement('div');
+      ph.className = 'building-map-placeholder';
+      ph.style.left = pos.left + 'px';
+      ph.style.top = pos.top + 'px';
+      ph.title = `Place building #${idx + 1}`;
+      ph.style.position = 'absolute';
+      ph.style.pointerEvents = 'auto';
+      ph.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showChooseBuildingModal(idx);
+      });
+      phContainer.appendChild(ph);
     });
-    phContainer.appendChild(ph);
-  });
+  };
+  // If already loaded (cache), trigger manually
+  if (mapImg.complete) mapImg.onload();
 
   // Close modal
   modal.querySelector('.building-modal-close').onclick = () => modal.remove();

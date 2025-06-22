@@ -174,7 +174,7 @@
   .building-modal-content {
     width: 800px;
     height: 600px;
-    padding: 24px;
+    padding: 40px 15px;
   }
 }
 
@@ -182,7 +182,7 @@
   .building-modal-content {
     width: 500px;
     height: 600px;
-    padding: 38px;
+    padding: 40px 15px;
   }
 }
 
@@ -190,7 +190,7 @@
   .building-modal-content {
     width: 500px;
     height: 400px;
-    padding: 15px;
+    padding: 40px 15px;
   }
 }
 
