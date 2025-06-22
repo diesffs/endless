@@ -23,20 +23,20 @@ function createBuildingCard(building) {
 
 function showBuildingsMapModal() {
   let modal = document.createElement('div');
-  modal.className = 'modal building-map-modal';
+  modal.className = 'building-modal building-map-modal';
   modal.innerHTML = `
-    <div class="modal-content">
-      <button class="modal-close">×</button>
-      <div class="map-container">
+    <div class="building-modal-content">
+      <button class="building-modal-close">×</button>
+      <div class="building-map-container">
         <img src="${import.meta.env.BASE_URL}/buildings/building-map.jpg" class="building-map-img" draggable="false" />
-        <div class="map-placeholders"></div>
+        <div class="building-map-placeholders"></div>
       </div>
     </div>
   `;
   document.body.appendChild(modal);
 
   // Make map draggable
-  const mapContainer = modal.querySelector('.map-container');
+  const mapContainer = modal.querySelector('.building-map-container');
   let isDragging = false,
     startX,
     startY,
@@ -64,10 +64,10 @@ function showBuildingsMapModal() {
     { left: '50%', top: '60%' },
     { left: '70%', top: '20%' },
   ];
-  const phContainer = modal.querySelector('.map-placeholders');
+  const phContainer = modal.querySelector('.building-map-placeholders');
   placeholders.forEach((pos, idx) => {
     const ph = document.createElement('div');
-    ph.className = 'map-placeholder';
+    ph.className = 'building-map-placeholder';
     ph.style.left = pos.left;
     ph.style.top = pos.top;
     ph.title = `Place building #${idx + 1}`;
@@ -79,7 +79,7 @@ function showBuildingsMapModal() {
   });
 
   // Close modal
-  modal.querySelector('.modal-close').onclick = () => modal.remove();
+  modal.querySelector('.building-modal-close').onclick = () => modal.remove();
   modal.onclick = (e) => {
     if (e.target === modal) modal.remove();
   };
@@ -87,10 +87,10 @@ function showBuildingsMapModal() {
 
 function showChooseBuildingModal(placeholderIdx) {
   let modal = document.createElement('div');
-  modal.className = 'modal choose-building-modal';
+  modal.className = 'building-modal choose-building-modal';
   modal.innerHTML = `
-    <div class="modal-content">
-      <button class="modal-close">×</button>
+    <div class="building-modal-content">
+      <button class="building-modal-close">×</button>
       <h3>Choose a building to place</h3>
       <div class="choose-building-list"></div>
     </div>
@@ -113,7 +113,7 @@ function showChooseBuildingModal(placeholderIdx) {
     };
     list.appendChild(el);
   });
-  modal.querySelector('.modal-close').onclick = () => modal.remove();
+  modal.querySelector('.building-modal-close').onclick = () => modal.remove();
   modal.onclick = (e) => {
     if (e.target === modal) modal.remove();
   };
@@ -123,7 +123,7 @@ export function initializeBuildingsUI() {
   const tab = document.getElementById('buildings');
   if (!tab) return;
   tab.innerHTML =
-    '<h2>Buildings</h2><div id="purchased-buildings"></div><button id="open-buildings-map" class="open-map-btn">Open Buildings Map</button>';
+    '<h2>Buildings</h2><div id="purchased-buildings"></div><button id="open-buildings-map" class="building-open-map-btn">Open Buildings Map</button>';
   const purchased = document.getElementById('purchased-buildings');
   // Show purchased buildings (for now, show all as example)
   Object.values(buildings.buildings).forEach((building) => {

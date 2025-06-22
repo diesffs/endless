@@ -45,7 +45,7 @@
   font-size: 0.95rem;
 }
 
-.open-map-btn {
+.building-open-map-btn {
   background: linear-gradient(90deg, #4e54c8, #8f94fb);
   color: #fff;
   border: none;
@@ -58,15 +58,18 @@
   box-shadow: 0 2px 8px rgba(78, 84, 200, 0.15);
   transition: background 0.2s, transform 0.1s;
 }
-.open-map-btn:hover {
+.building-open-map-btn:hover {
   background: linear-gradient(90deg, #8f94fb, #4e54c8);
   transform: translateY(-2px) scale(1.03);
 }
 
 /* Modal overlay */
-.modal.building-map-modal {
+.building-modal.building-map-modal {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: rgba(20, 20, 30, 0.85);
   z-index: 1000;
   display: flex;
@@ -75,30 +78,27 @@
   animation: fadeIn 0.2s;
 }
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-.modal-content {
+.building-modal-content {
   background: #23233a;
   border-radius: 12px;
-  padding: 28px 24px 18px 24px;
-  box-shadow: 0 4px 32px rgba(0,0,0,0.35);
+  padding: 2.5vw 2vw 1.5vw 2vw;
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.35);
   position: relative;
-  min-width: 340px;
-  min-height: 240px;
-  max-width: 90vw;
-  max-height: 80vh;
-  width: 700px;
-  height: 500px;
-  overflow: hidden; /* Prevent content from overflowing modal */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-.modal-close {
+.building-modal-close {
   position: absolute;
   top: 12px;
   right: 16px;
@@ -110,23 +110,23 @@
   opacity: 0.7;
   transition: opacity 0.15s;
 }
-.modal-close:hover {
+.building-modal-close:hover {
   opacity: 1;
 }
 
-.map-container {
+.building-map-container {
   position: relative;
   width: 100%;
   height: 100%;
   overflow: auto;
   background: #181828;
   border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.18);
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
-.map-container::-webkit-scrollbar {
-  display: none; /* Chrome/Safari/Webkit */
+.building-map-container::-webkit-scrollbar {
+  display: none;
 }
 
 .building-map-img {
@@ -140,13 +140,16 @@
   pointer-events: none;
 }
 
-.map-placeholders {
+.building-map-placeholders {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   pointer-events: none;
 }
 
-.map-placeholder {
+.building-map-placeholder {
   position: absolute;
   width: 32px;
   height: 32px;
@@ -161,8 +164,40 @@
   justify-content: center;
   transition: background 0.15s, transform 0.1s;
 }
-.map-placeholder:hover {
+.building-map-placeholder:hover {
   background: #fff;
   border-color: #4e54c8;
   transform: scale(1.12);
+}
+
+@media (max-width: 1100px) {
+  .building-modal-content {
+    width: 800px;
+    height: 600px;
+    padding: 24px;
+  }
+}
+
+@media (max-width: 900px) {
+  .building-modal-content {
+    width: 500px;
+    height: 600px;
+    padding: 38px;
+  }
+}
+
+@media (max-width: 600px) {
+  .building-modal-content {
+    width: 500px;
+    height: 400px;
+    padding: 15px;
+  }
+}
+
+@media (min-width: 1100px) {
+  .building-modal-content {
+    width: 1101px;
+    height: 800px;
+    padding: 38px;
+  }
 }
