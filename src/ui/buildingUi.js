@@ -99,12 +99,6 @@ function showBuildingsMapModal() {
 
   // Wait for image to load to get natural size
   mapImg.onload = () => {
-    phContainer.style.width = mapImg.naturalWidth + 'px';
-    phContainer.style.height = mapImg.naturalHeight + 'px';
-    phContainer.style.position = 'absolute';
-    phContainer.style.top = '0';
-    phContainer.style.left = '0';
-    phContainer.style.pointerEvents = 'none';
     renderPlaceholders();
   };
 
