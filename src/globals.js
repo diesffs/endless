@@ -9,6 +9,7 @@ import SkillTree from './skillTree.js';
 import SoulShop from './soulShop.js';
 import Statistics from './statistics.js';
 import Training from './training.js';
+import { BuildingManager } from './building.js';
 
 // Global singletons for the game
 export let game = null;
@@ -22,6 +23,7 @@ export let quests = null;
 export let soulShop = null;
 export let options = null;
 export let dataManager = null;
+export let buildings = null;
 
 // Setters for initialization in main.js
 export async function setGlobals({ cloud = false, reset = false } = {}) {
@@ -44,6 +46,7 @@ export async function setGlobals({ cloud = false, reset = false } = {}) {
   const _quests = new QuestTracker(savedData?.quests);
   const _soulShop = new SoulShop(savedData?.soulShop);
   const _options = new Options(savedData?.options);
+  const _buildings = new BuildingManager(savedData?.buildings);
 
   game = _game;
   hero = _hero;
@@ -56,6 +59,7 @@ export async function setGlobals({ cloud = false, reset = false } = {}) {
   soulShop = _soulShop;
   options = _options;
   dataManager = _dataManager;
+  buildings = _buildings;
 
   // useful when loading from cloud
   dataManager.saveGame();
@@ -74,5 +78,6 @@ export function getGlobals() {
     soulShop,
     options,
     dataManager,
+    buildings,
   };
 }

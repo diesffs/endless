@@ -11,6 +11,7 @@ import { initDebugging } from './functions.js';
 import { game, hero, crystalShop, statistics, setGlobals, soulShop, options, dataManager } from './globals.js';
 import { initializeRegionSystem, updateRegionUI } from './region.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
+import { initializeBuildingsUI } from './ui/buildingUi.js';
 
 window.qwe = console.log;
 window.qw = console.log;
@@ -30,6 +31,7 @@ window.log = console.log;
   statistics.initializeStatisticsUI();
   options.initializeOptionsUI();
   initializeSkillTreeUI();
+  initializeBuildingsUI();
 
   updateResources();
   hero.recalculateFromAttributes();
