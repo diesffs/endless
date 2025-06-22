@@ -170,6 +170,24 @@
   transform: scale(1.12);
 }
 
+.building-map-placeholder.building-map-has-building {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  cursor: default !important;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.building-map-img-inset.building-map-img-large {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .building-modal.building-choose-building-modal {
   position: fixed;
   top: 0;
