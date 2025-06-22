@@ -3,7 +3,7 @@
 
 import { buildingsData } from '../constants/buildings.js';
 import { Building } from '../building.js';
-import { buildings } from '../globals.js';
+import { buildings, dataManager } from '../globals.js';
 
 function createBuildingCard(building) {
   const el = document.createElement('div');
@@ -20,9 +20,6 @@ function createBuildingCard(building) {
   `;
   return el;
 }
-
-// Track which building is placed at each placeholder index
-const placedBuildings = [null, null, null]; // index: placeholderIdx, value: buildingId
 
 function showBuildingsMapModal() {
   let modal = document.createElement('div');
@@ -72,21 +69,22 @@ function showBuildingsMapModal() {
   // Helper to render placeholders (with building icons if placed)
   function renderPlaceholders() {
     phContainer.innerHTML = '';
+    const placed = buildings.getPlacedBuildings();
     placeholders.forEach((pos, idx) => {
       const ph = document.createElement('div');
       ph.className = 'building-map-placeholder';
       ph.style.left = pos.left + 'px';
       ph.style.top = pos.top + 'px';
-      ph.title = placedBuildings[idx] ? buildings.buildings[placedBuildings[idx]].name : `Place building #${idx + 1}`;
+      ph.title = placed[idx] ? placed[idx].name : `Place building #${idx + 1}`;
       ph.style.position = 'absolute';
       ph.style.pointerEvents = 'auto';
       // If a building is placed, show its image and remove the placeholder background
-      if (placedBuildings[idx]) {
+      if (placed[idx]) {
         ph.classList.add('building-map-has-building');
         ph.style.pointerEvents = 'none';
         const img = document.createElement('img');
-        img.src = import.meta.env.BASE_URL + buildings.buildings[placedBuildings[idx]].image;
-        img.alt = buildings.buildings[placedBuildings[idx]].name;
+        img.src = import.meta.env.BASE_URL + placed[idx].image;
+        img.alt = placed[idx].name;
         img.className = 'building-map-img building-map-img-inset building-map-img-large';
         ph.appendChild(img);
       } else {
@@ -109,15 +107,11 @@ function showBuildingsMapModal() {
     phContainer.style.pointerEvents = 'none';
     renderPlaceholders();
   };
-  // If already loaded (cache), trigger manually
+
   if (mapImg.complete) mapImg.onload();
 
   // Close modal
   modal.querySelector('.building-modal-close').onclick = () => modal.remove();
-  // Remove closing on background click
-  // modal.onclick = (e) => {
-  //   if (e.target === modal) modal.remove();
-  // };
 }
 
 function showChooseBuildingModal(placeholderIdx, onChoose) {
@@ -143,10 +137,12 @@ function showChooseBuildingModal(placeholderIdx, onChoose) {
       </div>
     `;
     el.onclick = () => {
-      // Place building at placeholderIdx
-      placedBuildings[placeholderIdx] = building.id;
+      // Place building at placeholderIdx using business logic
+      buildings.placeBuilding(building.id, placeholderIdx);
       modal.remove();
       if (typeof onChoose === 'function') onChoose();
+      // Save game after placing a building
+      if (dataManager) dataManager.saveGame();
     };
     list.appendChild(el);
   });
@@ -169,3 +165,5 @@ export function initializeBuildingsUI() {
   // Open map modal
   tab.querySelector('#open-buildings-map').onclick = showBuildingsMapModal;
 }
+
+// Add similar save after upgrade logic wherever upgrade is handled

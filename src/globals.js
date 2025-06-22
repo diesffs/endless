@@ -57,9 +57,9 @@ export async function setGlobals({ cloud = false, reset = false } = {}) {
   statistics = _statistics;
   quests = _quests;
   soulShop = _soulShop;
+  buildings = _buildings;
   options = _options;
   dataManager = _dataManager;
-  buildings = _buildings;
 
   // useful when loading from cloud
   dataManager.saveGame();
@@ -76,8 +76,8 @@ export function getGlobals() {
     statistics,
     quests,
     soulShop,
+    buildings,
     options,
     dataManager,
-    buildings,
   };
 }
