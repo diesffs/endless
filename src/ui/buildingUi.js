@@ -288,3 +288,55 @@ export function initializeBuildingsUI() {
   // Open map modal
   tab.querySelector('#open-buildings-map').onclick = showBuildingsMapModal;
 }
+
+export function showOfflineBonusesModal(bonuses, onCollect) {
+  let collected = false;
+  function doCollect() {
+    if (!collected) {
+      collected = true;
+      if (typeof onCollect === 'function') onCollect();
+    }
+  }
+  let htmlContent = html` <div class="offline-bonuses-modal-content">
+    <button class="modal-close">×</button>
+    <h2>Offline Building Rewards</h2>
+    <div style="margin:12px 0 0 0;">
+      <ul style="list-style:none;padding:0;">
+        ${bonuses
+          .map(
+            (b) =>
+              `<li style='margin:10px 0;font-size:1.1em;'>${b.icon || ''} <b>${b.name}</b>: +${b.amount} ${
+                b.type
+              } <span style='color:#aaa;font-size:0.95em;'>(for ${b.times} ${b.interval}${
+                b.times > 1 ? 's' : ''
+              })</span></li>`
+          )
+          .join('')}
+      </ul>
+    </div>
+    <div style="margin-top:18px;color:#aaa;font-size:0.98em;">Bonuses were earned while you were away!</div>
+    <button
+      class="offline-bonuses-collect-btn"
+      style="margin-top:24px;font-size:1.1em;padding:10px 32px;border-radius:8px;background:linear-gradient(90deg,#4e54c8,#8f94fb);color:#fff;font-weight:bold;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(78,84,200,0.15);"
+    >
+      Collect
+    </button>
+  </div>`;
+  const modal = createModal({
+    id: 'offline-bonuses-modal',
+    className: 'building-modal offline-bonuses-modal',
+    content: htmlContent,
+    onClose: doCollect,
+  });
+  modal.querySelector('.offline-bonuses-collect-btn').onclick = () => {
+    doCollect();
+    closeModal('offline-bonuses-modal');
+  };
+  // Also call doCollect if the close button is clicked
+  const closeBtn = modal.querySelector('.modal-close');
+  if (closeBtn)
+    closeBtn.onclick = () => {
+      doCollect();
+      closeModal('offline-bonuses-modal');
+    };
+}

@@ -8,7 +8,17 @@ import {
   updateTabIndicators,
 } from './ui/ui.js';
 import { initDebugging } from './functions.js';
-import { game, hero, crystalShop, statistics, setGlobals, soulShop, options, dataManager } from './globals.js';
+import {
+  game,
+  hero,
+  crystalShop,
+  statistics,
+  setGlobals,
+  soulShop,
+  options,
+  dataManager,
+  buildings,
+} from './globals.js';
 import { initializeRegionSystem, updateRegionUI } from './region.js';
 import { updateStatsAndAttributesUI } from './ui/statsAndAttributesUi.js';
 import { initializeBuildingsUI } from './ui/buildingUi.js';
@@ -91,4 +101,13 @@ window.log = console.log;
       }
     });
   })();
+
+  // Collect offline bonuses on load (show modal if any)
+  buildings.collectBonuses({ showOfflineModal: true });
+
+  // Periodically collect building bonuses (every 5 seconds, no modal)
+  setInterval(() => {
+    buildings.collectBonuses();
+    updateResources();
+  }, 5000);
 })();

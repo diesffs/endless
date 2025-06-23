@@ -391,6 +391,78 @@
   box-shadow: 0 2px 8px rgba(200, 78, 78, 0.15);
 }
 
+/* Offline bonuses modal */
+.offline-bonuses-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(30, 30, 40, 0.92);
+  z-index: 2100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s;
+}
+
+.offline-bonuses-modal-content {
+  background: #23233a;
+  border-radius: 16px;
+  padding: 36px 32px 28px 32px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45);
+  min-width: 340px;
+  max-width: 96vw;
+  max-height: 80vh;
+  overflow: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.offline-bonuses-modal-content h2 {
+  color: #fff;
+  font-size: 1.5rem;
+  margin-bottom: 18px;
+}
+
+.offline-bonuses-modal-content ul {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.offline-bonuses-modal-content li {
+  color: #e0e0ff;
+  font-size: 1.1em;
+  margin: 10px 0;
+  text-align: left;
+}
+
+.offline-bonuses-modal-content .modal-close {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.7rem;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+.offline-bonuses-modal-content .modal-close:hover {
+  opacity: 1;
+}
+
+.offline-bonuses-modal-content > div:last-child {
+  margin-top: 18px;
+  color: #aaa;
+  font-size: 0.98em;
+  text-align: center;
+}
+
 @media (max-width: 1100px) {
   .building-modal-content {
     width: 800px;
