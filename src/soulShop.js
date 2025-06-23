@@ -18,35 +18,35 @@ export const SOUL_UPGRADE_CONFIG = {
     label: 'Bonus Gold %',
     bonus: 0.01,
     baseCost: 7,
-    costIncrement: 0,
+    costIncrement: 1,
     stat: 'bonusGoldPercent',
   },
   bonusExperience: {
     label: 'Bonus Experience %',
     bonus: 0.01,
     baseCost: 7,
-    costIncrement: 0,
+    costIncrement: 1,
     stat: 'bonusExperiencePercent',
   },
   damageBoost: {
     label: 'Damage Boost %',
     bonus: 0.01,
     baseCost: 10,
-    costIncrement: 0,
+    costIncrement: 1,
     stat: 'damagePercent',
   },
   lifeBoost: {
     label: 'Life Boost %',
     bonus: 0.01,
     baseCost: 10,
-    costIncrement: 0,
+    costIncrement: 1,
     stat: 'lifePercent',
   },
   manaBoost: {
     label: 'Mana Boost %',
     bonus: 0.01,
-    baseCost: 50,
-    costIncrement: 0,
+    baseCost: 20,
+    costIncrement: 1,
     stat: 'manaPercent',
   },
   /**
@@ -174,7 +174,7 @@ export default class SoulShop {
 
   createUpgradeModal() {
     const content = html`
-      <div class="training-modal-content">
+      <div class="soulShop-modal-content">
         <button class="modal-close" aria-label="Close">&times;</button>
         <h2 class="modal-title"></h2>
         <div class="modal-fields"></div>
@@ -184,7 +184,7 @@ export default class SoulShop {
     `;
     this.modal = createModal({
       id: 'soulShop-modal',
-      className: 'training-modal hidden',
+      className: 'soulShop-modal hidden',
       content,
       onClose: () => this.closeModal(),
     });

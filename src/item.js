@@ -29,7 +29,7 @@ export default class Item {
   }
 
   getTierBonus() {
-    return 1 + getRegionByTier(this.tier).itemBaseBonus * (this.tier - 1);
+    return getRegionByTier(this.tier).itemBaseBonus;
   }
 
   getMultiplier() {
@@ -54,6 +54,10 @@ export default class Item {
     const tierBonus = this.getTierBonus();
     const calculateStatValue = (stat, baseValue) => {
       const scale = this.getLevelScale(stat, this.level);
+      console.log(
+        `Calculating ${stat} for ${this.type} at level ${this.level} with base value ${baseValue}, tier bonus ${tierBonus}, multiplier ${multiplier}, scale ${scale}`
+      );
+
       return this.calculateStatValue({ baseValue, tierBonus, multiplier, scale, stat });
     };
 

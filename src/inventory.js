@@ -105,7 +105,7 @@ export default class Inventory {
         .map(([slot, item]) => ({ slot, item }));
       const html = String.raw;
       let content = html`
-        <div class="training-modal-content">
+        <div class="inventory-modal-content">
           <button class="modal-close">&times;</button>
           <h2>${matDef.name || mat.name || ''}</h2>
           <p>${matDef.description || ''}</p>
@@ -123,7 +123,7 @@ export default class Inventory {
                         <span style="color:${ITEM_RARITY[item.rarity].color};">${item.rarity}</span>
                         <input type="number" class="upgrade-qty-input" data-idx="${idx}" min="1" max="${
                         mat.qty
-                      }" value="1" style="width:48px;margin-left:8px;" aria-label="Upgrade quantity" />
+                      }" value="1" aria-label="Upgrade quantity" />
                         <button class="upgrade-btn" data-slot="${slot}" data-idx="${idx}">Upgrade</button>
                       </div>`
                   )
@@ -136,7 +136,7 @@ export default class Inventory {
       `;
       const dialog = createModal({
         id: 'material-upgrade-dialog',
-        className: 'training-modal',
+        className: 'inventory-modal',
         content,
       });
       dialog.querySelector('#material-use-cancel').onclick = () => closeModal('material-upgrade-dialog');
@@ -172,7 +172,7 @@ export default class Inventory {
 
     // Default: show quantity modal
     const content = html`
-      <div class="training-modal-content">
+      <div class="inventory-modal-content">
         <button class="modal-close">&times;</button>
         <h2>${matDef.name || mat.name || ''}</h2>
         <p>${matDef.description || ''}</p>
@@ -194,7 +194,7 @@ export default class Inventory {
     `;
     const dialog = createModal({
       id: 'material-use-dialog',
-      className: 'training-modal',
+      className: 'inventory-modal',
       content,
     });
     // Focus input

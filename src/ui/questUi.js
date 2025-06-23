@@ -76,12 +76,12 @@ export function openQuestModal(quest) {
   let modal = document.getElementById('quest-modal');
   if (modal) modal.remove();
 
-  // Use the same modal structure as training-modal for consistent centering
+  // Use the same modal structure as quest-modal for consistent centering
   modal = document.createElement('div');
   modal.id = 'quest-modal';
-  modal.className = 'modal training-modal'; // Use both classes for styling/position
+  modal.className = 'modal quest-modal'; // Use both classes for styling/position
   modal.innerHTML = `
-    <div class="training-modal-content">
+    <div class="quest-modal-content">
       <button class="modal-close">&times;</button>
       <h2 id="quest-modal-title"></h2>
       <div id="quest-modal-category" style="color:#38bdf8;font-size:1em;"></div>
@@ -162,9 +162,9 @@ function openClaimableQuestsModal() {
 
   modal = document.createElement('div');
   modal.id = 'claimable-quests-modal';
-  modal.className = 'modal training-modal';
+  modal.className = 'modal quest-modal';
   modal.innerHTML = `
-    <div class="training-modal-content">
+    <div class="quest-modal-content">
       <button class="modal-close">&times;</button>
       <h2>Claimable Quests</h2>
       <div id="claimable-quests-list"></div>

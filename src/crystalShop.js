@@ -129,7 +129,7 @@ export default class CrystalShop {
 
   createUpgradeModal() {
     const content = html`
-      <div class="training-modal-content">
+      <div class="crystalShop-modal-content">
         <button class="modal-close" aria-label="Close">&times;</button>
         <h2 class="modal-title"></h2>
         <div class="modal-fields"></div>
@@ -139,7 +139,7 @@ export default class CrystalShop {
     `;
     this.modal = createModal({
       id: 'crystalShop-modal',
-      className: 'training-modal hidden',
+      className: 'crystalShop-modal hidden',
       content,
       onClose: () => this.closeModal(),
     });

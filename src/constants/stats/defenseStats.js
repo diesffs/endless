@@ -13,7 +13,7 @@ export const DEFENSE_STATS = {
   lifePercent: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 2, max: 10, scaling: 'full' },
+    item: { min: 2, max: 10, scaling: 'capped' },
     itemTags: ['pants'],
   },
   // ARMOR
@@ -28,7 +28,7 @@ export const DEFENSE_STATS = {
   armorPercent: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 2, max: 9, scaling: 'full' },
+    item: { min: 2, max: 9, scaling: 'capped' },
     itemTags: ['armor'],
   },
   // BLOCK CHANCE

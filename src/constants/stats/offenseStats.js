@@ -12,7 +12,7 @@ export const OFFENSE_STATS = {
   damagePercent: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 2, max: 20, scaling: 'capped' },
+    item: { min: 2, max: 10, scaling: 'capped' },
     itemTags: ['mace'],
   },
   // ATTACK SPEED
@@ -66,7 +66,7 @@ export const OFFENSE_STATS = {
   attackRatingPercent: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 5, max: 15, scaling: 'capped' },
+    item: { min: 1, max: 10, scaling: 'capped' },
     itemTags: ['offense', 'gloves'],
   },
   // LIFE STEAL
@@ -157,7 +157,7 @@ export const OFFENSE_STATS = {
   doubleDamageChance: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 0.2, max: 2, scaling: 'capped' },
+    item: { min: 0.2, max: 1.5, scaling: 'capped' },
     itemTags: ['offense', 'gloves'],
   },
   // ELEMENTAL DAMAGE PERCENT
