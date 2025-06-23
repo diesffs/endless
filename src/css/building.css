@@ -463,6 +463,14 @@
   text-align: center;
 }
 
+.selected-upgrade-amt {
+  background: #8f94fb !important;
+  color: #fff !important;
+  font-weight: bold;
+  border: 2px solid #4e54c8;
+  box-shadow: 0 2px 8px rgba(78, 84, 200, 0.15);
+}
+
 @media (max-width: 1100px) {
   .building-modal-content {
     width: 800px;

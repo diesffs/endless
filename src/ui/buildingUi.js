@@ -2,7 +2,7 @@
 // This file will handle rendering and updating the buildings tab UI.
 const html = String.raw;
 
-import { buildings, dataManager } from '../globals.js';
+import { buildings, dataManager, hero } from '../globals.js';
 import { createModal, closeModal } from './modal.js';
 import { showConfirmDialog } from './ui.js';
 
@@ -10,6 +10,19 @@ function formatEffectCurrent(effect, level) {
   if (!effect || typeof effect !== 'object') return '';
   let interval = effect.interval ? ` per ${effect.interval}` : '';
   return `+${effect.amount * level} ${effect.type}${interval}`;
+}
+
+function formatEffectNext(effect, level, amount) {
+  if (!effect || typeof effect !== 'object') return '';
+  let interval = effect.interval ? ` per ${effect.interval}` : '';
+  return `+${effect.amount * (level + amount)} ${effect.type}${interval}`;
+}
+
+function formatCost(costObj, amount = 1) {
+  if (!costObj || typeof costObj !== 'object') return '';
+  return Object.entries(costObj)
+    .map(([type, value]) => `${value * amount} ${type}`)
+    .join(', ');
 }
 
 function createBuildingCard(building) {
@@ -30,32 +43,88 @@ function createBuildingCard(building) {
 function showBuildingInfoModal(building, onUpgrade, placementOptions) {
   const refundPercent = 0.9;
   const canUpgrade = building.level < building.maxLevel;
-  const refundAmount = Math.floor(refundPercent * (building.cost * ((building.level * (building.level + 1)) / 2)));
+  // Calculate total cost for all resources
+  function getTotalUpgradeCost(amount) {
+    const total = {};
+    for (let i = 1; i <= amount; ++i) {
+      for (const [type, value] of Object.entries(building.cost)) {
+        total[type] = (total[type] || 0) + value * (building.level + i);
+      }
+    }
+    return total;
+  }
+  // Calculate refund for all resources
+  function getRefundAmount() {
+    const refund = {};
+    for (const [type, value] of Object.entries(building.cost)) {
+      refund[type] = Math.floor(refundPercent * (value * ((building.level * (building.level + 1)) / 2)));
+    }
+    return refund;
+  }
   let upgradeAmount = 1;
   let modal;
   // If in placement mode, track if the building was upgraded
   let upgradedDuringPlacement = false;
 
   function getMaxUpgradeAmount() {
-    return building.maxLevel - building.level;
+    // Calculate the maximum number of upgrades the player can afford with all resources
+    let maxPossible = building.maxLevel - building.level;
+    if (maxPossible <= 0) return 0;
+    let affordable = maxPossible;
+    // For each resource type, find the limiting factor
+    for (const [type, value] of Object.entries(building.cost)) {
+      let playerResource = hero[type + 's'] !== undefined ? hero[type + 's'] : hero[type];
+      if (playerResource === undefined) continue;
+      // Binary search for max affordable upgrades for this resource
+      let low = 0,
+        high = maxPossible;
+      while (low < high) {
+        let mid = Math.ceil((low + high) / 2);
+        let total = 0;
+        for (let i = 1; i <= mid; ++i) {
+          total += value * (building.level + i);
+        }
+        if (total > playerResource) {
+          high = mid - 1;
+        } else {
+          low = mid;
+        }
+      }
+      affordable = Math.min(affordable, low);
+    }
+    return affordable;
   }
 
-  function getTotalUpgradeCost(amount) {
-    let total = 0;
-    for (let i = 1; i <= amount; ++i) {
-      total += building.cost * (building.level + i);
+  function getMaxAffordableUpgradeAmount() {
+    let maxAmt = building.maxLevel - building.level;
+    if (maxAmt <= 0) return 0;
+    // For each possible amount from 1 to maxAmt, check if player can afford
+    for (let amt = maxAmt; amt >= 1; amt--) {
+      if (canAffordUpgrade(amt)) return amt;
     }
-    return total;
+    return 0;
   }
 
   function getTotalBonus(amount) {
     return building.bonusAmount * (building.level + amount) - building.bonusAmount * building.level;
   }
 
+  function canAffordUpgrade(amount) {
+    const totalCost = getTotalUpgradeCost(amount);
+    for (const [type, value] of Object.entries(totalCost)) {
+      if ((hero[type + 's'] !== undefined ? hero[type + 's'] : hero[type]) < value) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   function renderModalContent() {
     const maxAmt = getMaxUpgradeAmount();
+    const maxAffordableAmt = getMaxAffordableUpgradeAmount();
     const totalCost = getTotalUpgradeCost(upgradeAmount);
     const totalBonus = getTotalBonus(upgradeAmount);
+    const refundAmount = getRefundAmount();
     return html`
       <div class="building-modal-content">
         <button class="modal-close">×</button>
@@ -66,43 +135,54 @@ function showBuildingInfoModal(building, onUpgrade, placementOptions) {
             alt="${building.name}"
           />
           <div>
-            <div class="building-name" style="font-size:1.3rem;">${building.icon || ''} ${building.name}</div>
+            <div class="building-name" style="font-size:1.3rem;">${building.name}</div>
             <div class="building-desc">${building.description}</div>
           </div>
         </div>
         <div class="building-info-modal-body">
           <div>Level: <b>${building.level}</b> / ${building.maxLevel}</div>
-          <div>Current Bonus: <b>${building.bonusAmount * building.level} ${building.bonusType}</b></div>
+          <div>Current Bonus: <b>${formatEffectCurrent(building.effect, building.level)}</b></div>
           <div>Upgrade Amount: <b>${upgradeAmount}</b></div>
-          <div>Total Upgrade Cost: <b>${totalCost}</b></div>
+          <div>Total Upgrade Cost: <b>${formatCost(totalCost)}</b></div>
           <div>
             Bonus After Upgrade:
-            <b>${building.bonusAmount * (building.level + upgradeAmount)} ${building.bonusType}</b>
-            <span style="color:#aaa;font-size:0.95em;">(+${totalBonus})</span>
+            <b>${formatEffectNext(building.effect, building.level, upgradeAmount)}</b>
+            <span style="color:#aaa;font-size:0.95em;">(+${totalBonus} ${building.bonusType})</span>
           </div>
         </div>
         <div class="building-info-modal-upgrade">
           <div style="margin: 10px 0 6px 0;">Upgrade Amount:</div>
           <div class="building-upgrade-amounts">
-            <button data-amt="1" class="upgrade-amt-btn${upgradeAmount === 1 ? ' selected' : ''}">+1</button>
+            <button data-amt="1" class="upgrade-amt-btn${upgradeAmount === 1 ? ' selected-upgrade-amt' : ''}">
+              +1
+            </button>
             <button
               data-amt="10"
-              class="upgrade-amt-btn${upgradeAmount === 10 ? ' selected' : ''}"
+              class="upgrade-amt-btn${upgradeAmount === 10 ? ' selected-upgrade-amt' : ''}"
               ${maxAmt < 10 ? 'disabled' : ''}
             >
               +10
             </button>
             <button
               data-amt="50"
-              class="upgrade-amt-btn${upgradeAmount === 50 ? ' selected' : ''}"
+              class="upgrade-amt-btn${upgradeAmount === 50 ? ' selected-upgrade-amt' : ''}"
               ${maxAmt < 50 ? 'disabled' : ''}
             >
               +50
             </button>
-            <button data-amt="max" class="upgrade-amt-btn${upgradeAmount === maxAmt ? ' selected' : ''}">Max</button>
+            <button
+              data-amt="max"
+              class="upgrade-amt-btn${upgradeAmount === maxAffordableAmt ? ' selected-upgrade-amt' : ''}"
+            >
+              Max
+            </button>
           </div>
-          <button class="building-upgrade-btn" ${canUpgrade ? '' : 'disabled'}>Upgrade</button>
-          ${!placementOptions ? `<button class="building-sell-btn">Sell / Refund (+${refundAmount} gold)</button>` : ''}
+          <button class="building-upgrade-btn" ${canUpgrade && canAffordUpgrade(upgradeAmount) ? '' : 'disabled'}>
+            Upgrade
+          </button>
+          ${!placementOptions
+            ? `<button class="building-sell-btn">Sell / Refund (+${formatCost(refundAmount)})</button>`
+            : ''}
         </div>
       </div>
     `;
@@ -113,7 +193,12 @@ function showBuildingInfoModal(building, onUpgrade, placementOptions) {
     // Re-attach event listeners
     modal.querySelectorAll('.upgrade-amt-btn').forEach((btn) => {
       btn.onclick = () => {
-        let amt = btn.dataset.amt === 'max' ? getMaxUpgradeAmount() : parseInt(btn.dataset.amt);
+        let amt;
+        if (btn.dataset.amt === 'max') {
+          amt = getMaxAffordableUpgradeAmount();
+        } else {
+          amt = parseInt(btn.dataset.amt);
+        }
         upgradeAmount = Math.max(1, Math.min(getMaxUpgradeAmount(), amt));
         rerenderModal();
       };
@@ -121,6 +206,24 @@ function showBuildingInfoModal(building, onUpgrade, placementOptions) {
     modal.querySelector('.building-upgrade-btn').onclick = () => {
       let amt = Math.min(upgradeAmount, getMaxUpgradeAmount());
       let upgraded = false;
+      // Check if player can afford all resources for the upgrade
+      const totalCost = getTotalUpgradeCost(amt);
+      let canAfford = true;
+      for (const [type, value] of Object.entries(totalCost)) {
+        if ((hero[type + 's'] !== undefined ? hero[type + 's'] : hero[type]) < value) {
+          canAfford = false;
+          break;
+        }
+      }
+      if (!canAfford) {
+        alert('Not enough resources to upgrade!');
+        return;
+      }
+      // Deduct resources
+      for (const [type, value] of Object.entries(totalCost)) {
+        if (hero[type + 's'] !== undefined) hero[type + 's'] -= value;
+        else if (hero[type] !== undefined) hero[type] -= value;
+      }
       for (let i = 0; i < amt; ++i) {
         if (building.level < building.maxLevel) {
           if (buildings.upgradeBuilding) buildings.upgradeBuilding(building.id);
@@ -138,9 +241,7 @@ function showBuildingInfoModal(building, onUpgrade, placementOptions) {
       if (upgraded) renderPurchasedBuildings();
       if (upgraded && typeof onUpgrade === 'function') onUpgrade();
       if (dataManager) dataManager.saveGame();
-      // Do NOT close the modal after upgrading
-      // closeModal('building-info-modal');
-      rerenderModal(); // Instead, rerender the modal to update values
+      rerenderModal();
     };
     if (!placementOptions) {
       modal.querySelector('.building-sell-btn').onclick = () => {
@@ -330,8 +431,11 @@ function showChooseBuildingModal(placeholderIdx, onChoose) {
     .forEach((building) => {
       const el = document.createElement('div');
       el.className = 'building-card';
+      el.style.cursor = 'pointer';
       el.innerHTML = `
-        <div class="building-icon">${building.icon || ''}</div>
+        <div class="building-image" >
+          <img src="${import.meta.env.BASE_URL + building.image}" alt="${building.name}" class="building-img" />
+        </div>
         <div class="building-info">
           <div class="building-name">${building.name}</div>
           <div class="building-desc">${building.description}</div>

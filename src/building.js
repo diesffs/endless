@@ -40,6 +40,26 @@ export class Building {
     return this.bonusAmount * this.level;
   }
 
+  // Returns the cost object for a given upgrade amount (default 1)
+  getUpgradeCost(amount = 1) {
+    const total = {};
+    for (let i = 1; i <= amount; ++i) {
+      for (const [type, value] of Object.entries(this.cost)) {
+        total[type] = (total[type] || 0) + value * (this.level + i);
+      }
+    }
+    return total;
+  }
+
+  // Returns the refund object for the current level
+  getRefund(refundPercent = 0.9) {
+    const refund = {};
+    for (const [type, value] of Object.entries(this.cost)) {
+      refund[type] = Math.floor(refundPercent * (value * ((this.level * (this.level + 1)) / 2)));
+    }
+    return refund;
+  }
+
   // Returns a serializable object
   toJSON() {
     return {
