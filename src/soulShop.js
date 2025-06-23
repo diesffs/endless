@@ -286,7 +286,13 @@ export default class SoulShop {
           totalCost += cost;
         }
       }
-      const bonusValue = (config.bonus || 0) * qty;
+      let bonus = config.bonus || 0;
+      // if stat ends with Percent, bonus should be multiplied by 100 for display
+      if (config.stat && config.stat.endsWith('Percent')) {
+        bonus *= 100;
+      }
+      const bonusValue = bonus * qty;
+
       const decimals = 0;
       if (q('.modal-qty')) q('.modal-qty').textContent = qty;
       if (q('.modal-total-cost')) q('.modal-total-cost').textContent = totalCost;
