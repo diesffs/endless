@@ -4,6 +4,7 @@ const html = String.raw;
 
 import { buildings, dataManager } from '../globals.js';
 import { createModal, closeModal } from './modal.js';
+import { showConfirmDialog } from './ui.js';
 
 function formatEffectCurrent(effect, level) {
   if (!effect || typeof effect !== 'object') return '';
@@ -131,12 +132,15 @@ function showBuildingInfoModal(building, onUpgrade) {
       closeModal('building-info-modal');
     };
     modal.querySelector('.building-sell-btn').onclick = () => {
-      if (typeof buildings.unplaceBuilding === 'function') buildings.unplaceBuilding(building.id);
-      building.level = 0;
-      if (typeof window.addGold === 'function') window.addGold(refundAmount);
-      if (dataManager) dataManager.saveGame();
-      renderPurchasedBuildings();
-      closeModal('building-info-modal');
+      showConfirmDialog(`Are you sure you want to remove <b>${building.name}</b> from the map?`).then((confirmed) => {
+        if (confirmed) {
+          buildings.unplaceBuilding(building.id);
+          if (typeof onUpgrade === 'function') onUpgrade();
+          if (dataManager) dataManager.saveGame();
+          closeModal('building-info-modal');
+          renderPurchasedBuildings();
+        }
+      });
     };
     modal.querySelector('.modal-close').onclick = () => closeModal('building-info-modal');
   }

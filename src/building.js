@@ -172,6 +172,7 @@ export class BuildingManager {
         }
         this.lastActive = Date.now();
         updateResources();
+        dataManager.saveGame(); // Save after collecting bonuses
       });
     } else if (!isFirstCollect) {
       this.lastActive = now;
