@@ -61,10 +61,10 @@ export class Building {
   // Returns the cost object for a given upgrade amount (default 1)
   getUpgradeCost(amount = 1) {
     const total = {};
-    for (let i = 1; i <= amount; ++i) {
-      for (const [type, value] of Object.entries(this.cost)) {
-        total[type] = (total[type] || 0) + value;
-      }
+    const L = this.level;
+    for (const [type, base] of Object.entries(this.cost)) {
+      // Use arithmetic series sum: base * (amount * L + amount * (amount + 1) / 2)
+      total[type] = base * (amount * L + (amount * (amount + 1)) / 2);
     }
     return total;
   }
