@@ -19,8 +19,6 @@ export class Building {
     this.image = data.image;
     this.effect = data.effect;
     this.maxLevel = data.maxLevel;
-    this.bonusType = data.bonusType;
-    this.bonusAmount = data.bonusAmount;
     this.cost = data.cost;
     // Track last bonus time for this building
     this.lastBonusTime = lastBonusTime || Date.now();
@@ -36,8 +34,28 @@ export class Building {
 
   // Returns the current effect value based on level
   getEffectValue() {
-    // Example: effect scales linearly with level
-    return this.bonusAmount * this.level;
+    return (this.effect?.amount || 0) * this.level;
+  }
+
+  // Returns the effect value after upgrading to the given level
+  getNextEffectValue(targetLevel) {
+    if (targetLevel <= this.level) return this.getEffectValue();
+    return (this.effect?.amount || 0) * targetLevel;
+  }
+
+  // Returns a formatted string for the effect at a given level
+  formatEffect(level = this.level) {
+    if (!this.effect || typeof this.effect !== 'object') return '';
+    let interval = this.effect.interval ? ` per ${this.effect.interval}` : '';
+    return `+${this.effect.amount * level} ${this.effect.type}${interval}`;
+  }
+
+  // Returns a formatted string for a cost object
+  static formatCost(costObj) {
+    if (!costObj || typeof costObj !== 'object') return '';
+    return Object.entries(costObj)
+      .map(([type, value]) => `${value} ${type}`)
+      .join(', ');
   }
 
   // Returns the cost object for a given upgrade amount (default 1)
@@ -45,10 +63,34 @@ export class Building {
     const total = {};
     for (let i = 1; i <= amount; ++i) {
       for (const [type, value] of Object.entries(this.cost)) {
-        total[type] = (total[type] || 0) + value * (this.level + i);
+        total[type] = (total[type] || 0) + value;
       }
     }
     return total;
+  }
+
+  // Returns the maximum number of upgrades the player can afford with all resources
+  getMaxUpgradeAmount(hero) {
+    let maxPossible = this.maxLevel - this.level;
+    if (maxPossible <= 0) return 0;
+    let affordable = maxPossible;
+    for (const type of Object.keys(this.cost)) {
+      let playerResource = hero[type + 's'] !== undefined ? hero[type + 's'] : hero[type];
+      if (playerResource === undefined) continue;
+      let low = 0,
+        high = maxPossible;
+      while (low < high) {
+        let mid = Math.ceil((low + high) / 2);
+        const totalCost = this.getUpgradeCost(mid);
+        if (totalCost[type] > playerResource) {
+          high = mid - 1;
+        } else {
+          low = mid;
+        }
+      }
+      affordable = Math.min(affordable, low);
+    }
+    return affordable;
   }
 
   // Returns the refund object for the current level
