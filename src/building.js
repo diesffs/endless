@@ -3,7 +3,7 @@ import { buildingsData } from './constants/buildings.js';
 
 // Represents a single building instance (with state)
 export class Building {
-  constructor({ id, level = 1, placedAt = null }) {
+  constructor({ id, level = 0, placedAt = null }) {
     const data = buildingsData[id];
     if (!data) throw new Error(`Unknown building id: ${id}`);
     this.id = id;
@@ -18,7 +18,6 @@ export class Building {
     this.maxLevel = data.maxLevel;
     this.bonusType = data.bonusType;
     this.bonusAmount = data.bonusAmount;
-    this.unlockStage = data.unlockStage;
     this.cost = data.cost;
   }
 

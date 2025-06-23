@@ -285,7 +285,7 @@
 
 /* Styling for building info modal content */
 .modal.building-info-modal .building-info-modal-header {
-  text-align: center;
+  display: flex;
   margin-bottom: 16px;
 }
 .modal.building-info-modal .building-info-modal-header .building-name {

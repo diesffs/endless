@@ -27,6 +27,18 @@ export function createModal({ id, className, content, onClose, closeOnOutsideCli
     closeBtn.addEventListener('click', () => closeModal(id));
   }
 
+  // Handle ESC key to close only the topmost modal
+  function escListener(e) {
+    if (e.key === 'Escape') {
+      // Only close if this is the topmost modal
+      const modals = Array.from(document.querySelectorAll('.modal:not(.hidden)'));
+      if (modals.length && modals[modals.length - 1] === overlay) {
+        closeModal(id);
+      }
+    }
+  }
+  document.addEventListener('keydown', escListener);
+
   // Clicking outside content closes modal
   overlay.addEventListener('click', (e) => {
     if (e.target === overlay && closeOnOutsideClick) closeModal(id);
