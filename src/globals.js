@@ -29,7 +29,7 @@ export let buildings = null;
 export async function setGlobals({ cloud = false, reset = false } = {}) {
   // setup data manager. version not set yet
   const _dataManager = new DataManager();
-  await _dataManager.startSessionMonitor();
+  _dataManager.startSessionMonitor();
   let savedData = await _dataManager.loadGame({ cloud });
 
   if (reset) {
