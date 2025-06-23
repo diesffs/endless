@@ -138,7 +138,9 @@ function showBuildingInfoModal(building, onUpgrade, placementOptions) {
       if (upgraded) renderPurchasedBuildings();
       if (upgraded && typeof onUpgrade === 'function') onUpgrade();
       if (dataManager) dataManager.saveGame();
-      closeModal('building-info-modal');
+      // Do NOT close the modal after upgrading
+      // closeModal('building-info-modal');
+      rerenderModal(); // Instead, rerender the modal to update values
     };
     if (!placementOptions) {
       modal.querySelector('.building-sell-btn').onclick = () => {
@@ -188,9 +190,54 @@ function showBuildingsMapModal() {
   const mapContainer = modal.querySelector('.building-map-container');
   const mapImg = modal.querySelector('.building-map-img');
   const phContainer = modal.querySelector('.building-map-placeholders');
+  // Wrap map image and placeholders in an inner container for scaling
+  const mapInner = document.createElement('div');
+  mapInner.className = 'building-map-inner';
+  mapInner.style.position = 'relative';
+  mapInner.style.width = mapImg.naturalWidth + 'px';
+  mapInner.style.height = mapImg.naturalHeight + 'px';
+  mapInner.appendChild(mapImg);
+  mapInner.appendChild(phContainer);
+  mapContainer.innerHTML = '';
+  mapContainer.appendChild(mapInner);
+
   let isDragging = false,
     startX,
     startY;
+  let mapScale = 1;
+  const minScale = 1;
+  const maxScale = 2.5;
+
+  function clampScroll() {
+    // Clamp scroll so you can't scroll past the map
+    const scaledWidth = mapImg.naturalWidth * mapScale;
+    const scaledHeight = mapImg.naturalHeight * mapScale;
+    mapContainer.scrollLeft = Math.max(0, Math.min(mapContainer.scrollLeft, scaledWidth - mapContainer.clientWidth));
+    mapContainer.scrollTop = Math.max(0, Math.min(mapContainer.scrollTop, scaledHeight - mapContainer.clientHeight));
+  }
+
+  mapContainer.addEventListener(
+    'wheel',
+    (e) => {
+      e.preventDefault();
+      const scaleAmount = 0.1;
+      let newScale = mapScale + (e.deltaY < 0 ? scaleAmount : -scaleAmount);
+      newScale = Math.max(minScale, Math.min(maxScale, newScale));
+      if (newScale === mapScale) return;
+      // Zoom towards mouse position
+      const rect = mapContainer.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left + mapContainer.scrollLeft;
+      const mouseY = e.clientY - rect.top + mapContainer.scrollTop;
+      const percentX = mouseX / (mapImg.naturalWidth * mapScale);
+      const percentY = mouseY / (mapImg.naturalHeight * mapScale);
+      mapScale = newScale;
+      mapInner.style.transformOrigin = `${percentX * 100}% ${percentY * 100}%`;
+      mapInner.style.transform = `scale(${mapScale})`;
+      // Clamp scroll after zoom
+      setTimeout(clampScroll, 0);
+    },
+    { passive: false }
+  );
   mapContainer.addEventListener('mousedown', (e) => {
     isDragging = true;
     startX = e.pageX - mapContainer.offsetLeft;
@@ -206,6 +253,7 @@ function showBuildingsMapModal() {
     if (!isDragging) return;
     mapContainer.scrollLeft -= e.movementX;
     mapContainer.scrollTop -= e.movementY;
+    clampScroll();
   });
   document.addEventListener('mouseup', () => {
     isDragging = false;
@@ -271,23 +319,31 @@ function showChooseBuildingModal(placeholderIdx, onChoose) {
     onClose: null,
   });
   const list = modal.querySelector('.choose-building-list');
-  Object.values(buildings.buildings).forEach((building) => {
-    const el = document.createElement('div');
-    el.className = 'building-card';
-    el.innerHTML = `
-      <div class="building-icon">${building.icon || ''}</div>
-      <div class="building-info">
-        <div class="building-name">${building.name}</div>
-        <div class="building-desc">${building.description}</div>
-      </div>
-    `;
-    el.onclick = () => {
-      closeModal('building-choose-modal');
-      // Show upgrade modal in placement mode
-      showBuildingInfoModal(building, onChoose, { placeholderIdx, onPlaced: onChoose });
-    };
-    list.appendChild(el);
-  });
+  // Only show buildings that are not already placed
+  const placedIds = new Set(
+    Object.values(buildings.buildings)
+      .filter((b) => b.placedAt !== null)
+      .map((b) => b.id)
+  );
+  Object.values(buildings.buildings)
+    .filter((building) => !placedIds.has(building.id))
+    .forEach((building) => {
+      const el = document.createElement('div');
+      el.className = 'building-card';
+      el.innerHTML = `
+        <div class="building-icon">${building.icon || ''}</div>
+        <div class="building-info">
+          <div class="building-name">${building.name}</div>
+          <div class="building-desc">${building.description}</div>
+        </div>
+      `;
+      el.onclick = () => {
+        closeModal('building-choose-modal');
+        // Show upgrade modal in placement mode
+        showBuildingInfoModal(building, onChoose, { placeholderIdx, onPlaced: onChoose });
+      };
+      list.appendChild(el);
+    });
   modal.querySelector('.modal-close').onclick = () => closeModal('building-choose-modal');
 }
 
