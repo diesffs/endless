@@ -140,6 +140,19 @@
   pointer-events: none;
 }
 
+/* Building image styles */
+.building-image img {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* Large inset map image */
+.building-map-img.building-map-img-inset.building-map-img-large {
+  margin-bottom: 10px;
+}
+
 .building-map-placeholders {
   position: absolute;
   top: 0;
@@ -168,6 +181,12 @@
   background: #fff;
   border-color: #4e54c8;
   transform: scale(1.12);
+}
+
+/* Map placeholder positioning */
+.building-map-placeholder {
+  position: absolute;
+  pointer-events: auto;
 }
 
 .building-map-placeholder.building-map-has-building {
@@ -350,6 +369,26 @@
   background: #555;
   cursor: not-allowed;
   opacity: 0.6;
+}
+
+/* Upgrade button */
+.building-upgrade-btn {
+  margin-top: 12px;
+}
+
+/* Sell/Refund button */
+.building-sell-btn {
+  margin-top: 12px;
+  background: #c84e4e;
+  color: #fff;
+  width: 100%;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 0;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(200, 78, 78, 0.15);
 }
 
 @media (max-width: 1100px) {

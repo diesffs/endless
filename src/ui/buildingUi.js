@@ -1,5 +1,6 @@
 // UI logic for buildings tab
 // This file will handle rendering and updating the buildings tab UI.
+const html = String.raw;
 
 import { buildings, dataManager } from '../globals.js';
 import { createModal, closeModal } from './modal.js';
@@ -13,10 +14,10 @@ function formatEffectCurrent(effect, level) {
 function createBuildingCard(building) {
   const el = document.createElement('div');
   el.className = 'building-card';
-  el.innerHTML = `
-    <div class="building-image"><img src="${import.meta.env.BASE_URL + building.image}" alt="${
-    building.name
-  }" style="width:48px;height:48px;border-radius:8px;object-fit:cover;" /></div>
+  el.innerHTML = html`
+    <div class="building-image">
+      <img src="${import.meta.env.BASE_URL + building.image}" alt="${building.name}" class="building-img" />
+    </div>
     <div class="building-info">
       <div class="building-name">${building.name}</div>
       <div class="building-effect">${formatEffectCurrent(building.effect, building.level)}</div>
@@ -53,16 +54,18 @@ function showBuildingInfoModal(building, onUpgrade) {
     const maxAmt = getMaxUpgradeAmount();
     const totalCost = getTotalUpgradeCost(upgradeAmount);
     const totalBonus = getTotalBonus(upgradeAmount);
-    return `
+    return html`
       <div class="building-modal-content">
         <button class="modal-close">×</button>
         <div class="building-info-modal-header">
-          <img src="${
-            import.meta.env.BASE_URL + building.image
-          }" class="building-map-img building-map-img-inset building-map-img-large" style="margin-bottom: 10px;" />
+          <img
+            src="${import.meta.env.BASE_URL + building.image}"
+            class="building-map-img building-map-img-inset building-map-img-large"
+            alt="${building.name}"
+          />
           <div>
-          <div class="building-name" style="font-size:1.3rem;">${building.icon || ''} ${building.name}</div>
-          <div class="building-desc">${building.description}</div>
+            <div class="building-name" style="font-size:1.3rem;">${building.icon || ''} ${building.name}</div>
+            <div class="building-desc">${building.description}</div>
           </div>
         </div>
         <div class="building-info-modal-body">
@@ -70,24 +73,34 @@ function showBuildingInfoModal(building, onUpgrade) {
           <div>Current Bonus: <b>${building.bonusAmount * building.level} ${building.bonusType}</b></div>
           <div>Upgrade Amount: <b>${upgradeAmount}</b></div>
           <div>Total Upgrade Cost: <b>${totalCost}</b></div>
-          <div>Bonus After Upgrade: <b>${building.bonusAmount * (building.level + upgradeAmount)} ${
-      building.bonusType
-    }</b> <span style="color:#aaa;font-size:0.95em;">(+${totalBonus})</span></div>
+          <div>
+            Bonus After Upgrade:
+            <b>${building.bonusAmount * (building.level + upgradeAmount)} ${building.bonusType}</b>
+            <span style="color:#aaa;font-size:0.95em;">(+${totalBonus})</span>
+          </div>
         </div>
         <div class="building-info-modal-upgrade">
           <div style="margin: 10px 0 6px 0;">Upgrade Amount:</div>
           <div class="building-upgrade-amounts">
             <button data-amt="1" class="upgrade-amt-btn${upgradeAmount === 1 ? ' selected' : ''}">+1</button>
-            <button data-amt="10" class="upgrade-amt-btn${upgradeAmount === 10 ? ' selected' : ''}" ${
-      maxAmt < 10 ? 'disabled' : ''
-    }>+10</button>
-            <button data-amt="50" class="upgrade-amt-btn${upgradeAmount === 50 ? ' selected' : ''}" ${
-      maxAmt < 50 ? 'disabled' : ''
-    }>+50</button>
+            <button
+              data-amt="10"
+              class="upgrade-amt-btn${upgradeAmount === 10 ? ' selected' : ''}"
+              ${maxAmt < 10 ? 'disabled' : ''}
+            >
+              +10
+            </button>
+            <button
+              data-amt="50"
+              class="upgrade-amt-btn${upgradeAmount === 50 ? ' selected' : ''}"
+              ${maxAmt < 50 ? 'disabled' : ''}
+            >
+              +50
+            </button>
             <button data-amt="max" class="upgrade-amt-btn${upgradeAmount === maxAmt ? ' selected' : ''}">Max</button>
           </div>
-          <button class="building-upgrade-btn" style="margin-top:12px;" ${canUpgrade ? '' : 'disabled'}>Upgrade</button>
-          <button class="building-sell-btn" style="margin-top:12px;background:#c84e4e; color:#fff; width:100%; border:none; border-radius:6px; padding:12px 0; font-size:1rem; font-weight:bold; cursor:pointer; box-shadow:0 2px 8px rgba(200,78,78,0.15);">Sell / Refund (+${refundAmount} gold)</button>
+          <button class="building-upgrade-btn" ${canUpgrade ? '' : 'disabled'}>Upgrade</button>
+          <button class="building-sell-btn">Sell / Refund (+${refundAmount} gold)</button>
         </div>
       </div>
     `;
@@ -138,7 +151,7 @@ function showBuildingInfoModal(building, onUpgrade) {
 }
 
 function showBuildingsMapModal() {
-  const content = `
+  const content = html`
     <div class="building-modal-content">
       <button class="modal-close">×</button>
       <div class="building-map-container">
@@ -221,7 +234,7 @@ function showBuildingsMapModal() {
 }
 
 function showChooseBuildingModal(placeholderIdx, onChoose) {
-  const content = `
+  const content = html`
     <div class="building-choose-modal-content">
       <button class="modal-close">×</button>
       <h3>Choose a building to place</h3>
