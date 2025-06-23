@@ -309,9 +309,15 @@ export default class SoulShop {
 
   getBonusText(stat, config, level) {
     if (config.oneTime) return ''; // No bonus text for one-time upgrades
-    const baseLevel = this.soulUpgrades[stat] || 0;
-    const bonusValue = (config.bonus || 0) * (level - baseLevel);
-    const decimals = 0;
+    let bonusValue = (config.bonus || 0) * level;
+    let decimals = 0;
+
+    // if stat ends with Percent, bonus should be multiplied by 100 for display
+    if (config.stat && config.stat.endsWith('Percent')) {
+      bonusValue *= 100;
+      decimals = 1;
+    }
+
     return `+${bonusValue.toFixed(decimals)} ${config.label}`;
   }
 
