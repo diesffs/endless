@@ -7,7 +7,7 @@
 //  - className: CSS class to apply to overlay (e.g. 'training-modal')
 //  - content: HTML string to inject inside overlay
 //  - onClose: optional callback when modal closes
-export function createModal({ id, className, content, onClose }) {
+export function createModal({ id, className, content, onClose, closeOnOutsideClick = true }) {
   // Remove existing modal with same id
   const existing = document.getElementById(id);
   if (existing) existing.remove();
@@ -27,9 +27,9 @@ export function createModal({ id, className, content, onClose }) {
     closeBtn.addEventListener('click', () => closeModal(id));
   }
 
-  // Clicking outside content closes
+  // Clicking outside content closes modal
   overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) closeModal(id);
+    if (e.target === overlay && closeOnOutsideClick) closeModal(id);
   });
 
   // Store onClose callback

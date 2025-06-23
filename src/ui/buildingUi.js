@@ -97,6 +97,7 @@ function showBuildingsMapModal() {
     className: 'building-modal building-map-modal',
     content,
     onClose: null,
+    closeOnOutsideClick: false,
   });
   const mapContainer = modal.querySelector('.building-map-container');
   const mapImg = modal.querySelector('.building-map-img');
