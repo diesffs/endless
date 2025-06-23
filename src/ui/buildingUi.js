@@ -27,19 +27,20 @@ function createBuildingCard(building) {
   return el;
 }
 
-function showBuildingInfoModal(building, onUpgrade) {
+function showBuildingInfoModal(building, onUpgrade, placementOptions) {
   const refundPercent = 0.9;
   const canUpgrade = building.level < building.maxLevel;
   const refundAmount = Math.floor(refundPercent * (building.cost * ((building.level * (building.level + 1)) / 2)));
   let upgradeAmount = 1;
   let modal;
+  // If in placement mode, track if the building was upgraded
+  let upgradedDuringPlacement = false;
 
   function getMaxUpgradeAmount() {
     return building.maxLevel - building.level;
   }
 
   function getTotalUpgradeCost(amount) {
-    // Cost for next N levels: sum of (cost * (currentLevel + 1 .. currentLevel + amount))
     let total = 0;
     for (let i = 1; i <= amount; ++i) {
       total += building.cost * (building.level + i);
@@ -101,7 +102,7 @@ function showBuildingInfoModal(building, onUpgrade) {
             <button data-amt="max" class="upgrade-amt-btn${upgradeAmount === maxAmt ? ' selected' : ''}">Max</button>
           </div>
           <button class="building-upgrade-btn" ${canUpgrade ? '' : 'disabled'}>Upgrade</button>
-          <button class="building-sell-btn">Sell / Refund (+${refundAmount} gold)</button>
+          ${!placementOptions ? `<button class="building-sell-btn">Sell / Refund (+${refundAmount} gold)</button>` : ''}
         </div>
       </div>
     `;
@@ -126,23 +127,36 @@ function showBuildingInfoModal(building, onUpgrade) {
           upgraded = true;
         }
       }
+      if (upgraded && placementOptions) {
+        // If in placement mode and this is the first upgrade, place the building
+        if (building.placedAt == null) {
+          buildings.placeBuilding(building.id, placementOptions.placeholderIdx);
+          if (typeof placementOptions.onPlaced === 'function') placementOptions.onPlaced();
+        }
+        upgradedDuringPlacement = true;
+      }
       if (upgraded) renderPurchasedBuildings();
       if (upgraded && typeof onUpgrade === 'function') onUpgrade();
       if (dataManager) dataManager.saveGame();
       closeModal('building-info-modal');
     };
-    modal.querySelector('.building-sell-btn').onclick = () => {
-      showConfirmDialog(`Are you sure you want to remove <b>${building.name}</b> from the map?`).then((confirmed) => {
-        if (confirmed) {
-          buildings.unplaceBuilding(building.id);
-          if (typeof onUpgrade === 'function') onUpgrade();
-          if (dataManager) dataManager.saveGame();
-          closeModal('building-info-modal');
-          renderPurchasedBuildings();
-        }
-      });
+    if (!placementOptions) {
+      modal.querySelector('.building-sell-btn').onclick = () => {
+        showConfirmDialog(`Are you sure you want to remove <b>${building.name}</b> from the map?`).then((confirmed) => {
+          if (confirmed) {
+            buildings.unplaceBuilding(building.id);
+            if (typeof onUpgrade === 'function') onUpgrade();
+            if (dataManager) dataManager.saveGame();
+            closeModal('building-info-modal');
+            renderPurchasedBuildings();
+          }
+        });
+      };
+    }
+    modal.querySelector('.modal-close').onclick = () => {
+      // If in placement mode and not upgraded, do not place the building
+      closeModal('building-info-modal');
     };
-    modal.querySelector('.modal-close').onclick = () => closeModal('building-info-modal');
   }
 
   modal = createModal({
@@ -182,6 +196,11 @@ function showBuildingsMapModal() {
     startX = e.pageX - mapContainer.offsetLeft;
     startY = e.pageY - mapContainer.offsetTop;
     mapContainer.style.cursor = 'grabbing';
+    // // Uncomment the following lines to log the click position on the map
+    // const rect = mapImg.getBoundingClientRect();
+    // const x = Math.round(e.clientX - rect.left);
+    // const y = Math.round(e.clientY - rect.top);
+    // console.log(`Map clicked at: { left: ${x}, top: ${y} }`);
   });
   document.addEventListener('mousemove', (e) => {
     if (!isDragging) return;
@@ -193,9 +212,9 @@ function showBuildingsMapModal() {
     mapContainer.style.cursor = '';
   });
   const placeholders = [
-    { left: 120, top: 180 },
-    { left: 400, top: 350 },
-    { left: 700, top: 90 },
+    { left: 342, top: 411 },
+    { left: 514, top: 136 },
+    { left: 709, top: 240 },
   ];
   function renderPlaceholders() {
     phContainer.innerHTML = '';
@@ -263,13 +282,13 @@ function showChooseBuildingModal(placeholderIdx, onChoose) {
       </div>
     `;
     el.onclick = () => {
-      buildings.placeBuilding(building.id, placeholderIdx);
       closeModal('building-choose-modal');
-      if (typeof onChoose === 'function') onChoose();
-      if (dataManager) dataManager.saveGame();
+      // Show upgrade modal in placement mode
+      showBuildingInfoModal(building, onChoose, { placeholderIdx, onPlaced: onChoose });
     };
     list.appendChild(el);
   });
+  modal.querySelector('.modal-close').onclick = () => closeModal('building-choose-modal');
 }
 
 function renderPurchasedBuildings() {

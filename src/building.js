@@ -73,7 +73,7 @@ export class BuildingManager {
       const bSave = saved?.buildings?.[id];
       this.buildings[id] = new Building({
         id,
-        level: bSave?.level || 1,
+        level: bSave?.level || 0,
         placedAt: bSave?.placedAt ?? null,
         lastBonusTime: bSave?.lastBonusTime || this.lastActive,
       });
@@ -103,6 +103,8 @@ export class BuildingManager {
     if (b.placedAt !== null) {
       this.placedBuildings[b.placedAt] = null;
       b.placedAt = null;
+      b.level = 0; // Reset level when unplaced
+      b.lastBonusTime = Date.now(); // Optionally reset lastBonusTime
     }
   }
 
