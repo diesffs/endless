@@ -3,6 +3,7 @@ import { buildingsData } from './constants/buildings.js';
 import { dataManager, hero } from './globals.js';
 import { updateResources } from './ui/ui.js';
 import { showOfflineBonusesModal } from './ui/buildingUi.js';
+const refundPercent = 0.9;
 
 // Represents a single building instance (with state)
 export class Building {
@@ -61,10 +62,8 @@ export class Building {
   // Returns the cost object for a given upgrade amount (default 1)
   getUpgradeCost(amount = 1) {
     const total = {};
-    const L = this.level;
     for (const [type, base] of Object.entries(this.cost)) {
-      // Use arithmetic series sum: base * (amount * L + amount * (amount + 1) / 2)
-      total[type] = base * (amount * L + (amount * (amount + 1)) / 2);
+      total[type] = base * amount;
     }
     return total;
   }
@@ -94,12 +93,24 @@ export class Building {
   }
 
   // Returns the refund object for the current level
-  getRefund(refundPercent = 0.9) {
+  getRefund() {
     const refund = {};
-    for (const [type, value] of Object.entries(this.cost)) {
-      refund[type] = Math.floor(refundPercent * (value * ((this.level * (this.level + 1)) / 2)));
+    for (const [type, base] of Object.entries(this.cost)) {
+      // Static cost: total spent = base * level
+      refund[type] = Math.floor(refundPercent * (base * this.level));
     }
     return refund;
+  }
+
+  // Refunds resources to the hero for this building (used when selling)
+  refundToHero() {
+    const refund = this.getRefund();
+    for (const [type, value] of Object.entries(refund)) {
+      if (hero[type + 's'] !== undefined) hero[type + 's'] += value;
+      else if (hero[type] !== undefined) hero[type] += value;
+    }
+    updateResources(); // Update UI after refund
+    dataManager.saveGame(); // Save after refund
   }
 
   // Returns a serializable object

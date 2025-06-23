@@ -23,7 +23,6 @@ function createBuildingCard(building) {
 }
 
 function showBuildingInfoModal(building, onUpgrade, placementOptions) {
-  const refundPercent = 0.9;
   const canUpgrade = building.level < building.maxLevel;
 
   let upgradeAmount = 1;
@@ -62,7 +61,7 @@ function showBuildingInfoModal(building, onUpgrade, placementOptions) {
     const maxAffordableAmt = getMaxAffordableUpgradeAmount();
     const totalCost = building.getUpgradeCost(upgradeAmount);
     const totalBonus = getTotalBonus(upgradeAmount);
-    const refundAmount = building.getRefund(refundPercent);
+    const refundAmount = building.getRefund();
     return html`
       <div class="building-modal-content">
         <button class="modal-close">×</button>
@@ -174,7 +173,12 @@ function showBuildingInfoModal(building, onUpgrade, placementOptions) {
           buildings.placeBuilding(building.id, placementOptions.placeholderIdx);
           if (typeof placementOptions.onPlaced === 'function') placementOptions.onPlaced();
         }
-        upgradedDuringPlacement = true;
+        // If building is now level 1 or higher, switch to normal modal (show sell/refund)
+        if (building.level > 0) {
+          closeModal('building-info-modal');
+          showBuildingInfoModal(building, onUpgrade, null);
+          return;
+        }
       }
       if (upgraded) renderPurchasedBuildings();
       if (upgraded && typeof onUpgrade === 'function') onUpgrade();
@@ -185,6 +189,7 @@ function showBuildingInfoModal(building, onUpgrade, placementOptions) {
       modal.querySelector('.building-sell-btn').onclick = () => {
         showConfirmDialog(`Are you sure you want to remove <b>${building.name}</b> from the map?`).then((confirmed) => {
           if (confirmed) {
+            building.refundToHero();
             buildings.unplaceBuilding(building.id);
             if (typeof onUpgrade === 'function') onUpgrade();
             if (dataManager) dataManager.saveGame();
