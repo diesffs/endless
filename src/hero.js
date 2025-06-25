@@ -65,7 +65,9 @@ export default class Hero {
   gainExp(amount) {
     this.exp += amount;
     while (this.exp >= this.getExpToNextLevel()) {
+      const xpOverflow = this.exp - this.getExpToNextLevel();
       this.levelUp();
+      this.exp = xpOverflow; // Carry over excess experience to next level
     }
   }
 
@@ -83,42 +85,50 @@ export default class Hero {
     statistics.increment('totalSoulsEarned', null, amount);
     this.souls += amount;
   }
-  levelUp() {
-    this.exp -= this.getExpToNextLevel();
-    this.level++;
-    this.statPoints += STATS_ON_LEVEL_UP;
+  levelUp(levels) {
+    this.exp = 0;
+    this.level += levels;
+    this.statPoints += STATS_ON_LEVEL_UP * levels;
+
+    skillTree.addSkillPoints(levels); // Add 1 skill point per level
+
     this.recalculateFromAttributes();
-
-    // Add level up notification
     createCombatText(`LEVEL UP! (${this.level})`);
-
-    skillTree.addSkillPoints(1); // Add 1 skill point per level
-
     updatePlayerLife();
     updateStatsAndAttributesUI();
     initializeSkillTreeStructure();
     dataManager.saveGame();
-    updateRegionUI(); // Update region UI to unlock new regions if level requirement is met
-
-    // Update tab indicators for newly gained stat and skill points
+    updateRegionUI();
     updateTabIndicators();
   }
-  allocateStat(stat) {
-    if (this.statPoints > 0 && this.primaryStats[stat] !== undefined) {
-      this.primaryStats[stat]++;
-      this.statPoints--;
-      this.recalculateFromAttributes();
-      if (stat === 'vitality' && !game.gameStarted) {
-        this.stats.currentLife = this.stats.life;
-      }
-      dataManager.saveGame();
 
-      // Update tab indicators for spent attribute points
-      updateTabIndicators();
+  /**
+   * Allocates multiple stat points at once efficiently.
+   * Only recalculates stats once at the end instead of after each allocation.
+   * @param {string} stat - The stat to allocate points to
+   * @param {number} count - Number of points to allocate
+   * @returns {number} - Number of points actually allocated
+   */
+  allocateStatBulk(stat, count) {
+    if (this.primaryStats[stat] === undefined) return 0;
 
-      return true;
+    const pointsToAllocate = Math.min(count, this.statPoints);
+    if (pointsToAllocate <= 0) return 0;
+
+    this.primaryStats[stat] += pointsToAllocate;
+    this.statPoints -= pointsToAllocate;
+
+    // Only recalculate once at the end
+    this.recalculateFromAttributes();
+
+    if (stat === 'vitality' && !game.gameStarted) {
+      this.stats.currentLife = this.stats.life;
     }
-    return false;
+
+    dataManager.saveGame();
+    updateTabIndicators();
+
+    return pointsToAllocate;
   }
 
   recalculateFromAttributes() {

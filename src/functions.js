@@ -254,9 +254,7 @@ export function createModifyUI() {
   const giveExpBtn = document.createElement('button');
   giveExpBtn.textContent = 'Give Experience for Level Up';
   giveExpBtn.addEventListener('click', () => {
-    const expNeeded = hero.getExpToNextLevel() - hero.exp;
-    hero.gainExp(expNeeded);
-    showToast(`Gave ${expNeeded} experience to level up!`);
+    hero.levelUp(1);
   });
   heroSection.appendChild(giveExpBtn);
 
@@ -264,10 +262,7 @@ export function createModifyUI() {
   const giveExp10Btn = document.createElement('button');
   giveExp10Btn.textContent = 'Give Experience for 10 Level Ups';
   giveExp10Btn.addEventListener('click', () => {
-    for (let i = 0; i < 10; i++) {
-      const expNeeded = hero.getExpToNextLevel() - hero.exp;
-      hero.gainExp(expNeeded);
-    }
+    hero.levelUp(10);
     showToast(`Gave experience for 10 level ups!`);
   });
   heroSection.appendChild(giveExp10Btn);
@@ -276,10 +271,7 @@ export function createModifyUI() {
   const giveExp100Btn = document.createElement('button');
   giveExp100Btn.textContent = 'Give Experience for 100 Level Ups';
   giveExp100Btn.addEventListener('click', () => {
-    for (let i = 0; i < 100; i++) {
-      const expNeeded = hero.getExpToNextLevel() - hero.exp;
-      hero.gainExp(expNeeded);
-    }
+    hero.levelUp(100);
     showToast(`Gave experience for 100 level ups!`);
   });
   heroSection.appendChild(giveExp100Btn);
@@ -574,7 +566,6 @@ export function createModifyUI() {
   });
   dataManagementSection.appendChild(pasteDecryptedBtn);
 
-  
   // Button: Copy Encrypted Save to Clipboard (with quotes)
   const copyEncryptedWithQuotesBtn = document.createElement('button');
   copyEncryptedWithQuotesBtn.textContent = 'Copy Encrypted Save (with quotes)';
@@ -595,7 +586,6 @@ export function createModifyUI() {
   });
   dataManagementSection.appendChild(copyEncryptedWithQuotesBtn);
 
-  
   // Button: Paste Encrypted Save from Clipboard (saves directly)
   const pasteEncryptedBtn = document.createElement('button');
   pasteEncryptedBtn.textContent = 'Paste Encrypted Save';
@@ -620,5 +610,4 @@ export function createModifyUI() {
     }
   });
   dataManagementSection.appendChild(pasteEncryptedBtn);
-
 }

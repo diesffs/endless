@@ -278,14 +278,13 @@ export function updateStatsAndAttributesUI() {
     attributesContainer.querySelectorAll('.allocate-btn').forEach((btn) => {
       btn.addEventListener('mousedown', (e) => {
         const stat = e.target.dataset.stat;
-        // allocate based on allocationMode
+
+        // Allocate based on allocationMode using bulk allocation
         if (allocationMode === 'max') {
-          while (hero.statPoints > 0) hero.allocateStat(stat);
+          hero.allocateStatBulk(stat, hero.statPoints);
         } else {
           const count = parseInt(allocationMode, 10) || 1;
-          for (let i = 0; i < count && hero.statPoints > 0; i++) {
-            hero.allocateStat(stat);
-          }
+          hero.allocateStatBulk(stat, count);
         }
         updateStatsAndAttributesUI();
 
@@ -295,11 +294,10 @@ export function updateStatsAndAttributesUI() {
           intervalId = setInterval(() => {
             if (hero.statPoints > 0) {
               if (allocationMode === 'max') {
-                while (hero.statPoints > 0) hero.allocateStat(stat);
+                hero.allocateStatBulk(stat, hero.statPoints);
               } else {
-                for (let i = 0; i < (parseInt(allocationMode, 10) || 1) && hero.statPoints > 0; i++) {
-                  hero.allocateStat(stat);
-                }
+                const count = parseInt(allocationMode, 10) || 1;
+                hero.allocateStatBulk(stat, count);
               }
               updateStatsAndAttributesUI();
             } else stopHolding();
