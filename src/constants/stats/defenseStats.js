@@ -72,6 +72,7 @@ export const DEFENSE_STATS = {
     decimalPlaces: 1,
     item: { min: 1, max: 5, scaling: 'capped' },
     itemTags: ['amulet'],
+    showInUI: true,
   },
   reflectFireDamage: {
     base: 0,

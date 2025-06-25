@@ -88,6 +88,7 @@ export const OFFENSE_STATS = {
     decimalPlaces: 1,
     item: { min: 1, max: 8, scaling: 'capped' },
     itemTags: ['axe'],
+    showInUI: true,
   },
   lifePerHitPercent: {
     base: 0,
@@ -159,6 +160,7 @@ export const OFFENSE_STATS = {
     decimalPlaces: 1,
     item: { min: 0.2, max: 1.5, scaling: 'capped' },
     itemTags: ['offense', 'gloves'],
+    showInUI: true,
   },
   // ELEMENTAL DAMAGE PERCENT
   elementalDamagePercent: {

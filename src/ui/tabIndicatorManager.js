@@ -1,4 +1,4 @@
-import { skillTree } from '../globals.js';
+import { hero, skillTree } from '../globals.js';
 
 /**
  * Manages "new action required" indicators on top-level tabs.
@@ -60,15 +60,6 @@ export class TabIndicatorManager {
     if (tab) {
       tab.classList.remove('has-indicator');
     }
-  }
-
-  /**
-   * Mark an indicator as manually cleared (visited tab).
-   * @param {string} tabName - The tab name
-   */
-  markAsCleared(tabName) {
-    this.clearedIndicators.add(tabName);
-    this.clearIndicator(tabName);
   }
 
   /**
@@ -181,6 +172,12 @@ export class TabIndicatorManager {
    */
   markTabAsVisited(tabName) {
     // Mark indicator as cleared when switching to a tab (visiting it)
-    this.markAsCleared(tabName);
+    if (tabName === 'stats') {
+      this.previousStatPoints = hero.statPoints;
+    } else if (tabName === 'skilltree') {
+      this.previousSkillPoints = skillTree.skillPoints;
+    }
+    this.clearedIndicators.add(tabName);
+    this.clearIndicator(tabName);
   }
 }

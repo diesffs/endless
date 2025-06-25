@@ -122,6 +122,8 @@ export function initializeUI() {
 }
 
 export function switchTab(game, tabName) {
+  const previousTab = game.activeTab;
+
   document.querySelectorAll('.tab-panel').forEach((panel) => panel.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach((btn) => btn.classList.remove('active'));
   document.getElementById(tabName).classList.add('active');
@@ -140,13 +142,8 @@ export function switchTab(game, tabName) {
 
   game.activeTab = tabName;
 
-  // Update tab indicator manager - mark this tab as visited
-  if (tabIndicatorManager) {
-    tabIndicatorManager.markTabAsVisited(tabName);
-  }
-
   // Update indicators after tab switch
-  updateTabIndicators();
+  updateTabIndicators(previousTab);
 }
 
 export function updateResources() {
@@ -408,8 +405,11 @@ export const formatStatName = (stat) => {
  * Update tab indicators based on current game state.
  * Call this function whenever game state changes that might affect indicators.
  */
-export function updateTabIndicators() {
-  if (!tabIndicatorManager) return;
+export function updateTabIndicators(previousTab = null) {
+  if (previousTab) {
+    tabIndicatorManager.markTabAsVisited(previousTab);
+  }
+  tabIndicatorManager.markTabAsVisited(game.activeTab);
 
   // Count claimable quests
   const claimableQuests = quests?.quests?.filter((q) => q.isComplete(statistics) && !q.claimed).length || 0;
