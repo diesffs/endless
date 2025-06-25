@@ -164,39 +164,94 @@ export default class SkillTree {
       return preReqLevel > 0;
     });
   }
-  unlockSkill(skillId) {
-    if (!this.canUnlockSkill(skillId, true)) return false;
+
+  // Helper to calculate SP cost for buying qty levels from currentLevel
+  calculateSkillPointCost(currentLevel, qty) {
+    let cost = 0;
+    let level = currentLevel;
+    let remaining = qty;
+    while (remaining > 0) {
+      // Find how many levels until the next 50-level band
+      const nextBand = 50 - (level % 50);
+      const bandLevels = Math.min(remaining, nextBand);
+      const bandCost = bandLevels * (1 + Math.floor(level / 50));
+      cost += bandCost;
+      level += bandLevels;
+      remaining -= bandLevels;
+    }
+    return cost;
+  }
+
+  // Calculate max levels you can afford given SP and maxLevel
+  calculateMaxPurchasable(skill) {
+    let currentLevel = skill.level || 0;
+    const maxLevel = skill.maxLevel() || DEFAULT_MAX_SKILL_LEVEL;
+    let availableSP = this.skillPoints;
+    let n = 0;
+    let level = currentLevel;
+
+    while (level < maxLevel && availableSP > 0) {
+      const band = Math.floor(level / 50);
+      const bandCost = 1 + band;
+      // How many levels left in this band?
+      const bandEnd = (band + 1) * 50;
+      const levelsInBand = Math.min(bandEnd - level, maxLevel - level);
+      // How many can we afford in this band?
+      const affordable = Math.min(levelsInBand, Math.floor(availableSP / bandCost));
+      if (affordable <= 0) break;
+      n += affordable;
+      level += affordable;
+      availableSP -= affordable * bandCost;
+    }
+    return n;
+  }
+
+  /**
+   * Unlocks exactly qty levels of a skill, if the player can afford the total cost.
+   * Returns the number of levels actually unlocked (qty or 0).
+   */
+  unlockSkillBulk(skillId, count) {
+    if (!this.selectedPath) return 0;
 
     const skill = this.getSkill(skillId);
-    const currentLevel = this.skills[skillId]?.level || 0;
-    const cost = 1 + Math.floor(currentLevel / 50);
-    const nextLevel = currentLevel + 1;
-    // Preserve active state for toggle skills
-    const wasActive = this.skills[skillId]?.active || false;
+    if (!skill) return 0;
 
+    // Calculate max possible to buy
+    let maxLevel = skill.maxLevel() || DEFAULT_MAX_SKILL_LEVEL;
+    const maxQty = this.calculateMaxPurchasable(skill);
+    const qty = count === Infinity ? maxQty : Math.min(count, maxQty);
+    if (qty <= 0) return;
+
+    let currentLevel = this.skills[skillId]?.level || 0;
+    let wasActive = this.skills[skillId]?.active || false;
+
+    // Clamp qty to not exceed maxLevel or hero.level
+    const allowedQty = Math.max(0, Math.min(qty, maxLevel - currentLevel, hero.level - currentLevel));
+
+    if (allowedQty <= 0) return 0;
+    // Calculate total cost for allowedQty levels
+
+    let totalCost = this.calculateSkillPointCost(currentLevel, allowedQty);
+
+    if (this.skillPoints < totalCost) return 0;
+
+    // Set new level and deduct points
     this.skills[skillId] = {
       ...skill,
-      level: nextLevel,
-      // if toggle type, keep previous active state, else default to false
+      level: currentLevel + allowedQty,
       active: skill.type() === 'toggle' ? wasActive : false,
       slot: skill.type() !== 'passive' ? Object.keys(this.skills).length + 1 : null,
     };
 
-    this.skillPoints -= cost;
+    this.skillPoints -= totalCost;
     hero.recalculateFromAttributes();
-
     if (skill.type() !== 'passive') {
       updateActionBar();
     }
-
-    // Trigger tooltip update
     updateSkillTreeValues();
     dataManager.saveGame();
-
-    // Update tab indicators for spent skill points
     updateTabIndicators();
-
-    return true;
+    return allowedQty;
   }
 
   toggleSkill(skillId) {
