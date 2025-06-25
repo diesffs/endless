@@ -23,6 +23,12 @@ body {
   padding: 1rem;
 }
 
+ul,
+li {
+  list-style: disc;
+  margin: 0px 8px;
+  padding: 0px 12px;
+}
 /* When dev/debug UI is active, limit the width of the main game area */
 body.dev-active .game-container {
   max-width: calc(100vw - 720px); /* 2x debug/modify width + gap */

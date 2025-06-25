@@ -146,7 +146,6 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -204,25 +203,6 @@
   color: #e5e7eb;
   line-height: 1.6;
 }
-.changelog-body ul {
-  padding-left: 16px;
-}
-.modal-close {
-  position: absolute;
-  top: 16px;
-  right: 18px;
-  background: #23232a;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  font-size: 1.1em;
-  padding: 6px 14px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.modal-close:hover {
-  background: #18181b;
-}
 
 .changelog-row {
   display: flex;
@@ -273,4 +253,8 @@
 .apply-btn:focus,
 .apply-btn:hover {
   background: #1d4ed8;
+}
+
+.migration-modal .modal-content {
+  width: unset;
 }

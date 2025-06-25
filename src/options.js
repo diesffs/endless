@@ -8,7 +8,7 @@ const html = String.raw;
 // Options class to store options and version (future-proof for migrations)
 export class Options {
   constructor(data = {}) {
-    this.version = data.version || '0.1.2';
+    this.version = data.version || '0.1.3';
     // Add startingStage, default to null (unset)
     this.startingStage = data.startingStage || null;
   }
@@ -40,6 +40,11 @@ export class Options {
     container.appendChild(changelogRow);
 
     container.appendChild(this._createDiscordSection());
+
+    const suggestionsRow = document.createElement('div');
+    suggestionsRow.innerHTML = html` Please add your suggestions for changes in the game in the discord channel :) `;
+    container.appendChild(suggestionsRow);
+
     container.appendChild(this._createResetButton());
     optionsTab.appendChild(container);
   }
@@ -204,6 +209,7 @@ export class Options {
     const cloudSaveBtn = document.getElementById('cloud-save-btn');
     const cloudLoadBtn = document.getElementById('cloud-load-btn');
 
+    await dataManager.checkSession();
     let userSession = dataManager.getSession();
 
     // Fetch cloud save and compare with local
