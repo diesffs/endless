@@ -7,6 +7,7 @@ import { updateBossUI } from './ui/bossUi.js';
 
 class Game {
   constructor() {
+    this.activeTab = 'stats';
     this.fightMode = 'explore'; // Default fight mode
     this.gameStarted = false;
     this.currentEnemy = null;

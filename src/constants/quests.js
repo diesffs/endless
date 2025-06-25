@@ -788,7 +788,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Find 5 items.',
     type: 'item_drop',
     target: 5,
-    reward: { item: { rarity: 'rare', type: 'random', tier: 3 } },
+    reward: { item: { rarity: 'rare', type: 'random', tier: 2 } },
     icon: '🎁',
   },
   {
@@ -798,7 +798,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Find 25 items.',
     type: 'item_drop',
     target: 25,
-    reward: { item: { rarity: 'unique', type: 'random', tier: 3 } },
+    reward: { item: { rarity: 'unique', type: 'random', tier: 2 } },
     icon: '🎁',
   },
   {
@@ -808,7 +808,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Find 60 items.',
     type: 'item_drop',
     target: 60,
-    reward: { item: { rarity: 'unique', type: 'random', tier: 4 } },
+    reward: { item: { rarity: 'unique', type: 'random', tier: 3 } },
     icon: '🎁',
   },
   {
@@ -818,7 +818,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Find 150 items.',
     type: 'item_drop',
     target: 150,
-    reward: { item: { rarity: 'legendary', type: 'random', tier: 4 } },
+    reward: { item: { rarity: 'legendary', type: 'random', tier: 3 } },
     icon: '🎁',
   },
   {
@@ -828,7 +828,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Find 300 items.',
     type: 'item_drop',
     target: 300,
-    reward: { item: { rarity: 'legendary', type: 'random', tier: 5 } },
+    reward: { item: { rarity: 'legendary', type: 'random', tier: 4 } },
     icon: '🎁',
   },
   {
@@ -838,7 +838,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Find 750 items.',
     type: 'item_drop',
     target: 750,
-    reward: { item: { rarity: 'mythic', type: 'random', tier: 6 } },
+    reward: { item: { rarity: 'mythic', type: 'random', tier: 5 } },
     icon: '🎁',
   },
   // Material Drop Quests
@@ -849,7 +849,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Collect 5 materials.',
     type: 'material_drop',
     target: 5,
-    reward: { item: { rarity: 'rare', type: 'random', tier: 2 } },
+    reward: { item: { rarity: 'rare', type: 'random', tier: 1 } },
     icon: '🪨',
   },
   {
@@ -859,7 +859,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Collect 25 materials.',
     type: 'material_drop',
     target: 25,
-    reward: { item: { rarity: 'unique', type: 'random', tier: 2 } },
+    reward: { item: { rarity: 'unique', type: 'random', tier: 1 } },
     icon: '🪨',
   },
   {
@@ -869,7 +869,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Collect 60 materials.',
     type: 'material_drop',
     target: 60,
-    reward: { item: { rarity: 'unique', type: 'random', tier: 3 } },
+    reward: { item: { rarity: 'unique', type: 'random', tier: 2 } },
     icon: '🪨',
   },
   {
@@ -879,7 +879,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Collect 150 materials.',
     type: 'material_drop',
     target: 150,
-    reward: { item: { rarity: 'legendary', type: 'random', tier: 4 } },
+    reward: { item: { rarity: 'legendary', type: 'random', tier: 3 } },
     icon: '🪨',
   },
   {
@@ -889,7 +889,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Collect 300 materials.',
     type: 'material_drop',
     target: 300,
-    reward: { item: { rarity: 'legendary', type: 'random', tier: 4 } },
+    reward: { item: { rarity: 'legendary', type: 'random', tier: 3 } },
     icon: '🪨',
   },
   {
@@ -899,7 +899,7 @@ export const QUEST_DEFINITIONS = [
     description: 'Collect 750 materials.',
     type: 'material_drop',
     target: 750,
-    reward: { item: { rarity: 'mythic', type: 'random', tier: 5 } },
+    reward: { item: { rarity: 'mythic', type: 'random', tier: 3 } },
     icon: '🪨',
   },
 ];

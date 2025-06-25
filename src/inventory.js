@@ -86,7 +86,7 @@ export default class Inventory {
     }
     this.hasNewItems = true; // Set flag when new material is added
     updateMaterialsGrid();
-    statistics.increment('totalMaterialsFound', null, 1);
+    statistics.increment('totalMaterialsFound', null, material.qty);
     dataManager.saveGame();
   }
 
