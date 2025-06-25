@@ -106,7 +106,7 @@ export const OFFENSE_STATS = {
   fireDamagePercent: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 2, max: 6, scaling: 'capped' },
+    item: { min: 2, max: 10, scaling: 'capped' },
     itemTags: ['sword', 'jewelry', 'gloves'],
   },
   // COLD DAMAGE
@@ -121,7 +121,7 @@ export const OFFENSE_STATS = {
   coldDamagePercent: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 2, max: 6, scaling: 'capped' },
+    item: { min: 2, max: 10, scaling: 'capped' },
     itemTags: ['sword', 'jewelry', 'gloves'],
   },
   // AIR DAMAGE
@@ -136,7 +136,7 @@ export const OFFENSE_STATS = {
   airDamagePercent: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 2, max: 6, scaling: 'capped' },
+    item: { min: 2, max: 10, scaling: 'capped' },
     itemTags: ['sword', 'jewelry', 'gloves'],
   },
   // EARTH DAMAGE
@@ -151,7 +151,7 @@ export const OFFENSE_STATS = {
   earthDamagePercent: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 2, max: 6, scaling: 'capped' },
+    item: { min: 2, max: 10, scaling: 'capped' },
     itemTags: ['sword', 'jewelry', 'gloves'],
   },
   // DOUBLE DAMAGE
@@ -166,7 +166,7 @@ export const OFFENSE_STATS = {
   elementalDamagePercent: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 0.5, max: 4, scaling: 'capped' },
+    item: { min: 1, max: 8, scaling: 'capped' },
     itemTags: ['offense', 'jewelry', 'gloves'],
   },
 };
