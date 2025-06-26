@@ -1,26 +1,35 @@
+// Scaling multiplier for all offense stats
+const OFFENSE_SCALING_MULTIPLIER = 0.035;
+const PERCENT_MULTIPLIER = 0.005;
+const CHANCE_MULTIPLIER = 0.001;
+// Generic scaling function for all offense stats
+const offenseScaling = (level, scaling = OFFENSE_SCALING_MULTIPLIER, base = 1) => {
+  return base + level * scaling;
+};
+
 // Offense stats
 export const OFFENSE_STATS = {
   // DAMAGE
   damage: {
     base: 10,
     decimalPlaces: 0,
-    training: { available: true, cost: 100, bonus: 1 },
-    item: { min: 3, max: 10, scaling: 'full' },
+    training: { cost: 100, bonus: 1, max: Infinity },
+    item: { min: 3, max: 10, scaling: (level) => offenseScaling(level) },
     itemTags: ['offense'],
     showInUI: true,
   },
   damagePercent: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 2, max: 10, scaling: 'capped' },
+    item: { min: 10, max: 25, scaling: (level) => offenseScaling(level, PERCENT_MULTIPLIER) },
     itemTags: ['mace'],
   },
   // ATTACK SPEED
   attackSpeed: {
     base: 1.0,
     decimalPlaces: 2,
-    training: { available: true, cost: 350, bonus: 0.01 },
-    item: { min: 0.05, max: 0.2, scaling: 'capped' },
+    training: { cost: 350, bonus: 0.01, max: Infinity },
+    item: { min: 0.05, max: 0.2, scaling: (level) => offenseScaling(level) },
     itemTags: ['offense', 'gloves'],
     showInUI: true,
   },
@@ -32,8 +41,8 @@ export const OFFENSE_STATS = {
   critChance: {
     base: 5,
     decimalPlaces: 2,
-    training: { available: true, cost: 250, bonus: 0.1 },
-    item: { min: 0.05, max: 0.3, scaling: 'capped' },
+    training: { cost: 250, bonus: 0.1, max: Infinity },
+    item: { min: 1, max: 5, scaling: (level) => Math.min(offenseScaling(level, CHANCE_MULTIPLIER), 30) },
     itemTags: ['offense', 'jewelry', 'gloves'],
     showInUI: true,
   },
@@ -45,8 +54,8 @@ export const OFFENSE_STATS = {
   critDamage: {
     base: 1.5,
     decimalPlaces: 2,
-    training: { available: true, cost: 500, bonus: 0.01 },
-    item: { min: 0.02, max: 0.1, scaling: 'capped' },
+    training: { cost: 500, bonus: 0.01, max: Infinity },
+    item: { min: 0.02, max: 0.1, scaling: (level) => offenseScaling(level) },
     itemTags: ['offense', 'jewelry', 'gloves'],
     showInUI: true,
   },
@@ -58,23 +67,23 @@ export const OFFENSE_STATS = {
   attackRating: {
     base: 100,
     decimalPlaces: 0,
-    training: { available: true, cost: 90, bonus: 10 },
-    item: { min: 50, max: 150, scaling: 'full' },
+    training: { cost: 90, bonus: 10, max: Infinity },
+    item: { min: 50, max: 150, scaling: (level) => offenseScaling(level) },
     itemTags: ['offense', 'jewelry', 'gloves'],
     showInUI: true,
   },
   attackRatingPercent: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 1, max: 10, scaling: 'capped' },
+    item: { min: 10, max: 10, scaling: (level) => offenseScaling(level) },
     itemTags: ['offense', 'gloves'],
   },
   // LIFE STEAL
   lifeSteal: {
     base: 0,
     decimalPlaces: 2,
-    training: { available: true, cost: 600, bonus: 0.01 },
-    item: { min: 0.05, max: 0.2, scaling: 'capped' },
+    training: { cost: 600, bonus: 0.01, max: Infinity },
+    item: { min: 0.05, max: 0.2, scaling: (level) => offenseScaling(level) },
     itemTags: ['axe'],
     showInUI: true,
   },
@@ -86,7 +95,7 @@ export const OFFENSE_STATS = {
   lifePerHit: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 1, max: 8, scaling: 'capped' },
+    item: { min: 1, max: 8, scaling: (level) => offenseScaling(level) },
     itemTags: ['axe'],
     showInUI: true,
   },
@@ -98,67 +107,67 @@ export const OFFENSE_STATS = {
   fireDamage: {
     base: 0,
     decimalPlaces: 0,
-    training: { available: true, cost: 60, bonus: 1 },
-    item: { min: 5, max: 25, scaling: 'full' },
+    training: { cost: 60, bonus: 1, max: Infinity },
+    item: { min: 5, max: 25, scaling: (level) => offenseScaling(level) },
     itemTags: ['sword', 'gloves'],
     showInUI: true,
   },
   fireDamagePercent: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 2, max: 10, scaling: 'capped' },
+    item: { min: 12, max: 28, scaling: (level) => offenseScaling(level, PERCENT_MULTIPLIER) },
     itemTags: ['sword', 'jewelry', 'gloves'],
   },
   // COLD DAMAGE
   coldDamage: {
     base: 0,
     decimalPlaces: 0,
-    training: { available: true, cost: 60, bonus: 1 },
-    item: { min: 5, max: 25, scaling: 'full' },
+    training: { cost: 60, bonus: 1, max: Infinity },
+    item: { min: 5, max: 25, scaling: (level) => offenseScaling(level) },
     itemTags: ['sword', 'gloves'],
     showInUI: true,
   },
   coldDamagePercent: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 2, max: 10, scaling: 'capped' },
+    item: { min: 12, max: 28, scaling: (level) => offenseScaling(level, PERCENT_MULTIPLIER) },
     itemTags: ['sword', 'jewelry', 'gloves'],
   },
   // AIR DAMAGE
   airDamage: {
     base: 0,
     decimalPlaces: 0,
-    training: { available: true, cost: 60, bonus: 1 },
-    item: { min: 5, max: 25, scaling: 'full' },
+    training: { cost: 60, bonus: 1, max: Infinity },
+    item: { min: 5, max: 25, scaling: (level) => offenseScaling(level) },
     itemTags: ['sword', 'gloves'],
     showInUI: true,
   },
   airDamagePercent: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 2, max: 10, scaling: 'capped' },
+    item: { min: 12, max: 28, scaling: (level) => offenseScaling(level, PERCENT_MULTIPLIER) },
     itemTags: ['sword', 'jewelry', 'gloves'],
   },
   // EARTH DAMAGE
   earthDamage: {
     base: 0,
     decimalPlaces: 0,
-    training: { available: true, cost: 60, bonus: 1 },
-    item: { min: 5, max: 25, scaling: 'full' },
+    training: { cost: 60, bonus: 1, max: Infinity },
+    item: { min: 5, max: 25, scaling: (level) => offenseScaling(level) },
     itemTags: ['sword', 'gloves'],
     showInUI: true,
   },
   earthDamagePercent: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 2, max: 10, scaling: 'capped' },
+    item: { min: 12, max: 28, scaling: (level) => offenseScaling(level, PERCENT_MULTIPLIER) },
     itemTags: ['sword', 'jewelry', 'gloves'],
   },
   // DOUBLE DAMAGE
   doubleDamageChance: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 0.2, max: 1.5, scaling: 'capped' },
+    item: { min: 0.2, max: 1.5, scaling: (level) => offenseScaling(level) },
     itemTags: ['offense', 'gloves'],
     showInUI: true,
   },
@@ -166,7 +175,7 @@ export const OFFENSE_STATS = {
   elementalDamagePercent: {
     base: 0,
     decimalPlaces: 1,
-    item: { min: 1, max: 8, scaling: 'capped' },
+    item: { min: 6, max: 15, scaling: (level) => offenseScaling(level, PERCENT_MULTIPLIER) },
     itemTags: ['offense', 'jewelry', 'gloves'],
   },
 };

@@ -393,6 +393,25 @@ export function createModifyUI() {
   });
   addItemControlsDiv.appendChild(addItemBtn);
 
+  // Add 10x Items button (levels increment by 100)
+  const add10ItemsBtn = document.createElement('button');
+  add10ItemsBtn.textContent = 'Add 10x Items (+100 Lvl each)';
+  add10ItemsBtn.addEventListener('click', () => {
+    const itemType = itemTypeSelect.value;
+    const baseLevel = parseInt(itemLevelInput.value, 10) || 1;
+    const rarity = raritySelect.value;
+    const tier = parseInt(tierInput.value, 10) || 1;
+    for (let i = 0; i < 10; i++) {
+      const itemLevel = baseLevel + i * 100;
+      const newItem = inventory.createItem(itemType, itemLevel, rarity, tier);
+      inventory.addItemToInventory(newItem);
+    }
+    showToast(
+      `Added 10x ${itemType} (levels ${baseLevel} to ${baseLevel + 900}, ${rarity}, tier ${tier}) to inventory`
+    );
+  });
+  addItemControlsDiv.appendChild(add10ItemsBtn);
+
   // Generate full gear button
   const generateFullGearBtn = document.createElement('button');
   generateFullGearBtn.textContent = 'Generate full gear';
